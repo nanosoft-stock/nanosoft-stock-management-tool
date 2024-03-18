@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/screens/login_screen.dart';
 
 void main() {
   runApp(const StockManagementToolApp());
@@ -11,7 +12,7 @@ class StockManagementToolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nanosoft Stock Management Tool',
-      home: Container(),
+      home: LoginScreen(),
     );
   }
 }

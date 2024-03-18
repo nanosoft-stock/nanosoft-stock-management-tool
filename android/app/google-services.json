@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "356176493140",
+    "project_id": "stock-management-tool-876b9",
+    "storage_bucket": "stock-management-tool-876b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356176493140:android:15d2eb75a376525c818bc1",
+        "android_client_info": {
+          "package_name": "com.nanosoft.stock_management_tool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrNoFmsc5nH6XhpxR66DkyX6kMvpYUkNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

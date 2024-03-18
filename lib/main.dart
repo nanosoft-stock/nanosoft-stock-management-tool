@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
-import 'package:stock_management_tool/screens/login_screen.dart';
-import 'package:stock_management_tool/screens/sign_up_screen.dart';
 import 'package:stock_management_tool/services/auth.dart';
+
 import 'firebase_options.dart';
 
 bool isLoginScreen = true;
@@ -27,9 +28,8 @@ class StockManagementToolApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nanosoft Stock Management Tool',
       routes: {
-        '/home': (context) => HomeScreen(),
-        '/login': (context) => LoginScreen(),
-        '/signup': (context) => SignUpScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/auth': (context) => const AuthenticationScreen(),
       },
       home: SafeArea(
         child: Scaffold(
@@ -37,9 +37,9 @@ class StockManagementToolApp extends StatelessWidget {
             stream: _auth.authStateChanges,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return HomeScreen();
+                return const HomeScreen();
               } else {
-                return LoginScreen();
+                return const AuthenticationScreen();
               }
             },
           ),

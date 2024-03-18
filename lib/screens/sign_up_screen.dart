@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/screens/sign_up_screen.dart';
+import 'package:stock_management_tool/screens/login_screen.dart';
 
 import '../constants/constants.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -20,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SizedBox(
           width: 350.0,
-          height: 400.0,
+          height: 450.0,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
@@ -36,9 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding:
                         EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
                     child: Text(
-                      'Login',
+                      'Sign Up',
                       style: TextStyle(
                           fontSize: 22.0, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 250,
+                      child: TextFormField(
+                        controller: emailController,
+                        cursorColor: kCursorColor,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: kTextFieldFillColor,
+                            border: const OutlineInputBorder(),
+                            labelText: 'Username'),
+                      ),
                     ),
                   ),
                   Padding(
@@ -81,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialPageRoute(
                                 builder: (context) => Container()));
                       },
-                      child: const Text('Login'),
+                      child: const Text('Sign Up'),
                     ),
                   ),
                   Padding(
@@ -89,15 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Don't have an account? "),
+                        const Text("Already have an account? "),
                         TextButton(
                           onPressed: () {
                             Navigator.popAndPushNamed(
                                 context,
-                                '/signup');
+                                '/login');
                           },
                           child: const Text(
-                            'Sign Up',
+                            'Login',
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),

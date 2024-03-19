@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/services/auth.dart';
-
-import '../constants/constants.dart';
-import '../main.dart';
-import '../services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,9 +14,10 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> signInUser() async {
-    if (isDesktop) {
+  Future<void> signInUser({required BuildContext context}) async {
+    if (kIsDesktop) {
       await FirebaseRestApi().signInUserWithEmailAndPasswordRestApi(
+        context: context,
         email: emailController.text.toLowerCase().trim(),
         password: passwordController.text.trim(),
       );
@@ -63,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 cursorColor: kCursorColor,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) async {
-                  await signInUser();
+                  await signInUser(context: context);
                 },
                 obscureText: true,
                 decoration: InputDecoration(
@@ -79,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.all(15.0),
             child: ElevatedButton(
               onPressed: () async {
-                await signInUser();
+                await signInUser(context: context);
               },
               style: ButtonStyle(
                 shape: MaterialStatePropertyAll<RoundedRectangleBorder>(

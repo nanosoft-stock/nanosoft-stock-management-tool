@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:stock_management_tool/firebase_options.dart';
+import 'package:stock_management_tool/services/firebase_provider.dart';
 
 class FirebaseRestApi {
-  static bool isUserLoggedIn = false;
   static String apiKey = "";
   static String idToken = "";
   static String refreshToken = "";
@@ -14,7 +16,8 @@ class FirebaseRestApi {
   }
 
   Future<void> createUserWithEmailAndPasswordRestApi(
-      {required String username,
+      {required BuildContext context,
+      required String username,
       required String email,
       required String password}) async {
     try {
@@ -39,13 +42,14 @@ class FirebaseRestApi {
         refreshToken = responseData['refreshToken'];
       }
 
-      await updateUserProfileDataRestApi(username: username);
+      await updateUserProfileDataRestApi(context: context, username: username);
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> updateUserProfileDataRestApi({required String username}) async {
+  Future<void> updateUserProfileDataRestApi(
+      {required BuildContext context, required String username}) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -62,8 +66,8 @@ class FirebaseRestApi {
         ),
       );
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        isUserLoggedIn = true;
+        Provider.of<FirebaseProvider>(context, listen: false)
+            .changeIsUserLoggedIn(isUserLoggedIn: true);
       }
     } catch (e) {
       print("Error: $e");
@@ -71,7 +75,9 @@ class FirebaseRestApi {
   }
 
   Future<void> signInUserWithEmailAndPasswordRestApi(
-      {required String email, required String password}) async {
+      {required BuildContext context,
+      required String email,
+      required String password}) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -92,7 +98,8 @@ class FirebaseRestApi {
         final responseData = jsonDecode(response.body);
         idToken = responseData['idToken'];
         refreshToken = responseData['refreshToken'];
-        isUserLoggedIn = true;
+        Provider.of<FirebaseProvider>(context, listen: false)
+            .changeIsUserLoggedIn(isUserLoggedIn: true);
       }
     } catch (e) {
       print(e);

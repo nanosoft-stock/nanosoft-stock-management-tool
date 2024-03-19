@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../constants/constants.dart';
-import '../main.dart';
-import '../services/auth.dart';
-import '../services/firebase_rest_api.dart';
+import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/services/auth.dart';
+import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -17,9 +15,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> signUpUser() async {
-    if (isDesktop) {
+  Future<void> signUpUser({required BuildContext context}) async {
+    if (kIsDesktop) {
       await FirebaseRestApi().createUserWithEmailAndPasswordRestApi(
+        context: context,
         username: usernameController.text.toLowerCase().trim(),
         email: emailController.text.toLowerCase().trim(),
         password: passwordController.text.trim(),
@@ -84,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 cursorColor: kCursorColor,
                 obscureText: true,
                 onFieldSubmitted: (_) async {
-                  await signUpUser();
+                  await signUpUser(context: context);
                 },
                 decoration: InputDecoration(
                   filled: true,
@@ -99,7 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: const EdgeInsets.all(15.0),
             child: ElevatedButton(
               onPressed: () async {
-                await signUpUser();
+                await signUpUser(context: context);
               },
               style: ButtonStyle(
                 shape: MaterialStatePropertyAll<RoundedRectangleBorder>(

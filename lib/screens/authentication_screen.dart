@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/main.dart';
 import 'package:stock_management_tool/screens/login_screen.dart';
 import 'package:stock_management_tool/screens/sign_up_screen.dart';
 
@@ -11,6 +10,7 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  bool isLoginScreen = true;
   final toggleButtonWidth = 200.0;
   final toggleButtonHeight = 45.0;
 

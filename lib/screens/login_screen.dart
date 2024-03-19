@@ -3,16 +3,11 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   Future<void> signInUser({required BuildContext context}) async {
     if (kIsDesktop) {

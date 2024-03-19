@@ -133,7 +133,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ),
                 ),
               ),
-              isLoginScreen ? const LoginScreen() : const SignUpScreen(),
+              isLoginScreen ? LoginScreen() : SignUpScreen(),
             ],
           ),
         ),

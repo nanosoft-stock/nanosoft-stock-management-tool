@@ -4,14 +4,9 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
             await Auth().signOut();
           }
         },
-        child: Text('Sign Out'),
+        child: const Text('Sign Out'),
       ),
     );
   }

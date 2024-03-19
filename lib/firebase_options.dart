@@ -27,15 +27,17 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
+      // throw UnsupportedError(
+      //   'DefaultFirebaseOptions have not been configured for windows - '
+      //   'you can reconfigure this by running the FlutterFire CLI again.',
+      // );
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return linux;
+      // throw UnsupportedError(
+      //   'DefaultFirebaseOptions have not been configured for linux - '
+      //   'you can reconfigure this by running the FlutterFire CLI again.',
+      // );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -77,5 +79,23 @@ class DefaultFirebaseOptions {
     projectId: 'stock-management-tool-876b9',
     storageBucket: 'stock-management-tool-876b9.appspot.com',
     iosBundleId: 'com.nanosoft.stockManagementTool.RunnerTests',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBjMlK0ULoSdZbQBTqLVZJS451s7xuZvA0',
+    appId: '1:356176493140:web:37ae0a2d5e1cab67818bc1',
+    messagingSenderId: '356176493140',
+    projectId: 'stock-management-tool-876b9',
+    authDomain: 'stock-management-tool-876b9.firebaseapp.com',
+    storageBucket: 'stock-management-tool-876b9.appspot.com',
+  );
+
+  static const FirebaseOptions linux = FirebaseOptions(
+    apiKey: 'AIzaSyBjMlK0ULoSdZbQBTqLVZJS451s7xuZvA0',
+    appId: '1:356176493140:web:37ae0a2d5e1cab67818bc1',
+    messagingSenderId: '356176493140',
+    projectId: 'stock-management-tool-876b9',
+    authDomain: 'stock-management-tool-876b9.firebaseapp.com',
+    storageBucket: 'stock-management-tool-876b9.appspot.com',
   );
 }

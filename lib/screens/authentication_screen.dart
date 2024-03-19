@@ -26,6 +26,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   void initState() {
     super.initState();
 
+    isLoginScreen = true;
     xAlign = loginAlign;
     loginColor = selectedColor;
     signInColor = normalColor;

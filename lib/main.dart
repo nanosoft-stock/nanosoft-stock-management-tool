@@ -11,6 +11,7 @@ import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/side_menu_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,9 @@ class StockManagementToolApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => FirebaseProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => SideMenuProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Nanosoft Stock Management Tool',
@@ -46,16 +50,17 @@ class StockManagementToolApp extends StatelessWidget {
                         FirebaseProvider.isUserLoggedInStreamController.stream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data == true) {
-                        return const HomeScreen();
+                        return HomeScreen();
                       } else {
                         return const AuthenticationScreen();
                       }
-                    })
+                    },
+                  )
                 : StreamBuilder(
                     stream: Auth().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return const HomeScreen();
+                        return HomeScreen();
                       } else {
                         return const AuthenticationScreen();
                       }

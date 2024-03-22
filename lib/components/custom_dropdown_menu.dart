@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
-class CustomDropDownMenu {
+class CustomDropDownMenu extends StatelessWidget {
+  const CustomDropDownMenu(
+      {super.key, required this.controller,
+      required this.items,
+      required this.onSelected});
 
-  Widget createDropdownMenu({
-    required TextEditingController controller,
-    required List items,
-    required var onSelected,
-  }) {
+  final TextEditingController controller;
+  final List items;
+  final onSelected;
+
+  @override
+  Widget build(BuildContext context) {
     return DropdownMenu(
       controller: controller,
+      width: 200,
       textStyle: const TextStyle(
         fontSize: 16.0,
       ),

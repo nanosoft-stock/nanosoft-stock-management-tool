@@ -5,11 +5,12 @@ import 'package:stock_management_tool/utility/string_casting_extension.dart';
 
 class CategoryModel {
   static List items = [];
+  static String doc = "";
   static List fields = [];
 
   Future<List> fetchItems() async {
     if (kIsDesktop) {
-      items = await FirebaseRestApi().getDocuments(collection: "category_list");
+      items = await FirebaseRestApi().getDocuments(path: "category_list");
       items =
           items.map((e) => {"category": e["category"]["stringValue"]}).toList();
     } else {
@@ -21,6 +22,7 @@ class CategoryModel {
   }
 
   Future<List> fetchFields({required String value}) async {
+    doc = "";
     fields = [];
     if (kIsDesktop) {
       List result = await FirebaseRestApi().filterQuery(
@@ -45,8 +47,9 @@ class CategoryModel {
       );
 
       for (var res in result) {
+        doc = res;
         for (var element in await FirebaseRestApi()
-            .getDocuments(collection: "category_list/$res/fields")) {
+            .getDocuments(path: "category_list/$res/fields")) {
           fields.add(element);
         }
       }
@@ -61,8 +64,8 @@ class CategoryModel {
             },
           )
           .toList();
-      print(fields);
     }
+    print(fields);
     return fields;
   }
 }

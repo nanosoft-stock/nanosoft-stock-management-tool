@@ -49,7 +49,7 @@ class FirebaseRestApi {
 
       await updateUserProfileDataRestApi(context: context, username: username);
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
   }
 
@@ -107,25 +107,44 @@ class FirebaseRestApi {
             .changeIsUserLoggedIn(isUserLoggedIn: true);
       }
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
   }
 
-  Future<List> getDocuments({required String collection}) async {
+  Future<List> getDocuments({required String path}) async {
     try {
       String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$collection?key=$apiKey";
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body.trim());
+        // print(jsonData);
         var data = jsonData['documents'].map((e) => e['fields']).toList();
         return data;
       }
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
     return [];
+  }
+
+  Future<Map> getFields({required String path}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body.trim());
+        // print(jsonData);
+        var data = jsonData['fields'];
+        return data;
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+    return {};
   }
 
   Map? select;
@@ -139,7 +158,7 @@ class FirebaseRestApi {
       {path, select, from, where, orderBy, startAt, endAt}) async {
     try {
       String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path:runQuery?key=$apiKey";
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents${path != '' ? '/$path' : ''}:runQuery?key=$apiKey";
 
       Map structuredQuery = {};
 
@@ -179,10 +198,11 @@ class FirebaseRestApi {
         var data = jsonData
             .map((e) => e["document"]["name"].toString().split("/").last)
             .toList();
+        // print(data);
         return data;
       }
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
     return [];
   }

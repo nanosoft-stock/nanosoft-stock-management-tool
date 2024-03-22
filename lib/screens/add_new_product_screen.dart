@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/components/custom_dropdown_menu.dart';
 import 'package:stock_management_tool/models/category_model.dart';
+import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/utility/string_casting_extension.dart';
 
 class AddNewProductScreen extends StatefulWidget {
-  AddNewProductScreen({super.key});
+  const AddNewProductScreen({super.key});
 
   @override
   State<AddNewProductScreen> createState() => _AddNewProductScreenState();
@@ -14,66 +15,19 @@ class AddNewProductScreen extends StatefulWidget {
 class _AddNewProductScreenState extends State<AddNewProductScreen> {
   final TextEditingController controller = TextEditingController();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   Widget displayFields() {
-    print("Displaying Fields");
-    // List<Widget> fieldWidgets = [];
-    // CategoryModel().fetchFields(value: controller.text.toLowerCase());
-    // print(CategoryModel.fields.length);
-    // for (var element in CategoryModel.fields) {
-    //   fieldWidgets.add(SingleChildScrollView(
-    //     scrollDirection: Axis.horizontal,
-    //     child: Row(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Padding(
-    //           padding: EdgeInsets.all(8.0),
-    //           child: SizedBox(
-    //             width: 100,
-    //             child: Text(
-    //               element['field'].toString().toTitleCase(),
-    //               style: TextStyle(
-    //                 fontSize: 14.0,
-    //                 fontWeight: FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         Padding(
-    //           padding: const EdgeInsets.all(8.0),
-    //           child: SizedBox(
-    //             child: CustomDropDownMenu().createDropdownMenu(
-    //               controller: controller,
-    //               items: CategoryModel.items,
-    //               onSelected: () {
-    //                 setState(() {});
-    //               },
-    //             ),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ));
-    // }
-    // print(fieldWidgets.length);
-    // return Column(
-    //   children: fieldWidgets,
-    // );
     return FutureBuilder(
       future: CategoryModel().fetchFields(value: controller.text.toLowerCase()),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          print("snapshot: ${snapshot.data}");
+      builder: (context, snapshot1) {
+        if (snapshot1.hasData) {
+          var data = snapshot1.data!;
+          data.removeWhere((element) => element["isWithSKU"] == false);
+          data.removeWhere((element) => element["field"] == "sku");
           return ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
-            itemCount: snapshot.data!.length,
+            itemCount: snapshot1.data!.length,
             itemBuilder: (context, index) {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -81,14 +35,14 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
                         width: 100,
                         child: Text(
-                          snapshot.data![index]['field']
+                          snapshot1.data![index]['field']
                               .toString()
                               .toTitleCase(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
                           ),
@@ -98,11 +52,54 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
-                        child: CustomDropDownMenu().createDropdownMenu(
-                          controller: controller,
-                          items: CategoryModel.items,
-                          onSelected: () {
-                            setState(() {});
+                        child: FutureBuilder(
+                          future: FirebaseRestApi().filterQuery(
+                            path: "category_list/${CategoryModel.doc}",
+                            from: [
+                              {
+                                "collectionId": "drop_down_values",
+                                "allDescendants": false
+                              }
+                            ],
+                            where: {
+                              "fieldFilter": {
+                                "field": {
+                                  "fieldPath": "field",
+                                },
+                                "op": "EQUAL",
+                                "value": {
+                                  "stringValue": snapshot1.data![index]['field']
+                                      .toString(),
+                                }
+                              }
+                            },
+                          ),
+                          builder: (context, snapshot2) {
+                            if (snapshot2.hasData) {
+                              return FutureBuilder(
+                                future: FirebaseRestApi().getFields(
+                                    path:
+                                        "category_list/${CategoryModel.doc}/drop_down_values/${snapshot2.data!.first}"),
+                                builder: (context, snapshot3) {
+                                  if (snapshot3.hasData) {
+                                    return CustomDropDownMenu(
+                                      controller: TextEditingController(),
+                                      items: snapshot3.data!["values"]
+                                              ["arrayValue"]["values"]
+                                          .map((e) => e["stringValue"])
+                                          .toList(),
+                                      onSelected: () {
+                                        // setState(() {});
+                                      },
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              );
+                            } else {
+                              return Container();
+                            }
                           },
                         ),
                       ),
@@ -147,12 +144,13 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    child: CustomDropDownMenu().createDropdownMenu(
-                        controller: controller,
-                        items: CategoryModel.items,
-                        onSelected: () {
-                          setState(() {});
-                        }),
+                    child: CustomDropDownMenu(
+                      controller: controller,
+                      items: CategoryModel.items,
+                      onSelected: () {
+                        setState(() {});
+                      },
+                    ),
                   ),
                 ),
               ],

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/firebase_options.dart';
+import 'package:stock_management_tool/utility/firebase_options.dart';
 import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth.dart';
@@ -18,6 +18,7 @@ Future<void> main() async {
   if (defaultTargetPlatform == TargetPlatform.linux) {
     kIsDesktop = true;
     FirebaseRestApi().fetchApiKey();
+    FirebaseRestApi().fetchProjectId();
   } else {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

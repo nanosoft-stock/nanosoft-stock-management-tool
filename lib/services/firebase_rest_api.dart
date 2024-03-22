@@ -3,16 +3,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:stock_management_tool/firebase_options.dart';
+import 'package:stock_management_tool/utility/firebase_options.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
 
 class FirebaseRestApi {
   static String apiKey = "";
+  static String projectId = "";
   static String idToken = "";
   static String refreshToken = "";
 
   void fetchApiKey() {
     apiKey = DefaultFirebaseOptions.web.apiKey;
+  }
+
+  void fetchProjectId() {
+    projectId = DefaultFirebaseOptions.web.projectId;
   }
 
   Future<void> createUserWithEmailAndPasswordRestApi(
@@ -104,5 +109,22 @@ class FirebaseRestApi {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<List> getDocuments({required String collection}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1beta1/projects/$projectId/databases/(default)/documents/$collection?key=$apiKey";
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body.trim());
+        var data = jsonData['documents'].map((e) => e['fields']).toList();
+        return data;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 }

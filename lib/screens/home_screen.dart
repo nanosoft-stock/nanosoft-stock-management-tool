@@ -92,6 +92,26 @@ class _HomeScreenState extends State<HomeScreen> {
     Provider.of<SideMenuProvider>(context, listen: false)
         .changeCurrentNavItemModel(navItemModel: currentNavItem);
     CategoryModel().fetchItems();
+    // CategoryModel().fetchFields();
+    // FirebaseRestApi().filterQuery(
+    //   from: [
+    //     {
+    //       "collectionId": "category_list",
+    //       "allDescendants": false,
+    //     },
+    //   ],
+    //   where: {
+    //     "fieldFilter": {
+    //       "field": {
+    //         "fieldPath": "category",
+    //       },
+    //       "op": "EQUAL",
+    //       "value": {
+    //         "stringValue": "laptops",
+    //       }
+    //     },
+    //   },
+    // );
   }
 
   SideMenuItemDataTile createMenuItem({
@@ -114,9 +134,18 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         if (kIsDesktop) {
           await FirebaseRestApi().getDocuments(collection: 'category_list');
-          // await FirebaseRestApi().getCloudDocuments(collection: 'category_list/laptops');
-          // await FirebaseRestApi().getCloudDocuments(collection: 'product_list/laptops/fields');
-          // await FirebaseRestApi().getCloudDocuments(collection: 'product_list/laptops/skus');
+          CategoryModel().fetchFields(value: "laptops");
+          // await FirebaseRestApi().filterQuery(from: [
+          //   {"collectionId": "category_list", "allDescendants": false}
+          // ], where: {
+          //   "fieldFilter": {
+          //     "field": {"fieldPath": "category"},
+          //     "op": "EQUAL",
+          //     "value": {"stringValue": "laptops"}
+          //   }
+          // });
+          // CategoryModel().fetchFields();
+
         } else {
           Firestore().getDocuments(collection: 'category_list');
         }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomDropDownMenu {
-  TextEditingController controller = TextEditingController();
-
-  final onSelected = () {};
 
   Widget createDropdownMenu({
+    required TextEditingController controller,
     required List items,
+    required var onSelected,
   }) {
     return DropdownMenu(
       controller: controller,
@@ -27,6 +26,7 @@ class CustomDropDownMenu {
         } else {
           text = value;
         }
+        onSelected.call();
         print(text);
       },
     );

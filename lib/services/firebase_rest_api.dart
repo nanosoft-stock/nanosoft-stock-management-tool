@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:stock_management_tool/utility/firebase_options.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
+import 'package:stock_management_tool/utility/firebase_options.dart';
 
 class FirebaseRestApi {
   static String apiKey = "";
@@ -114,12 +114,71 @@ class FirebaseRestApi {
   Future<List> getDocuments({required String collection}) async {
     try {
       String url =
-          "https://firestore.googleapis.com/v1beta1/projects/$projectId/databases/(default)/documents/$collection?key=$apiKey";
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$collection?key=$apiKey";
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body.trim());
         var data = jsonData['documents'].map((e) => e['fields']).toList();
+        return data;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return [];
+  }
+
+  Map? select;
+  List? from;
+  Map? where;
+  List? orderBy;
+  Map? startAt;
+  Map? endAt;
+
+  Future<List> filterQuery(
+      {path, select, from, where, orderBy, startAt, endAt}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path:runQuery?key=$apiKey";
+
+      Map structuredQuery = {};
+
+      if (select != null) {
+        structuredQuery["select"] = select;
+      }
+      if (from != null) {
+        structuredQuery["from"] = from;
+      }
+      if (where != null) {
+        structuredQuery["where"] = where;
+      }
+      if (orderBy != null) {
+        structuredQuery["orderBy"] = orderBy;
+      }
+      if (startAt != null) {
+        structuredQuery["startAt"] = startAt;
+      }
+      if (endAt != null) {
+        structuredQuery["endAt"] = endAt;
+      }
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            "structuredQuery": structuredQuery,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body.trim());
+        var data = jsonData
+            .map((e) => e["document"]["name"].toString().split("/").last)
+            .toList();
         return data;
       }
     } catch (e) {

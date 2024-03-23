@@ -19,9 +19,12 @@ class CustomDropDownMenu extends StatelessWidget {
       textStyle: const TextStyle(
         fontSize: 16.0,
       ),
-      inputDecorationTheme: const InputDecorationTheme(
+      inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        border: InputBorder.none,
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(10),
+        ),
         fillColor: Color(0xEEE8DEF8),
       ),
       dropdownMenuEntries:

@@ -99,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isSelected: navItemModel.isSelected,
       icon: Icon(navItemModel.icon),
       title: navItemModel.title,
+      borderRadius: BorderRadius.circular(10),
       onTap: () async {
         if (currentNavItem != navItemModel) {
           currentNavItem?.isSelected = false;
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
           priority: SideMenuPriority.sizer,
           hasResizer: true,
           hasResizerToggle: false,
-          mode: SideMenuMode.open,
+          mode: SideMenuMode.auto,
           builder: (data) {
             return SideMenuData(
               header: data.isOpen
@@ -185,25 +186,32 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: IconButton(
-                  onPressed: () {
-                    Provider.of<SideMenuProvider>(context, listen: false)
-                        .toggleSideMenu();
-                  },
-                  icon: const Icon(Icons.menu_outlined),
+          child: Container(
+            decoration: const BoxDecoration(color: Colors.black12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: IconButton(
+                    onPressed: () {
+                      Provider.of<SideMenuProvider>(context, listen: false)
+                          .toggleSideMenu();
+                    },
+                    icon: const Icon(Icons.menu_outlined),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: allHomeScreens[Provider.of<SideMenuProvider>(context)
-                    .currentNavItemModel!
-                    .index],
-              ),
-            ],
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: allHomeScreens[Provider.of<SideMenuProvider>(context)
+                        .currentNavItemModel!
+                        .index],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

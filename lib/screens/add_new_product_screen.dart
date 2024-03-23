@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_dropdown_menu.dart';
+import 'package:stock_management_tool/components/custom_dropdown_input_field.dart';
+import 'package:stock_management_tool/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/utility/string_casting_extension.dart';
 
@@ -12,95 +12,85 @@ class AddNewProductScreen extends StatefulWidget {
 }
 
 class _AddNewProductScreenState extends State<AddNewProductScreen> {
-  final TextEditingController controller = TextEditingController();
-
-  Widget displayFields() {
-    var data = AllPredefinedData.data[controller.text];
-    List fields = data["fields"]
-        .where((element) => element["isWithSKU"] == true)
-        .toList();
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemCount: fields.length,
-      itemBuilder: (context, index) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 100,
-                  child: Text(
-                    fields[index]['field'].toString().toTitleCase(),
-                    style: const TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  child: CustomDropDownMenu(
-                    controller: TextEditingController(),
-                    items: fields[index]['items'] ?? [],
-                    onSelected: () {},
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  final TextEditingController categoryController = TextEditingController();
+  final TextEditingController skuController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 100,
-                  child: Text(
-                    "Category",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(60, 20, 60, 50),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white38,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return GridView.builder(
+                  itemCount: (AllPredefinedData.data["categories"]
+                              .contains(categoryController.text.toLowerCase())
+                          ? AllPredefinedData
+                              .data[categoryController.text.toLowerCase()]
+                                  ["fields"]
+                              .where((element) =>
+                                  (element["isWithSKU"] == true &&
+                                      element["field"] != "sku"))
+                              .toList()
+                              .length
+                          : 0) +
+                      2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: (constraints.maxWidth / 340).floor() > 0
+                        ? (constraints.maxWidth / 340).floor()
+                        : 1,
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 15,
+                    mainAxisExtent: 80,
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  child: CustomDropDownMenu(
-                    controller: controller,
-                    items: AllPredefinedData.data["categories"],
-                    onSelected: () {
-                      setState(() {});
-                    },
-                  ),
-                ),
-              ),
-            ],
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return CustomDropdownInputField(
+                        text: "Category",
+                        controller: categoryController,
+                        items: AllPredefinedData.data["categories"]
+                            .map(
+                              (e) => e.toString().toTitleCase(),
+                            )
+                            .toList(),
+                        onSelected: () {
+                          setState(() {});
+                        },
+                      );
+                    } else if (index == 1) {
+                      return CustomTextInputField(
+                        text: "SKU",
+                        controller: skuController,
+                      );
+                    } else {
+                      var data = AllPredefinedData
+                          .data[categoryController.text.toLowerCase()];
+                      var fields = data["fields"]
+                          .where((element) => (element["isWithSKU"] == true &&
+                              element["field"] != "sku"))
+                          .toList();
+                      return CustomDropdownInputField(
+                        text:
+                            fields[index - 2]['field'].toString().toTitleCase(),
+                        controller: TextEditingController(),
+                        items: fields[index - 2]['items'] ?? [],
+                        onSelected: () {},
+                      );
+                    }
+                  },
+                );
+              },
+            ),
           ),
         ),
-        if (AllPredefinedData.data["categories"].contains(controller.text))
-          displayFields()
-      ],
+      ),
     );
   }
 }

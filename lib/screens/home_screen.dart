@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
-import 'package:stock_management_tool/models/category_model.dart';
 import 'package:stock_management_tool/models/nav_item_model.dart';
 import 'package:stock_management_tool/screens/add_new_product_screen.dart';
 import 'package:stock_management_tool/screens/add_new_stock_screen.dart';
@@ -77,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final allHomeScreens = [
     const AddNewStockScreen(),
-    AddNewProductScreen(),
+    const AddNewProductScreen(),
     const ExportStockScreen(),
     const ModifyStockScreen(),
     const ModifyProductScreen(),
@@ -91,7 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
     currentNavItem = addNewStockNavItem;
     Provider.of<SideMenuProvider>(context, listen: false)
         .changeCurrentNavItemModel(navItemModel: currentNavItem);
-    CategoryModel().fetchItems();
   }
 
   SideMenuItemDataTile createMenuItem({
@@ -113,56 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {});
         }
         if (kIsDesktop) {
-          // print(await CategoryModel().fetchItems());
-          // print(await FieldsModel(category: 'laptops', categoryDoc: "0g9fGWRSBVG8hzX8Gmvt").fetchItems());
-          // print(await DropdownFieldModel(category: 'laptops', categoryDoc: '0g9fGWRSBVG8hzX8Gmvt').fetchItems());
-          // print(await FirebaseRestApi().getDocuments(path: "category_list"));
-          print(await AllPredefinedData().fetchData());
-          // print(await CategoryBasedPredefinedData(category: "laptops")
-          //     .fetchData());
-          // await FirebaseRestApi().filterQuery(
-          //   path: "category_list/${CategoryModel.doc}",
-          //   from: [
-          //     {
-          //       "collectionId": "drop_down_values",
-          //       "allDescendants": false
-          //     }
-          //   ],
-          //   where: {
-          //     "fieldFilter": {
-          //       "field": {
-          //         "fieldPath": "field",
-          //       },
-          //       "op": "EQUAL",
-          //       "value": {
-          //         "stringValue":
-          //             "processor"
-          //       }
-          //     }
-          //   },
-          // );
-          // var data = await FirebaseRestApi().getFields(
-          //     path:
-          //         "category_list/0g9fGWRSBVG8hzX8Gmvt/drop_down_values/04tAAgpX4GFvqhGFCp78");
-          // var d = DropdownValuesModel(
-          //   field: data["field"]["stringValue"],
-          //   items: data["values"]["arrayValue"]["values"]
-          //       .map((e) => e["stringValue"])
-          //       .toList(),
-          // );
-          // print(d.toString());
-          // await FirebaseRestApi().getDocuments(collection: 'category_list');
-          // CategoryModel().fetchFields(value: "laptops");
-          // await FirebaseRestApi().filterQuery(from: [
-          //   {"collectionId": "category_list", "allDescendants": false}
-          // ], where: {
-          //   "fieldFilter": {
-          //     "field": {"fieldPath": "category"},
-          //     "op": "EQUAL",
-          //     "value": {"stringValue": "laptops"}
-          //   }
-          // });
-          // CategoryModel().fetchFields();
+          // print(await AllPredefinedData().fetchData());
         } else {
           Firestore().getDocuments(collection: 'category_list');
         }

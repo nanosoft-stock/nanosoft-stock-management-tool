@@ -4,21 +4,18 @@ import 'package:stock_management_tool/services/firebase_rest_api.dart';
 class AllPredefinedData {
   AllPredefinedData();
 
-  Map data = {};
+  static Map data = {};
 
   Future<Map> fetchData() async {
+    data["categories"] =
+        (await FirebaseRestApi().getDocuments(path: "category_list"))
+            .map((e) => e["category"]["stringValue"])
+            .toList();
 
-    final all_categories = (await FirebaseRestApi().getDocuments(path: "category_list")).map((e) => {"category": e["category"]["stringValue"]}).toList();
-
-    all_categories.map((e) => CategoryBasedPredefinedData(category: e["category"]));
-    print(all_categories);
-
-    for (var e in all_categories) {
-      data[e["category"]] = await CategoryBasedPredefinedData(category: e["category"]).fetchData();
-      print(e["category"]);
+    for (var e in data["categories"]) {
+      data[e] = await CategoryBasedPredefinedData(category: e).fetchData();
     }
 
     return data;
   }
-
 }

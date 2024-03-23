@@ -17,19 +17,21 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(60, 20, 60, 50),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white38,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return GridView.builder(
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        int n = ((constraints.maxWidth - 160) / 338).floor();
+        double pad = ((constraints.maxWidth - 160) % 338) / 2;
+        return Padding(
+          padding: EdgeInsets.fromLTRB(60 + pad, 20, 60 + pad, 50),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white38,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Center(
+                child: GridView.builder(
                   itemCount: (AllPredefinedData.data["categories"]
                               .contains(categoryController.text.toLowerCase())
                           ? AllPredefinedData
@@ -43,31 +45,35 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                           : 0) +
                       2,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: (constraints.maxWidth / 340).floor() > 0
-                        ? (constraints.maxWidth / 340).floor()
-                        : 1,
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 15,
-                    mainAxisExtent: 80,
+                    crossAxisCount: n > 0 ? n : 1,
+                    mainAxisSpacing: 0,
+                    crossAxisSpacing: 0,
+                    mainAxisExtent: 95,
                   ),
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      return CustomDropdownInputField(
-                        text: "Category",
-                        controller: categoryController,
-                        items: AllPredefinedData.data["categories"]
-                            .map(
-                              (e) => e.toString().toTitleCase(),
-                            )
-                            .toList(),
-                        onSelected: () {
-                          setState(() {});
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.all(7.5),
+                        child: CustomDropdownInputField(
+                          text: "Category",
+                          controller: categoryController,
+                          items: AllPredefinedData.data["categories"]
+                              .map(
+                                (e) => e.toString().toTitleCase(),
+                              )
+                              .toList(),
+                          onSelected: () {
+                            setState(() {});
+                          },
+                        ),
                       );
                     } else if (index == 1) {
-                      return CustomTextInputField(
-                        text: "SKU",
-                        controller: skuController,
+                      return Padding(
+                        padding: const EdgeInsets.all(7.5),
+                        child: CustomTextInputField(
+                          text: "SKU",
+                          controller: skuController,
+                        ),
                       );
                     } else {
                       var data = AllPredefinedData
@@ -76,21 +82,25 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
                           .where((element) => (element["isWithSKU"] == true &&
                               element["field"] != "sku"))
                           .toList();
-                      return CustomDropdownInputField(
-                        text:
-                            fields[index - 2]['field'].toString().toTitleCase(),
-                        controller: TextEditingController(),
-                        items: fields[index - 2]['items'] ?? [],
-                        onSelected: () {},
+                      return Padding(
+                        padding: const EdgeInsets.all(7.5),
+                        child: CustomDropdownInputField(
+                          text: fields[index - 2]['field']
+                              .toString()
+                              .toTitleCase(),
+                          controller: TextEditingController(),
+                          items: fields[index - 2]['items'] ?? [],
+                          onSelected: () {},
+                        ),
                       );
                     }
                   },
-                );
-              },
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

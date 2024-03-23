@@ -35,44 +35,41 @@ class StockManagementToolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 1450),
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => FirebaseProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => SideMenuProvider(),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Nanosoft Stock Management Tool',
-          home: SafeArea(
-            child: Scaffold(
-              body: kIsDesktop
-                  ? StreamBuilder<bool>(
-                      stream:
-                          FirebaseProvider.isUserLoggedInStreamController.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data == true) {
-                          return HomeScreen();
-                        } else {
-                          return const AuthenticationScreen();
-                        }
-                      },
-                    )
-                  : StreamBuilder(
-                      stream: Auth().authStateChanges,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return HomeScreen();
-                        } else {
-                          return const AuthenticationScreen();
-                        }
-                      },
-                    ),
-            ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => FirebaseProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SideMenuProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Nanosoft Stock Management Tool',
+        home: SafeArea(
+          child: Scaffold(
+            body: kIsDesktop
+                ? StreamBuilder<bool>(
+                    stream:
+                        FirebaseProvider.isUserLoggedInStreamController.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data == true) {
+                        return HomeScreen();
+                      } else {
+                        return const AuthenticationScreen();
+                      }
+                    },
+                  )
+                : StreamBuilder(
+                    stream: Auth().authStateChanges,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return HomeScreen();
+                      } else {
+                        return const AuthenticationScreen();
+                      }
+                    },
+                  ),
           ),
         ),
       ),

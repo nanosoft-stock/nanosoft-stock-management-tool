@@ -54,44 +54,6 @@ class CustomTextInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-                // DropdownMenu(
-                //   controller: controller,
-                //   width: 200,
-                //   textStyle: const TextStyle(
-                //     fontSize: 16.0,
-                //   ),
-                //   inputDecorationTheme: InputDecorationTheme(
-                //     filled: true,
-                //     border: OutlineInputBorder(
-                //       borderSide: BorderSide.none,
-                //       borderRadius: BorderRadius.circular(10),
-                //     ),
-                //     fillColor: const Color(0xEEE8DEF8),
-                //   ),
-                //   dropdownMenuEntries: items
-                //       .map(
-                //         (e) => DropdownMenuEntry(
-                //           value: e,
-                //           label: e,
-                //         ),
-                //       )
-                //       .toList(),
-                //   onSelected: (value) {
-                //     String text;
-                //     if (value == null) {
-                //       text = controller.text;
-                //     } else {
-                //       text = value;
-                //     }
-                //     onSelected.call();
-                //     print(text);
-                //   },
-                // ),
-                // CustomDropDownMenu(
-                //   controller: controller,
-                //   items: items,
-                //   onSelected: onSelected,
-                // ),
               ],
             ),
           ),

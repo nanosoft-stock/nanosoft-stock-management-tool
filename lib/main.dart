@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/side_menu_provider.dart';
-import 'package:stock_management_tool/utility/firebase_options.dart';
 
 import 'models/all_predefined_data.dart';
 

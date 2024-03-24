@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomTextInputField extends StatelessWidget {
   CustomTextInputField({
@@ -17,8 +18,9 @@ class CustomTextInputField extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.white,
+            borderRadius: kBorderRadius,
+            color: kTertiaryBackgroundColor,
+            boxShadow: kBoxShadowList,
           ),
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -39,17 +41,21 @@ class CustomTextInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                Container(
                   width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: kBorderRadius,
+                    boxShadow: kBoxShadowList,
+                  ),
                   child: TextFormField(
                     controller: controller,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: const Color(0xEEE8DEF8),
+                      fillColor: kInputFieldFillColor,
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: kBorderRadius,
                       ),
                     ),
                   ),

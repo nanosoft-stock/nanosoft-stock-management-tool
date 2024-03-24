@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/services/firebase_provider.dart';
-import 'package:stock_management_tool/utility/firebase_options.dart';
 
 class FirebaseRestApi {
   static String apiKey = "";
@@ -205,5 +205,29 @@ class FirebaseRestApi {
       print("Error: $e");
     }
     return [];
+  }
+
+  Future<void> createDocument({required String path, required Map json}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            "fields": json,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print(response.body.trim());
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

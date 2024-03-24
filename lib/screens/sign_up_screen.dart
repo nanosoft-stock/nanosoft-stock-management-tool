@@ -43,7 +43,7 @@ class SignUpScreen extends StatelessWidget {
                 cursorColor: kCursorColor,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: kTextFieldFillColor,
+                  fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Username',
                 ),
@@ -61,7 +61,7 @@ class SignUpScreen extends StatelessWidget {
                 cursorColor: kCursorColor,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: kTextFieldFillColor,
+                  fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Email',
                 ),
@@ -82,7 +82,7 @@ class SignUpScreen extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: kTextFieldFillColor,
+                  fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Password',
                 ),
@@ -95,11 +95,10 @@ class SignUpScreen extends StatelessWidget {
               onPressed: () async {
                 await signUpUser(context: context);
               },
-              style: ButtonStyle(
-                shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kButtonBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: kBorderRadius,
                 ),
               ),
               child: const Padding(
@@ -107,8 +106,8 @@ class SignUpScreen extends StatelessWidget {
                 child: Text(
                   'Sign Up',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
                     fontSize: 15.0,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

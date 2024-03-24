@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/screens/login_screen.dart';
 import 'package:stock_management_tool/screens/sign_up_screen.dart';
 
@@ -16,8 +17,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   double loginAlign = -1;
   double signInAlign = 1;
-  Color selectedColor = Colors.white;
-  Color normalColor = Colors.black54;
+  Color selectedColor = Colors.black54;
+  Color normalColor = kTertiaryBackgroundColor;
   late double xAlign;
   late Color loginColor;
   late Color signInColor;
@@ -34,107 +35,113 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 350.0,
-        height: isLoginScreen ? 350.0 : 400.0,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-            boxShadow: [
-              BoxShadow(color: Colors.grey.withOpacity(0.5), spreadRadius: 5)
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 10.0),
-                child: Container(
-                  width: toggleButtonWidth,
-                  height: toggleButtonHeight,
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(50.0),
+    return Container(
+      decoration: BoxDecoration(
+        color: kPrimaryBackgroundColor,
+        borderRadius: kBorderRadius,
+      ),
+      child: Center(
+        child: SizedBox(
+          width: 350.0,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: kBorderRadius,
+              color: kSecondaryBackgroundColor,
+              boxShadow: kBoxShadowList,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 10.0,
+                    ),
+                    child: Container(
+                      width: toggleButtonWidth,
+                      height: toggleButtonHeight,
+                      decoration: BoxDecoration(
+                        color: kPrimaryBackgroundColor,
+                        borderRadius: kBorderRadius,
+                      ),
+                      child: Stack(
+                        children: [
+                          AnimatedAlign(
+                            alignment: Alignment(xAlign, 0),
+                            duration: const Duration(milliseconds: 200),
+                            child: Container(
+                              width: toggleButtonWidth * 0.5,
+                              height: toggleButtonHeight,
+                              decoration: BoxDecoration(
+                                  color: kInputFieldFillColor,
+                                  borderRadius: kBorderRadius),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              isLoginScreen = true;
+                              setState(() {
+                                xAlign = loginAlign;
+                                loginColor = selectedColor;
+
+                                signInColor = normalColor;
+                              });
+                            },
+                            child: Align(
+                              alignment: const Alignment(-1, 0),
+                              child: Container(
+                                width: toggleButtonWidth * 0.5,
+                                color: Colors.transparent,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    color: loginColor,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              isLoginScreen = false;
+                              setState(() {
+                                xAlign = signInAlign;
+                                signInColor = selectedColor;
+
+                                loginColor = normalColor;
+                              });
+                            },
+                            child: Align(
+                              alignment: const Alignment(1, 0),
+                              child: Container(
+                                width: toggleButtonWidth * 0.5,
+                                color: Colors.transparent,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    color: signInColor,
+                                    fontWeight: FontWeight.w600,
+                                    // fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      AnimatedAlign(
-                        alignment: Alignment(xAlign, 0),
-                        duration: const Duration(milliseconds: 200),
-                        child: Container(
-                          width: toggleButtonWidth * 0.5,
-                          height: toggleButtonHeight,
-                          decoration: const BoxDecoration(
-                            color: Colors.deepPurple,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          isLoginScreen = true;
-                          setState(() {
-                            xAlign = loginAlign;
-                            loginColor = selectedColor;
-
-                            signInColor = normalColor;
-                          });
-                        },
-                        child: Align(
-                          alignment: const Alignment(-1, 0),
-                          child: Container(
-                            width: toggleButtonWidth * 0.5,
-                            color: Colors.transparent,
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                color: loginColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          isLoginScreen = false;
-                          setState(() {
-                            xAlign = signInAlign;
-                            signInColor = selectedColor;
-
-                            loginColor = normalColor;
-                          });
-                        },
-                        child: Align(
-                          alignment: const Alignment(1, 0),
-                          child: Container(
-                            width: toggleButtonWidth * 0.5,
-                            color: Colors.transparent,
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: signInColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                  isLoginScreen ? LoginScreen() : SignUpScreen(),
+                ],
               ),
-              isLoginScreen ? LoginScreen() : SignUpScreen(),
-            ],
+            ),
           ),
         ),
       ),

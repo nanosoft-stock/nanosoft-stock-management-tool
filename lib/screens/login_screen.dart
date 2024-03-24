@@ -41,7 +41,7 @@ class LoginScreen extends StatelessWidget {
                 cursorColor: kCursorColor,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: kTextFieldFillColor,
+                  fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Email',
                 ),
@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: kTextFieldFillColor,
+                  fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Password',
                 ),
@@ -75,11 +75,10 @@ class LoginScreen extends StatelessWidget {
               onPressed: () async {
                 await signInUser(context: context);
               },
-              style: ButtonStyle(
-                shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kButtonBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: kBorderRadius,
                 ),
               ),
               child: const Padding(
@@ -87,8 +86,8 @@ class LoginScreen extends StatelessWidget {
                 child: Text(
                   'Login',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
                     fontSize: 15.0,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomDropdownInputField extends StatelessWidget {
   CustomDropdownInputField(
@@ -16,66 +17,84 @@ class CustomDropdownInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.white,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 2.5),
-                  child: SizedBox(
-                    width: 100,
-                    child: Text(
-                      text,
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
+      child: InkWell(
+        onFocusChange: (hasFocus) {
+          if (!hasFocus) {
+            onSelected.call();
+          }
+        },
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: kBorderRadius,
+              color: kTertiaryBackgroundColor,
+              boxShadow: kBoxShadowList,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2.5),
+                    child: SizedBox(
+                      width: 100,
+                      child: Text(
+                        text,
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                DropdownMenu(
-                  controller: controller,
-                  width: 200,
-                  textStyle: const TextStyle(
-                    fontSize: 16.0,
-                  ),
-                  inputDecorationTheme: InputDecorationTheme(
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: kBorderRadius,
+                      boxShadow: kBoxShadowList,
                     ),
-                    fillColor: const Color(0xEEE8DEF8),
-                  ),
-                  dropdownMenuEntries: items
-                      .map(
-                        (e) => DropdownMenuEntry(
-                          value: e,
-                          label: e,
+                    child: DropdownMenu(
+                      controller: controller,
+                      width: 200,
+                      textStyle: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                      inputDecorationTheme: InputDecorationTheme(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: kBorderRadius,
                         ),
-                      )
-                      .toList(),
-                  onSelected: (value) {
-                    String text;
-                    if (value == null) {
-                      text = controller.text;
-                    } else {
-                      text = value;
-                    }
-                    onSelected.call();
-                    print(text);
-                  },
-                ),
-              ],
+                        fillColor: kInputFieldFillColor,
+                      ),
+                      dropdownMenuEntries: items
+                          .map(
+                            (e) => DropdownMenuEntry(
+                              value: e,
+                              label: e,
+                            ),
+                          )
+                          .toList(),
+                      onSelected: (value) {
+                        // if (value != null) {
+                        //   controller.text = value;
+                        // }
+                        // onSelected.call();
+                        String text;
+                        if (value == null) {
+                          text = controller.text;
+                        } else {
+                          text = value;
+                        }
+                        controller.text = text;
+                        onSelected.call();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

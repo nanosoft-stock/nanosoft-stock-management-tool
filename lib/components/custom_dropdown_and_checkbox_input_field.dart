@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/components/custom_checkbox.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
-class CustomDropdownInputField extends StatelessWidget {
-  CustomDropdownInputField({
+class CustomDropdownAndCheckboxInputField extends StatelessWidget {
+  CustomDropdownAndCheckboxInputField({
     super.key,
     required this.text,
     required this.controller,
     required this.items,
+    this.lockable = false,
+    this.alignLockable = false,
+    this.locked = false,
     required this.onSelected,
   });
 
   String text;
   TextEditingController controller;
   List items;
+  bool lockable;
+  bool alignLockable;
+  bool locked;
   final onSelected;
 
   @override
@@ -43,7 +51,7 @@ class CustomDropdownInputField extends StatelessWidget {
                     child: SizedBox(
                       width: 100,
                       child: Text(
-                        text,
+                        text.toTitleCase(),
                         style: const TextStyle(
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
@@ -90,6 +98,24 @@ class CustomDropdownInputField extends StatelessWidget {
                       },
                     ),
                   ),
+                  if (lockable)
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                  if (lockable)
+                    CustomCheckbox(
+                      text: text,
+                      locked: locked,
+                    ),
+                  if (alignLockable)
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                  if (alignLockable)
+                    const SizedBox(
+                      width: 43.0,
+                      height: 43.0,
+                    ),
                 ],
               ),
             ),

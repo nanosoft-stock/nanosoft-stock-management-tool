@@ -1,4 +1,5 @@
 import 'package:stock_management_tool/models/fields_model.dart';
+import 'package:stock_management_tool/models/products_model.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
 class CategoryBasedPredefinedData {
@@ -34,6 +35,10 @@ class CategoryBasedPredefinedData {
 
     data["fields"] =
         await FieldsModel(category: category, categoryDoc: categoryDoc)
+            .fetchItems();
+
+    data["products"] =
+        await ProductsModel(category: category, categoryDoc: categoryDoc)
             .fetchItems();
 
     return data;

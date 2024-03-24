@@ -120,7 +120,9 @@ class FirebaseRestApi {
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body.trim());
         // print(jsonData);
-        var data = jsonData['documents'].map((e) => e['fields']).toList();
+        var data = jsonData['documents'] != null
+            ? jsonData['documents'].map((e) => e['fields']).toList()
+            : [];
         return data;
       }
     } catch (e) {

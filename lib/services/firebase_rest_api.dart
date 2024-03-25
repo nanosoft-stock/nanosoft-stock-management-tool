@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
-import 'package:stock_management_tool/providers/firebase_provider.dart';
 
 class FirebaseRestApi {
   static String apiKey = "";
@@ -21,11 +18,12 @@ class FirebaseRestApi {
     projectId = DefaultFirebaseOptions.web.projectId;
   }
 
-  Future<void> createUserWithEmailAndPasswordRestApi(
-      {required BuildContext context,
-      required String username,
-      required String email,
-      required String password}) async {
+  Future<void> createUserWithEmailAndPasswordRestApi({
+    required String username,
+    required String email,
+    required String password,
+    required var onSuccess,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey"),
@@ -41,7 +39,7 @@ class FirebaseRestApi {
         final responseData = jsonDecode(response.body);
         idToken = responseData['idToken'];
         refreshToken = responseData['refreshToken'];
-        await updateUserProfileDataRestApi(context: context, username: username);
+        await updateUserProfileDataRestApi(username: username, onSuccess: onSuccess);
         await getUserData();
       }
     } catch (e) {
@@ -49,8 +47,10 @@ class FirebaseRestApi {
     }
   }
 
-  Future<void> updateUserProfileDataRestApi(
-      {required BuildContext context, required String username}) async {
+  Future<void> updateUserProfileDataRestApi({
+    required String username,
+    required var onSuccess,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:update?key=$apiKey"),
@@ -62,16 +62,18 @@ class FirebaseRestApi {
         ),
       );
       if (response.statusCode == 200) {
-        Provider.of<FirebaseProvider>(context, listen: false)
-            .changeIsUserLoggedIn(isUserLoggedIn: true);
+        onSuccess.call(true);
       }
     } catch (e) {
       print("Error: $e");
     }
   }
 
-  Future<void> signInUserWithEmailAndPasswordRestApi(
-      {required BuildContext context, required String email, required String password}) async {
+  Future<void> signInUserWithEmailAndPasswordRestApi({
+    required String email,
+    required String password,
+    required var onSuccess,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -89,8 +91,7 @@ class FirebaseRestApi {
         idToken = responseData['idToken'];
         refreshToken = responseData['refreshToken'];
         await getUserData();
-        Provider.of<FirebaseProvider>(context, listen: false)
-            .changeIsUserLoggedIn(isUserLoggedIn: true);
+        onSuccess.call(true);
       }
     } catch (e) {
       print("Error: $e");
@@ -117,7 +118,9 @@ class FirebaseRestApi {
     }
   }
 
-  Future<List> getDocuments({required String path}) async {
+  Future<List> getDocuments({
+    required String path,
+  }) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
@@ -137,7 +140,9 @@ class FirebaseRestApi {
     return [];
   }
 
-  Future<Map> getFields({required String path}) async {
+  Future<Map> getFields({
+    required String path,
+  }) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
@@ -162,7 +167,15 @@ class FirebaseRestApi {
   Map? startAt;
   Map? endAt;
 
-  Future<List> filterQuery({path, select, from, where, orderBy, startAt, endAt}) async {
+  Future<List> filterQuery({
+    path,
+    select,
+    from,
+    where,
+    orderBy,
+    startAt,
+    endAt,
+  }) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents${path != '' ? '/$path' : ''}:runQuery?key=$apiKey";
@@ -212,7 +225,10 @@ class FirebaseRestApi {
     return [];
   }
 
-  Future<void> createDocument({required String path, required Map json}) async {
+  Future<void> createDocument({
+    required String path,
+    required Map json,
+  }) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";

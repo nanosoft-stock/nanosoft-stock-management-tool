@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
@@ -13,10 +15,13 @@ class SignUpScreen extends StatelessWidget {
   Future<void> signUpUser({required BuildContext context}) async {
     if (kIsDesktop) {
       await FirebaseRestApi().createUserWithEmailAndPasswordRestApi(
-        context: context,
         username: usernameController.text.toLowerCase().trim(),
         email: emailController.text.toLowerCase().trim(),
         password: passwordController.text.trim(),
+        onSuccess: (value) {
+          Provider.of<FirebaseProvider>(context, listen: false)
+              .changeIsUserLoggedIn(isUserLoggedIn: value);
+        },
       );
     } else {
       await Auth().createUserWithEmailAndPassword(

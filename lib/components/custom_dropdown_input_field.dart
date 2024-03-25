@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/components/custom_dropdown_%20menu.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
@@ -57,38 +58,10 @@ class CustomDropdownInputField extends StatelessWidget {
                       borderRadius: kBorderRadius,
                       boxShadow: kBoxShadowList,
                     ),
-                    child: DropdownMenu(
+                    child: CustomDropdownMenu(
                       controller: controller,
-                      width: 200,
-                      textStyle: const TextStyle(
-                        fontSize: 16.0,
-                      ),
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: kBorderRadius,
-                        ),
-                        fillColor: kInputFieldFillColor,
-                      ),
-                      dropdownMenuEntries: items
-                          .map(
-                            (e) => DropdownMenuEntry(
-                              value: e,
-                              label: e,
-                            ),
-                          )
-                          .toList(),
-                      onSelected: (value) {
-                        String text;
-                        if (value == null) {
-                          text = controller.text;
-                        } else {
-                          text = value;
-                        }
-                        controller.text = text;
-                        onSelected.call();
-                      },
+                      items: items,
+                      onSelected: onSelected,
                     ),
                   ),
                 ],

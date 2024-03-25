@@ -33,13 +33,10 @@ class CategoryBasedPredefinedData {
 
     data["categoryDoc"] = categoryDoc;
 
-    data["fields"] =
-        await FieldsModel(category: category, categoryDoc: categoryDoc)
-            .fetchItems();
+    data["fields"] = await FieldsModel(category: category, categoryDoc: categoryDoc).fetchItems();
 
     data["products"] =
-        await ProductsModel(category: category, categoryDoc: categoryDoc)
-            .fetchItems();
+        await ProductsModel(category: category, categoryDoc: categoryDoc).fetchItems();
 
     return data;
   }

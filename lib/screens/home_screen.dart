@@ -105,11 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () async {
         if (currentNavItem != navItemModel) {
           if (currentNavItem == addNewStockNavItem) {
-            Provider.of<AddNewStockProvider>(context, listen: false)
-                .deleteCacheData();
+            Provider.of<AddNewStockProvider>(context, listen: false).deleteCacheData();
           } else if (currentNavItem == addNewProductNavItem) {
-            Provider.of<AddNewProductProvider>(context, listen: false)
-                .deleteCacheData();
+            Provider.of<AddNewProductProvider>(context, listen: false).deleteCacheData();
           }
 
           currentNavItem?.isSelected = false;
@@ -149,8 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return SideMenuData(
                 header: data.isOpen
                     ? Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
+                        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
                         child: SizedBox(
                           height: 36,
                           child: Image.asset('images/nanosoft_logo.png'),
@@ -158,25 +155,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     : const SizedBox.shrink(),
                 items: [
-                  if (data.isOpen)
-                    const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(
-                      context: context, navItemModel: addNewStockNavItem),
-                  createMenuItem(
-                      context: context, navItemModel: addNewProductNavItem),
+                  if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
+                  createMenuItem(context: context, navItemModel: addNewStockNavItem),
+                  createMenuItem(context: context, navItemModel: addNewProductNavItem),
                   const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(
-                      context: context, navItemModel: exportStockNavItem),
+                  createMenuItem(context: context, navItemModel: exportStockNavItem),
                   const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(
-                      context: context, navItemModel: modifyStockNavItem),
-                  createMenuItem(
-                      context: context, navItemModel: modifyProductNavItem),
+                  createMenuItem(context: context, navItemModel: modifyStockNavItem),
+                  createMenuItem(context: context, navItemModel: modifyProductNavItem),
                   const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(
-                      context: context, navItemModel: archiveStockNavItem),
-                  createMenuItem(
-                      context: context, navItemModel: archiveProductNavItem),
+                  createMenuItem(context: context, navItemModel: archiveStockNavItem),
+                  createMenuItem(context: context, navItemModel: archiveProductNavItem),
                 ],
                 footer: Padding(
                   padding: data.isOpen
@@ -187,15 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: Text(accountItemMenuNavItem.title),
                           leading: Icon(accountItemMenuNavItem.icon),
                           onTap: () {
-                            Provider.of<FirebaseProvider>(context,
-                                    listen: false)
+                            userName = "";
+                            Provider.of<FirebaseProvider>(context, listen: false)
                                 .changeIsUserLoggedIn(isUserLoggedIn: false);
                           },
                         )
                       : GestureDetector(
                           onTap: () {
-                            Provider.of<FirebaseProvider>(context,
-                                    listen: false)
+                            Provider.of<FirebaseProvider>(context, listen: false)
                                 .changeIsUserLoggedIn(isUserLoggedIn: false);
                           },
                           child: Icon(accountItemMenuNavItem.icon),
@@ -221,8 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Provider.of<SideMenuProvider>(context, listen: false)
-                            .toggleSideMenu();
+                        Provider.of<SideMenuProvider>(context, listen: false).toggleSideMenu();
                       },
                       hoverColor: Colors.transparent,
                       icon: const Icon(Icons.menu_outlined),
@@ -233,9 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   fit: FlexFit.tight,
                   child: SizedBox(
                     width: double.infinity,
-                    child: allHomeScreens[Provider.of<SideMenuProvider>(context)
-                        .currentNavItemModel!
-                        .index],
+                    child: allHomeScreens[
+                        Provider.of<SideMenuProvider>(context).currentNavItemModel!.index],
                   ),
                 ),
               ],

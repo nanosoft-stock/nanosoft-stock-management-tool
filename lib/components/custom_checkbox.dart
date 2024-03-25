@@ -16,8 +16,7 @@ class CustomCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Provider.of<AddNewStockProvider>(context, listen: false)
-            .changeCacheDataSubField(
+        Provider.of<AddNewStockProvider>(context, listen: false).changeCacheDataSubField(
           field: text,
           subField: "locked",
           value: !locked,

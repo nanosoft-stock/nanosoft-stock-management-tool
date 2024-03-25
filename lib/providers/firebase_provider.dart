@@ -9,8 +9,7 @@ class FirebaseProvider extends ChangeNotifier {
 
   bool isUserLoggedIn;
 
-  static StreamController<bool> isUserLoggedInStreamController =
-      StreamController<bool>();
+  static StreamController<bool> isUserLoggedInStreamController = StreamController<bool>();
 
   void changeIsUserLoggedIn({required bool isUserLoggedIn}) async {
     this.isUserLoggedIn = isUserLoggedIn;

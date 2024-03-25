@@ -8,8 +8,7 @@ class AddNewProductHelper {
         .where((element) => (element["isWithSKU"] == true))
         .toList()) {
       convertedData[e["field"]] = {
-        DatatypeConverterHelper.convert(datatype: e["datatype"]):
-            data[e["field"]],
+        DatatypeConverterHelper.convert(datatype: e["datatype"]): data[e["field"]],
       };
     }
 

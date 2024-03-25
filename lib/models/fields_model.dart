@@ -8,8 +8,7 @@ class FieldsModel {
   List items = [];
 
   Future<List> fetchItems() async {
-    items = await FirebaseRestApi()
-        .getDocuments(path: "category_list/$categoryDoc/fields");
+    items = await FirebaseRestApi().getDocuments(path: "category_list/$categoryDoc/fields");
     items = items.map((e) {
       Map data = {
         "field": e["field"]["stringValue"],
@@ -19,9 +18,7 @@ class FieldsModel {
         "order": int.parse(e["order"]["integerValue"]),
       };
       if (e["items"] != null) {
-        data["items"] = e["items"]["arrayValue"]["values"]
-            .map((e) => e["stringValue"])
-            .toList();
+        data["items"] = e["items"]["arrayValue"]["values"].map((e) => e["stringValue"]).toList();
       }
       return data;
     }).toList();

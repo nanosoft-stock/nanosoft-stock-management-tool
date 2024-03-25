@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  CustomElevatedButton(
-      {super.key, required this.text, required this.onPressed});
+  CustomElevatedButton({super.key, required this.text, required this.onPressed});
 
   String text;
   var onPressed;

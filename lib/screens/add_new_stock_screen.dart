@@ -15,22 +15,20 @@ class AddNewStockScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AddNewStockProvider>(
       builder: (BuildContext context, provider, Widget? child) {
-        List fields = (AllPredefinedData.data["categories"]
-                .contains(provider.currentCategory?.toLowerCase())
-            ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]
-                    ["fields"]
-                .where((element) =>
-                    !(["date", "user", "archived"].contains(element["field"])))
-                .toList()
-            : [
-                {
-                  "field": "category",
-                  "datatype": "string",
-                  "lockable": true,
-                  "isWithSKU": false,
-                  "order": 2,
-                },
-              ]);
+        List fields =
+            (AllPredefinedData.data["categories"].contains(provider.currentCategory?.toLowerCase())
+                ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["fields"]
+                    .where((element) => !(["date", "user", "archived"].contains(element["field"])))
+                    .toList()
+                : [
+                    {
+                      "field": "category",
+                      "datatype": "string",
+                      "lockable": true,
+                      "isWithSKU": false,
+                      "order": 2,
+                    },
+                  ]);
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             int n = ((constraints.maxWidth - 135) / 390.5).floor();
@@ -52,77 +50,43 @@ class AddNewStockScreen extends StatelessWidget {
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 itemCount: fields.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: n > 0 ? n : 1,
                                   mainAxisSpacing: 0,
                                   crossAxisSpacing: 0,
                                   mainAxisExtent: 95,
                                 ),
                                 itemBuilder: (context, index) {
-                                  if (index == 0) {
-                                    if (!provider.hasBuilt) {
-                                      if (!provider.cacheData
-                                          .containsKey("category")) {
+                                  List items;
+                                  if (fields[index]['field'] == "category") {
+                                    items = AllPredefinedData.data["categories"]
+                                        .map(
+                                          (e) => e.toString().toTitleCase(),
+                                        )
+                                        .toList();
+                                  } else if (fields[index]['field'] == "sku") {
+                                    items = AllPredefinedData
+                                            .data[provider.currentCategory?.toLowerCase()]
+                                                ["products"]
+                                            .map((e) => e["sku"])
+                                            .toList() ??
+                                        [];
+                                  } else {
+                                    items = fields[index]['items'] ?? [];
+                                  }
+
+                                  if (!provider.hasBuilt) {
+                                    if (fields[index]['field'] == "category") {
+                                      if (!provider.cacheData.containsKey("category")) {
                                         provider.changeCacheData(
                                           field: "category",
                                           data: {
-                                            "controller":
-                                                TextEditingController(),
+                                            "controller": TextEditingController(),
                                             "locked": false
                                           },
                                         );
                                       }
-                                    }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child:
-                                          CustomDropdownAndCheckboxInputField(
-                                        text: "category",
-                                        controller:
-                                            provider.cacheData["category"]
-                                                ['controller'],
-                                        items: AllPredefinedData
-                                            .data["categories"]
-                                            .map(
-                                              (e) => e.toString().toTitleCase(),
-                                            )
-                                            .toList(),
-                                        lockable: true,
-                                        locked: provider.cacheData["category"]
-                                            ["locked"],
-                                        onSelected: () {
-                                          if (provider.currentCategory !=
-                                              provider
-                                                  .cacheData["category"]
-                                                      ['controller']
-                                                  .text) {
-                                            provider.hasBuilt = false;
-                                            provider.currentCategory = provider
-                                                .cacheData["category"]
-                                                    ['controller']
-                                                .text;
-                                            provider.cacheData.removeWhere(
-                                                (key, value) =>
-                                                    key != "category");
-                                            provider.refresh();
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  }
-                                  if ([
-                                    "item id",
-                                    "serial number",
-                                    "dispatch info",
-                                    "supplier info",
-                                    "location",
-                                    "comments"
-                                  ].contains(fields[index]['field'])) {
-                                    if (!provider.hasBuilt) {
+                                    } else {
                                       provider.changeCacheData(
                                         field: fields[index]['field'],
                                         data: {
@@ -131,94 +95,72 @@ class AddNewStockScreen extends StatelessWidget {
                                         },
                                       );
                                     }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child: CustomTextAndCheckboxInputField(
-                                        text: fields[index]['field'],
-                                        controller: provider.cacheData[
-                                                fields[index]['field']]
-                                            ['controller'],
-                                        lockable: fields[index]['lockable'],
-                                        alignLockable: !fields[index]
-                                            ['lockable'],
-                                        locked: fields[index]['lockable']
-                                            ? provider.cacheData[fields[index]
-                                                ['field']]["locked"]
-                                            : false,
-                                      ),
-                                    );
-                                  } else {
-                                    if (!provider.hasBuilt) {
-                                      if (fields[index]['lockable']) {
-                                        provider.changeCacheData(
-                                          field: fields[index]['field'],
-                                          data: {
-                                            "controller":
-                                                TextEditingController(),
-                                            "locked": false
-                                          },
-                                        );
-                                      }
-                                    }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child:
-                                          CustomDropdownAndCheckboxInputField(
-                                        text: fields[index]['field'],
-                                        controller: provider.cacheData[
-                                                fields[index]['field']]
-                                            ['controller'],
-                                        items: fields[index]['field'] == "sku"
-                                            ? AllPredefinedData.data[provider
-                                                            .currentCategory
-                                                            ?.toLowerCase()]
-                                                        ["products"]
-                                                    .map((e) => e["sku"])
-                                                    .toList() ??
-                                                []
-                                            : fields[index]['items'] ?? [],
-                                        lockable: fields[index]['lockable'],
-                                        alignLockable: !fields[index]
-                                            ['lockable'],
-                                        locked: provider.cacheData[fields[index]
-                                            ['field']]["locked"],
-                                        onSelected: () {
-                                          try {
-                                            if (fields[index]['field'] ==
-                                                "sku") {
-                                              var productDesc =
-                                                  AllPredefinedData.data[
-                                                          provider
-                                                              .currentCategory
-                                                              ?.toLowerCase()]
+                                  }
+                                  if (index == fields.length - 1) {
+                                    provider.hasBuilt = true;
+                                  }
+
+                                  return Padding(
+                                    padding: const EdgeInsets.all(7.5),
+                                    child: ![
+                                      "item id",
+                                      "serial number",
+                                      "dispatch info",
+                                      "supplier info",
+                                      "location",
+                                      "comments"
+                                    ].contains(fields[index]['field'])
+                                        ? CustomDropdownAndCheckboxInputField(
+                                            text: fields[index]['field'],
+                                            controller: provider.cacheData[fields[index]['field']]
+                                                ['controller'],
+                                            items: items,
+                                            lockable: fields[index]['lockable'],
+                                            alignLockable: !fields[index]['lockable'],
+                                            locked: provider.cacheData[fields[index]['field']]
+                                                ["locked"],
+                                            onSelected: () {
+                                              if (fields[index]['field'] == "category" &&
+                                                  provider.currentCategory !=
+                                                      provider.cacheData["category"]['controller']
+                                                          .text) {
+                                                provider.hasBuilt = false;
+                                                provider.currentCategory = provider
+                                                    .cacheData["category"]['controller'].text;
+                                                provider.cacheData
+                                                    .removeWhere((key, value) => key != "category");
+                                                provider.refresh();
+                                              }
+                                              try {
+                                                if (fields[index]['field'] == "sku") {
+                                                  var productDesc = AllPredefinedData
+                                                      .data[provider.currentCategory?.toLowerCase()]
                                                           ["products"]
                                                       .where((e) =>
                                                           e['sku'] ==
                                                           provider
-                                                              .cacheData["sku"]
-                                                                  ["controller"]
-                                                              .text)
+                                                              .cacheData["sku"]["controller"].text)
                                                       .toList()[0];
-                                              for (var key
-                                                  in productDesc.keys) {
-                                                provider
-                                                        .cacheData[key]
-                                                            ["controller"]
-                                                        .text =
-                                                    productDesc[key].toString();
-                                              }
-                                            }
-                                          } catch (e) {}
-                                        },
-                                      ),
-                                    );
-                                  }
+                                                  for (var key in productDesc.keys) {
+                                                    provider.cacheData[key]["controller"].text =
+                                                        productDesc[key].toString();
+                                                  }
+                                                }
+                                              } catch (e) {}
+                                            },
+                                          )
+                                        : CustomTextAndCheckboxInputField(
+                                            text: fields[index]['field'],
+                                            controller: provider.cacheData[fields[index]['field']]
+                                                ['controller'],
+                                            lockable: fields[index]['lockable'],
+                                            alignLockable: !fields[index]['lockable'],
+                                            locked: fields[index]['lockable']
+                                                ? provider.cacheData[fields[index]['field']]
+                                                    ["locked"]
+                                                : false,
+                                          ),
+                                  );
                                 },
                               ),
                             ),
@@ -243,16 +185,12 @@ class AddNewStockScreen extends StatelessWidget {
                               child: CustomElevatedButton(
                                 text: "Add New Stock",
                                 onPressed: () async {
-                                  if (provider
-                                          .cacheData["category"]['controller']
-                                          .text !=
-                                      "") {
+                                  if (provider.cacheData["category"]['controller'].text != "") {
                                     Map storedData = {};
 
                                     for (var key in provider.cacheData.keys) {
-                                      storedData[key] = provider
-                                          .cacheData[key]["controller"].text
-                                          .toString();
+                                      storedData[key] =
+                                          provider.cacheData[key]["controller"].text.toString();
                                     }
 
                                     await FirebaseRestApi().createDocument(
@@ -264,13 +202,11 @@ class AddNewStockScreen extends StatelessWidget {
 
                                     for (var key in provider.cacheData.keys) {
                                       if (!provider.cacheData[key]["locked"]) {
-                                        provider.cacheData[key]["controller"]
-                                            .text = "";
+                                        provider.cacheData[key]["controller"].text = "";
                                       }
                                     }
 
-                                    if (!provider.cacheData["category"]
-                                        ["locked"]) {
+                                    if (!provider.cacheData["category"]["locked"]) {
                                       provider.deleteCacheData();
                                     }
                                   }

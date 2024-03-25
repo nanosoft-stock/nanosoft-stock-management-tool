@@ -15,24 +15,23 @@ class AddNewProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AddNewProductProvider>(
       builder: (BuildContext context, provider, Widget? child) {
-        List fields = (AllPredefinedData.data["categories"]
-                .contains(provider.currentCategory?.toLowerCase())
-            ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]
-                    ["fields"]
-                .where((element) => element["isWithSKU"] == true)
-                .toList()
-            : [
-                {
-                  "field": "category",
-                  "datatype": "string",
-                  "isWithSKU": true,
-                },
-                {
-                  "field": "sku",
-                  "datatype": "string",
-                  "isWithSKU": true,
-                },
-              ]);
+        List fields =
+            (AllPredefinedData.data["categories"].contains(provider.currentCategory?.toLowerCase())
+                ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["fields"]
+                    .where((element) => element["isWithSKU"] == true)
+                    .toList()
+                : [
+                    {
+                      "field": "category",
+                      "datatype": "string",
+                      "isWithSKU": true,
+                    },
+                    {
+                      "field": "sku",
+                      "datatype": "string",
+                      "isWithSKU": true,
+                    },
+                  ]);
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             int n = ((constraints.maxWidth - 135) / 338).floor();
@@ -54,67 +53,30 @@ class AddNewProductScreen extends StatelessWidget {
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 itemCount: fields.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: n > 0 ? n : 1,
                                   mainAxisSpacing: 0,
                                   crossAxisSpacing: 0,
                                   mainAxisExtent: 95,
                                 ),
                                 itemBuilder: (context, index) {
-                                  if (index == 0) {
-                                    if (!provider.hasBuilt) {
-                                      if (!provider.cacheData
-                                          .containsKey("category")) {
+                                  List items = fields[index]['field'] == "category"
+                                      ? AllPredefinedData.data["categories"]
+                                          .map(
+                                            (e) => e.toString().toTitleCase(),
+                                          )
+                                          .toList()
+                                      : fields[index]['items'] ?? [];
+
+                                  if (!provider.hasBuilt) {
+                                    if (fields[index]['field'] == "category") {
+                                      if (!provider.cacheData.containsKey("category")) {
                                         provider.changeCacheData(
                                           field: "category",
-                                          data: {
-                                            "controller":
-                                                TextEditingController()
-                                          },
+                                          data: {"controller": TextEditingController()},
                                         );
                                       }
-                                    }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child: CustomDropdownInputField(
-                                        text: "category",
-                                        controller:
-                                            provider.cacheData["category"]
-                                                ['controller'],
-                                        items: AllPredefinedData
-                                            .data["categories"]
-                                            .map(
-                                              (e) => e.toString().toTitleCase(),
-                                            )
-                                            .toList(),
-                                        onSelected: () {
-                                          if (provider.currentCategory !=
-                                              provider
-                                                  .cacheData["category"]
-                                                      ['controller']
-                                                  .text) {
-                                            provider.hasBuilt = false;
-                                            provider.currentCategory = provider
-                                                .cacheData["category"]
-                                                    ['controller']
-                                                .text;
-                                            provider.cacheData.removeWhere(
-                                              (key, value) => ![
-                                                "category",
-                                                "sku"
-                                              ].contains(key),
-                                            );
-                                            provider.refresh();
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  } else if (index == 1) {
-                                    if (!provider.hasBuilt) {
+                                    } else {
                                       provider.changeCacheData(
                                         field: fields[index]['field'],
                                         data: {
@@ -122,41 +84,41 @@ class AddNewProductScreen extends StatelessWidget {
                                         },
                                       );
                                     }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child: CustomTextInputField(
-                                        text: "sku",
-                                        controller: provider.cacheData["sku"]
-                                            ['controller'],
-                                      ),
-                                    );
-                                  } else {
-                                    if (!provider.hasBuilt) {
-                                      provider.changeCacheData(
-                                        field: fields[index]['field'],
-                                        data: {
-                                          "controller": TextEditingController(),
-                                        },
-                                      );
-                                    }
-                                    if (index == fields.length - 1) {
-                                      provider.hasBuilt = true;
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.all(7.5),
-                                      child: CustomDropdownInputField(
-                                        text: fields[index]['field'].toString(),
-                                        controller: provider.cacheData[
-                                                fields[index]['field']]
-                                            ['controller'],
-                                        items: fields[index]['items'] ?? [],
-                                        onSelected: () {},
-                                      ),
-                                    );
                                   }
+                                  if (index == fields.length - 1) {
+                                    provider.hasBuilt = true;
+                                  }
+
+                                  return Padding(
+                                    padding: const EdgeInsets.all(7.5),
+                                    child: fields[index]['field'] != "sku"
+                                        ? CustomDropdownInputField(
+                                            text: fields[index]['field'].toString(),
+                                            controller: provider.cacheData[fields[index]['field']]
+                                                ['controller'],
+                                            items: items,
+                                            onSelected: () {
+                                              if (fields[index]['field'] == "category" &&
+                                                  (provider.currentCategory !=
+                                                      provider.cacheData["category"]['controller']
+                                                          .text)) {
+                                                provider.hasBuilt = false;
+                                                provider.currentCategory = provider
+                                                    .cacheData["category"]['controller'].text;
+                                                provider.cacheData.removeWhere(
+                                                  (key, value) =>
+                                                      !["category", "sku"].contains(key),
+                                                );
+                                                provider.refresh();
+                                              }
+                                            },
+                                          )
+                                        : CustomTextInputField(
+                                            text: fields[index]['field'],
+                                            controller: provider.cacheData[fields[index]['field']]
+                                                ['controller'],
+                                          ),
+                                  );
                                 },
                               ),
                             ),
@@ -181,24 +143,19 @@ class AddNewProductScreen extends StatelessWidget {
                               child: CustomElevatedButton(
                                 text: "Add New Product",
                                 onPressed: () async {
-                                  if (provider
-                                          .cacheData["category"]["controller"]
-                                          .text !=
-                                      "") {
+                                  if (provider.cacheData["category"]["controller"].text != "") {
                                     Map storedData = {};
 
                                     for (var key in provider.cacheData.keys) {
-                                      storedData[key] = provider
-                                          .cacheData[key]["controller"].text
-                                          .toString();
+                                      storedData[key] =
+                                          provider.cacheData[key]["controller"].text.toString();
                                     }
 
                                     await FirebaseRestApi().createDocument(
                                       path:
                                           "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
                                       json: AddNewProductHelper.toJson(
-                                        category: provider.currentCategory!
-                                            .toLowerCase(),
+                                        category: provider.currentCategory!.toLowerCase(),
                                         data: storedData,
                                       ),
                                     );

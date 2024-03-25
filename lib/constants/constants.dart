@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 bool kIsDesktop = false;
-
+String userName = "";
 Color kPrimaryBackgroundColor = Colors.black12;
 Color kSecondaryBackgroundColor = Colors.white38;
 Color kTertiaryBackgroundColor = Colors.white;

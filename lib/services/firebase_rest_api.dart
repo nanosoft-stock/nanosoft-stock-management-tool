@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 
@@ -27,17 +28,12 @@ class FirebaseRestApi {
       required String password}) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey"),
+        Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey"),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: jsonEncode(
-          <String, dynamic>{
-            'email': email,
-            'password': password,
-            'returnSecureToken': true
-          },
+          <String, dynamic>{'email': email, 'password': password, 'returnSecureToken': true},
         ),
       );
 
@@ -45,9 +41,9 @@ class FirebaseRestApi {
         final responseData = jsonDecode(response.body);
         idToken = responseData['idToken'];
         refreshToken = responseData['refreshToken'];
+        await updateUserProfileDataRestApi(context: context, username: username);
+        await getUserData();
       }
-
-      await updateUserProfileDataRestApi(context: context, username: username);
     } catch (e) {
       print("Error: $e");
     }
@@ -57,17 +53,12 @@ class FirebaseRestApi {
       {required BuildContext context, required String username}) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            "https://identitytoolkit.googleapis.com/v1/accounts:update?key=$apiKey"),
+        Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:update?key=$apiKey"),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: jsonEncode(
-          <String, dynamic>{
-            'idToken': idToken,
-            'displayName': username,
-            'returnSecureToken': true
-          },
+          <String, dynamic>{'idToken': idToken, 'displayName': username, 'returnSecureToken': true},
         ),
       );
       if (response.statusCode == 200) {
@@ -80,9 +71,7 @@ class FirebaseRestApi {
   }
 
   Future<void> signInUserWithEmailAndPasswordRestApi(
-      {required BuildContext context,
-      required String email,
-      required String password}) async {
+      {required BuildContext context, required String email, required String password}) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -91,11 +80,7 @@ class FirebaseRestApi {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(
-          <String, dynamic>{
-            'email': email,
-            'password': password,
-            'returnSecureToken': true
-          },
+          <String, dynamic>{'email': email, 'password': password, 'returnSecureToken': true},
         ),
       );
 
@@ -103,8 +88,29 @@ class FirebaseRestApi {
         final responseData = jsonDecode(response.body);
         idToken = responseData['idToken'];
         refreshToken = responseData['refreshToken'];
+        await getUserData();
         Provider.of<FirebaseProvider>(context, listen: false)
             .changeIsUserLoggedIn(isUserLoggedIn: true);
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<void> getUserData() async {
+    try {
+      final response = await http.post(
+        Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=$apiKey"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(
+          <String, dynamic>{'idToken': idToken},
+        ),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        userName = responseData["users"][0]["displayName"];
       }
     } catch (e) {
       print("Error: $e");
@@ -156,8 +162,7 @@ class FirebaseRestApi {
   Map? startAt;
   Map? endAt;
 
-  Future<List> filterQuery(
-      {path, select, from, where, orderBy, startAt, endAt}) async {
+  Future<List> filterQuery({path, select, from, where, orderBy, startAt, endAt}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents${path != '' ? '/$path' : ''}:runQuery?key=$apiKey";
@@ -197,9 +202,7 @@ class FirebaseRestApi {
 
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body.trim());
-        var data = jsonData
-            .map((e) => e["document"]["name"].toString().split("/").last)
-            .toList();
+        var data = jsonData.map((e) => e["document"]["name"].toString().split("/").last).toList();
         // print(data);
         return data;
       }

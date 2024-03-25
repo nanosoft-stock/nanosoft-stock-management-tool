@@ -58,8 +58,7 @@ class StockManagementToolApp extends StatelessWidget {
           child: Scaffold(
             body: kIsDesktop
                 ? StreamBuilder<bool>(
-                    stream:
-                        FirebaseProvider.isUserLoggedInStreamController.stream,
+                    stream: FirebaseProvider.isUserLoggedInStreamController.stream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data == true) {
                         return HomeScreen();

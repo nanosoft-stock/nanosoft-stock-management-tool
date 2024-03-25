@@ -7,10 +7,9 @@ class AllPredefinedData {
   static Map data = {};
 
   Future<Map> fetchData() async {
-    data["categories"] =
-        (await FirebaseRestApi().getDocuments(path: "category_list"))
-            .map((e) => e["category"]["stringValue"])
-            .toList();
+    data["categories"] = (await FirebaseRestApi().getDocuments(path: "category_list"))
+        .map((e) => e["category"]["stringValue"])
+        .toList();
 
     for (var e in data["categories"]) {
       data[e] = await CategoryBasedPredefinedData(category: e).fetchData();

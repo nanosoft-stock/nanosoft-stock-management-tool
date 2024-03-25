@@ -77,8 +77,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               width: toggleButtonWidth * 0.5,
                               height: toggleButtonHeight,
                               decoration: BoxDecoration(
-                                  color: kInputFieldFillColor,
-                                  borderRadius: kBorderRadius),
+                                  color: kInputFieldFillColor, borderRadius: kBorderRadius),
                             ),
                           ),
                           GestureDetector(

@@ -8,8 +8,7 @@ class ProductsModel {
   List items = [];
 
   Future<List> fetchItems() async {
-    items = await FirebaseRestApi()
-        .getDocuments(path: "category_list/$categoryDoc/product_list");
+    items = await FirebaseRestApi().getDocuments(path: "category_list/$categoryDoc/product_list");
 
     items = items
         .map((element) => element

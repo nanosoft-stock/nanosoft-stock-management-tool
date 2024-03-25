@@ -9,6 +9,7 @@ import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewProductScreen extends StatelessWidget {
   @override
@@ -36,6 +37,7 @@ class AddNewProductScreen extends StatelessWidget {
           builder: (BuildContext context, BoxConstraints constraints) {
             int n = ((constraints.maxWidth - 135) / 338).floor();
             double pad = ((constraints.maxWidth - 135) % 338) / 2;
+            print(constraints.maxWidth);
             return constraints.maxWidth > 475
                 ? Padding(
                     padding: EdgeInsets.fromLTRB(52 + pad, 20, 52 + pad, 40),
@@ -150,16 +152,25 @@ class AddNewProductScreen extends StatelessWidget {
                                       storedData[key] =
                                           provider.cacheData[key]["controller"].text.toString();
                                     }
-
-                                    await FirebaseRestApi().createDocument(
-                                      path:
-                                          "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
-                                      json: AddNewProductHelper.toJson(
-                                        category: provider.currentCategory!.toLowerCase(),
-                                        data: storedData,
-                                      ),
-                                    );
-
+                                    if (kIsDesktop) {
+                                      await FirebaseRestApi().createDocument(
+                                        path:
+                                            "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
+                                        json: AddNewProductHelper.toJson(
+                                          category: provider.currentCategory!.toLowerCase(),
+                                          data: storedData,
+                                        ),
+                                      );
+                                    } else {
+                                      await Firestore().createDocument(
+                                        path:
+                                            "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
+                                        data: AddNewProductHelper.toJson(
+                                          category: provider.currentCategory!.toLowerCase(),
+                                          data: storedData,
+                                        ),
+                                      );
+                                    }
                                     provider.deleteCacheData();
                                   }
                                 },

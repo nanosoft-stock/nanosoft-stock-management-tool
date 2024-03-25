@@ -9,6 +9,7 @@ import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewStockScreen extends StatelessWidget {
   @override
@@ -193,12 +194,21 @@ class AddNewStockScreen extends StatelessWidget {
                                           provider.cacheData[key]["controller"].text.toString();
                                     }
 
-                                    await FirebaseRestApi().createDocument(
-                                      path: "stock_data",
-                                      json: AddNewStockHelper.toJson(
-                                        data: storedData,
-                                      ),
-                                    );
+                                    if (kIsDesktop) {
+                                      await FirebaseRestApi().createDocument(
+                                        path: "stock_data",
+                                        json: AddNewStockHelper.toJson(
+                                          data: storedData,
+                                        ),
+                                      );
+                                    } else {
+                                      await Firestore().createDocument(
+                                        path: "stock_data",
+                                        data: AddNewStockHelper.toJson(
+                                          data: storedData,
+                                        ),
+                                      );
+                                    }
 
                                     for (var key in provider.cacheData.keys) {
                                       if (!provider.cacheData[key]["locked"]) {

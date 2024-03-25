@@ -11,7 +11,6 @@ class SideMenuProvider extends ChangeNotifier {
     required NavItemModel? navItemModel,
   }) {
     currentNavItemModel = navItemModel;
-    // notifyListeners();
   }
 
   void toggleSideMenu() {

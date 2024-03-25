@@ -14,7 +14,6 @@ import 'package:stock_management_tool/screens/archive_stock_screen.dart';
 import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
-import 'package:stock_management_tool/services/firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -117,11 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
               .changeCurrentNavItemModel(navItemModel: currentNavItem);
           Provider.of<SideMenuProvider>(context, listen: false).refresh();
           setState(() {});
-        }
-        if (kIsDesktop) {
-          // print(AllPredefinedData.data);
-        } else {
-          Firestore().getDocuments(collection: 'category_list');
         }
       },
     );

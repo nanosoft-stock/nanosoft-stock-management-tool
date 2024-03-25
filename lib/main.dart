@@ -23,12 +23,12 @@ Future<void> main() async {
     kIsDesktop = true;
     FirebaseRestApi().fetchApiKey();
     FirebaseRestApi().fetchProjectId();
-    AllPredefinedData().fetchData();
   } else {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
+  AllPredefinedData().fetchData();
   runApp(const StockManagementToolApp());
 }
 

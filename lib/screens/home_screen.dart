@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/models/nav_item_model.dart';
+import 'package:stock_management_tool/providers/add_new_product_provider.dart';
+import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
+import 'package:stock_management_tool/providers/firebase_provider.dart';
+import 'package:stock_management_tool/providers/side_menu_provider.dart';
 import 'package:stock_management_tool/screens/add_new_product_screen.dart';
 import 'package:stock_management_tool/screens/add_new_stock_screen.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
@@ -11,9 +14,7 @@ import 'package:stock_management_tool/screens/archive_stock_screen.dart';
 import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
-import 'package:stock_management_tool/services/firebase_provider.dart';
 import 'package:stock_management_tool/services/firestore.dart';
-import 'package:stock_management_tool/services/side_menu_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -75,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   final allHomeScreens = [
-    const AddNewStockScreen(),
-    const AddNewProductScreen(),
+    AddNewStockScreen(),
+    AddNewProductScreen(),
     const ExportStockScreen(),
     const ModifyStockScreen(),
     const ModifyProductScreen(),
@@ -103,6 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
       borderRadius: kBorderRadius,
       onTap: () async {
         if (currentNavItem != navItemModel) {
+          if (currentNavItem == addNewStockNavItem) {
+            Provider.of<AddNewStockProvider>(context, listen: false)
+                .deleteCacheData();
+          } else if (currentNavItem == addNewProductNavItem) {
+            Provider.of<AddNewProductProvider>(context, listen: false)
+                .deleteCacheData();
+          }
+
           currentNavItem?.isSelected = false;
           navItemModel.isSelected = true;
           currentNavItem = navItemModel;
@@ -112,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {});
         }
         if (kIsDesktop) {
-          print(AllPredefinedData.data);
+          // print(AllPredefinedData.data);
         } else {
           Firestore().getDocuments(collection: 'category_list');
         }

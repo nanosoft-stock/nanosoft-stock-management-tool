@@ -4,197 +4,286 @@ import 'package:stock_management_tool/components/custom_dropdown_and_checkbox_in
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_text_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
-import 'package:stock_management_tool/services/add_new_stock_provider.dart';
+import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
+import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
-Map storedData = {};
-
-class AddNewStockScreen extends StatefulWidget {
-  const AddNewStockScreen({super.key});
-
-  @override
-  State<AddNewStockScreen> createState() => _AddNewStockScreenState();
-}
-
-class _AddNewStockScreenState extends State<AddNewStockScreen> {
-  bool hasRun = false;
-  final TextEditingController categoryController = TextEditingController();
-
-  Map lockableData = {};
-
+class AddNewStockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List fields = (AllPredefinedData.data["categories"]
-            .contains(categoryController.text.toLowerCase())
-        ? AllPredefinedData.data[categoryController.text.toLowerCase()]
-                ["fields"]
-            .where((element) =>
-                !(["date", "user", "archived"].contains(element["field"])))
-            .toList()
-        : [AllPredefinedData.data["categories"]]);
+    return Consumer<AddNewStockProvider>(
+      builder: (BuildContext context, provider, Widget? child) {
+        List fields = (AllPredefinedData.data["categories"]
+                .contains(provider.currentCategory?.toLowerCase())
+            ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]
+                    ["fields"]
+                .where((element) =>
+                    !(["date", "user", "archived"].contains(element["field"])))
+                .toList()
+            : [
+                {
+                  "field": "category",
+                  "datatype": "string",
+                  "lockable": true,
+                  "isWithSKU": false,
+                  "order": 2,
+                },
+              ]);
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            int n = ((constraints.maxWidth - 135) / 390.5).floor();
+            double pad = ((constraints.maxWidth - 135) % 390.5) / 2;
+            return constraints.maxWidth > 525
+                ? Padding(
+                    padding: EdgeInsets.fromLTRB(52 + pad, 20, 52 + pad, 40),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kSecondaryBackgroundColor,
+                              borderRadius: kBorderRadius,
+                              boxShadow: kBoxShadowList,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                itemCount: fields.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: n > 0 ? n : 1,
+                                  mainAxisSpacing: 0,
+                                  crossAxisSpacing: 0,
+                                  mainAxisExtent: 95,
+                                ),
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    if (!provider.hasBuilt) {
+                                      if (!provider.cacheData
+                                          .containsKey("category")) {
+                                        provider.changeCacheData(
+                                          field: "category",
+                                          data: {
+                                            "controller":
+                                                TextEditingController(),
+                                            "locked": false
+                                          },
+                                        );
+                                      }
+                                    }
+                                    if (index == fields.length - 1) {
+                                      provider.hasBuilt = true;
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.all(7.5),
+                                      child:
+                                          CustomDropdownAndCheckboxInputField(
+                                        text: "category",
+                                        controller:
+                                            provider.cacheData["category"]
+                                                ['controller'],
+                                        items: AllPredefinedData
+                                            .data["categories"]
+                                            .map(
+                                              (e) => e.toString().toTitleCase(),
+                                            )
+                                            .toList(),
+                                        lockable: true,
+                                        locked: provider.cacheData["category"]
+                                            ["locked"],
+                                        onSelected: () {
+                                          if (provider.currentCategory !=
+                                              provider
+                                                  .cacheData["category"]
+                                                      ['controller']
+                                                  .text) {
+                                            provider.hasBuilt = false;
+                                            provider.currentCategory = provider
+                                                .cacheData["category"]
+                                                    ['controller']
+                                                .text;
+                                            provider.cacheData.removeWhere(
+                                                (key, value) =>
+                                                    key != "category");
+                                            provider.refresh();
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  }
+                                  if ([
+                                    "item id",
+                                    "serial number",
+                                    "dispatch info",
+                                    "supplier info",
+                                    "location",
+                                    "comments"
+                                  ].contains(fields[index]['field'])) {
+                                    if (!provider.hasBuilt) {
+                                      provider.changeCacheData(
+                                        field: fields[index]['field'],
+                                        data: {
+                                          "controller": TextEditingController(),
+                                          "locked": false
+                                        },
+                                      );
+                                    }
+                                    if (index == fields.length - 1) {
+                                      provider.hasBuilt = true;
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.all(7.5),
+                                      child: CustomTextAndCheckboxInputField(
+                                        text: fields[index]['field'],
+                                        controller: provider.cacheData[
+                                                fields[index]['field']]
+                                            ['controller'],
+                                        lockable: fields[index]['lockable'],
+                                        alignLockable: !fields[index]
+                                            ['lockable'],
+                                        locked: fields[index]['lockable']
+                                            ? provider.cacheData[fields[index]
+                                                ['field']]["locked"]
+                                            : false,
+                                      ),
+                                    );
+                                  } else {
+                                    if (!provider.hasBuilt) {
+                                      if (fields[index]['lockable']) {
+                                        provider.changeCacheData(
+                                          field: fields[index]['field'],
+                                          data: {
+                                            "controller":
+                                                TextEditingController(),
+                                            "locked": false
+                                          },
+                                        );
+                                      }
+                                    }
+                                    if (index == fields.length - 1) {
+                                      provider.hasBuilt = true;
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.all(7.5),
+                                      child:
+                                          CustomDropdownAndCheckboxInputField(
+                                        text: fields[index]['field'],
+                                        controller: provider.cacheData[
+                                                fields[index]['field']]
+                                            ['controller'],
+                                        items: fields[index]['field'] == "sku"
+                                            ? AllPredefinedData.data[provider
+                                                            .currentCategory
+                                                            ?.toLowerCase()]
+                                                        ["products"]
+                                                    .map((e) => e["sku"])
+                                                    .toList() ??
+                                                []
+                                            : fields[index]['items'] ?? [],
+                                        lockable: fields[index]['lockable'],
+                                        alignLockable: !fields[index]
+                                            ['lockable'],
+                                        locked: provider.cacheData[fields[index]
+                                            ['field']]["locked"],
+                                        onSelected: () {
+                                          try {
+                                            if (fields[index]['field'] ==
+                                                "sku") {
+                                              var productDesc =
+                                                  AllPredefinedData.data[
+                                                          provider
+                                                              .currentCategory
+                                                              ?.toLowerCase()]
+                                                          ["products"]
+                                                      .where((e) =>
+                                                          e['sku'] ==
+                                                          provider
+                                                              .cacheData["sku"]
+                                                                  ["controller"]
+                                                              .text)
+                                                      .toList()[0];
+                                              for (var key
+                                                  in productDesc.keys) {
+                                                provider
+                                                        .cacheData[key]
+                                                            ["controller"]
+                                                        .text =
+                                                    productDesc[key].toString();
+                                              }
+                                            }
+                                          } catch (e) {}
+                                        },
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: kSecondaryBackgroundColor,
+                            borderRadius: kBorderRadius,
+                            boxShadow: kBoxShadowList,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15.0,
+                              horizontal: 22.5,
+                            ),
+                            child: SizedBox(
+                              width: 390.5,
+                              child: CustomElevatedButton(
+                                text: "Add New Stock",
+                                onPressed: () async {
+                                  if (provider
+                                          .cacheData["category"]['controller']
+                                          .text !=
+                                      "") {
+                                    Map storedData = {};
 
-    final provider = context.watch<AddNewStockProvider>();
+                                    for (var key in provider.cacheData.keys) {
+                                      storedData[key] = provider
+                                          .cacheData[key]["controller"].text
+                                          .toString();
+                                    }
 
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(52, 20, 52, 40),
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: kSecondaryBackgroundColor,
-                    borderRadius: kBorderRadius,
-                    boxShadow: kBoxShadowList,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: fields.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 0,
-                        crossAxisSpacing: 0,
-                        mainAxisExtent: 95,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          if (!hasRun) {
-                            print("$index, ${fields.length} $hasRun");
-                            provider.changeLockableData(
-                              field: "category",
-                              data: {
-                                "locked": false,
-                              },
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.all(7.5),
-                            child: CustomDropdownAndCheckboxInputField(
-                              text: "category",
-                              controller: categoryController,
-                              items: AllPredefinedData.data["categories"]
-                                  .map(
-                                    (e) => e.toString().toTitleCase(),
-                                  )
-                                  .toList(),
-                              lockable: true,
-                              locked: Provider.of<AddNewStockProvider>(context)
-                                  .lockableData["category"]["locked"],
-                              onSelected: () {
-                                storedData = {};
-                                // allOtherControllers = [];
-                                lockableData = {};
-                                storedData["category"] =
-                                    categoryController.text.toLowerCase();
-                                setState(() {});
-                              },
+                                    await FirebaseRestApi().createDocument(
+                                      path: "stock_data",
+                                      json: AddNewStockHelper.toJson(
+                                        data: storedData,
+                                      ),
+                                    );
+
+                                    for (var key in provider.cacheData.keys) {
+                                      if (!provider.cacheData[key]["locked"]) {
+                                        provider.cacheData[key]["controller"]
+                                            .text = "";
+                                      }
+                                    }
+
+                                    if (!provider.cacheData["category"]
+                                        ["locked"]) {
+                                      provider.deleteCacheData();
+                                    }
+                                  }
+                                },
+                              ),
                             ),
-                          );
-                        }
-                        final TextEditingController controller =
-                            TextEditingController();
-                        if ([
-                          "item id",
-                          "serial number",
-                          "dispatch info",
-                          "location",
-                          "comments"
-                        ].contains(fields[index]['field'].toString())) {
-                          if (index == fields.length - 1) {
-                            print("$index, ${fields.length} $hasRun 1");
-                            hasRun = true;
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.all(7.5),
-                            child: CustomTextAndCheckboxInputField(
-                              text: fields[index]['field'].toString(),
-                              controller: controller,
-                              alignLockable: true,
-                            ),
-                          );
-                        } else {
-                          if (!hasRun) {
-                            print("$index, ${fields.length} $hasRun");
-                            provider.changeLockableData(
-                              field: fields[index]['field'],
-                              data: {
-                                "locked": false,
-                              },
-                            );
-                          }
-                          if (index == fields.length - 1) {
-                            print("$index, ${fields.length} $hasRun 2");
-                            hasRun = true;
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.all(7.5),
-                            child: CustomDropdownAndCheckboxInputField(
-                              text: fields[index]['field'].toString(),
-                              controller: controller,
-                              items: fields[index]['items'] ?? [],
-                              lockable: true,
-                              locked: Provider.of<AddNewStockProvider>(context)
-                                      .lockableData[fields[index]['field']]
-                                  ["locked"],
-                              onSelected: () {
-                                storedData[fields[index]['field'].toString()] =
-                                    controller.text;
-                              },
-                            ),
-                          );
-                        }
-                      },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: kSecondaryBackgroundColor,
-                  borderRadius: kBorderRadius,
-                  boxShadow: kBoxShadowList,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SizedBox(
-                    width: 338,
-                    child: CustomElevatedButton(
-                      text: "Add New Stock",
-                      onPressed: () async {
-                        if (categoryController.text != "") {
-                          // await FirebaseRestApi().createDocument(
-                          //   path:
-                          //       "category_list/${AllPredefinedData.data[storedData["category"]]["categoryDoc"]}/product_list",
-                          //   json: AddNewProductHelper.toJson(
-                          //     data: storedData,
-                          //   ),
-                          // );
-                        }
-                        print(storedData);
-
-                        storedData = {};
-                        categoryController.text = "";
-                        // skuController.text = "";
-                        // for (var e in allOtherControllers) {
-                        //   e.text = "";
-                        // }
-                        // allOtherControllers = [];
-                        // setState(() {});
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                  )
+                : const SizedBox.shrink();
+          },
         );
       },
     );

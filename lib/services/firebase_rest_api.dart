@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
-import 'package:stock_management_tool/services/firebase_provider.dart';
+import 'package:stock_management_tool/providers/firebase_provider.dart';
 
 class FirebaseRestApi {
   static String apiKey = "";

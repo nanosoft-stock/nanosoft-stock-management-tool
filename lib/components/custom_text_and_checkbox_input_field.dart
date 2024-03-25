@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/components/custom_checkbox.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
@@ -72,50 +73,9 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                     width: 10.0,
                   ),
                 if (lockable)
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Material(
-                      elevation: 7,
-                      child: Container(
-                        width: 23.0,
-                        height: 23.0,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(4),
-                          // boxShadow: kBoxShadowList,
-                          // borderRadius: kBorderRadius,
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 21.0,
-                            height: 21.0,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
-                              // borderRadius: kBorderRadius,
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 15,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: Colors.purple,
-                                  borderRadius: BorderRadius.circular(3),
-                                  // borderRadius: kBorderRadius,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Checkbox(
-                    //   value: locked,
-                    //   onChanged: (val) {
-                    //     locked = !locked;
-                    //     print(val);
-                    //   },
-                    // ),
+                  CustomCheckbox(
+                    text: text,
+                    locked: locked,
                   ),
                 if (alignLockable)
                   const SizedBox(

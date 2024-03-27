@@ -15,15 +15,8 @@ import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  NavItemModel? currentNavItem;
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
 
   final NavItemModel addNewStockNavItem = NavItemModel(
     index: 0,
@@ -75,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   final allHomeScreens = [
-    AddNewStockScreen(),
-    AddNewProductScreen(),
+    const AddNewStockScreen(),
+    const AddNewProductScreen(),
     const ExportStockScreen(),
     const ModifyStockScreen(),
     const ModifyProductScreen(),
@@ -84,16 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
     const ArchiveProductScreen(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    currentNavItem = addNewStockNavItem;
-    Provider.of<SideMenuProvider>(context, listen: false)
-        .changeCurrentNavItemModel(navItemModel: currentNavItem);
-  }
-
   SideMenuItemDataTile createMenuItem({
     required BuildContext context,
+    required SideMenuProvider provider,
     required NavItemModel navItemModel,
   }) {
     return SideMenuItemDataTile(
@@ -104,20 +90,16 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedTitleStyle: kButtonTextStyle,
       borderRadius: kBorderRadius,
       onTap: () async {
-        if (currentNavItem != navItemModel) {
-          if (currentNavItem == addNewStockNavItem) {
+        if (provider.currentNavItemModel != navItemModel) {
+          if (provider.currentNavItemModel == addNewStockNavItem) {
             Provider.of<AddNewStockProvider>(context, listen: false).deleteCacheData();
-          } else if (currentNavItem == addNewProductNavItem) {
+          } else if (provider.currentNavItemModel == addNewProductNavItem) {
             Provider.of<AddNewProductProvider>(context, listen: false).deleteCacheData();
           }
 
-          currentNavItem?.isSelected = false;
+          provider.currentNavItemModel!.isSelected = false;
           navItemModel.isSelected = true;
-          currentNavItem = navItemModel;
-          Provider.of<SideMenuProvider>(context, listen: false)
-              .changeCurrentNavItemModel(navItemModel: currentNavItem);
-          Provider.of<SideMenuProvider>(context, listen: false).refresh();
-          setState(() {});
+          provider.changeCurrentNavItemModel(navItemModel: navItemModel);
         }
       },
     );
@@ -125,105 +107,141 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: kSecondaryBackgroundColor,
-            borderRadius: kBorderRadius,
-            boxShadow: kBoxShadowList,
-          ),
-          child: SideMenu(
-            controller: SideMenuProvider.sideMenuController,
-            priority: SideMenuPriority.mode,
-            hasResizer: false,
-            hasResizerToggle: false,
-            mode: SideMenuMode.auto,
-            builder: (data) {
-              return SideMenuData(
-                header: data.isOpen
-                    ? Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
-                        child: SizedBox(
-                          height: 36,
-                          child: Image.asset('images/nanosoft_logo.png'),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                items: [
-                  if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(context: context, navItemModel: addNewStockNavItem),
-                  createMenuItem(context: context, navItemModel: addNewProductNavItem),
-                  const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(context: context, navItemModel: exportStockNavItem),
-                  const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(context: context, navItemModel: modifyStockNavItem),
-                  createMenuItem(context: context, navItemModel: modifyProductNavItem),
-                  const SideMenuItemDataDivider(divider: Divider()),
-                  createMenuItem(context: context, navItemModel: archiveStockNavItem),
-                  createMenuItem(context: context, navItemModel: archiveProductNavItem),
-                ],
-                footer: Padding(
-                  padding: data.isOpen
-                      ? const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 10.0)
-                      : const EdgeInsets.symmetric(vertical: 15.0),
-                  child: data.currentWidth == data.maxWidth
-                      ? ListTile(
-                          leading: Icon(accountItemMenuNavItem.icon),
-                          title: Text(
-                            accountItemMenuNavItem.title,
-                            style: kLabelTextStyle,
-                          ),
-                          onTap: () {
-                            userName = "";
-                            Provider.of<FirebaseProvider>(context, listen: false)
-                                .changeIsUserLoggedIn(isUserLoggedIn: false);
-                          },
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            Provider.of<FirebaseProvider>(context, listen: false)
-                                .changeIsUserLoggedIn(isUserLoggedIn: false);
-                          },
-                          child: Icon(accountItemMenuNavItem.icon),
-                        ),
-                ),
-              );
-            },
-          ),
-        ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(color: kPrimaryBackgroundColor),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: kSecondaryBackgroundColor,
-                      borderRadius: kBorderRadius,
-                      boxShadow: kBoxShadowList,
+    return Consumer<SideMenuProvider>(
+      builder: (BuildContext context, SideMenuProvider provider, Widget? child) {
+        if (!provider.hasBuilt) {
+          provider.currentNavItemModel = addNewStockNavItem;
+          provider.hasBuilt = true;
+        }
+
+        return Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: kSecondaryBackgroundColor,
+                borderRadius: kBorderRadius,
+                boxShadow: kBoxShadowList,
+              ),
+              child: SideMenu(
+                controller: provider.sideMenuController,
+                priority: SideMenuPriority.mode,
+                hasResizer: false,
+                hasResizerToggle: false,
+                mode: SideMenuMode.auto,
+                builder: (data) {
+                  return SideMenuData(
+                    header: data.isOpen
+                        ? Padding(
+                            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
+                            child: SizedBox(
+                              height: 36,
+                              child: Image.asset('images/nanosoft_logo.png'),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    items: [
+                      if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: addNewStockNavItem,
+                      ),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: addNewProductNavItem,
+                      ),
+                      const SideMenuItemDataDivider(divider: Divider()),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: exportStockNavItem,
+                      ),
+                      const SideMenuItemDataDivider(divider: Divider()),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: modifyStockNavItem,
+                      ),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: modifyProductNavItem,
+                      ),
+                      const SideMenuItemDataDivider(divider: Divider()),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: archiveStockNavItem,
+                      ),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: archiveProductNavItem,
+                      ),
+                    ],
+                    footer: Padding(
+                      padding: data.isOpen
+                          ? const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 10.0)
+                          : const EdgeInsets.symmetric(vertical: 15.0),
+                      child: data.currentWidth == data.maxWidth
+                          ? ListTile(
+                              leading: Icon(accountItemMenuNavItem.icon),
+                              title: Text(
+                                accountItemMenuNavItem.title,
+                                style: kLabelTextStyle,
+                              ),
+                              onTap: () {
+                                userName = "";
+                                Provider.of<FirebaseProvider>(context, listen: false)
+                                    .changeIsUserLoggedIn(isUserLoggedIn: false);
+                              },
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                Provider.of<FirebaseProvider>(context, listen: false)
+                                    .changeIsUserLoggedIn(isUserLoggedIn: false);
+                              },
+                              child: Icon(accountItemMenuNavItem.icon),
+                            ),
                     ),
-                    child: IconButton(
-                      onPressed: () {
-                        Provider.of<SideMenuProvider>(context, listen: false).toggleSideMenu();
-                      },
-                      hoverColor: Colors.transparent,
-                      icon: const Icon(Icons.menu_outlined),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: allHomeScreens[
-                      Provider.of<SideMenuProvider>(context).currentNavItemModel!.index],
-                ),
-              ],
+                  );
+                },
+              ),
             ),
-          ),
-        ),
-      ],
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(color: kPrimaryBackgroundColor),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: kSecondaryBackgroundColor,
+                          borderRadius: kBorderRadius,
+                          boxShadow: kBoxShadowList,
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            provider.toggleSideMenu();
+                          },
+                          hoverColor: Colors.transparent,
+                          icon: const Icon(Icons.menu_outlined),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: allHomeScreens[provider.currentNavItemModel!.index],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

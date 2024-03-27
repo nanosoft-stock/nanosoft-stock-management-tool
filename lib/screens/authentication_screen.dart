@@ -1,146 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/screens/login_screen.dart';
 import 'package:stock_management_tool/screens/sign_up_screen.dart';
 
-class AuthenticationScreen extends StatefulWidget {
+class AuthenticationScreen extends StatelessWidget {
   const AuthenticationScreen({super.key});
 
   @override
-  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
-}
-
-class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  bool isLoginScreen = true;
-  final toggleButtonWidth = 200.0;
-  final toggleButtonHeight = 45.0;
-
-  double loginAlign = -1;
-  double signInAlign = 1;
-  Color selectedColor = Colors.black87;
-  Color normalColor = kTertiaryBackgroundColor;
-  late double xAlign;
-  late Color loginColor;
-  late Color signInColor;
-
-  @override
-  void initState() {
-    super.initState();
-
-    isLoginScreen = true;
-    xAlign = loginAlign;
-    loginColor = selectedColor;
-    signInColor = normalColor;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: kPrimaryBackgroundColor,
-        borderRadius: kBorderRadius,
-      ),
-      child: Center(
-        child: SizedBox(
-          width: 350.0,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: kBorderRadius,
-              color: kSecondaryBackgroundColor,
-              boxShadow: kBoxShadowList,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20.0,
-                      horizontal: 10.0,
-                    ),
-                    child: Container(
-                      width: toggleButtonWidth,
-                      height: toggleButtonHeight,
-                      decoration: BoxDecoration(
-                        color: kPrimaryBackgroundColor,
-                        borderRadius: kBorderRadius,
-                      ),
-                      child: Stack(
-                        children: [
-                          AnimatedAlign(
-                            alignment: Alignment(xAlign, 0),
-                            duration: const Duration(milliseconds: 200),
-                            child: Container(
-                              width: toggleButtonWidth * 0.5,
-                              height: toggleButtonHeight,
-                              decoration: BoxDecoration(
-                                  color: kInputFieldFillColor, borderRadius: kBorderRadius),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              isLoginScreen = true;
-                              setState(() {
-                                xAlign = loginAlign;
-                                loginColor = selectedColor;
-
-                                signInColor = normalColor;
-                              });
-                            },
-                            child: Align(
-                              alignment: const Alignment(-1, 0),
-                              child: Container(
-                                width: toggleButtonWidth * 0.5,
-                                color: Colors.transparent,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Login',
-                                  style: kLabelTextStyle.copyWith(
-                                    color: loginColor,
+    return Consumer<FirebaseProvider>(
+      builder: (BuildContext context, provider, Widget? child) {
+        return Container(
+          decoration: BoxDecoration(
+            color: kPrimaryBackgroundColor,
+            borderRadius: kBorderRadius,
+          ),
+          child: Center(
+            child: SizedBox(
+              width: 350.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: kBorderRadius,
+                  color: kSecondaryBackgroundColor,
+                  boxShadow: kBoxShadowList,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
+                        child: SizedBox(
+                          width: 250,
+                          child: SegmentedButton(
+                            segments: [
+                              ButtonSegment(
+                                value: true,
+                                label: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "Login",
+                                    style:
+                                        provider.isLoginScreen ? kButtonTextStyle : kLabelTextStyle,
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              isLoginScreen = false;
-                              setState(() {
-                                xAlign = signInAlign;
-                                signInColor = selectedColor;
-
-                                loginColor = normalColor;
-                              });
-                            },
-                            child: Align(
-                              alignment: const Alignment(1, 0),
-                              child: Container(
-                                width: toggleButtonWidth * 0.5,
-                                color: Colors.transparent,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Sign Up',
-                                  style: kLabelTextStyle.copyWith(
-                                    color: signInColor,
+                              ButtonSegment(
+                                value: false,
+                                label: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "Sign Up",
+                                    style: !provider.isLoginScreen
+                                        ? kButtonTextStyle
+                                        : kLabelTextStyle,
                                   ),
                                 ),
                               ),
+                            ],
+                            selected: {provider.isLoginScreen},
+                            selectedIcon: const SizedBox.shrink(),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<OutlinedBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: kBorderRadius,
+                                ),
+                              ),
                             ),
+                            onSelectionChanged: (value) {
+                              provider.setIsLoginScreen(isLoginScreen: value.first);
+                            },
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      provider.isLoginScreen ? LoginScreen() : SignUpScreen(),
+                    ],
                   ),
-                  isLoginScreen ? LoginScreen() : SignUpScreen(),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

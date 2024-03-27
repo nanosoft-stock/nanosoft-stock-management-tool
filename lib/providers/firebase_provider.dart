@@ -4,14 +4,21 @@ import 'package:flutter/material.dart';
 
 class FirebaseProvider extends ChangeNotifier {
   FirebaseProvider({
+    this.isLoginScreen = true,
     this.isUserLoggedIn = false,
   });
 
+  bool isLoginScreen;
   bool isUserLoggedIn;
 
   static StreamController<bool> isUserLoggedInStreamController = StreamController<bool>();
 
-  void changeIsUserLoggedIn({required bool isUserLoggedIn}) async {
+  void setIsLoginScreen({required bool isLoginScreen}) {
+    this.isLoginScreen = isLoginScreen;
+    notifyListeners();
+  }
+
+  void changeIsUserLoggedIn({required bool isUserLoggedIn}) {
     this.isUserLoggedIn = isUserLoggedIn;
     isUserLoggedInStreamController.sink.add(isUserLoggedIn);
     notifyListeners();

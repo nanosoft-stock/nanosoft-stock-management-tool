@@ -5,7 +5,7 @@ import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_text_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
+// import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
@@ -64,7 +64,7 @@ class AddNewStockScreen extends StatelessWidget {
                                   if (fields[index]['field'] == "category") {
                                     items = AllPredefinedData.data["categories"]
                                         .map(
-                                          (e) => e.toString().toTitleCase(),
+                                          (e) => e.toString(),
                                         )
                                         .toList();
                                   } else if (fields[index]['field'] == "sku") {
@@ -149,7 +149,9 @@ class AddNewStockScreen extends StatelessWidget {
                                                         productDesc[key].toString();
                                                   }
                                                 }
-                                              } catch (e) {}
+                                              } catch (e) {
+                                                print(e);
+                                              }
                                             },
                                           )
                                         : CustomTextAndCheckboxInputField(

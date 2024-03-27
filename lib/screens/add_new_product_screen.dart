@@ -5,7 +5,6 @@ import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/add_new_product_helper.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
@@ -39,7 +38,6 @@ class AddNewProductScreen extends StatelessWidget {
           builder: (BuildContext context, BoxConstraints constraints) {
             int n = ((constraints.maxWidth - 135) / 338).floor();
             double pad = ((constraints.maxWidth - 135) % 338) / 2;
-            print(constraints.maxWidth);
             return constraints.maxWidth > 475
                 ? Padding(
                     padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
@@ -67,7 +65,7 @@ class AddNewProductScreen extends StatelessWidget {
                                   List items = fields[index]['field'] == "category"
                                       ? AllPredefinedData.data["categories"]
                                           .map(
-                                            (e) => e.toString().toTitleCase(),
+                                            (e) => e.toString(),
                                           )
                                           .toList()
                                       : fields[index]['items'] ?? [];

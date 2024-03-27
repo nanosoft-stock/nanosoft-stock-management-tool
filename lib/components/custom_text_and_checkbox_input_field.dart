@@ -4,7 +4,7 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomTextAndCheckboxInputField extends StatelessWidget {
-  CustomTextAndCheckboxInputField({
+  const CustomTextAndCheckboxInputField({
     super.key,
     required this.text,
     required this.controller,
@@ -13,11 +13,11 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
     this.locked = false,
   });
 
-  String text;
-  TextEditingController controller;
-  bool lockable;
-  bool alignLockable;
-  bool locked;
+  final String text;
+  final TextEditingController controller;
+  final bool lockable;
+  final bool alignLockable;
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {

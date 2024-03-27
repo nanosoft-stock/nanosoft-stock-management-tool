@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  CustomElevatedButton({super.key, required this.text, required this.onPressed});
+  const CustomElevatedButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
 
-  String text;
-  var onPressed;
+  final String text;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ElevatedButton(
-        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 3,
           backgroundColor: kButtonBackgroundColor,
@@ -19,6 +22,7 @@ class CustomElevatedButton extends StatelessWidget {
             borderRadius: kBorderRadius,
           ),
         ),
+        onPressed: onPressed,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 15.0,

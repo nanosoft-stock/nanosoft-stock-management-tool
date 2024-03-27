@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/components/custom_checkbox.dart';
-import 'package:stock_management_tool/components/custom_dropdown_%20menu.dart';
+import 'package:stock_management_tool/components/custom_dropdown_menu.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomDropdownAndCheckboxInputField extends StatelessWidget {
-  CustomDropdownAndCheckboxInputField({
+  const CustomDropdownAndCheckboxInputField({
     super.key,
     required this.text,
     required this.controller,
@@ -16,13 +16,13 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
     required this.onSelected,
   });
 
-  String text;
-  TextEditingController controller;
-  List items;
-  bool lockable;
-  bool alignLockable;
-  bool locked;
-  final onSelected;
+  final String text;
+  final TextEditingController controller;
+  final List items;
+  final bool lockable;
+  final bool alignLockable;
+  final bool locked;
+  final void Function() onSelected;
 
   @override
   Widget build(BuildContext context) {

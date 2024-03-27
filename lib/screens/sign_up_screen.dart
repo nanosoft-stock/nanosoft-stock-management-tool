@@ -105,34 +105,13 @@ class SignUpScreen extends StatelessWidget {
             child: SizedBox(
               width: 250,
               child: CustomElevatedButton(
+                text: 'Sign Up',
                 onPressed: () async {
                   await signUpUser(context: context);
                 },
-                text: 'SignUp',
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(15.0),
-          //   child: ElevatedButton(
-          //     onPressed: () async {
-          //       await signUpUser(context: context);
-          //     },
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: kButtonBackgroundColor,
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: kBorderRadius,
-          //       ),
-          //     ),
-          //     child: Padding(
-          //       padding: EdgeInsets.all(10.0),
-          //       child: Text(
-          //         'Sign Up',
-          //         style: kLabelTextStyle,
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

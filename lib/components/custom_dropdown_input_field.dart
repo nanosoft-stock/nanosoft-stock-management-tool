@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_dropdown_%20menu.dart';
+import 'package:stock_management_tool/components/custom_dropdown_menu.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomDropdownInputField extends StatelessWidget {
-  CustomDropdownInputField({
+  const CustomDropdownInputField({
     super.key,
     required this.text,
     required this.controller,
@@ -12,10 +12,10 @@ class CustomDropdownInputField extends StatelessWidget {
     required this.onSelected,
   });
 
-  String text;
-  TextEditingController controller;
-  List items;
-  final onSelected;
+  final String text;
+  final TextEditingController controller;
+  final List items;
+  final void Function() onSelected;
 
   @override
   Widget build(BuildContext context) {

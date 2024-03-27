@@ -8,6 +8,7 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
+import 'package:stock_management_tool/providers/export_stock_provider.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/providers/side_menu_provider.dart';
 import 'package:stock_management_tool/screens/authentication_screen.dart';
@@ -50,6 +51,9 @@ class StockManagementToolApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => AddNewProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ExportStockProvider(),
         ),
       ],
       child: MaterialApp(

@@ -1,5 +1,6 @@
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
+import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
@@ -42,7 +43,7 @@ class ExportStockHelper {
         for (var name in columnNames) {
           var cell =
               sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(name.toString());
+          cell.value = TextCellValue(name.toString().toTitleCase());
           column++;
         }
       } else {

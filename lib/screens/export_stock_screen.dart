@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stock_management_tool/components/data_grid.dart';
+import 'package:stock_management_tool/components/custom_data_grid.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
 
@@ -22,8 +22,8 @@ class ExportStockScreen extends StatelessWidget {
                   boxShadow: kBoxShadowList,
                 ),
                 child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: DataGrid(),
+                  padding: EdgeInsets.all(20.0),
+                  child: CustomDataGrid(),
                 ),
               ),
             );

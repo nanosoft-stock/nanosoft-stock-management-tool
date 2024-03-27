@@ -45,6 +45,7 @@ dependencies:
     excel: ^4.0.3
     two_dimensional_scrollables: ^0.1.2
     google_fonts: ^6.2.1
+    font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
     flutter_test:

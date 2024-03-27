@@ -12,22 +12,22 @@ Color kButtonBackgroundColor = const Color(0xFFE8DEF8);
 BorderRadius kBorderRadius = BorderRadius.circular(10.0);
 List<BoxShadow> kBoxShadowList = [
   BoxShadow(
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey.withOpacity(0.2),
     spreadRadius: 1,
     blurRadius: 2,
   ),
   BoxShadow(
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey.withOpacity(0.2),
     spreadRadius: 1,
     blurRadius: 2,
   ),
   BoxShadow(
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey.withOpacity(0.2),
     spreadRadius: 1,
     blurRadius: 2,
   ),
   BoxShadow(
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey.withOpacity(0.2),
     spreadRadius: 1,
     blurRadius: 2,
   ),

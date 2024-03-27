@@ -120,6 +120,7 @@ class FirebaseRestApi {
 
   Future<List> getDocuments({
     required String path,
+    bool includeDocRef = false,
   }) async {
     try {
       String url =
@@ -129,9 +130,24 @@ class FirebaseRestApi {
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body.trim());
         // print(jsonData);
-        var data = jsonData['documents'] != null
-            ? jsonData['documents'].map((e) => e['fields']).toList()
-            : [];
+        List data = [];
+        if (includeDocRef) {
+          data = jsonData['documents'] != null
+              ? jsonData['documents'].map(
+                  (element) {
+                    Map map = element['fields'];
+                    map["docRef"] = {"stringValue": element['name'].toString().split('/').last};
+
+                    return map;
+                  },
+                ).toList()
+              : [];
+        } else {
+          data = jsonData['documents'] != null
+              ? jsonData['documents'].map((e) => e['fields']).toList()
+              : [];
+        }
+
         return data;
       }
     } catch (e) {

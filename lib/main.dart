@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
+import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
@@ -15,8 +16,6 @@ import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/firebase_rest_api.dart';
-
-import 'models/all_predefined_data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -27,7 +27,7 @@ class CustomElevatedButton extends StatelessWidget {
           child: Text(
             text,
             softWrap: false,
-            style: const TextStyle(fontSize: 14.0),
+            style: kButtonTextStyle,
           ),
         ),
       ),

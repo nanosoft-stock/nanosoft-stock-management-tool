@@ -42,10 +42,7 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                     width: 100,
                     child: Text(
                       text.toTitleCase(),
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: kLabelTextStyle,
                     ),
                   ),
                 ),
@@ -66,6 +63,7 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                         borderRadius: kBorderRadius,
                       ),
                     ),
+                    style: kLabelTextStyle,
                   ),
                 ),
                 if (lockable)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/services/auth.dart';
@@ -49,7 +50,9 @@ class LoginScreen extends StatelessWidget {
                   fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Email',
+                  labelStyle: kLabelTextStyle,
                 ),
+                style: kLabelTextStyle,
               ),
             ),
           ),
@@ -70,31 +73,21 @@ class LoginScreen extends StatelessWidget {
                   fillColor: kTertiaryBackgroundColor,
                   border: const OutlineInputBorder(),
                   labelText: 'Password',
+                  labelStyle: kLabelTextStyle,
                 ),
+                style: kLabelTextStyle,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                await signInUser(context: context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kButtonBackgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: kBorderRadius,
-                ),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+            child: SizedBox(
+              width: 250,
+              child: CustomElevatedButton(
+                onPressed: () async {
+                  await signInUser(context: context);
+                },
+                text: 'Login',
               ),
             ),
           ),

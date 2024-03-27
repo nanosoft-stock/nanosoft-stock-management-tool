@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
@@ -69,8 +70,8 @@ class DataGrid extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: kTertiaryBackgroundColor,
                       borderRadius: kBorderRadius,
-                      // boxShadow: kBoxShadowList,
-                      border: Border.all(),
+                      boxShadow: kBoxShadowList,
+                      border: Border.all(width: 2),
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: TableView(
@@ -81,8 +82,12 @@ class DataGrid extends StatelessWidget {
                           return const TableSpan(
                             backgroundDecoration: TableSpanDecoration(
                               border: TableSpanBorder(
-                                leading: BorderSide(),
-                                trailing: BorderSide(),
+                                leading: BorderSide(
+                                  color: Colors.black54,
+                                ),
+                                trailing: BorderSide(
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                             extent: FixedTableSpanExtent(200),
@@ -92,8 +97,12 @@ class DataGrid extends StatelessWidget {
                           return const TableSpan(
                             backgroundDecoration: TableSpanDecoration(
                               border: TableSpanBorder(
-                                leading: BorderSide(),
-                                trailing: BorderSide(),
+                                leading: BorderSide(
+                                  color: Colors.black54,
+                                ),
+                                trailing: BorderSide(
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                             extent: FixedTableSpanExtent(25),
@@ -105,6 +114,12 @@ class DataGrid extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   provider.fields[vicinity.column].toString().toTitleCase(),
+                                  style: GoogleFonts.lato(
+                                    textStyle: const TextStyle(
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
                                 ),
                               ),
                             );
@@ -122,6 +137,7 @@ class DataGrid extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   text,
+                                  style: GoogleFonts.lato(),
                                 ),
                               ),
                             );

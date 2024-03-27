@@ -17,7 +17,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   double loginAlign = -1;
   double signInAlign = 1;
-  Color selectedColor = Colors.black54;
+  Color selectedColor = Colors.black87;
   Color normalColor = kTertiaryBackgroundColor;
   late double xAlign;
   late Color loginColor;
@@ -98,9 +98,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Login',
-                                  style: TextStyle(
+                                  style: kLabelTextStyle.copyWith(
                                     color: loginColor,
-                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -124,10 +123,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Sign Up',
-                                  style: TextStyle(
+                                  style: kLabelTextStyle.copyWith(
                                     color: signInColor,
-                                    fontWeight: FontWeight.w600,
-                                    // fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),

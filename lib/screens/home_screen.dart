@@ -16,7 +16,7 @@ import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -100,6 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
       isSelected: navItemModel.isSelected,
       icon: Icon(navItemModel.icon),
       title: navItemModel.title,
+      titleStyle: kLabelTextStyle,
+      selectedTitleStyle: kButtonTextStyle,
       borderRadius: kBorderRadius,
       onTap: () async {
         if (currentNavItem != navItemModel) {
@@ -167,8 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       : const EdgeInsets.symmetric(vertical: 15.0),
                   child: data.currentWidth == data.maxWidth
                       ? ListTile(
-                          title: Text(accountItemMenuNavItem.title),
                           leading: Icon(accountItemMenuNavItem.icon),
+                          title: Text(
+                            accountItemMenuNavItem.title,
+                            style: kLabelTextStyle,
+                          ),
                           onTap: () {
                             userName = "";
                             Provider.of<FirebaseProvider>(context, listen: false)
@@ -190,8 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(color: kPrimaryBackgroundColor),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -210,13 +214,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: allHomeScreens[
-                        Provider.of<SideMenuProvider>(context).currentNavItemModel!.index],
-                  ),
+                SizedBox(
+                  width: double.infinity,
+                  child: allHomeScreens[
+                      Provider.of<SideMenuProvider>(context).currentNavItemModel!.index],
                 ),
               ],
             ),

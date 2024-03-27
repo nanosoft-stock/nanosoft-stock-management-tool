@@ -35,10 +35,7 @@ class CustomTextInputField extends StatelessWidget {
                     width: 100,
                     child: Text(
                       text.toTitleCase(),
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: kLabelTextStyle,
                     ),
                   ),
                 ),

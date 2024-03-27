@@ -14,15 +14,15 @@ class ExportStockScreen extends StatelessWidget {
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             return Padding(
-              padding: const EdgeInsets.fromLTRB(52, 20, 52, 40),
+              padding: const EdgeInsets.fromLTRB(52, 80, 52, 40),
               child: Container(
                 decoration: BoxDecoration(
                   color: kSecondaryBackgroundColor,
                   borderRadius: kBorderRadius,
                   boxShadow: kBoxShadowList,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(15.0),
                   child: DataGrid(),
                 ),
               ),

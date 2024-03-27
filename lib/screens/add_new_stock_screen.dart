@@ -12,6 +12,8 @@ import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewStockScreen extends StatelessWidget {
+  const AddNewStockScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AddNewStockProvider>(
@@ -36,7 +38,7 @@ class AddNewStockScreen extends StatelessWidget {
             double pad = ((constraints.maxWidth - 135) % 390.5) / 2;
             return constraints.maxWidth > 525
                 ? Padding(
-                    padding: EdgeInsets.fromLTRB(52 + pad, 20, 52 + pad, 40),
+                    padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
                     child: Column(
                       children: [
                         Expanded(
@@ -228,7 +230,10 @@ class AddNewStockScreen extends StatelessWidget {
                       ],
                     ),
                   )
-                : const SizedBox.shrink();
+                : SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                  );
           },
         );
       },

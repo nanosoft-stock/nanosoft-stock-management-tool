@@ -12,6 +12,8 @@ import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewProductScreen extends StatelessWidget {
+  const AddNewProductScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AddNewProductProvider>(
@@ -40,7 +42,7 @@ class AddNewProductScreen extends StatelessWidget {
             print(constraints.maxWidth);
             return constraints.maxWidth > 475
                 ? Padding(
-                    padding: EdgeInsets.fromLTRB(52 + pad, 20, 52 + pad, 40),
+                    padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
                     child: Column(
                       children: [
                         Expanded(
@@ -181,7 +183,10 @@ class AddNewProductScreen extends StatelessWidget {
                       ],
                     ),
                   )
-                : const SizedBox.shrink();
+                : SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                  );
           },
         );
       },

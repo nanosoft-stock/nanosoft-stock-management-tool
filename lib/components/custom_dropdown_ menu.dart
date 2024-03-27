@@ -18,9 +18,7 @@ class CustomDropdownMenu extends StatelessWidget {
     return DropdownMenu(
       controller: controller,
       width: 200,
-      textStyle: const TextStyle(
-        fontSize: 16.0,
-      ),
+      textStyle: kLabelTextStyle,
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         border: OutlineInputBorder(
@@ -34,6 +32,11 @@ class CustomDropdownMenu extends StatelessWidget {
             (e) => DropdownMenuEntry(
               value: e,
               label: e,
+              style: ButtonStyle(
+                textStyle: MaterialStateProperty.all<TextStyle>(
+                  kLabelTextStyle,
+                ),
+              ),
             ),
           )
           .toList(),

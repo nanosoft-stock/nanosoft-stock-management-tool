@@ -16,6 +16,7 @@ import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
 import 'package:stock_management_tool/screens/visualise_stock_screen.dart';
+import 'package:stock_management_tool/services/auth.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -208,10 +209,14 @@ class HomeScreen extends StatelessWidget {
                                 accountItemMenuNavItem.title,
                                 style: kLabelTextStyle,
                               ),
-                              onTap: () {
-                                userName = "";
-                                Provider.of<FirebaseProvider>(context, listen: false)
-                                    .changeIsUserLoggedIn(isUserLoggedIn: false);
+                              onTap: () async {
+                                await Auth().signOutUser(
+                                  onSuccess: () {
+                                    userName = "";
+                                    Provider.of<FirebaseProvider>(context, listen: false)
+                                        .changeIsUserLoggedIn(isUserLoggedIn: false);
+                                  },
+                                );
                               },
                             )
                           : GestureDetector(

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
@@ -41,6 +42,14 @@ class Auth {
           onSuccess(value);
         },
       );
+    }
+  }
+
+  Future<void> signOutUser({required VoidCallback onSuccess,}) async {
+    if (!kIsDesktop) {
+      await AuthDefault().signOut();
+    } else {
+      onSuccess();
     }
   }
 }

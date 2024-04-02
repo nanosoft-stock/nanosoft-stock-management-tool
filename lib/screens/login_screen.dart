@@ -4,7 +4,6 @@ import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/services/auth.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -13,21 +12,14 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> signInUser({required BuildContext context}) async {
-    if (kIsDesktop) {
-      await FirebaseRestApi().signInUserWithEmailAndPasswordRestApi(
-        email: emailController.text.toLowerCase().trim(),
-        password: passwordController.text.trim(),
-        onSuccess: (value) {
-          Provider.of<FirebaseProvider>(context, listen: false)
-              .changeIsUserLoggedIn(isUserLoggedIn: value);
-        },
-      );
-    } else {
-      await Auth().signInWithEmailAndPassword(
-        email: emailController.text.toLowerCase().trim(),
-        password: passwordController.text.trim(),
-      );
-    }
+    await Auth().signInUser(
+      email: emailController.text.toLowerCase().trim(),
+      password: passwordController.text.trim(),
+      onSuccess: (value) {
+        Provider.of<FirebaseProvider>(context, listen: false)
+            .changeIsUserLoggedIn(isUserLoggedIn: value);
+      },
+    );
   }
 
   @override
@@ -84,10 +76,10 @@ class LoginScreen extends StatelessWidget {
             child: SizedBox(
               width: 250,
               child: CustomElevatedButton(
+                text: 'Login',
                 onPressed: () async {
                   await signInUser(context: context);
                 },
-                text: 'Login',
               ),
             ),
           ),

@@ -5,10 +5,9 @@ import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_text_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
-// import 'package:stock_management_tool/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewStockScreen extends StatelessWidget {
@@ -21,15 +20,16 @@ class AddNewStockScreen extends StatelessWidget {
         List fields =
             (AllPredefinedData.data["categories"].contains(provider.currentCategory?.toLowerCase())
                 ? AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["fields"]
-                    .where((element) => !(["date", "user", "archived"].contains(element["field"])))
+                    .where((element) => !element['isBg'])
                     .toList()
                 : [
                     {
                       "field": "category",
                       "datatype": "string",
                       "lockable": true,
-                      "isWithSKU": false,
+                      "isWithSKU": true,
                       "order": 2,
+                      "isTitleCase": true,
                     },
                   ]);
         return LayoutBuilder(
@@ -64,7 +64,7 @@ class AddNewStockScreen extends StatelessWidget {
                                   if (fields[index]['field'] == "category") {
                                     items = AllPredefinedData.data["categories"]
                                         .map(
-                                          (e) => e.toString(),
+                                          (e) => e.toString().toTitleCase(),
                                         )
                                         .toList();
                                   } else if (fields[index]['field'] == "sku") {
@@ -105,16 +105,11 @@ class AddNewStockScreen extends StatelessWidget {
 
                                   return Padding(
                                     padding: const EdgeInsets.all(7.5),
-                                    child: ![
-                                      "item id",
-                                      "serial number",
-                                      "dispatch info",
-                                      "supplier info",
-                                      "location",
-                                      "comments"
-                                    ].contains(fields[index]['field'])
+                                    child: fields[index]['isWithSKU']
                                         ? CustomDropdownAndCheckboxInputField(
-                                            text: fields[index]['field'],
+                                            text: fields[index]['isTitleCase']
+                                                ? fields[index]['field'].toString().toTitleCase()
+                                                : fields[index]['field'].toString().toUpperCase(),
                                             controller: provider.cacheData[fields[index]['field']]
                                                 ['controller'],
                                             items: items,
@@ -155,7 +150,9 @@ class AddNewStockScreen extends StatelessWidget {
                                             },
                                           )
                                         : CustomTextAndCheckboxInputField(
-                                            text: fields[index]['field'],
+                                            text: fields[index]['isTitleCase']
+                                                ? fields[index]['field'].toString().toTitleCase()
+                                                : fields[index]['field'].toString().toUpperCase(),
                                             controller: provider.cacheData[fields[index]['field']]
                                                 ['controller'],
                                             lockable: fields[index]['lockable'],
@@ -198,21 +195,12 @@ class AddNewStockScreen extends StatelessWidget {
                                           provider.cacheData[key]["controller"].text.toString();
                                     }
 
-                                    if (kIsDesktop) {
-                                      await FirebaseRestApi().createDocument(
-                                        path: "stock_data",
-                                        json: AddNewStockHelper.toJson(
-                                          data: storedData,
-                                        ),
-                                      );
-                                    } else {
-                                      await Firestore().createDocument(
-                                        path: "stock_data",
-                                        data: AddNewStockHelper.toJson(
-                                          data: storedData,
-                                        ),
-                                      );
-                                    }
+                                    await Firestore().createDocument(
+                                      path: "stock_data",
+                                      data: AddNewStockHelper.toJson(
+                                        data: storedData,
+                                      ),
+                                    );
 
                                     for (var key in provider.cacheData.keys) {
                                       if (!provider.cacheData[key]["locked"]) {

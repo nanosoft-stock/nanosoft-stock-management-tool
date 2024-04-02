@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,15 +12,17 @@ import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/providers/side_menu_provider.dart';
 import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
-import 'package:stock_management_tool/services/auth.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/auth_default.dart';
+import 'package:stock_management_tool/services/auth_rest_api.dart';
+import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (defaultTargetPlatform == TargetPlatform.linux) {
+  if (defaultTargetPlatform == TargetPlatform.linux && !kIsWeb) {
     kIsDesktop = true;
-    FirebaseRestApi().fetchApiKey();
-    FirebaseRestApi().fetchProjectId();
+    AuthRestApi().fetchApiKey();
+    FirestoreRestApi().fetchApiKey();
+    FirestoreRestApi().fetchProjectId();
   } else {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -71,7 +71,7 @@ class StockManagementToolApp extends StatelessWidget {
                     },
                   )
                 : StreamBuilder(
-                    stream: Auth().authStateChanges,
+                    stream: AuthDefault().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return HomeScreen();

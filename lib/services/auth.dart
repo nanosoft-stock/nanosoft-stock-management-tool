@@ -1,35 +1,46 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/services/auth_default.dart';
+import 'package:stock_management_tool/services/auth_rest_api.dart';
 
 class Auth {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  User? get currentUser => _auth.currentUser;
-
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<void> signInUser(
+      {required String email, required String password, required var onSuccess}) async {
+    if (!kIsDesktop) {
+      await AuthDefault().signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } else {
+      await AuthRestApi().signInUserWithEmailAndPasswordRestApi(
+        email: email,
+        password: password,
+        onSuccess: (value) {
+          onSuccess(value);
+        },
+      );
+    }
   }
 
-  Future<void> createUserWithEmailAndPassword({
-    required String username,
-    required String email,
-    required String password,
-  }) async {
-    await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await _auth.currentUser?.updateDisplayName(username);
-  }
-
-  Future<void> signOut() async {
-    await _auth.signOut();
+  Future<void> signUpUser(
+      {required String username,
+      required String email,
+      required String password,
+      required var onSuccess}) async {
+    if (!kIsDesktop) {
+      await AuthDefault().createUserWithEmailAndPassword(
+        username: username,
+        email: email,
+        password: password,
+      );
+    } else {
+      await AuthRestApi().createUserWithEmailAndPasswordRestApi(
+        username: username,
+        email: email,
+        password: password,
+        onSuccess: (value) {
+          onSuccess(value);
+        },
+      );
+    }
   }
 }

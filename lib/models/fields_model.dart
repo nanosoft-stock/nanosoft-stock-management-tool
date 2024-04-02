@@ -1,5 +1,4 @@
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class FieldsModel {
@@ -10,30 +9,24 @@ class FieldsModel {
   List items = [];
 
   Future<List> fetchItems() async {
+    items = await Firestore().getDocuments(path: "category_list/$categoryDoc/fields");
+
     if (kIsDesktop) {
-      items = await FirebaseRestApi().getDocuments(path: "category_list/$categoryDoc/fields");
+      items = items
+          .map((element) => element
+              .map((field, value) => MapEntry(field, value.values.first))
+              .cast<String, dynamic>())
+          .toList();
 
-      items = items.map((e) {
-        Map data = {
-          "field": e["field"]["stringValue"],
-          "datatype": e["datatype"]["stringValue"],
-          "lockable": e["lockable"]["booleanValue"],
-          "isWithSKU": e["isWithSKU"]["booleanValue"],
-          "order": int.parse(
-            e["order"]["integerValue"],
-          ),
-        };
-        if (e["items"] != null) {
-          data["items"] = e["items"]["arrayValue"]["values"].map((e) => e["stringValue"]).toList();
+      for (var element in items) {
+        if (element["items"] != null) {
+          element["items"] = element["items"]["values"].map((e) => e["stringValue"]).toList();
         }
-        return data;
-      }).toList();
-
-      items.sort((a, b) => a["order"].compareTo(b["order"]));
-    } else {
-      items = await Firestore().getDocuments(path: "category_list/$categoryDoc/fields");
-      items.sort((a, b) => a["order"].compareTo(b["order"]));
+      }
     }
+
+    items.sort(
+        (a, b) => int.parse(a["order"].toString()).compareTo(int.parse(b["order"].toString())));
 
     return items;
   }

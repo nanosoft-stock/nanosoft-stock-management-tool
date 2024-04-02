@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomDropdownMenu extends StatelessWidget {
   const CustomDropdownMenu({
@@ -31,8 +30,8 @@ class CustomDropdownMenu extends StatelessWidget {
       dropdownMenuEntries: items
           .map(
             (e) => DropdownMenuEntry(
-              value: e.toString().toTitleCase(),
-              label: e.toString().toTitleCase(),
+              value: e,
+              label: e,
               style: ButtonStyle(
                 textStyle: MaterialStateProperty.all<TextStyle>(
                   kLabelTextStyle,

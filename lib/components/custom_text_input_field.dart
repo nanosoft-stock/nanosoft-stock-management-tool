@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomTextInputField extends StatelessWidget {
   const CustomTextInputField({
@@ -30,11 +29,11 @@ class CustomTextInputField extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 2.5),
+                  padding: const EdgeInsets.only(left: 2.5, right: 5),
                   child: SizedBox(
-                    width: 100,
+                    width: 95,
                     child: Text(
-                      text.toTitleCase(),
+                      text,
                       style: kLabelTextStyle,
                     ),
                   ),

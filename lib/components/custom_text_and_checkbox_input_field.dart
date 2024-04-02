@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/components/custom_checkbox.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomTextAndCheckboxInputField extends StatelessWidget {
   const CustomTextAndCheckboxInputField({
@@ -37,11 +36,11 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 2.5),
+                  padding: const EdgeInsets.only(left: 2.5, right: 5),
                   child: SizedBox(
-                    width: 100,
+                    width: 95,
                     child: Text(
-                      text.toTitleCase(),
+                      text,
                       style: kLabelTextStyle,
                     ),
                   ),
@@ -72,7 +71,7 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                   ),
                 if (lockable)
                   CustomCheckbox(
-                    text: text,
+                    text: text.toLowerCase(),
                     locked: locked,
                   ),
                 if (alignLockable)

@@ -5,9 +5,9 @@ import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/add_new_product_helper.dart';
+import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class AddNewProductScreen extends StatelessWidget {
@@ -27,11 +27,13 @@ class AddNewProductScreen extends StatelessWidget {
                       "field": "category",
                       "datatype": "string",
                       "isWithSKU": true,
+                      "isTitleCase": true,
                     },
                     {
                       "field": "sku",
                       "datatype": "string",
                       "isWithSKU": true,
+                      "isTitleCase": false,
                     },
                   ]);
         return LayoutBuilder(
@@ -65,7 +67,7 @@ class AddNewProductScreen extends StatelessWidget {
                                   List items = fields[index]['field'] == "category"
                                       ? AllPredefinedData.data["categories"]
                                           .map(
-                                            (e) => e.toString(),
+                                            (e) => e.toString().toTitleCase(),
                                           )
                                           .toList()
                                       : fields[index]['items'] ?? [];
@@ -95,7 +97,9 @@ class AddNewProductScreen extends StatelessWidget {
                                     padding: const EdgeInsets.all(7.5),
                                     child: fields[index]['field'] != "sku"
                                         ? CustomDropdownInputField(
-                                            text: fields[index]['field'].toString(),
+                                            text: fields[index]['isTitleCase']
+                                                ? fields[index]['field'].toString().toTitleCase()
+                                                : fields[index]['field'].toString().toUpperCase(),
                                             controller: provider.cacheData[fields[index]['field']]
                                                 ['controller'],
                                             items: items,
@@ -116,7 +120,9 @@ class AddNewProductScreen extends StatelessWidget {
                                             },
                                           )
                                         : CustomTextInputField(
-                                            text: fields[index]['field'],
+                                            text: fields[index]['isTitleCase']
+                                                ? fields[index]['field'].toString().toTitleCase()
+                                                : fields[index]['field'].toString().toUpperCase(),
                                             controller: provider.cacheData[fields[index]['field']]
                                                 ['controller'],
                                           ),
@@ -152,25 +158,15 @@ class AddNewProductScreen extends StatelessWidget {
                                       storedData[key] =
                                           provider.cacheData[key]["controller"].text.toString();
                                     }
-                                    if (kIsDesktop) {
-                                      await FirebaseRestApi().createDocument(
-                                        path:
-                                            "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
-                                        json: AddNewProductHelper.toJson(
-                                          category: provider.currentCategory!.toLowerCase(),
-                                          data: storedData,
-                                        ),
-                                      );
-                                    } else {
-                                      await Firestore().createDocument(
-                                        path:
-                                            "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
-                                        data: AddNewProductHelper.toJson(
-                                          category: provider.currentCategory!.toLowerCase(),
-                                          data: storedData,
-                                        ),
-                                      );
-                                    }
+
+                                    Firestore().createDocument(
+                                      path:
+                                          "category_list/${AllPredefinedData.data[provider.currentCategory?.toLowerCase()]["categoryDoc"]}/product_list",
+                                      data: AddNewProductHelper.toJson(
+                                        category: provider.currentCategory!.toLowerCase(),
+                                        data: storedData,
+                                      ),
+                                    );
                                     provider.deleteCacheData();
                                   }
                                 },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/models/nav_item_model.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
@@ -14,6 +15,7 @@ import 'package:stock_management_tool/screens/archive_stock_screen.dart';
 import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
+import 'package:stock_management_tool/screens/visualise_stock_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -31,38 +33,44 @@ class HomeScreen extends StatelessWidget {
     icon: Icons.add_box_outlined,
   );
 
-  final NavItemModel exportStockNavItem = NavItemModel(
+  final NavItemModel visualiseStockNavItem = NavItemModel(
     index: 2,
+    title: 'Visualise Stock',
+    icon: Icons.table_chart_outlined,
+  );
+
+  final NavItemModel exportStockNavItem = NavItemModel(
+    index: 3,
     title: 'Export Stock',
     icon: Icons.file_download_outlined,
   );
 
   final NavItemModel modifyStockNavItem = NavItemModel(
-    index: 3,
+    index: 4,
     title: 'Modify Stock',
     icon: Icons.edit_note_outlined,
   );
 
   final NavItemModel modifyProductNavItem = NavItemModel(
-    index: 4,
+    index: 5,
     title: 'Modify Product',
     icon: Icons.edit_note_outlined,
   );
 
   final NavItemModel archiveStockNavItem = NavItemModel(
-    index: 5,
+    index: 6,
     title: 'Archive Stock',
     icon: Icons.archive_outlined,
   );
 
   final NavItemModel archiveProductNavItem = NavItemModel(
-    index: 6,
+    index: 7,
     title: 'Archive Product',
     icon: Icons.archive_outlined,
   );
 
   final NavItemModel accountItemMenuNavItem = NavItemModel(
-    index: 7,
+    index: 8,
     title: 'Log out',
     icon: Icons.logout,
   );
@@ -70,6 +78,7 @@ class HomeScreen extends StatelessWidget {
   final allHomeScreens = [
     const AddNewStockScreen(),
     const AddNewProductScreen(),
+    const VisualiseStockScreen(),
     const ExportStockScreen(),
     const ModifyStockScreen(),
     const ModifyProductScreen(),
@@ -110,9 +119,12 @@ class HomeScreen extends StatelessWidget {
     return Consumer<SideMenuProvider>(
       builder: (BuildContext context, SideMenuProvider provider, Widget? child) {
         if (!provider.hasBuilt) {
-          provider.currentNavItemModel = addNewStockNavItem;
+          print(provider.currentNavItemModel?.title);
+          provider.currentNavItemModel ??= addNewStockNavItem;
           provider.hasBuilt = true;
         }
+
+        print(AllPredefinedData.data);
 
         return Row(
           children: [
@@ -152,6 +164,11 @@ class HomeScreen extends StatelessWidget {
                         navItemModel: addNewProductNavItem,
                       ),
                       const SideMenuItemDataDivider(divider: Divider()),
+                      createMenuItem(
+                        context: context,
+                        provider: provider,
+                        navItemModel: visualiseStockNavItem,
+                      ),
                       createMenuItem(
                         context: context,
                         provider: provider,

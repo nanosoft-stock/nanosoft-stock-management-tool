@@ -8,7 +8,7 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
-import 'package:stock_management_tool/services/firebase_rest_api.dart';
+import 'package:stock_management_tool/services/firestore_rest_api.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class CustomDataGrid extends StatelessWidget {
@@ -34,7 +34,7 @@ class CustomDataGrid extends StatelessWidget {
         .toList();
 
     List stock = [];
-    stock = await FirebaseRestApi().getDocuments(path: "stock_data", includeDocRef: true);
+    stock = await FirestoreRestApi().getDocuments(path: "stock_data", includeDocRef: true);
 
     stock = stock
         .map((element) => element

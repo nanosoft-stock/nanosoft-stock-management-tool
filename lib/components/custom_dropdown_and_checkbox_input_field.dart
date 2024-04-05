@@ -21,7 +21,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
   final bool lockable;
   final bool alignLockable;
   final bool locked;
-  final void Function() onSelected;
+  final void Function(String) onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
       child: InkWell(
         onFocusChange: (hasFocus) {
           if (!hasFocus) {
-            onSelected.call();
+            onSelected(controller.text);
           }
         },
         child: SingleChildScrollView(

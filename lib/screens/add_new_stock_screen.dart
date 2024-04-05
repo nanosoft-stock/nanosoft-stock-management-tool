@@ -117,7 +117,7 @@ class AddNewStockScreen extends StatelessWidget {
                                             alignLockable: !fields[index]['lockable'],
                                             locked: provider.cacheData[fields[index]['field']]
                                                 ["locked"],
-                                            onSelected: () {
+                                            onSelected: (value) {
                                               if (fields[index]['field'] == "category" &&
                                                   provider.currentCategory !=
                                                       provider.cacheData["category"]['controller']

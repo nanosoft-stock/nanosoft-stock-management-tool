@@ -45,7 +45,7 @@ class Auth {
     }
   }
 
-  Future<void> signOutUser({required VoidCallback onSuccess,}) async {
+  Future<void> signOutUser({required VoidCallback onSuccess}) async {
     if (!kIsDesktop) {
       await AuthDefault().signOut();
     } else {

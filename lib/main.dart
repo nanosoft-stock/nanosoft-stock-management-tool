@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
@@ -29,6 +32,7 @@ Future<void> main() async {
     );
   }
   AllPredefinedData().fetchData();
+  await initializeDependencies();
   runApp(const StockManagementToolApp());
 }
 
@@ -37,49 +41,56 @@ class StockManagementToolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => FirebaseProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SideMenuProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => AddNewStockProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => AddNewProductProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ExportStockProvider(),
+        BlocProvider<AddNewProductBloc>(
+          create: (context) => sl.get<AddNewProductBloc>(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Nanosoft Stock Management Tool',
-        home: SafeArea(
-          child: Scaffold(
-            body: kIsDesktop
-                ? StreamBuilder<bool>(
-                    stream: FirebaseProvider.isUserLoggedInStreamController.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data == true) {
-                        return HomeScreen();
-                      } else {
-                        return const AuthenticationScreen();
-                      }
-                    },
-                  )
-                : StreamBuilder(
-                    stream: AuthDefault().authStateChanges,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return HomeScreen();
-                      } else {
-                        return const AuthenticationScreen();
-                      }
-                    },
-                  ),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => FirebaseProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => SideMenuProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => AddNewStockProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => AddNewProductProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ExportStockProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Nanosoft Stock Management Tool',
+          home: SafeArea(
+            child: Scaffold(
+              body: kIsDesktop
+                  ? StreamBuilder<bool>(
+                      stream: FirebaseProvider.isUserLoggedInStreamController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data == true) {
+                          return HomeScreen();
+                        } else {
+                          return const AuthenticationScreen();
+                        }
+                      },
+                    )
+                  : StreamBuilder(
+                      stream: AuthDefault().authStateChanges,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return HomeScreen();
+                        } else {
+                          return const AuthenticationScreen();
+                        }
+                      },
+                    ),
+            ),
           ),
         ),
       ),

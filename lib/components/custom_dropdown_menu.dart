@@ -11,7 +11,7 @@ class CustomDropdownMenu extends StatelessWidget {
 
   final TextEditingController controller;
   final List items;
-  final void Function() onSelected;
+  final void Function(String) onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CustomDropdownMenu extends StatelessWidget {
           text = value;
         }
         controller.text = text;
-        onSelected.call();
+        onSelected(controller.text);
       },
     );
   }

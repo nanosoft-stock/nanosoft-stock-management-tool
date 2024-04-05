@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
+import 'package:stock_management_tool/features/add_new_product/presentation/views/add_new_product_screen.dart';
 import 'package:stock_management_tool/models/nav_item_model.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/providers/side_menu_provider.dart';
-import 'package:stock_management_tool/screens/add_new_product_screen.dart';
 import 'package:stock_management_tool/screens/add_new_stock_screen.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
 import 'package:stock_management_tool/screens/archive_stock_screen.dart';
@@ -78,7 +77,7 @@ class HomeScreen extends StatelessWidget {
 
   final allHomeScreens = [
     const AddNewStockScreen(),
-    const AddNewProductScreen(),
+    AddNewProductScreen(),
     const VisualiseStockScreen(),
     const ExportStockScreen(),
     const ModifyStockScreen(),
@@ -102,9 +101,11 @@ class HomeScreen extends StatelessWidget {
       onTap: () async {
         if (provider.currentNavItemModel != navItemModel) {
           if (provider.currentNavItemModel == addNewStockNavItem) {
-            Provider.of<AddNewStockProvider>(context, listen: false).deleteCacheData();
+            Provider.of<AddNewStockProvider>(context, listen: false)
+                .deleteCacheData();
           } else if (provider.currentNavItemModel == addNewProductNavItem) {
-            Provider.of<AddNewProductProvider>(context, listen: false).deleteCacheData();
+            Provider.of<AddNewProductProvider>(context, listen: false)
+                .deleteCacheData();
           }
 
           provider.currentNavItemModel!.isSelected = false;
@@ -118,14 +119,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SideMenuProvider>(
-      builder: (BuildContext context, SideMenuProvider provider, Widget? child) {
+      builder:
+          (BuildContext context, SideMenuProvider provider, Widget? child) {
         if (!provider.hasBuilt) {
-          print(provider.currentNavItemModel?.title);
+          // print(provider.currentNavItemModel?.title);
           provider.currentNavItemModel ??= addNewStockNavItem;
           provider.hasBuilt = true;
         }
 
-        print(AllPredefinedData.data);
+        // print(AllPredefinedData.data);
 
         return Row(
           children: [
@@ -145,7 +147,8 @@ class HomeScreen extends StatelessWidget {
                   return SideMenuData(
                     header: data.isOpen
                         ? Padding(
-                            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
+                            padding: const EdgeInsets.fromLTRB(
+                                20.0, 20.0, 100.0, 10.0),
                             child: SizedBox(
                               height: 36,
                               child: Image.asset('images/nanosoft_logo.png'),
@@ -153,7 +156,8 @@ class HomeScreen extends StatelessWidget {
                           )
                         : const SizedBox.shrink(),
                     items: [
-                      if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
+                      if (data.isOpen)
+                        const SideMenuItemDataDivider(divider: Divider()),
                       createMenuItem(
                         context: context,
                         provider: provider,
@@ -213,16 +217,25 @@ class HomeScreen extends StatelessWidget {
                                 await Auth().signOutUser(
                                   onSuccess: () {
                                     userName = "";
-                                    Provider.of<FirebaseProvider>(context, listen: false)
-                                        .changeIsUserLoggedIn(isUserLoggedIn: false);
+                                    Provider.of<FirebaseProvider>(context,
+                                            listen: false)
+                                        .changeIsUserLoggedIn(
+                                            isUserLoggedIn: false);
                                   },
                                 );
                               },
                             )
                           : GestureDetector(
-                              onTap: () {
-                                Provider.of<FirebaseProvider>(context, listen: false)
-                                    .changeIsUserLoggedIn(isUserLoggedIn: false);
+                              onTap: () async {
+                                await Auth().signOutUser(
+                                  onSuccess: () {
+                                    userName = "";
+                                    Provider.of<FirebaseProvider>(context,
+                                            listen: false)
+                                        .changeIsUserLoggedIn(
+                                            isUserLoggedIn: false);
+                                  },
+                                );
                               },
                               child: Icon(accountItemMenuNavItem.icon),
                             ),
@@ -255,7 +268,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: allHomeScreens[provider.currentNavItemModel!.index],
+                      child:
+                          allHomeScreens[provider.currentNavItemModel!.index],
                     ),
                   ],
                 ),

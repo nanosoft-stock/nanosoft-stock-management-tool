@@ -14,7 +14,7 @@ class CustomDropdownInputField extends StatelessWidget {
   final String text;
   final TextEditingController controller;
   final List items;
-  final void Function() onSelected;
+  final void Function(String) onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class CustomDropdownInputField extends StatelessWidget {
       child: InkWell(
         onFocusChange: (hasFocus) {
           if (!hasFocus) {
-            onSelected.call();
+            onSelected(controller.text);
           }
         },
         child: SingleChildScrollView(

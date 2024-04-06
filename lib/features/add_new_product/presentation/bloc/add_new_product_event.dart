@@ -7,14 +7,10 @@ abstract class AddNewProductEvent extends Equatable {
   List<Object> get props => [];
 }
 
-// class AddNewProductInitialEvent extends AddNewProductEvent {}
+class LoadedEvent extends AddNewProductEvent {}
 
-// class AddNewProductLoadingEvent extends AddNewProductEvent {}
-
-class AddNewProductLoadedEvent extends AddNewProductEvent {}
-
-class AddNewProductCategorySelectedEvent extends AddNewProductEvent {
-  const AddNewProductCategorySelectedEvent({required this.fields});
+class CategorySelectedEvent extends AddNewProductEvent {
+  const CategorySelectedEvent({required this.fields});
 
   final List? fields;
 }
@@ -25,4 +21,4 @@ class AddNewProductButtonClickedEvent extends AddNewProductEvent {
   final List? fields;
 }
 
-class AddNewProductErrorEvent extends AddNewProductEvent {}
+class ErrorEvent extends AddNewProductEvent {}

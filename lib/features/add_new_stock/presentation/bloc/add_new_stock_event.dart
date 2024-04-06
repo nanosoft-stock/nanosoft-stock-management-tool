@@ -7,24 +7,22 @@ abstract class AddNewStockEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AddNewStockActionEvent extends AddNewStockEvent {}
+class LoadedEvent extends AddNewStockEvent {}
 
-class AddNewStockLoadedEvent extends AddNewStockEvent {}
-
-class AddNewStockCategorySelectedEvent extends AddNewStockEvent {
-  const AddNewStockCategorySelectedEvent({required this.fields});
+class CategorySelectedEvent extends AddNewStockEvent {
+  const CategorySelectedEvent({required this.fields});
 
   final List? fields;
 }
 
-class AddNewStockSkuSelectedEvent extends AddNewStockEvent {
-  const AddNewStockSkuSelectedEvent({required this.fields});
+class SkuSelectedEvent extends AddNewStockEvent {
+  const SkuSelectedEvent({required this.fields});
 
   final List? fields;
 }
 
-class AddNewStockCheckBoxTapEvent extends AddNewStockEvent {
-  const AddNewStockCheckBoxTapEvent({required this.fields});
+class CheckBoxTapEvent extends AddNewStockEvent {
+  const CheckBoxTapEvent({required this.fields});
 
   final List? fields;
 }
@@ -35,4 +33,4 @@ class AddNewStockButtonClickedEvent extends AddNewStockEvent {
   final List? fields;
 }
 
-class AddNewStockErrorEvent extends AddNewStockEvent {}
+class ErrorEvent extends AddNewStockEvent {}

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class StockInputFieldEntity extends Equatable {
-  StockInputFieldEntity({
+  const StockInputFieldEntity({
     required this.field,
     required this.datatype,
     required this.lockable,

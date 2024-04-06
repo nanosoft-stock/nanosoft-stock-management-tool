@@ -9,16 +9,14 @@ abstract class AddNewProductState extends Equatable {
   List<Object> get props => [fields!];
 }
 
-// class AddNewProductInitialState extends AddNewProductState {}
+abstract class AddNewProductActionState extends AddNewProductState {}
 
-class AddNewProductLoadingState extends AddNewProductState {}
+class LoadingState extends AddNewProductState {}
 
-class AddNewProductLoadedState extends AddNewProductState {
-  const AddNewProductLoadedState(List fields) : super(fields: fields);
+class LoadedState extends AddNewProductState {
+  const LoadedState(List fields) : super(fields: fields);
 }
 
-// class AddNewProductCategorySelectedState extends AddNewProductState {}
+class NewProductAddedActionState extends AddNewProductActionState {}
 
-// class AddNewProductButtonClickedState extends AddNewProductState {}
-
-class AddNewProductErrorState extends AddNewProductState {}
+class ErrorState extends AddNewProductState {}

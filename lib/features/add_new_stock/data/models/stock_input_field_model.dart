@@ -1,7 +1,7 @@
 import 'package:stock_management_tool/features/add_new_stock/domain/entities/stock_input_field_entity.dart';
 
 class StockInputFieldModel extends StockInputFieldEntity {
-  StockInputFieldModel({
+  const StockInputFieldModel({
     required super.field,
     required super.datatype,
     required super.lockable,

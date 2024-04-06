@@ -16,7 +16,6 @@ class AutofillFieldsWithSelectedSkuUseCase extends UseCase {
         params.where((element) => element.isWithSKU && element.field != "category").toList();
 
     for (var element in affectedFields) {
-      print("${element.field}, ${element.textValue}");
       params[params.indexOf(element)] =
           element.copyWith(textValue: productDesc[element.field.toString()].toString());
     }

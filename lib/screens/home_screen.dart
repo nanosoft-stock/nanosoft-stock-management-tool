@@ -103,12 +103,10 @@ class HomeScreen extends StatelessWidget {
       onTap: () async {
         if (provider.currentNavItemModel != navItemModel) {
           if (provider.currentNavItemModel == addNewStockNavItem) {
-            Provider.of<AddNewStockProvider>(context, listen: false)
-                .deleteCacheData();
+            Provider.of<AddNewStockProvider>(context, listen: false).deleteCacheData();
           } else if (provider.currentNavItemModel == addNewProductNavItem) {
             sl.get<AddNewProductBloc>().close();
-            Provider.of<AddNewProductProvider>(context, listen: false)
-                .deleteCacheData();
+            Provider.of<AddNewProductProvider>(context, listen: false).deleteCacheData();
           }
 
           provider.currentNavItemModel!.isSelected = false;
@@ -122,10 +120,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SideMenuProvider>(
-      builder:
-          (BuildContext context, SideMenuProvider provider, Widget? child) {
+      builder: (BuildContext context, SideMenuProvider provider, Widget? child) {
         if (!provider.hasBuilt) {
-          // print(provider.currentNavItemModel?.title);
           provider.currentNavItemModel ??= addNewStockNavItem;
           provider.hasBuilt = true;
         }
@@ -147,11 +143,11 @@ class HomeScreen extends StatelessWidget {
                 hasResizerToggle: false,
                 mode: SideMenuMode.auto,
                 builder: (data) {
+                  print(data.isOpen);
                   return SideMenuData(
                     header: data.isOpen
                         ? Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                20.0, 20.0, 100.0, 10.0),
+                            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 100.0, 10.0),
                             child: SizedBox(
                               height: 36,
                               child: Image.asset('images/nanosoft_logo.png'),
@@ -159,8 +155,7 @@ class HomeScreen extends StatelessWidget {
                           )
                         : const SizedBox.shrink(),
                     items: [
-                      if (data.isOpen)
-                        const SideMenuItemDataDivider(divider: Divider()),
+                      if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
                       createMenuItem(
                         context: context,
                         provider: provider,
@@ -220,10 +215,8 @@ class HomeScreen extends StatelessWidget {
                                 await Auth().signOutUser(
                                   onSuccess: () {
                                     userName = "";
-                                    Provider.of<FirebaseProvider>(context,
-                                            listen: false)
-                                        .changeIsUserLoggedIn(
-                                            isUserLoggedIn: false);
+                                    Provider.of<FirebaseProvider>(context, listen: false)
+                                        .changeIsUserLoggedIn(isUserLoggedIn: false);
                                   },
                                 );
                               },
@@ -233,10 +226,8 @@ class HomeScreen extends StatelessWidget {
                                 await Auth().signOutUser(
                                   onSuccess: () {
                                     userName = "";
-                                    Provider.of<FirebaseProvider>(context,
-                                            listen: false)
-                                        .changeIsUserLoggedIn(
-                                            isUserLoggedIn: false);
+                                    Provider.of<FirebaseProvider>(context, listen: false)
+                                        .changeIsUserLoggedIn(isUserLoggedIn: false);
                                   },
                                 );
                               },
@@ -271,8 +262,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child:
-                          allHomeScreens[provider.currentNavItemModel!.index],
+                      child: allHomeScreens[provider.currentNavItemModel!.index],
                     ),
                   ],
                 ),

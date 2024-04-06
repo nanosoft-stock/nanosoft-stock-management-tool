@@ -6,19 +6,19 @@ abstract class AddNewStockState extends Equatable {
   final List? fields;
 
   @override
-  List<Object> get props {
-    return [
-      fields!,
-    ];
-  }
+  List<Object> get props => [fields!];
 }
 
-class AddNewStockActionState extends AddNewStockState {}
+abstract class AddNewStockActionState extends AddNewStockState {}
 
-class AddNewStockLoadingState extends AddNewStockState {}
+class LoadingState extends AddNewStockState {}
 
-class AddNewStockLoadedState extends AddNewStockState {
-  const AddNewStockLoadedState(List fields) : super(fields: fields);
+class LoadedState extends AddNewStockState {
+  const LoadedState(List fields) : super(fields: fields);
 }
 
-class AddNewStockErrorState extends AddNewStockState {}
+class ReduceDuplicationActionState extends AddNewStockActionState {}
+
+class NewStockAddedActionState extends AddNewStockActionState {}
+
+class ErrorState extends AddNewStockState {}

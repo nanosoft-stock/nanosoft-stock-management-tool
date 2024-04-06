@@ -23,7 +23,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
   final bool alignLockable;
   final bool locked;
   final void Function(String) onSelected;
-  final onChecked;
+  final void Function() onChecked;
 
   @override
   Widget build(BuildContext context) {

@@ -18,36 +18,22 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     this._productInitialInputFieldsUseCase,
     this._productCategoryBasedInputFieldsUseCase,
     this._addNewProductUseCase,
-  ) : super(AddNewProductLoadingState()) {
-    // on<AddNewProductInitialEvent>(addNewProductInitialEvent);
-    // on<AddNewProductLoadingEvent>(addNewProductLoadingEvent);
-    on<AddNewProductLoadedEvent>(addNewProductLoadedEvent);
-    on<AddNewProductCategorySelectedEvent>(addNewProductCategorySelectedEvent);
+  ) : super(LoadingState()) {
+    on<LoadedEvent>(loadedEvent);
+    on<CategorySelectedEvent>(categorySelectedEvent);
     on<AddNewProductButtonClickedEvent>(addNewProductButtonClickedEvent);
-    on<AddNewProductErrorEvent>(addNewProductErrorEvent);
+    on<ErrorEvent>(errorEvent);
   }
 
-  // FutureOr<void> addNewProductInitialEvent(
-  //     AddNewProductInitialEvent event, Emitter<AddNewProductState> emit) async {
-  //   emit(AddNewProductLoadingState());
-  // }
-
-  // FutureOr<void> addNewProductLoadingEvent(
-  //     AddNewProductLoadingEvent event, Emitter<AddNewProductState> emit) async {
-  //   await Future.delayed(const Duration(seconds: 3));
-  //   final inputFieldData = await _initialInputFieldsUseCase!();
-  //   emit(AddNewProductLoadedState(inputFieldData));
-  // }
-
-  FutureOr<void> addNewProductLoadedEvent(
-      AddNewProductLoadedEvent event, Emitter<AddNewProductState> emit) async {
-    emit(AddNewProductLoadedState(await _productInitialInputFieldsUseCase!()));
+  FutureOr<void> loadedEvent(LoadedEvent event, Emitter<AddNewProductState> emit) async {
+    emit(LoadedState(await _productInitialInputFieldsUseCase!()));
   }
 
-  FutureOr<void> addNewProductCategorySelectedEvent(
-      AddNewProductCategorySelectedEvent event, Emitter<AddNewProductState> emit) async {
-    emit(AddNewProductLoadedState([
-      ...[event.fields![0], event.fields![1]],
+  FutureOr<void> categorySelectedEvent(
+      CategorySelectedEvent event, Emitter<AddNewProductState> emit) async {
+    emit(LoadedState([
+      event.fields![0],
+      event.fields![1],
       ...await _productCategoryBasedInputFieldsUseCase!(params: event.fields![0].textValue)
     ]));
   }
@@ -55,9 +41,9 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
   FutureOr<void> addNewProductButtonClickedEvent(
       AddNewProductButtonClickedEvent event, Emitter<AddNewProductState> emit) async {
     await _addNewProductUseCase!(params: event.fields!);
-    emit(AddNewProductLoadedState(await _productInitialInputFieldsUseCase!()));
+    emit(NewProductAddedActionState());
+    emit(LoadedState(await _productInitialInputFieldsUseCase!()));
   }
 
-  FutureOr<void> addNewProductErrorEvent(
-      AddNewProductErrorEvent event, Emitter<AddNewProductState> emit) async {}
+  FutureOr<void> errorEvent(ErrorEvent event, Emitter<AddNewProductState> emit) async {}
 }

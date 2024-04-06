@@ -33,7 +33,6 @@ Future<void> main() async {
     );
   }
   await AllPredefinedData().fetchData();
-  // print(AllPredefinedData.data);
   await initializeDependencies();
   runApp(const StockManagementToolApp());
 }

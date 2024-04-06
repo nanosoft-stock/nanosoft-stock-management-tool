@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
+import 'package:stock_management_tool/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/widgets/input_field_widget.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -17,26 +19,60 @@ class AddNewProductScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return BlocConsumer<AddNewProductBloc, AddNewProductState>(
-      bloc: _addNewProductBloc,
-      listener: (context, state) {},
-      builder: _blocBuilder,
-    );
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      int n = ((constraints.maxWidth - 135) / 338).floor();
+      double pad = ((constraints.maxWidth - 135) % 338) / 2;
+      return BlocConsumer<AddNewProductBloc, AddNewProductState>(
+        bloc: _addNewProductBloc,
+        listenWhen: (prev, next) => next is AddNewProductActionState,
+        buildWhen: (prev, next) => next is! AddNewProductActionState,
+        listener: (context, state) {
+          _blocListener(context, state, constraints, pad);
+        },
+        builder: (BuildContext context, AddNewProductState state) {
+          return _blocBuilder(context, state, constraints, n, pad);
+        },
+      );
+    });
   }
 
-  Widget _blocBuilder(context, state) {
-    debugPrint("build: ${state.runtimeType}");
+  void _blocListener(
+      BuildContext context, AddNewProductState state, BoxConstraints constraints, double pad) {
+    debugPrint("listen ${state.runtimeType}");
+
     switch (state.runtimeType) {
-      case const (AddNewProductLoadingState):
-        _addNewProductBloc.add(AddNewProductLoadedEvent());
+      case const (NewProductAddedActionState):
+        SnackBar snackBar = CustomSnackBar(
+          content: Text(
+            "New product SKU added successfully",
+            style: kLabelTextStyle,
+          ),
+          margin:
+              EdgeInsets.only(left: 302 + pad, bottom: constraints.maxHeight - 60, right: 52 + pad),
+        ).build();
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        break;
+      default:
+        break;
+    }
+  }
+
+  Widget _blocBuilder(BuildContext context, AddNewProductState state, BoxConstraints constraints,
+      int n, double pad) {
+    debugPrint("build: ${state.runtimeType}");
+
+    switch (state.runtimeType) {
+      case const (LoadingState):
+        _addNewProductBloc.add(LoadedEvent());
         return _buildLoadingStateWidget();
 
-      case const (AddNewProductErrorState):
+      case const (ErrorState):
         return _buildErrorStateWidget();
 
-      case const (AddNewProductLoadedState):
+      case const (LoadedState):
         List fields = state.fields!;
-        return _buildLoadedStateWidget(fields);
+        return _buildLoadedStateWidget(fields, constraints, n, pad);
 
       default:
         return Container();
@@ -55,33 +91,25 @@ class AddNewProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(List<dynamic> fields) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        int n = ((constraints.maxWidth - 135) / 338).floor();
-        double pad = ((constraints.maxWidth - 135) % 338) / 2;
-        return constraints.maxWidth > 475
-            ? Padding(
-                padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-                child: Column(
-                  children: [
-                    _buildInputFieldsContainer(fields, n),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    _buildAddNewProductButtonContainer(fields),
-                  ],
-                ),
-              )
-            : SizedBox(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-              );
-      },
-    );
+  Widget _buildLoadedStateWidget(List fields, BoxConstraints constraints, int n, double pad) {
+    return constraints.maxWidth > 475
+        ? Padding(
+            padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
+            child: Column(
+              children: [
+                _buildInputFieldsContainer(fields, n),
+                const SizedBox(height: 20.0),
+                _buildAddNewProductButtonContainer(fields),
+              ],
+            ),
+          )
+        : SizedBox(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+          );
   }
 
-  Widget _buildInputFieldsContainer(List<dynamic> fields, int n) {
+  Widget _buildInputFieldsContainer(List fields, int n) {
     return Expanded(
       child: CustomContainer(
         child: Padding(
@@ -101,11 +129,11 @@ class AddNewProductScreen extends StatelessWidget {
                 index: index,
                 onSelected: (value) {
                   if (fields[index].field == "category" && fields[index].textValue != value) {
-                    fields[index].textValue = value;
-                    _addNewProductBloc.add(AddNewProductCategorySelectedEvent(fields: fields));
+                    fields[index] = fields[index].copyWith(textValue: value);
+                    _addNewProductBloc.add(CategorySelectedEvent(fields: fields));
+                  } else {
+                    fields[index] = fields[index].copyWith(textValue: value);
                   }
-                  fields[index].textValue = value;
-                  debugPrint("value: ${fields[index].field} $value");
                 },
               );
             },
@@ -115,7 +143,7 @@ class AddNewProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddNewProductButtonContainer(List<dynamic> fields) {
+  Widget _buildAddNewProductButtonContainer(List fields) {
     return CustomContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(

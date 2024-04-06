@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 
 class CustomCheckbox extends StatelessWidget {
   const CustomCheckbox({
@@ -13,18 +11,13 @@ class CustomCheckbox extends StatelessWidget {
 
   final String text;
   final bool locked;
-  final onChecked;
+  final void Function() onChecked;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         onChecked();
-        // Provider.of<AddNewStockProvider>(context, listen: false).changeCacheDataSubField(
-        //   field: text,
-        //   subField: "locked",
-        //   value: !locked,
-        // );
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
@@ -31,7 +32,8 @@ Future<void> main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
-  AllPredefinedData().fetchData();
+  await AllPredefinedData().fetchData();
+  // print(AllPredefinedData.data);
   await initializeDependencies();
   runApp(const StockManagementToolApp());
 }
@@ -45,6 +47,9 @@ class StockManagementToolApp extends StatelessWidget {
       providers: [
         BlocProvider<AddNewProductBloc>(
           create: (context) => sl.get<AddNewProductBloc>(),
+        ),
+        BlocProvider<AddNewStockBloc>(
+          create: (context) => sl.get<AddNewStockBloc>(),
         ),
       ],
       child: MultiProvider(

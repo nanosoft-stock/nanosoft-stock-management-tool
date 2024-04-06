@@ -85,7 +85,7 @@ class FirestoreRestApi {
       );
 
       if (response.statusCode == 200) {
-        // print(response.body.trim());
+        // print("body: ${response.body.trim()}");
       }
     } catch (e) {
       print(e);

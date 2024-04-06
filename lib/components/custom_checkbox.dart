@@ -8,20 +8,23 @@ class CustomCheckbox extends StatelessWidget {
     super.key,
     required this.text,
     required this.locked,
+    required this.onChecked,
   });
 
   final String text;
   final bool locked;
+  final onChecked;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Provider.of<AddNewStockProvider>(context, listen: false).changeCacheDataSubField(
-          field: text,
-          subField: "locked",
-          value: !locked,
-        );
+        onChecked();
+        // Provider.of<AddNewStockProvider>(context, listen: false).changeCacheDataSubField(
+        //   field: text,
+        //   subField: "locked",
+        //   value: !locked,
+        // );
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,

@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/views/add_new_product_screen.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/views/add_new_stock_screen.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/nav_item_model.dart';
 import 'package:stock_management_tool/providers/add_new_product_provider.dart';
 import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/providers/side_menu_provider.dart';
-import 'package:stock_management_tool/screens/add_new_stock_screen.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
 import 'package:stock_management_tool/screens/archive_stock_screen.dart';
 import 'package:stock_management_tool/screens/export_stock_screen.dart';
@@ -76,7 +78,7 @@ class HomeScreen extends StatelessWidget {
   );
 
   final allHomeScreens = [
-    const AddNewStockScreen(),
+    AddNewStockScreen(),
     AddNewProductScreen(),
     const VisualiseStockScreen(),
     const ExportStockScreen(),
@@ -104,6 +106,7 @@ class HomeScreen extends StatelessWidget {
             Provider.of<AddNewStockProvider>(context, listen: false)
                 .deleteCacheData();
           } else if (provider.currentNavItemModel == addNewProductNavItem) {
+            sl.get<AddNewProductBloc>().close();
             Provider.of<AddNewProductProvider>(context, listen: false)
                 .deleteCacheData();
           }

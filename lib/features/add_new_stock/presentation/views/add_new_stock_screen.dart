@@ -2,24 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
-import 'package:stock_management_tool/features/add_new_product/presentation/widgets/input_field_widget.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/input_field_widget.dart';
 import 'package:stock_management_tool/injection_container.dart';
 
-class AddNewProductScreen extends StatelessWidget {
-  AddNewProductScreen({super.key});
+class AddNewStockScreen extends StatelessWidget {
+  AddNewStockScreen({super.key});
 
-  final AddNewProductBloc _addNewProductBloc = sl.get<AddNewProductBloc>();
+  final AddNewStockBloc _addNewStockBloc = sl.get<AddNewStockBloc>();
 
   @override
   Widget build(BuildContext context) {
-    return _buildBody();
-  }
-
-  Widget _buildBody() {
-    return BlocConsumer<AddNewProductBloc, AddNewProductState>(
-      bloc: _addNewProductBloc,
-      listener: (context, state) {},
+    return BlocConsumer<AddNewStockBloc, AddNewStockState>(
+      bloc: _addNewStockBloc,
+      listenWhen: (prev, next) => next is AddNewStockActionState,
+      buildWhen: (prev, next) => next is! AddNewStockActionState,
+      listener: (context, state) {
+        print("listen ${state.runtimeType}");
+        // var banner = MaterialBanner(
+        //   content: Text("Success"),
+        //   actions: [Container()],
+        //   elevation: 5,
+        //   margin: EdgeInsets.fromLTRB(450, 20, 200, 20),
+        // );
+        // ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+        // ScaffoldMessenger.of(context).showMaterialBanner(banner);
+      },
       builder: _blocBuilder,
     );
   }
@@ -27,14 +35,14 @@ class AddNewProductScreen extends StatelessWidget {
   Widget _blocBuilder(context, state) {
     debugPrint("build: ${state.runtimeType}");
     switch (state.runtimeType) {
-      case const (AddNewProductLoadingState):
-        _addNewProductBloc.add(AddNewProductLoadedEvent());
+      case const (AddNewStockLoadingState):
+        _addNewStockBloc.add(AddNewStockLoadedEvent());
         return _buildLoadingStateWidget();
 
-      case const (AddNewProductErrorState):
+      case const (AddNewStockErrorState):
         return _buildErrorStateWidget();
 
-      case const (AddNewProductLoadedState):
+      case const (AddNewStockLoadedState):
         List fields = state.fields!;
         return _buildLoadedStateWidget(fields);
 
@@ -55,12 +63,12 @@ class AddNewProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(List<dynamic> fields) {
+  Widget _buildLoadedStateWidget(List fields) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        int n = ((constraints.maxWidth - 135) / 338).floor();
-        double pad = ((constraints.maxWidth - 135) % 338) / 2;
-        return constraints.maxWidth > 475
+        int n = ((constraints.maxWidth - 135) / 390.5).floor();
+        double pad = ((constraints.maxWidth - 135) % 390.5) / 2;
+        return constraints.maxWidth > 525
             ? Padding(
                 padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
                 child: Column(
@@ -69,7 +77,7 @@ class AddNewProductScreen extends StatelessWidget {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    _buildAddNewProductButtonContainer(fields),
+                    _buildAddNewStockButtonContainer(fields),
                   ],
                 ),
               )
@@ -101,11 +109,18 @@ class AddNewProductScreen extends StatelessWidget {
                 index: index,
                 onSelected: (value) {
                   if (fields[index].field == "category" && fields[index].textValue != value) {
-                    fields[index].textValue = value;
-                    _addNewProductBloc.add(AddNewProductCategorySelectedEvent(fields: fields));
+                    fields[index] = fields[index].copyWith(textValue: value);
+                    _addNewStockBloc.add(AddNewStockCategorySelectedEvent(fields: fields));
+                  } else {
+                    fields[index] = fields[index].copyWith(textValue: value);
+                    if (fields[index].field == 'sku' && fields[index].items.contains(value)) {
+                      _addNewStockBloc.add(AddNewStockSkuSelectedEvent(fields: fields));
+                    }
                   }
-                  fields[index].textValue = value;
-                  debugPrint("value: ${fields[index].field} $value");
+                },
+                onChecked: () {
+                  fields[index] = fields[index].copyWith(locked: !fields[index].locked);
+                  _addNewStockBloc.add(AddNewStockCheckBoxTapEvent(fields: fields));
                 },
               );
             },
@@ -115,7 +130,7 @@ class AddNewProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddNewProductButtonContainer(List<dynamic> fields) {
+  CustomContainer _buildAddNewStockButtonContainer(List<dynamic> fields) {
     return CustomContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -123,11 +138,11 @@ class AddNewProductScreen extends StatelessWidget {
           horizontal: 22.5,
         ),
         child: SizedBox(
-          width: 338,
+          width: 390.5,
           child: CustomElevatedButton(
-            text: "Add New Product",
+            text: "Add New Stock",
             onPressed: () async {
-              _addNewProductBloc.add(AddNewProductButtonClickedEvent(fields: fields));
+              _addNewStockBloc.add(AddNewStockButtonClickedEvent(fields: fields));
             },
           ),
         ),

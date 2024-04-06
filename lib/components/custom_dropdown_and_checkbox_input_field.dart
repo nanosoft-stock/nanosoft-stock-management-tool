@@ -13,6 +13,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
     this.alignLockable = false,
     this.locked = false,
     required this.onSelected,
+    required this.onChecked,
   });
 
   final String text;
@@ -22,6 +23,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
   final bool alignLockable;
   final bool locked;
   final void Function(String) onSelected;
+  final onChecked;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +77,7 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
                     CustomCheckbox(
                       text: text.toLowerCase(),
                       locked: locked,
+                      onChecked: onChecked,
                     ),
                   if (alignLockable)
                     const SizedBox(

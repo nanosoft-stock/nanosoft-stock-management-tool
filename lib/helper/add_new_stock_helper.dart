@@ -16,7 +16,7 @@ class AddNewStockHelper {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
                 "${DateFormat('yyyy-MM-ddTHH:mm:ss.SSSSSSS').format(DateTime.now())}Z",
           };
-        } else if (e["field"] == "user") {
+        } else if (e["field"] == "staff") {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]): userName,
           };
@@ -34,7 +34,7 @@ class AddNewStockHelper {
       for (var e in AllPredefinedData.data[category]["fields"]) {
         if (e["field"] == "date") {
           convertedData[e["field"]] = FieldValue.serverTimestamp();
-        } else if (e["field"] == "user") {
+        } else if (e["field"] == "staff") {
           convertedData[e["field"]] = userName;
         } else if (e["field"] == "archived") {
           convertedData[e["field"]] = false;

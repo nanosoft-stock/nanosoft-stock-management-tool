@@ -9,14 +9,14 @@ abstract class AddNewProductEvent extends Equatable {
 
 // class AddNewProductInitialEvent extends AddNewProductEvent {}
 
-class AddNewProductLoadingEvent extends AddNewProductEvent {}
+// class AddNewProductLoadingEvent extends AddNewProductEvent {}
 
 class AddNewProductLoadedEvent extends AddNewProductEvent {}
 
 class AddNewProductCategorySelectedEvent extends AddNewProductEvent {
-  const AddNewProductCategorySelectedEvent({this.category});
+  const AddNewProductCategorySelectedEvent({required this.fields});
 
-  final String? category;
+  final List? fields;
 }
 
 class AddNewProductButtonClickedEvent extends AddNewProductEvent {

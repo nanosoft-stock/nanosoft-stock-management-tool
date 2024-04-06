@@ -143,7 +143,6 @@ class HomeScreen extends StatelessWidget {
                 hasResizerToggle: false,
                 mode: SideMenuMode.auto,
                 builder: (data) {
-                  print(data.isOpen);
                   return SideMenuData(
                     header: data.isOpen
                         ? Padding(

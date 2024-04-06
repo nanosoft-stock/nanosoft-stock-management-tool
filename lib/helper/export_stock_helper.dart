@@ -8,7 +8,7 @@ class ExportStockHelper {
   Future<List> fetchData() async {
     List stock = [];
 
-    stock = await FirestoreRestApi().getDocuments(path: "stock_data", includeDocRef: true);
+    stock = (await FirestoreRestApi().getDocuments(path: "stock_data", includeDocRef: true)).data;
 
     stock = stock
         .map((element) => element

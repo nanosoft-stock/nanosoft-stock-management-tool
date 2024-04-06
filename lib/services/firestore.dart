@@ -10,10 +10,11 @@ class Firestore {
         path: path,
       );
     } else {
-      data = await FirestoreRestApi().getDocuments(
+      data = (await FirestoreRestApi().getDocuments(
         path: path,
         includeDocRef: includeDocRef,
-      );
+      ))
+          .data;
     }
     return data;
   }
@@ -37,7 +38,7 @@ class Firestore {
     if (!kIsDesktop) {
       data = await FirestoreDefault().filterQuery(path: path, query: query);
     } else {
-      data = await FirestoreRestApi().filterQuery(path: path, query: query);
+      data = (await FirestoreRestApi().filterQuery(path: path, query: query)).data;
     }
 
     return data;

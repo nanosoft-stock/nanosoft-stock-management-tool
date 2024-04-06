@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
 
 class Auth {
   Future<void> signInUser(
-      {required String email, required String password, required var onSuccess}) async {
+      {required String email,
+      required String password,
+      required void Function(bool) onSuccess}) async {
     if (!kIsDesktop) {
       await AuthDefault().signInWithEmailAndPassword(
         email: email,
@@ -26,7 +27,7 @@ class Auth {
       {required String username,
       required String email,
       required String password,
-      required var onSuccess}) async {
+      required void Function(bool) onSuccess}) async {
     if (!kIsDesktop) {
       await AuthDefault().createUserWithEmailAndPassword(
         username: username,
@@ -45,7 +46,7 @@ class Auth {
     }
   }
 
-  Future<void> signOutUser({required VoidCallback onSuccess}) async {
+  Future<void> signOutUser({required void Function() onSuccess}) async {
     if (!kIsDesktop) {
       await AuthDefault().signOut();
     } else {

@@ -41,8 +41,6 @@ class AddNewStockScreen extends StatelessWidget {
 
   void _blocListener(
       BuildContext context, AddNewStockState state, BoxConstraints constraints, double pad) {
-    debugPrint("listen ${state.runtimeType}");
-
     switch (state.runtimeType) {
       case const (NewStockAddedActionState):
         SnackBar snackBar = CustomSnackBar(
@@ -56,6 +54,7 @@ class AddNewStockScreen extends StatelessWidget {
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         break;
+
       default:
         break;
     }
@@ -63,8 +62,6 @@ class AddNewStockScreen extends StatelessWidget {
 
   Widget _blocBuilder(
       BuildContext context, AddNewStockState state, BoxConstraints constraints, int n, double pad) {
-    debugPrint("build: ${state.runtimeType}");
-
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewStockBloc.add(LoadedEvent());

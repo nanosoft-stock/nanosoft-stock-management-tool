@@ -1,11 +1,11 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:stock_management_tool/core/resources/data_state.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 
 class FirestoreRestApi {
   static String apiKey = "";
   static String projectId = "";
+  final Dio _dio = Dio();
 
   void fetchApiKey() {
     apiKey = DefaultFirebaseOptions.web.apiKey;
@@ -15,15 +15,15 @@ class FirestoreRestApi {
     projectId = DefaultFirebaseOptions.web.projectId;
   }
 
-  Future<List> getDocuments({required String path, bool includeDocRef = false}) async {
+  Future<DataState> getDocuments({required String path, bool includeDocRef = false}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
-      final response = await http.get(Uri.parse(url));
+
+      Response response = await _dio.get(url);
 
       if (response.statusCode == 200) {
-        var jsonData = json.decode(response.body.trim());
-        // print(jsonData);
+        var jsonData = response.data;
         List data = [];
         if (includeDocRef) {
           data = jsonData['documents'] != null
@@ -41,58 +41,38 @@ class FirestoreRestApi {
               ? jsonData['documents'].map((e) => e['fields']).toList()
               : [];
         }
-
-        return data;
+        return DataSuccess(data);
       }
-    } catch (e) {
-      print("Error: $e");
+    } on Exception catch (error) {
+      return DataFailed(error);
     }
-    return [];
+    return DataFailed(Exception("Unknown Exception"));
   }
 
-  Future<Map> getFields({required String path}) async {
+  Future<DataState> createDocument({required String path, required Map data}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
-      final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
-        var jsonData = json.decode(response.body.trim());
-        // print(jsonData);
-        var data = jsonData['fields'];
-        return data;
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-    return {};
-  }
-
-  Future<void> createDocument({required String path, required Map data}) async {
-    try {
-      String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
+      Response response = await _dio.post(
+        url,
+        data: {
+          "fields": data,
         },
-        body: jsonEncode(
-          <String, dynamic>{
-            "fields": data,
-          },
-        ),
       );
 
       if (response.statusCode == 200) {
-        // print("body: ${response.body.trim()}");
+        var jsonData = response.data;
+        var data = jsonData['fields'];
+        return DataSuccess(data);
       }
-    } catch (e) {
-      print(e);
+    } on Exception catch (error) {
+      return DataFailed(error);
     }
+    return DataFailed(Exception("Unknown Exception"));
   }
 
-  Future<List> filterQuery({required String path, required Map query}) async {
+  Future<DataState> filterQuery({required String path, required Map query}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents${path != '' ? '/$path' : ''}:runQuery?key=$apiKey";
@@ -118,27 +98,21 @@ class FirestoreRestApi {
         structuredQuery["endAt"] = query["endAt"];
       }
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
+      Response response = await _dio.post(
+        url,
+        data: {
+          "structuredQuery": structuredQuery,
         },
-        body: jsonEncode(
-          <String, dynamic>{
-            "structuredQuery": structuredQuery,
-          },
-        ),
       );
 
       if (response.statusCode == 200) {
-        var jsonData = json.decode(response.body.trim());
+        var jsonData = response.data;
         var data = jsonData.map((e) => e["document"]["name"].toString().split("/").last).toList();
-        // print(data);
-        return data;
+        return DataSuccess(data);
       }
-    } catch (e) {
-      print("Error: $e");
+    } on Exception catch (error) {
+      return DataFailed(error);
     }
-    return [];
+    return DataFailed(Exception("Unknown Exception"));
   }
 }

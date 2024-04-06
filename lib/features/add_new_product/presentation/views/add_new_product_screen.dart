@@ -38,13 +38,11 @@ class AddNewProductScreen extends StatelessWidget {
 
   void _blocListener(
       BuildContext context, AddNewProductState state, BoxConstraints constraints, double pad) {
-    debugPrint("listen ${state.runtimeType}");
-
     switch (state.runtimeType) {
       case const (NewProductAddedActionState):
         SnackBar snackBar = CustomSnackBar(
           content: Text(
-            "New product SKU added successfully",
+            "New SKU added successfully",
             style: kLabelTextStyle,
           ),
           margin:
@@ -53,6 +51,7 @@ class AddNewProductScreen extends StatelessWidget {
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         break;
+
       default:
         break;
     }
@@ -60,8 +59,6 @@ class AddNewProductScreen extends StatelessWidget {
 
   Widget _blocBuilder(BuildContext context, AddNewProductState state, BoxConstraints constraints,
       int n, double pad) {
-    debugPrint("build: ${state.runtimeType}");
-
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewProductBloc.add(LoadedEvent());

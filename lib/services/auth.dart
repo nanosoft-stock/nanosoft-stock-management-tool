@@ -1,56 +1,52 @@
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
 
 class Auth {
-  Future<void> signInUser(
-      {required String email,
-      required String password,
-      required void Function(bool) onSuccess}) async {
+  Future<void> signInUser({
+    required String email,
+    required String password,
+  }) async {
     if (!kIsDesktop) {
-      await AuthDefault().signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await sl.get<AuthDefault>().signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
     } else {
-      await AuthRestApi().signInUserWithEmailAndPasswordRestApi(
-        email: email,
-        password: password,
-        onSuccess: (value) {
-          onSuccess(value);
-        },
-      );
+      await sl.get<AuthRestApi>().signInUserWithEmailAndPasswordRestApi(
+            email: email,
+            password: password,
+          );
     }
   }
 
-  Future<void> signUpUser(
-      {required String username,
-      required String email,
-      required String password,
-      required void Function(bool) onSuccess}) async {
+  Future<void> signUpUser({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
     if (!kIsDesktop) {
-      await AuthDefault().createUserWithEmailAndPassword(
-        username: username,
-        email: email,
-        password: password,
-      );
+      await sl.get<AuthDefault>().createUserWithEmailAndPassword(
+            username: username,
+            email: email,
+            password: password,
+          );
     } else {
-      await AuthRestApi().createUserWithEmailAndPasswordRestApi(
-        username: username,
-        email: email,
-        password: password,
-        onSuccess: (value) {
-          onSuccess(value);
-        },
-      );
+      await sl.get<AuthRestApi>().createUserWithEmailAndPasswordRestApi(
+            username: username,
+            email: email,
+            password: password,
+          );
     }
   }
 
-  Future<void> signOutUser({required void Function() onSuccess}) async {
+  Future<void> signOutUser() async {
     if (!kIsDesktop) {
-      await AuthDefault().signOut();
+      await sl.get<AuthDefault>().signOut();
     } else {
-      onSuccess();
+      await sl.get<AuthRestApi>().removeUserCredentialsToPreferences();
+      sl.get<AuthRestApi>().changeIsUserLoggedIn(isUserLoggedIn: false);
     }
   }
 }

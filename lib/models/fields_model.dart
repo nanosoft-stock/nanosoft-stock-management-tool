@@ -1,4 +1,5 @@
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
 class FieldsModel {
@@ -9,7 +10,7 @@ class FieldsModel {
   List items = [];
 
   Future<List> fetchItems() async {
-    items = await Firestore().getDocuments(path: "category_list/$categoryDoc/fields");
+    items = await sl.get<Firestore>().getDocuments(path: "category_list/$categoryDoc/fields");
 
     if (kIsDesktop) {
       items = items

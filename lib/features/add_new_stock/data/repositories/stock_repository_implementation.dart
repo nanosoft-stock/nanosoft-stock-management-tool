@@ -2,6 +2,7 @@ import 'package:stock_management_tool/features/add_new_stock/data/models/stock_i
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
@@ -16,7 +17,7 @@ class StockRepositoryImplementation implements StockRepository {
         "isWithSKU": true,
         "isTitleCase": true,
         "isBg": false,
-        "order": "2",
+        "order": 2,
         "items": AllPredefinedData.data["categories"]
             .map(
               (e) => e.toString().toTitleCase(),
@@ -57,9 +58,9 @@ class StockRepositoryImplementation implements StockRepository {
     for (var element in fields) {
       data[element.field] = element.textValue;
     }
-    await Firestore().createDocument(
-      path: "stock_data",
-      data: AddNewStockHelper.toJson(data: data),
-    );
+    await sl.get<Firestore>().createDocument(
+          path: "stock_data",
+          data: AddNewStockHelper.toJson(data: data),
+        );
   }
 }

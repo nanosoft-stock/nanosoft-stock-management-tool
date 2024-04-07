@@ -22,7 +22,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
       isWithSKU: map['isWithSKU'],
       isTitleCase: map['isTitleCase'],
       isBg: map['isBg'],
-      order: int.parse(map['order']),
+      order: int.parse(map['order'].toString()),
       items: map['items'] ?? [],
       textValue: "",
       locked: false,

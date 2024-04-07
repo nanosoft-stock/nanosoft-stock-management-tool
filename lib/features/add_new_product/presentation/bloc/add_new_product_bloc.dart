@@ -22,7 +22,6 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     on<LoadedEvent>(loadedEvent);
     on<CategorySelectedEvent>(categorySelectedEvent);
     on<AddNewProductButtonClickedEvent>(addNewProductButtonClickedEvent);
-    on<ErrorEvent>(errorEvent);
   }
 
   FutureOr<void> loadedEvent(LoadedEvent event, Emitter<AddNewProductState> emit) async {
@@ -44,6 +43,4 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     emit(NewProductAddedActionState());
     emit(LoadedState(await _productInitialInputFieldsUseCase!()));
   }
-
-  FutureOr<void> errorEvent(ErrorEvent event, Emitter<AddNewProductState> emit) async {}
 }

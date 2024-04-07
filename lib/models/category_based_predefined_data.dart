@@ -1,4 +1,5 @@
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/fields_model.dart';
 import 'package:stock_management_tool/models/products_model.dart';
 import 'package:stock_management_tool/services/firestore.dart';
@@ -11,36 +12,36 @@ class CategoryBasedPredefinedData {
   Map data = {};
 
   Future<Map> fetchData() async {
-    final categoryDoc = (await Firestore().filterQuery(
-      path: !kIsDesktop ? "category_list" : "",
-      query: !kIsDesktop
-          ? {
-              "where": {
-                "field": "category",
-                "op": "isEqualTo",
-                "value": category,
-              },
-            }
-          : {
-              "from": [
-                {
-                  "collectionId": "category_list",
-                  "allDescendants": false,
-                },
-              ],
-              "where": {
-                "fieldFilter": {
-                  "field": {
-                    "fieldPath": "category",
+    final categoryDoc = (await sl.get<Firestore>().filterQuery(
+          path: !kIsDesktop ? "category_list" : "",
+          query: !kIsDesktop
+              ? {
+                  "where": {
+                    "field": "category",
+                    "op": "isEqualTo",
+                    "value": category,
                   },
-                  "op": "EQUAL",
-                  "value": {
-                    "stringValue": category,
-                  }
+                }
+              : {
+                  "from": [
+                    {
+                      "collectionId": "category_list",
+                      "allDescendants": false,
+                    },
+                  ],
+                  "where": {
+                    "fieldFilter": {
+                      "field": {
+                        "fieldPath": "category",
+                      },
+                      "op": "EQUAL",
+                      "value": {
+                        "stringValue": category,
+                      }
+                    },
+                  },
                 },
-              },
-            },
-    ))[0];
+        ))[0];
 
     data["categoryDoc"] = categoryDoc;
 

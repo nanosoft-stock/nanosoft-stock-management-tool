@@ -32,5 +32,3 @@ class AddNewStockButtonClickedEvent extends AddNewStockEvent {
 
   final List? fields;
 }
-
-class ErrorEvent extends AddNewStockEvent {}

@@ -12,10 +12,27 @@ import 'package:stock_management_tool/features/add_new_stock/domain/usecases/aut
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_category_based_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
+import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
+import 'package:stock_management_tool/features/auth/domain/repositories/auth_repository.dart';
+import 'package:stock_management_tool/features/auth/domain/usecases/sign_in_user_usecase.dart';
+import 'package:stock_management_tool/features/auth/domain/usecases/sign_up_user_usecase.dart';
+import 'package:stock_management_tool/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:stock_management_tool/services/auth.dart';
+import 'package:stock_management_tool/services/auth_default.dart';
+import 'package:stock_management_tool/services/auth_rest_api.dart';
+import 'package:stock_management_tool/services/firestore.dart';
+import 'package:stock_management_tool/services/firestore_default.dart';
+import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  // Auth
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImplementation());
+  sl.registerLazySingleton<SignInUserUseCase>(() => SignInUserUseCase(sl()));
+  sl.registerLazySingleton<SignUpUserUseCase>(() => SignUpUserUseCase(sl()));
+  sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl()));
+
   // Add New Stock
   sl.registerLazySingleton<StockRepository>(() => StockRepositoryImplementation());
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
@@ -35,4 +52,12 @@ Future<void> initializeDependencies() async {
       () => GetProductCategoryBasedInputFieldsUseCase(sl()));
   sl.registerLazySingleton<AddNewProductUseCase>(() => AddNewProductUseCase(sl()));
   sl.registerFactory<AddNewProductBloc>(() => AddNewProductBloc(sl(), sl(), sl()));
+
+  // Services
+  sl.registerLazySingleton<Auth>(() => Auth());
+  sl.registerLazySingleton<AuthDefault>(() => AuthDefault());
+  sl.registerLazySingleton<AuthRestApi>(() => AuthRestApi());
+  sl.registerLazySingleton<Firestore>(() => Firestore());
+  sl.registerLazySingleton<FirestoreDefault>(() => FirestoreDefault());
+  sl.registerLazySingleton<FirestoreRestApi>(() => FirestoreRestApi());
 }

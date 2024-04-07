@@ -6,15 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
+import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
-import 'package:stock_management_tool/providers/add_new_product_provider.dart';
-import 'package:stock_management_tool/providers/add_new_stock_provider.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
-import 'package:stock_management_tool/providers/firebase_provider.dart';
 import 'package:stock_management_tool/providers/side_menu_provider.dart';
-import 'package:stock_management_tool/screens/authentication_screen.dart';
 import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
@@ -22,18 +19,18 @@ import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDependencies();
   if (defaultTargetPlatform == TargetPlatform.linux && !kIsWeb) {
     kIsDesktop = true;
-    AuthRestApi().fetchApiKey();
-    FirestoreRestApi().fetchApiKey();
-    FirestoreRestApi().fetchProjectId();
+    await sl.get<AuthRestApi>().fetchApiKeyAndInitializePreferences();
+    await sl.get<AuthRestApi>().checkUserPreviousLoginStatus();
+    sl.get<FirestoreRestApi>().fetchApiKeyAndProjectId();
   } else {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
   await AllPredefinedData().fetchData();
-  await initializeDependencies();
   runApp(const StockManagementToolApp());
 }
 
@@ -54,16 +51,7 @@ class StockManagementToolApp extends StatelessWidget {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => FirebaseProvider(),
-          ),
-          ChangeNotifierProvider(
             create: (context) => SideMenuProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => AddNewStockProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => AddNewProductProvider(),
           ),
           ChangeNotifierProvider(
             create: (context) => ExportStockProvider(),
@@ -75,22 +63,22 @@ class StockManagementToolApp extends StatelessWidget {
             child: Scaffold(
               body: kIsDesktop
                   ? StreamBuilder<bool>(
-                      stream: FirebaseProvider.isUserLoggedInStreamController.stream,
+                      stream: sl.get<AuthRestApi>().userLogInStatusStreamController.stream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data == true) {
                           return HomeScreen();
                         } else {
-                          return const AuthenticationScreen();
+                          return AuthenticationView();
                         }
                       },
                     )
                   : StreamBuilder(
-                      stream: AuthDefault().authStateChanges,
+                      stream: sl.get<AuthDefault>().authStateChanges,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return HomeScreen();
                         } else {
-                          return const AuthenticationScreen();
+                          return AuthenticationView();
                         }
                       },
                     ),

@@ -4,14 +4,14 @@ import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/components/custom_snack_bar.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
-import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/input_field_widget.dart';
+import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
+import 'package:stock_management_tool/features/add_new_product/presentation/widgets/custom_input_field.dart';
 import 'package:stock_management_tool/injection_container.dart';
 
-class AddNewStockScreen extends StatelessWidget {
-  AddNewStockScreen({super.key});
+class AddNewProductView extends StatelessWidget {
+  AddNewProductView({super.key});
 
-  final AddNewStockBloc _addNewStockBloc = sl.get<AddNewStockBloc>();
+  final AddNewProductBloc _addNewProductBloc = sl.get<AddNewProductBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,33 +19,30 @@ class AddNewStockScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        int n = ((constraints.maxWidth - 135) / 390.5).floor();
-        double pad = ((constraints.maxWidth - 135) % 390.5) / 2;
-
-        return BlocConsumer<AddNewStockBloc, AddNewStockState>(
-          bloc: _addNewStockBloc,
-          listenWhen: (prev, next) => next is AddNewStockActionState,
-          buildWhen: (prev, next) => next is! AddNewStockActionState,
-          listener: (context, state) {
-            _blocListener(context, state, constraints, pad);
-          },
-          builder: (BuildContext context, AddNewStockState state) {
-            return _blocBuilder(context, state, constraints, n, pad);
-          },
-        );
-      },
-    );
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      int n = ((constraints.maxWidth - 135) / 338).floor();
+      double pad = ((constraints.maxWidth - 135) % 338) / 2;
+      return BlocConsumer<AddNewProductBloc, AddNewProductState>(
+        bloc: _addNewProductBloc,
+        listenWhen: (prev, next) => next is AddNewProductActionState,
+        buildWhen: (prev, next) => next is! AddNewProductActionState,
+        listener: (context, state) {
+          _blocListener(context, state, constraints, pad);
+        },
+        builder: (BuildContext context, AddNewProductState state) {
+          return _blocBuilder(context, state, constraints, n, pad);
+        },
+      );
+    });
   }
 
   void _blocListener(
-      BuildContext context, AddNewStockState state, BoxConstraints constraints, double pad) {
+      BuildContext context, AddNewProductState state, BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
-      case const (NewStockAddedActionState):
+      case const (NewProductAddedActionState):
         SnackBar snackBar = CustomSnackBar(
           content: Text(
-            "New stock added successfully",
+            "New SKU added successfully",
             style: kLabelTextStyle,
           ),
           margin:
@@ -60,11 +57,11 @@ class AddNewStockScreen extends StatelessWidget {
     }
   }
 
-  Widget _blocBuilder(
-      BuildContext context, AddNewStockState state, BoxConstraints constraints, int n, double pad) {
+  Widget _blocBuilder(BuildContext context, AddNewProductState state, BoxConstraints constraints,
+      int n, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
-        _addNewStockBloc.add(LoadedEvent());
+        _addNewProductBloc.add(LoadedEvent());
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
@@ -92,14 +89,14 @@ class AddNewStockScreen extends StatelessWidget {
   }
 
   Widget _buildLoadedStateWidget(List fields, BoxConstraints constraints, int n, double pad) {
-    return constraints.maxWidth > 525
+    return constraints.maxWidth > 475
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
             child: Column(
               children: [
                 _buildInputFieldsContainer(fields, n),
                 const SizedBox(height: 20.0),
-                _buildAddNewStockButtonContainer(fields),
+                _buildAddNewProductButtonContainer(fields),
               ],
             ),
           )
@@ -124,23 +121,16 @@ class AddNewStockScreen extends StatelessWidget {
               mainAxisExtent: 95,
             ),
             itemBuilder: (context, index) {
-              return InputFieldWidget(
+              return CustomInputField(
                 fields: fields,
                 index: index,
                 onSelected: (value) {
                   if (fields[index].field == "category" && fields[index].textValue != value) {
                     fields[index] = fields[index].copyWith(textValue: value);
-                    _addNewStockBloc.add(CategorySelectedEvent(fields: fields));
+                    _addNewProductBloc.add(CategorySelectedEvent(fields: fields));
                   } else {
                     fields[index] = fields[index].copyWith(textValue: value);
-                    if (fields[index].field == 'sku' && fields[index].items.contains(value)) {
-                      _addNewStockBloc.add(SkuSelectedEvent(fields: fields));
-                    }
                   }
-                },
-                onChecked: () {
-                  fields[index] = fields[index].copyWith(locked: !fields[index].locked);
-                  _addNewStockBloc.add(CheckBoxTapEvent(fields: fields));
                 },
               );
             },
@@ -150,7 +140,7 @@ class AddNewStockScreen extends StatelessWidget {
     );
   }
 
-  CustomContainer _buildAddNewStockButtonContainer(List fields) {
+  Widget _buildAddNewProductButtonContainer(List fields) {
     return CustomContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -158,11 +148,11 @@ class AddNewStockScreen extends StatelessWidget {
           horizontal: 22.5,
         ),
         child: SizedBox(
-          width: 390.5,
+          width: 338,
           child: CustomElevatedButton(
-            text: "Add New Stock",
+            text: "Add New Product",
             onPressed: () async {
-              _addNewStockBloc.add(AddNewStockButtonClickedEvent(fields: fields));
+              _addNewProductBloc.add(AddNewProductButtonClickedEvent(fields: fields));
             },
           ),
         ),

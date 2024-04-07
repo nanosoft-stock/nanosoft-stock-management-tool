@@ -3,8 +3,8 @@ import 'package:stock_management_tool/components/custom_dropdown_and_checkbox_in
 import 'package:stock_management_tool/components/custom_text_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
-class InputFieldWidget extends StatelessWidget {
-  const InputFieldWidget({
+class CustomInputField extends StatelessWidget {
+  const CustomInputField({
     super.key,
     required this.fields,
     required this.index,

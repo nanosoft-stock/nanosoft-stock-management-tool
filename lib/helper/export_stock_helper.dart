@@ -1,6 +1,7 @@
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
@@ -8,7 +9,7 @@ class ExportStockHelper {
   Future<List> fetchData() async {
     List stock = [];
 
-    stock = (await FirestoreRestApi().getDocuments(path: "stock_data", includeDocRef: true)).data;
+    stock = (await sl.get<FirestoreRestApi>().getDocuments(path: "stock_data", includeDocRef: true)).data;
 
     stock = stock
         .map((element) => element

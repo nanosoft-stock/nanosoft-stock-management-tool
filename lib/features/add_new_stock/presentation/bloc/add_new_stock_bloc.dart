@@ -27,7 +27,6 @@ class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
     on<SkuSelectedEvent>(skuSelectedEvent);
     on<CheckBoxTapEvent>(checkBoxTapEvent);
     on<AddNewStockButtonClickedEvent>(addNewStockButtonClickedEvent);
-    on<ErrorEvent>(errorEvent);
   }
 
   FutureOr<void> loadedEvent(LoadedEvent event, Emitter<AddNewStockState> emit) async {
@@ -58,6 +57,4 @@ class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
     emit(NewStockAddedActionState());
     emit(LoadedState(await _stockInitialInputFieldsUseCase!()));
   }
-
-  FutureOr<void> errorEvent(ErrorEvent event, Emitter<AddNewStockState> emit) async {}
 }

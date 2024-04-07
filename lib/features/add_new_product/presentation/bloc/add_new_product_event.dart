@@ -20,5 +20,3 @@ class AddNewProductButtonClickedEvent extends AddNewProductEvent {
 
   final List? fields;
 }
-
-class ErrorEvent extends AddNewProductEvent {}

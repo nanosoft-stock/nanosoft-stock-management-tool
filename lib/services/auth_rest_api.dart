@@ -1,85 +1,59 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/core/resources/data_state.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 
 class AuthRestApi {
-  static String apiKey = "";
-  static String idToken = "";
-  static String refreshToken = "";
+  static String _apiKey = "";
+  static String _idToken = "";
   final Dio _dio = Dio();
+  static final StreamController<bool> _isUserLoggedInStreamController = StreamController<bool>();
+  static late SharedPreferences preferences;
 
-  void fetchApiKey() {
-    apiKey = DefaultFirebaseOptions.web.apiKey;
+  Future<void> fetchApiKeyAndInitializePreferences() async {
+    _apiKey = DefaultFirebaseOptions.web.apiKey;
+    preferences = await SharedPreferences.getInstance();
   }
 
-  Future<DataState> createUserWithEmailAndPasswordRestApi({
-    required String username,
+  StreamController<bool> get userLogInStatusStreamController => _isUserLoggedInStreamController;
+
+  void changeIsUserLoggedIn({required bool isUserLoggedIn}) {
+    _isUserLoggedInStreamController.sink.add(isUserLoggedIn);
+  }
+
+  Future<void> _saveUserCredentialsToPreferences({
     required String email,
     required String password,
-    required void Function(bool) onSuccess,
   }) async {
-    try {
-      String url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey";
-
-      Response response = await _dio.post(
-        url,
-        data: {
-          'email': email,
-          'password': password,
-          'returnSecureToken': true,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var jsonData = response.data;
-        idToken = jsonData['idToken'];
-        refreshToken = jsonData['refreshToken'];
-        await updateUserProfileDataRestApi(username: username, onSuccess: onSuccess);
-        await getUserData();
-        return DataSuccess(jsonData);
-      }
-    } on Exception catch (error) {
-      return DataFailed(error);
-    }
-    return DataFailed(Exception("Unknown Exception"));
+    await preferences.setString("email", email);
+    await preferences.setString("password", password);
   }
 
-  Future<DataState> updateUserProfileDataRestApi({
-    required String username,
-    required void Function(bool) onSuccess,
-  }) async {
-    try {
-      String url = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=$apiKey";
-
-      Response response = await _dio.post(
-        url,
-        data: {
-          'idToken': idToken,
-          'displayName': username,
-          'returnSecureToken': true,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var jsonData = response.data;
-        onSuccess(true);
-        return DataSuccess(jsonData);
-      }
-    } on Exception catch (error) {
-      return DataFailed(error);
+  Future<DataState> checkUserPreviousLoginStatus() async {
+    String? email = preferences.getString("email");
+    String? password = preferences.getString("password");
+    if (email != null && password != null) {
+      return await signInUserWithEmailAndPasswordRestApi(email: email, password: password);
+    } else {
+      return DataFailed(Exception("No Previous user"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+  }
+
+  Future<void> removeUserCredentialsToPreferences() async {
+    await preferences.remove("email");
+    await preferences.remove("password");
   }
 
   Future<DataState> signInUserWithEmailAndPasswordRestApi({
     required String email,
     required String password,
-    required void Function(bool) onSuccess,
   }) async {
     try {
       String url =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey";
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_apiKey";
 
       Response response = await _dio.post(
         url,
@@ -92,10 +66,65 @@ class AuthRestApi {
 
       if (response.statusCode == 200) {
         final jsonData = response.data;
-        idToken = jsonData['idToken'];
-        refreshToken = jsonData['refreshToken'];
+        _idToken = jsonData['idToken'];
         await getUserData();
-        onSuccess(true);
+        await _saveUserCredentialsToPreferences(email: email, password: password);
+        changeIsUserLoggedIn(isUserLoggedIn: true);
+        return DataSuccess(jsonData);
+      }
+    } on Exception catch (error) {
+      return DataFailed(error);
+    }
+    return DataFailed(Exception("Unknown Exception"));
+  }
+
+  Future<DataState> createUserWithEmailAndPasswordRestApi({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      String url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_apiKey";
+
+      Response response = await _dio.post(
+        url,
+        data: {
+          'email': email,
+          'password': password,
+          'returnSecureToken': true,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+        _idToken = jsonData['idToken'];
+        await updateUserProfileDataRestApi(username: username);
+        await getUserData();
+        await _saveUserCredentialsToPreferences(email: email, password: password);
+        changeIsUserLoggedIn(isUserLoggedIn: true);
+        return DataSuccess(jsonData);
+      }
+    } on Exception catch (error) {
+      return DataFailed(error);
+    }
+    return DataFailed(Exception("Unknown Exception"));
+  }
+
+  Future<DataState> updateUserProfileDataRestApi({required String username}) async {
+    try {
+      String url = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=$_apiKey";
+
+      Response response = await _dio.post(
+        url,
+        data: {
+          'idToken': _idToken,
+          'displayName': username,
+          'returnSecureToken': true,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
         return DataSuccess(jsonData);
       }
     } on Exception catch (error) {
@@ -107,12 +136,12 @@ class AuthRestApi {
   Future<DataState> getUserData() async {
     try {
       String url =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey";
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_apiKey";
 
       Response response = await _dio.post(
         url,
         data: {
-          'idToken': idToken,
+          'idToken': _idToken,
         },
       );
 

@@ -7,11 +7,8 @@ class FirestoreRestApi {
   static String projectId = "";
   final Dio _dio = Dio();
 
-  void fetchApiKey() {
+  void fetchApiKeyAndProjectId() {
     apiKey = DefaultFirebaseOptions.web.apiKey;
-  }
-
-  void fetchProjectId() {
     projectId = DefaultFirebaseOptions.web.projectId;
   }
 

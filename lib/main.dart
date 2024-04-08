@@ -7,12 +7,12 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
+import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
+import 'package:stock_management_tool/features/home/presentation/views/home_screen.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
-import 'package:stock_management_tool/providers/side_menu_provider.dart';
-import 'package:stock_management_tool/screens/home_screen.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
 import 'package:stock_management_tool/services/firestore_rest_api.dart';
@@ -47,12 +47,12 @@ class StockManagementToolApp extends StatelessWidget {
         BlocProvider<AddNewStockBloc>(
           create: (context) => sl.get<AddNewStockBloc>(),
         ),
+        BlocProvider<HomeBloc>(
+          create: (context) => sl.get<HomeBloc>(),
+        ),
       ],
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (context) => SideMenuProvider(),
-          ),
           ChangeNotifierProvider(
             create: (context) => ExportStockProvider(),
           ),
@@ -66,7 +66,7 @@ class StockManagementToolApp extends StatelessWidget {
                       stream: sl.get<AuthRestApi>().userLogInStatusStreamController.stream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data == true) {
-                          return HomeScreen();
+                          return HomeView();
                         } else {
                           return AuthenticationView();
                         }
@@ -76,7 +76,7 @@ class StockManagementToolApp extends StatelessWidget {
                       stream: sl.get<AuthDefault>().authStateChanges,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return HomeScreen();
+                          return HomeView();
                         } else {
                           return AuthenticationView();
                         }

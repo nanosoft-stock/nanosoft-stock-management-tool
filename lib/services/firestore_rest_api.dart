@@ -12,7 +12,11 @@ class FirestoreRestApi {
     projectId = DefaultFirebaseOptions.web.projectId;
   }
 
-  Future<DataState> getDocuments({required String path, bool includeDocRef = false}) async {
+  Future<DataState> getDocuments({
+    required String path,
+    bool includeDocRef = false,
+    bool includeUpdateTime = false,
+  }) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
@@ -22,22 +26,22 @@ class FirestoreRestApi {
       if (response.statusCode == 200) {
         var jsonData = response.data;
         List data = [];
-        if (includeDocRef) {
-          data = jsonData['documents'] != null
-              ? jsonData['documents'].map(
-                  (element) {
-                    Map map = element['fields'];
+        data = jsonData['documents'] != null
+            ? jsonData['documents'].map(
+                (element) {
+                  Map map = element['fields'];
+                  if (includeDocRef) {
                     map["docRef"] = {"stringValue": element['name'].toString().split('/').last};
+                  }
+                  if (includeUpdateTime) {
+                    map["updateTime"] = element["updateTime"];
+                  }
 
-                    return map;
-                  },
-                ).toList()
-              : [];
-        } else {
-          data = jsonData['documents'] != null
-              ? jsonData['documents'].map((e) => e['fields']).toList()
-              : [];
-        }
+                  return map;
+                },
+              ).toList()
+            : [];
+
         return DataSuccess(data);
       }
     } on Exception catch (error) {
@@ -61,6 +65,7 @@ class FirestoreRestApi {
       if (response.statusCode == 200) {
         var jsonData = response.data;
         var data = jsonData['fields'];
+
         return DataSuccess(data);
       }
     } on Exception catch (error) {
@@ -105,6 +110,7 @@ class FirestoreRestApi {
       if (response.statusCode == 200) {
         var jsonData = response.data;
         var data = jsonData.map((e) => e["document"]["name"].toString().split("/").last).toList();
+
         return DataSuccess(data);
       }
     } on Exception catch (error) {

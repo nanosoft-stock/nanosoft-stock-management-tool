@@ -1,0 +1,423 @@
+{
+    "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+    "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+    "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+    "entities": [
+        {
+            "id": "1:115768193643236440",
+            "lastPropertyId": "4:8748949600333974867",
+            "name": "CategoryModel",
+            "properties": [
+                {
+                    "id": "1:2247178619311132399",
+                    "name": "id",
+                    "type": 6,
+                    "flags": 1
+                },
+                {
+                    "id": "2:2713008352137297076",
+                    "name": "category",
+                    "type": 9
+                },
+                {
+                    "id": "3:8649976572082106997",
+                    "name": "ref",
+                    "type": 9
+                },
+                {
+                    "id": "4:8748949600333974867",
+                    "name": "updateTime",
+                    "type": 10
+                }
+            ],
+            "relations": []
+        },
+        {
+            "id": "2:4498366187129196935",
+            "lastPropertyId": "13:3745156033302547545",
+            "name": "InputFieldsModel",
+            "properties": [
+                {
+                    "id": "1:202435983539514328",
+                    "name": "id",
+                    "type": 6,
+                    "flags": 1
+                },
+                {
+                    "id": "2:8355494844896868735",
+                    "name": "field",
+                    "type": 9
+                },
+                {
+                    "id": "3:5431476710661053420",
+                    "name": "datatype",
+                    "type": 9
+                },
+                {
+                    "id": "4:3539373982214706512",
+                    "name": "category",
+                    "type": 9
+                },
+                {
+                    "id": "5:4470135786161090218",
+                    "name": "isWithSKU",
+                    "type": 1
+                },
+                {
+                    "id": "6:6739491182670368323",
+                    "name": "isTitleCase",
+                    "type": 1
+                },
+                {
+                    "id": "7:6283435366312830352",
+                    "name": "isBg",
+                    "type": 1
+                },
+                {
+                    "id": "8:8346731166956904133",
+                    "name": "lockable",
+                    "type": 1
+                },
+                {
+                    "id": "9:3715218025783938920",
+                    "name": "order",
+                    "type": 6
+                },
+                {
+                    "id": "10:4513509928408335197",
+                    "name": "items",
+                    "type": 30
+                },
+                {
+                    "id": "11:5423410102377221427",
+                    "name": "textValue",
+                    "type": 9
+                },
+                {
+                    "id": "12:388221934445529623",
+                    "name": "locked",
+                    "type": 1
+                },
+                {
+                    "id": "13:3745156033302547545",
+                    "name": "updateTime",
+                    "type": 10
+                }
+            ],
+            "relations": []
+        },
+        {
+            "id": "3:4941576589595947486",
+            "lastPropertyId": "19:2508515853086180317",
+            "name": "ProductModel",
+            "properties": [
+                {
+                    "id": "1:5274888884826195896",
+                    "name": "id",
+                    "type": 6,
+                    "flags": 1
+                },
+                {
+                    "id": "2:8777189826031002536",
+                    "name": "category",
+                    "type": 9
+                },
+                {
+                    "id": "3:738290895404256581",
+                    "name": "sku",
+                    "type": 9
+                },
+                {
+                    "id": "4:6330953894352556664",
+                    "name": "make",
+                    "type": 9
+                },
+                {
+                    "id": "5:8392276463018327300",
+                    "name": "model",
+                    "type": 9
+                },
+                {
+                    "id": "6:8500910074651380537",
+                    "name": "processor",
+                    "type": 9
+                },
+                {
+                    "id": "7:2880259993092890974",
+                    "name": "ram",
+                    "type": 9
+                },
+                {
+                    "id": "8:6935748556222125260",
+                    "name": "storage",
+                    "type": 9
+                },
+                {
+                    "id": "9:3262062846147267361",
+                    "name": "screenResolution",
+                    "type": 9
+                },
+                {
+                    "id": "10:5329897367482510061",
+                    "name": "os",
+                    "type": 9
+                },
+                {
+                    "id": "11:662767557113346718",
+                    "name": "screenSize",
+                    "type": 9
+                },
+                {
+                    "id": "12:4736497072061183312",
+                    "name": "usbC",
+                    "type": 9
+                },
+                {
+                    "id": "13:1271629750915986512",
+                    "name": "hdmi",
+                    "type": 9
+                },
+                {
+                    "id": "14:3257516387398194714",
+                    "name": "displayPort",
+                    "type": 9
+                },
+                {
+                    "id": "15:9176844804407090362",
+                    "name": "vga",
+                    "type": 9
+                },
+                {
+                    "id": "16:6067529247810517105",
+                    "name": "ethernet",
+                    "type": 9
+                },
+                {
+                    "id": "17:4538766512240501477",
+                    "name": "usbA",
+                    "type": 9
+                },
+                {
+                    "id": "18:3935932613264492070",
+                    "name": "type",
+                    "type": 9
+                },
+                {
+                    "id": "19:2508515853086180317",
+                    "name": "updateTime",
+                    "type": 10
+                }
+            ],
+            "relations": []
+        },
+        {
+            "id": "4:4006601827538858093",
+            "lastPropertyId": "7:1901759616111056195",
+            "name": "StockLocationHistoryModel",
+            "properties": [
+                {
+                    "id": "1:301330922450907131",
+                    "name": "id",
+                    "type": 6,
+                    "flags": 1
+                },
+                {
+                    "id": "2:8435503500090402605",
+                    "name": "date",
+                    "type": 10
+                },
+                {
+                    "id": "3:68093823571291223",
+                    "name": "itemId",
+                    "type": 9
+                },
+                {
+                    "id": "4:3282212939916168277",
+                    "name": "containerId",
+                    "type": 9
+                },
+                {
+                    "id": "5:4994565927406361783",
+                    "name": "warehouseLocation",
+                    "type": 9
+                },
+                {
+                    "id": "6:6183930038347003600",
+                    "name": "comments",
+                    "type": 9
+                },
+                {
+                    "id": "7:1901759616111056195",
+                    "name": "staff",
+                    "type": 9
+                }
+            ],
+            "relations": []
+        },
+        {
+            "id": "5:1822525163420425049",
+            "lastPropertyId": "29:4244842460663819587",
+            "name": "StockModel",
+            "properties": [
+                {
+                    "id": "1:5882788199714033951",
+                    "name": "id",
+                    "type": 6,
+                    "flags": 1
+                },
+                {
+                    "id": "2:1227644137036014803",
+                    "name": "date",
+                    "type": 10
+                },
+                {
+                    "id": "3:4136787169351185914",
+                    "name": "category",
+                    "type": 9
+                },
+                {
+                    "id": "4:1790521698418551855",
+                    "name": "itemId",
+                    "type": 9
+                },
+                {
+                    "id": "5:8199663530700390218",
+                    "name": "serialNumber",
+                    "type": 9
+                },
+                {
+                    "id": "6:3006258940614161502",
+                    "name": "sku",
+                    "type": 9
+                },
+                {
+                    "id": "7:313382672128181047",
+                    "name": "make",
+                    "type": 9
+                },
+                {
+                    "id": "8:480764611909005632",
+                    "name": "model",
+                    "type": 9
+                },
+                {
+                    "id": "9:2612476791207485515",
+                    "name": "processor",
+                    "type": 9
+                },
+                {
+                    "id": "10:2188153453481376796",
+                    "name": "ram",
+                    "type": 9
+                },
+                {
+                    "id": "11:2989890264290627151",
+                    "name": "storage",
+                    "type": 9
+                },
+                {
+                    "id": "12:8688039732898311962",
+                    "name": "screenResolution",
+                    "type": 9
+                },
+                {
+                    "id": "13:4703379804524044207",
+                    "name": "os",
+                    "type": 9
+                },
+                {
+                    "id": "14:8764344677090561810",
+                    "name": "screenSize",
+                    "type": 9
+                },
+                {
+                    "id": "15:3019417299759924292",
+                    "name": "usbC",
+                    "type": 9
+                },
+                {
+                    "id": "16:3163158103847927562",
+                    "name": "hdmi",
+                    "type": 9
+                },
+                {
+                    "id": "17:2699716490522283531",
+                    "name": "displayPort",
+                    "type": 9
+                },
+                {
+                    "id": "18:9204905606121712460",
+                    "name": "vga",
+                    "type": 9
+                },
+                {
+                    "id": "19:8153688700414077519",
+                    "name": "ethernet",
+                    "type": 9
+                },
+                {
+                    "id": "20:3219585842847679378",
+                    "name": "usbA",
+                    "type": 9
+                },
+                {
+                    "id": "21:9212589769775811006",
+                    "name": "type",
+                    "type": 9
+                },
+                {
+                    "id": "22:8843852649042032310",
+                    "name": "supplierInfo",
+                    "type": 9
+                },
+                {
+                    "id": "23:4346226259510496964",
+                    "name": "dispatchInfo",
+                    "type": 9
+                },
+                {
+                    "id": "24:6219449817307617880",
+                    "name": "containerId",
+                    "type": 9
+                },
+                {
+                    "id": "25:8500558903919383482",
+                    "name": "warehouseLocation",
+                    "type": 9
+                },
+                {
+                    "id": "26:8320200346754956927",
+                    "name": "comments",
+                    "type": 9
+                },
+                {
+                    "id": "27:541858986232586884",
+                    "name": "staff",
+                    "type": 9
+                },
+                {
+                    "id": "28:4231092600033086896",
+                    "name": "archived",
+                    "type": 1
+                },
+                {
+                    "id": "29:4244842460663819587",
+                    "name": "updateTime",
+                    "type": 10
+                }
+            ],
+            "relations": []
+        }
+    ],
+    "lastEntityId": "5:1822525163420425049",
+    "lastIndexId": "0:0",
+    "lastRelationId": "0:0",
+    "lastSequenceId": "0:0",
+    "modelVersion": 5,
+    "modelVersionParserMinimum": 5,
+    "retiredEntityUids": [],
+    "retiredIndexUids": [],
+    "retiredPropertyUids": [],
+    "retiredRelationUids": [],
+    "version": 1
+}

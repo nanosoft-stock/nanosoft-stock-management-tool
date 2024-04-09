@@ -2,15 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/datatype_converter_helper.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
+import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewStockHelper {
   static Map toJson({required Map data}) {
     Map convertedData = {};
 
+    final objectbox = sl.get<ObjectBox>();
+
     String category = data["category"].toString().toLowerCase();
-    if (kIsDesktop) {
-      for (var e in AllPredefinedData.data[category]["fields"]) {
+
+    List fields = objectbox
+        .getInputFields()
+        .where((element) => element.category == category)
+        .map((e) => e.toJson())
+        .toList();
+
+    if (kIsLinux) {
+      for (var e in fields) {
         if (e["field"] == "date") {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
@@ -31,7 +41,7 @@ class AddNewStockHelper {
         }
       }
     } else {
-      for (var e in AllPredefinedData.data[category]["fields"]) {
+      for (var e in fields) {
         if (e["field"] == "date") {
           convertedData[e["field"]] = FieldValue.serverTimestamp();
         } else if (e["field"] == "staff") {

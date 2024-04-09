@@ -11,7 +11,7 @@ class AllPredefinedData {
         .map((e) => e["category"])
         .toList();
 
-    if (kIsDesktop) {
+    if (kIsLinux) {
       data["categories"] = data["categories"].map((e) => e["stringValue"]).toList();
     }
 

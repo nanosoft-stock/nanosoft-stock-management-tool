@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-bool kIsDesktop = false;
+bool kIsLinux = false;
 String userName = "";
 Color kPrimaryBackgroundColor = Colors.black12;
 Color kSecondaryBackgroundColor = Colors.white38;

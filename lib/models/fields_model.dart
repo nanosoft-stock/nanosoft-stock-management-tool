@@ -12,7 +12,7 @@ class FieldsModel {
   Future<List> fetchItems() async {
     items = await sl.get<Firestore>().getDocuments(path: "category_list/$categoryDoc/fields");
 
-    if (kIsDesktop) {
+    if (kIsLinux) {
       items = items
           .map((element) => element
               .map((field, value) => MapEntry(field, value.values.first))

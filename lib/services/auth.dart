@@ -8,7 +8,7 @@ class Auth {
     required String email,
     required String password,
   }) async {
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       await sl.get<AuthDefault>().signInWithEmailAndPassword(
             email: email,
             password: password,
@@ -26,7 +26,7 @@ class Auth {
     required String email,
     required String password,
   }) async {
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       await sl.get<AuthDefault>().createUserWithEmailAndPassword(
             username: username,
             email: email,
@@ -42,7 +42,7 @@ class Auth {
   }
 
   Future<void> signOutUser() async {
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       await sl.get<AuthDefault>().signOut();
     } else {
       await sl.get<AuthRestApi>().removeUserCredentialsToPreferences();

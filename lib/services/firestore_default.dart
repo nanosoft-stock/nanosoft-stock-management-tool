@@ -7,7 +7,13 @@ class FirestoreDefault {
     CollectionReference collectionRef = firestore.collection(path);
 
     QuerySnapshot snapshot = await collectionRef.get();
-    final data = snapshot.docs.map((doc) => doc.data()).toList();
+    final data = snapshot.docs.map((doc) {
+      final data = doc.data() as Map;
+      data["docRef"] = doc.reference.id;
+
+      return data;
+    }).toList();
+
     return data;
   }
 

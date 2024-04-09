@@ -5,7 +5,7 @@ abstract class StockRepository {
 
   Future<List<StockInputFieldEntity>> getCategoryBasedInputFields({required String category});
 
-  Future<Map> getProductDescription({required category, required sku});
+  Future<Map> getProductDescription({required String category, required String sku});
 
   Future addNewStock({required List fields});
 }

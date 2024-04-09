@@ -4,9 +4,13 @@ import 'package:stock_management_tool/services/firestore_default.dart';
 import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 class Firestore {
-  Future<List> getDocuments({required String path, bool includeDocRef = false}) async {
+  Future<List> getDocuments({
+    required String path,
+    bool includeDocRef = false,
+    bool includeUpdateTime = false,
+  }) async {
     List data;
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       data = await sl.get<FirestoreDefault>().getDocuments(
             path: path,
           );
@@ -14,6 +18,7 @@ class Firestore {
       data = (await sl.get<FirestoreRestApi>().getDocuments(
                 path: path,
                 includeDocRef: includeDocRef,
+                includeUpdateTime: includeUpdateTime,
               ))
           .data;
     }
@@ -21,7 +26,7 @@ class Firestore {
   }
 
   Future<void> createDocument({required String path, required Map data}) async {
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       await sl.get<FirestoreDefault>().createDocument(
             path: path,
             data: data,
@@ -36,7 +41,7 @@ class Firestore {
 
   Future<List> filterQuery({required String path, required Map query}) async {
     List data;
-    if (!kIsDesktop) {
+    if (!kIsLinux) {
       data = await sl.get<FirestoreDefault>().filterQuery(path: path, query: query);
     } else {
       data = (await sl.get<FirestoreRestApi>().filterQuery(path: path, query: query)).data;

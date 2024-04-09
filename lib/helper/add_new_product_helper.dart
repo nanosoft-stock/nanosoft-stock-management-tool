@@ -1,20 +1,27 @@
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/helper/datatype_converter_helper.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
+import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewProductHelper {
   static Map toJson({required String category, required Map data}) {
     Map convertedData = {};
-    if (kIsDesktop) {
-      for (var e in AllPredefinedData.data[category]["fields"]
-          .where((element) => (element["isWithSKU"] == true && element["field"] != "category"))
-          .toList()) {
+
+    if (kIsLinux) {
+      final objectbox = sl.get<ObjectBox>();
+
+      List fields = objectbox
+          .getInputFields()
+          .where((element) => element.isWithSKU! && element.category == category.toLowerCase())
+          .map((e) => e.toJson())
+          .toList();
+
+      for (var e in fields) {
         convertedData[e["field"]] = {
           DatatypeConverterHelper.convert(datatype: e["datatype"]): data[e["field"]],
         };
       }
     } else {
-      data.removeWhere((key, value) => key == "category");
       convertedData = data;
     }
 

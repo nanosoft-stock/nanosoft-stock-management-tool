@@ -13,8 +13,8 @@ class CategoryBasedPredefinedData {
 
   Future<Map> fetchData() async {
     final categoryDoc = (await sl.get<Firestore>().filterQuery(
-          path: !kIsDesktop ? "category_list" : "",
-          query: !kIsDesktop
+          path: !kIsLinux ? "category_list" : "",
+          query: !kIsLinux
               ? {
                   "where": {
                     "field": "category",

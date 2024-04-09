@@ -5,7 +5,6 @@ import 'package:stock_management_tool/features/add_new_product/domain/usecases/a
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_category_based_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
-import 'package:stock_management_tool/features/add_new_product/presentation/views/add_new_product_view.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/repositories/stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/add_new_stock_usecase.dart';
@@ -13,7 +12,6 @@ import 'package:stock_management_tool/features/add_new_stock/domain/usecases/aut
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_category_based_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
-import 'package:stock_management_tool/features/add_new_stock/presentation/views/add_new_stock_view.dart';
 import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
 import 'package:stock_management_tool/features/auth/domain/repositories/auth_repository.dart';
 import 'package:stock_management_tool/features/auth/domain/usecases/sign_in_user_usecase.dart';
@@ -23,6 +21,7 @@ import 'package:stock_management_tool/features/home/data/repositories/home_repos
 import 'package:stock_management_tool/features/home/domain/repositories/home_repository.dart';
 import 'package:stock_management_tool/features/home/domain/usecases/sign_out_user_usecase.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
+import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
 import 'package:stock_management_tool/services/auth_rest_api.dart';
@@ -33,6 +32,9 @@ import 'package:stock_management_tool/services/firestore_rest_api.dart';
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  // ObjectBox
+  sl.registerLazySingleton<ObjectBox>(() => ObjectBox());
+
   // Auth
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImplementation());
   sl.registerLazySingleton<SignInUserUseCase>(() => SignInUserUseCase(sl()));

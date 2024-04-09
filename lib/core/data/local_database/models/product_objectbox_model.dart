@@ -1,8 +1,8 @@
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class ProductModel {
-  ProductModel({
+class ProductObjectBoxModel {
+  ProductObjectBoxModel({
     this.id = 0,
     this.category,
     this.sku,
@@ -48,8 +48,8 @@ class ProductModel {
   @Property(type: PropertyType.date)
   DateTime? updateTime;
 
-  factory ProductModel.fromJson(Map json) {
-    return ProductModel(
+  factory ProductObjectBoxModel.fromJson(Map json) {
+    return ProductObjectBoxModel(
       category: json['category'],
       sku: json['sku'],
       make: json['make'],
@@ -57,17 +57,17 @@ class ProductModel {
       processor: json['processor'],
       ram: json['ram'],
       storage: json['storage'],
-      screenResolution: json['screenResolution'],
+      screenResolution: json['screen resolution'],
       os: json['os'],
-      screenSize: json['screenSize'],
-      usbC: json['usbC'],
+      screenSize: json['screen size'],
+      usbC: json['usb c'],
       hdmi: json['hdmi'],
-      displayPort: json['displayPort'],
+      displayPort: json['display port'],
       vga: json['vga'],
       ethernet: json['ethernet'],
-      usbA: json['usbA'],
+      usbA: json['usb a'],
       type: json['type'],
-      updateTime: json['updateTime'],
+      updateTime: json['update time'],
     );
   }
 
@@ -80,17 +80,17 @@ class ProductModel {
       'processor': processor,
       'ram': ram,
       'storage': storage,
-      'screenResolution': screenResolution,
+      'screen resolution': screenResolution,
       'os': os,
-      'screenSize': screenSize,
-      'usbC': usbC,
+      'screen size': screenSize,
+      'usb c': usbC,
       'hdmi': hdmi,
-      'displayPort': displayPort,
+      'display port': displayPort,
       'vga': vga,
       'ethernet': ethernet,
-      'usbA': usbA,
+      'usb a': usbA,
       'type': type,
-      'updateTime': updateTime,
+      'update time': updateTime,
     };
   }
 

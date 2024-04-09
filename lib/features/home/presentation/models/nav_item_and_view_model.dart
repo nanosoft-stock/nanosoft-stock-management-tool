@@ -3,12 +3,12 @@ import 'package:stock_management_tool/features/add_new_product/presentation/view
 import 'package:stock_management_tool/features/add_new_stock/presentation/views/add_new_stock_view.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_model.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_view.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/views/visualise_stock_view.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
 import 'package:stock_management_tool/screens/archive_stock_screen.dart';
 import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
-import 'package:stock_management_tool/screens/visualise_stock_screen.dart';
 
 class NavItemAndViewModel {
   static final Map allNavItemAndView = {
@@ -35,7 +35,7 @@ class NavItemAndViewModel {
         title: 'Visualise Stock',
         icon: Icons.table_chart_outlined,
       ),
-      view: const VisualiseStockScreen(),
+      view: VisualiseStockView(),
     ),
     "Export Stock": NavItemAndView(
       navItem: NavItemModel(

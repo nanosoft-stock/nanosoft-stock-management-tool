@@ -21,6 +21,11 @@ import 'package:stock_management_tool/features/home/data/repositories/home_repos
 import 'package:stock_management_tool/features/home/domain/repositories/home_repository.dart';
 import 'package:stock_management_tool/features/home/domain/usecases/sign_out_user_usecase.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
+import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/services/auth.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
@@ -65,6 +70,13 @@ Future<void> initializeDependencies() async {
       () => GetProductCategoryBasedInputFieldsUseCase(sl()));
   sl.registerLazySingleton<AddNewProductUseCase>(() => AddNewProductUseCase(sl()));
   sl.registerFactory<AddNewProductBloc>(() => AddNewProductBloc(sl(), sl(), sl()));
+
+  // Visualize Stock
+  sl.registerLazySingleton<VisualizeStockRepository>(
+      () => VisualizeStockRepositoryImplementation());
+  sl.registerLazySingleton<GetAllStockUseCase>(() => GetAllStockUseCase(sl()));
+  sl.registerLazySingleton<GetAllFieldsUseCase>(() => GetAllFieldsUseCase(sl()));
+  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

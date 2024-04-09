@@ -1,8 +1,8 @@
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class CategoryModel {
-  CategoryModel({
+class CategoryObjectBoxModel {
+  CategoryObjectBoxModel({
     this.id = 0,
     this.category,
     this.ref,

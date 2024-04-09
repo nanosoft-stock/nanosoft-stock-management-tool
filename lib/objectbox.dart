@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:stock_management_tool/core/data/local_database/models/category_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/input_fields_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/product_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/stock_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/category_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/product_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 
 import 'objectbox.g.dart';
 
@@ -13,70 +13,70 @@ class ObjectBox {
 
   late Store store;
 
-  Box<CategoryModel>? categoryModelBox;
-  Box<InputFieldsModel>? inputFieldsBox;
-  Box<ProductModel>? productModelBox;
-  Box<StockModel>? stockModelBox;
-  Box<StockLocationHistoryModel>? stockLocationHistoryModelBox;
+  Box<CategoryObjectBoxModel>? categoryModelBox;
+  Box<InputFieldsObjectBoxModel>? inputFieldsBox;
+  Box<ProductObjectBoxModel>? productModelBox;
+  Box<StockObjectBoxModel>? stockModelBox;
+  Box<StockLocationHistoryObjectBoxModel>? stockLocationHistoryModelBox;
 
   Future<void> create() async {
     store = await openStore();
 
-    categoryModelBox = Box<CategoryModel>(store);
-    inputFieldsBox = Box<InputFieldsModel>(store);
-    productModelBox = Box<ProductModel>(store);
-    stockModelBox = Box<StockModel>(store);
-    stockLocationHistoryModelBox = Box<StockLocationHistoryModel>(store);
+    categoryModelBox = Box<CategoryObjectBoxModel>(store);
+    inputFieldsBox = Box<InputFieldsObjectBoxModel>(store);
+    productModelBox = Box<ProductObjectBoxModel>(store);
+    stockModelBox = Box<StockObjectBoxModel>(store);
+    stockLocationHistoryModelBox = Box<StockLocationHistoryObjectBoxModel>(store);
   }
 
   // Categories
-  void addCategory(CategoryModel category) {
+  void addCategory(CategoryObjectBoxModel category) {
     categoryModelBox!.put(category);
   }
 
-  Future<void> addCategoryAsync(CategoryModel category) async {
+  Future<void> addCategoryAsync(CategoryObjectBoxModel category) async {
     await categoryModelBox!.putAsync(category);
   }
 
-  Future<List<int>> addCategoryList(List<CategoryModel> category) async {
+  Future<List<int>> addCategoryList(List<CategoryObjectBoxModel> category) async {
     return await categoryModelBox!.putManyAsync(category);
   }
 
-  List<CategoryModel> getCategories() {
+  List<CategoryObjectBoxModel> getCategories() {
     return categoryModelBox!.getAll();
   }
 
-  Future<List<CategoryModel>> getCategoriesAsync() async {
+  Future<List<CategoryObjectBoxModel>> getCategoriesAsync() async {
     return await categoryModelBox!.getAllAsync();
   }
 
-  Stream<List<CategoryModel>> getCategoryStream() {
+  Stream<List<CategoryObjectBoxModel>> getCategoryStream() {
     final builder = categoryModelBox!.query();
     return builder.watch(triggerImmediately: true).map((event) => event.find());
   }
 
   // Input Fields
-  void addInputField(InputFieldsModel field) {
+  void addInputField(InputFieldsObjectBoxModel field) {
     inputFieldsBox!.put(field);
   }
 
-  Future<void> addInputFieldAsync(InputFieldsModel field) async {
+  Future<void> addInputFieldAsync(InputFieldsObjectBoxModel field) async {
     await inputFieldsBox!.putAsync(field);
   }
 
-  Future<List<int>> addInputFieldList(List<InputFieldsModel> fields) async {
+  Future<List<int>> addInputFieldList(List<InputFieldsObjectBoxModel> fields) async {
     return await inputFieldsBox!.putManyAsync(fields);
   }
 
-  List<InputFieldsModel> getInputFields() {
+  List<InputFieldsObjectBoxModel> getInputFields() {
     return inputFieldsBox!.getAll();
   }
 
-  Future<List<InputFieldsModel>> getInputFieldsAsync() async {
+  Future<List<InputFieldsObjectBoxModel>> getInputFieldsAsync() async {
     return await inputFieldsBox!.getAllAsync();
   }
 
-  Stream<List<InputFieldsModel>> getInputFieldStream() {
+  Stream<List<InputFieldsObjectBoxModel>> getInputFieldStream() {
     final builder = inputFieldsBox!.query();
     return builder.watch(triggerImmediately: true).map((event) => event.find());
   }
@@ -86,27 +86,27 @@ class ObjectBox {
   }
 
   // Products
-  void addProduct(ProductModel product) {
+  void addProduct(ProductObjectBoxModel product) {
     productModelBox!.put(product);
   }
 
-  Future<void> addProductAsync(ProductModel product) async {
+  Future<void> addProductAsync(ProductObjectBoxModel product) async {
     await productModelBox!.putAsync(product);
   }
 
-  Future<List<int>> addProductList(List<ProductModel> products) async {
+  Future<List<int>> addProductList(List<ProductObjectBoxModel> products) async {
     return await productModelBox!.putManyAsync(products);
   }
 
-  List<ProductModel> getProducts() {
+  List<ProductObjectBoxModel> getProducts() {
     return productModelBox!.getAll();
   }
 
-  Future<List<ProductModel>> getProductsAsync() async {
+  Future<List<ProductObjectBoxModel>> getProductsAsync() async {
     return await productModelBox!.getAllAsync();
   }
 
-  Stream<List<ProductModel>> getProductStream() {
+  Stream<List<ProductObjectBoxModel>> getProductStream() {
     final builder = productModelBox!.query();
     return builder.watch(triggerImmediately: true).map((event) => event.find());
   }
@@ -116,23 +116,45 @@ class ObjectBox {
   }
 
   // Stock
-  Future<void> addStock(StockModel stock) async {
+  void addStock(StockObjectBoxModel stock) {
+    stockModelBox!.put(stock);
+  }
+
+  Future<void> addStockAsync(StockObjectBoxModel stock) async {
     await stockModelBox!.putAsync(stock);
   }
 
-  Future<List<int>> addStockList(List<StockModel> stocks) async {
+  Future<List<int>> addStockList(List<StockObjectBoxModel> stocks) async {
     return await stockModelBox!.putManyAsync(stocks);
   }
 
+  List<StockObjectBoxModel> getStocks() {
+    return stockModelBox!.getAll();
+  }
+
+  Future<List<StockObjectBoxModel>> getStocksAsync() async {
+    return await stockModelBox!.getAllAsync();
+  }
+
+  Stream<List<StockObjectBoxModel>> getStockStream() {
+    final builder = stockModelBox!.query();
+    return builder.watch(triggerImmediately: true).map((event) => event.find());
+  }
+
+  Future<void> removeAllStocks() async {
+    await stockModelBox!.removeAllAsync();
+  }
+
   // Location History
-  Future<void> addLocationHistory(StockLocationHistoryModel stock) async {
+  Future<void> addLocationHistory(StockLocationHistoryObjectBoxModel stock) async {
     await stockLocationHistoryModelBox!.putAsync(stock);
   }
 
-  Future<List<int>> addLocationHistoryList(List<StockLocationHistoryModel> stocks) async {
+  Future<List<int>> addLocationHistoryList(List<StockLocationHistoryObjectBoxModel> stocks) async {
     return await stockLocationHistoryModelBox!.putManyAsync(stocks);
   }
 
+  // Database
   Future<void> clearDatabase() async {
     final file = File(store.directoryPath);
     file.delete(recursive: true);

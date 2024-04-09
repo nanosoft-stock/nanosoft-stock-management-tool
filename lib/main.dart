@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/core/data/local_database/store_to_objectbox.dart';
+import 'package:stock_management_tool/core/data/local_database/fetch_data_for_objectbox.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
-import 'package:stock_management_tool/features/home/presentation/views/home_screen.dart';
+import 'package:stock_management_tool/features/home/presentation/views/home_view.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/injection_container.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
 import 'package:stock_management_tool/services/auth_default.dart';
@@ -36,8 +36,7 @@ Future<void> main() async {
   }
 
   await sl.get<ObjectBox>().create();
-  await StoreToObjectbox(sl.get<ObjectBox>()).fetchData(deletePrevious: true);
-  await AllPredefinedData().fetchData();
+  await FetchDataForObjectbox(sl.get<ObjectBox>()).fetchData(deletePrevious: true);
 
   runApp(const StockManagementToolApp());
 }
@@ -49,6 +48,9 @@ class StockManagementToolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<VisualizeStockBloc>(
+          create: (context) => sl.get<VisualizeStockBloc>(),
+        ),
         BlocProvider<AddNewProductBloc>(
           create: (context) => sl.get<AddNewProductBloc>(),
         ),

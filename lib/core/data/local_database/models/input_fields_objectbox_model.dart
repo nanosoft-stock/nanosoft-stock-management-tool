@@ -1,8 +1,8 @@
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class InputFieldsModel {
-  InputFieldsModel({
+class InputFieldsObjectBoxModel {
+  InputFieldsObjectBoxModel({
     this.id = 0,
     required this.field,
     required this.datatype,
@@ -36,8 +36,8 @@ class InputFieldsModel {
   @Property(type: PropertyType.date)
   DateTime? updateTime;
 
-  factory InputFieldsModel.fromJson(Map json) {
-    return InputFieldsModel(
+  factory InputFieldsObjectBoxModel.fromJson(Map json) {
+    return InputFieldsObjectBoxModel(
       field: json["field"],
       datatype: json["datatype"],
       category: json["category"],

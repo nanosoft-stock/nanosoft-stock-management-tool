@@ -15,11 +15,11 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'core/data/local_database/models/category_model.dart';
-import 'core/data/local_database/models/input_fields_model.dart';
-import 'core/data/local_database/models/product_model.dart';
-import 'core/data/local_database/models/stock_location_history_model.dart';
-import 'core/data/local_database/models/stock_model.dart';
+import 'core/data/local_database/models/category_objectbox_model.dart';
+import 'core/data/local_database/models/input_fields_objectbox_model.dart';
+import 'core/data/local_database/models/product_objectbox_model.dart';
+import 'core/data/local_database/models/stock_location_history_objectbox_model.dart';
+import 'core/data/local_database/models/stock_objectbox_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -311,15 +311,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
       version: 1);
 
   final bindings = <Type, obx_int.EntityDefinition>{
-    CategoryModel: obx_int.EntityDefinition<CategoryModel>(
+    CategoryObjectBoxModel: obx_int.EntityDefinition<CategoryObjectBoxModel>(
         model: _entities[0],
-        toOneRelations: (CategoryModel object) => [],
-        toManyRelations: (CategoryModel object) => {},
-        getId: (CategoryModel object) => object.id,
-        setId: (CategoryModel object, int id) {
+        toOneRelations: (CategoryObjectBoxModel object) => [],
+        toManyRelations: (CategoryObjectBoxModel object) => {},
+        getId: (CategoryObjectBoxModel object) => object.id,
+        setId: (CategoryObjectBoxModel object, int id) {
           object.id = id;
         },
-        objectToFB: (CategoryModel object, fb.Builder fbb) {
+        objectToFB: (CategoryObjectBoxModel object, fb.Builder fbb) {
           final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
           final refOffset = object.ref == null ? null : fbb.writeString(object.ref!);
           fbb.startTable(5);
@@ -341,20 +341,20 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 8);
           final updateTimeParam =
               updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
-          final object = CategoryModel(
+          final object = CategoryObjectBoxModel(
               id: idParam, category: categoryParam, ref: refParam, updateTime: updateTimeParam);
 
           return object;
         }),
-    InputFieldsModel: obx_int.EntityDefinition<InputFieldsModel>(
+    InputFieldsObjectBoxModel: obx_int.EntityDefinition<InputFieldsObjectBoxModel>(
         model: _entities[1],
-        toOneRelations: (InputFieldsModel object) => [],
-        toManyRelations: (InputFieldsModel object) => {},
-        getId: (InputFieldsModel object) => object.id,
-        setId: (InputFieldsModel object, int id) {
+        toOneRelations: (InputFieldsObjectBoxModel object) => [],
+        toManyRelations: (InputFieldsObjectBoxModel object) => {},
+        getId: (InputFieldsObjectBoxModel object) => object.id,
+        setId: (InputFieldsObjectBoxModel object, int id) {
           object.id = id;
         },
-        objectToFB: (InputFieldsModel object, fb.Builder fbb) {
+        objectToFB: (InputFieldsObjectBoxModel object, fb.Builder fbb) {
           final fieldOffset = object.field == null ? null : fbb.writeString(object.field!);
           final datatypeOffset = object.datatype == null ? null : fbb.writeString(object.datatype!);
           final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
@@ -404,7 +404,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final lockedParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 26);
           final updateTimeParam =
               updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
-          final object = InputFieldsModel(
+          final object = InputFieldsObjectBoxModel(
               id: idParam,
               field: fieldParam,
               datatype: datatypeParam,
@@ -421,15 +421,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    ProductModel: obx_int.EntityDefinition<ProductModel>(
+    ProductObjectBoxModel: obx_int.EntityDefinition<ProductObjectBoxModel>(
         model: _entities[2],
-        toOneRelations: (ProductModel object) => [],
-        toManyRelations: (ProductModel object) => {},
-        getId: (ProductModel object) => object.id,
-        setId: (ProductModel object, int id) {
+        toOneRelations: (ProductObjectBoxModel object) => [],
+        toManyRelations: (ProductObjectBoxModel object) => {},
+        getId: (ProductObjectBoxModel object) => object.id,
+        setId: (ProductObjectBoxModel object, int id) {
           object.id = id;
         },
-        objectToFB: (ProductModel object, fb.Builder fbb) {
+        objectToFB: (ProductObjectBoxModel object, fb.Builder fbb) {
           final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
           final skuOffset = object.sku == null ? null : fbb.writeString(object.sku!);
           final makeOffset = object.make == null ? null : fbb.writeString(object.make!);
@@ -515,7 +515,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 38);
           final updateTimeParam =
               updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
-          final object = ProductModel(
+          final object = ProductObjectBoxModel(
               id: idParam,
               category: categoryParam,
               sku: skuParam,
@@ -538,69 +538,72 @@ obx_int.ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    StockLocationHistoryModel: obx_int.EntityDefinition<StockLocationHistoryModel>(
-        model: _entities[3],
-        toOneRelations: (StockLocationHistoryModel object) => [],
-        toManyRelations: (StockLocationHistoryModel object) => {},
-        getId: (StockLocationHistoryModel object) => object.id,
-        setId: (StockLocationHistoryModel object, int id) {
-          object.id = id;
-        },
-        objectToFB: (StockLocationHistoryModel object, fb.Builder fbb) {
-          final itemIdOffset = object.itemId == null ? null : fbb.writeString(object.itemId!);
-          final containerIdOffset =
-              object.containerId == null ? null : fbb.writeString(object.containerId!);
-          final warehouseLocationOffset =
-              object.warehouseLocation == null ? null : fbb.writeString(object.warehouseLocation!);
-          final commentsOffset = object.comments == null ? null : fbb.writeString(object.comments!);
-          final staffOffset = object.staff == null ? null : fbb.writeString(object.staff!);
-          fbb.startTable(8);
-          fbb.addInt64(0, object.id);
-          fbb.addInt64(1, object.date.millisecondsSinceEpoch);
-          fbb.addOffset(2, itemIdOffset);
-          fbb.addOffset(3, containerIdOffset);
-          fbb.addOffset(4, warehouseLocationOffset);
-          fbb.addOffset(5, commentsOffset);
-          fbb.addOffset(6, staffOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final dateParam = DateTime.fromMillisecondsSinceEpoch(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
-          final itemIdParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 8);
-          final containerIdParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 10);
-          final warehouseLocationParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 12);
-          final commentsParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 14);
-          final staffParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 16);
-          final object = StockLocationHistoryModel(
-              id: idParam,
-              date: dateParam,
-              itemId: itemIdParam,
-              containerId: containerIdParam,
-              warehouseLocation: warehouseLocationParam,
-              comments: commentsParam,
-              staff: staffParam);
+    StockLocationHistoryObjectBoxModel:
+        obx_int.EntityDefinition<StockLocationHistoryObjectBoxModel>(
+            model: _entities[3],
+            toOneRelations: (StockLocationHistoryObjectBoxModel object) => [],
+            toManyRelations: (StockLocationHistoryObjectBoxModel object) => {},
+            getId: (StockLocationHistoryObjectBoxModel object) => object.id,
+            setId: (StockLocationHistoryObjectBoxModel object, int id) {
+              object.id = id;
+            },
+            objectToFB: (StockLocationHistoryObjectBoxModel object, fb.Builder fbb) {
+              final itemIdOffset = object.itemId == null ? null : fbb.writeString(object.itemId!);
+              final containerIdOffset =
+                  object.containerId == null ? null : fbb.writeString(object.containerId!);
+              final warehouseLocationOffset = object.warehouseLocation == null
+                  ? null
+                  : fbb.writeString(object.warehouseLocation!);
+              final commentsOffset =
+                  object.comments == null ? null : fbb.writeString(object.comments!);
+              final staffOffset = object.staff == null ? null : fbb.writeString(object.staff!);
+              fbb.startTable(8);
+              fbb.addInt64(0, object.id);
+              fbb.addInt64(1, object.date.millisecondsSinceEpoch);
+              fbb.addOffset(2, itemIdOffset);
+              fbb.addOffset(3, containerIdOffset);
+              fbb.addOffset(4, warehouseLocationOffset);
+              fbb.addOffset(5, commentsOffset);
+              fbb.addOffset(6, staffOffset);
+              fbb.finish(fbb.endTable());
+              return object.id;
+            },
+            objectFromFB: (obx.Store store, ByteData fbData) {
+              final buffer = fb.BufferContext(fbData);
+              final rootOffset = buffer.derefObject(0);
+              final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              final dateParam = DateTime.fromMillisecondsSinceEpoch(
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
+              final itemIdParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 8);
+              final containerIdParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 10);
+              final warehouseLocationParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 12);
+              final commentsParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 14);
+              final staffParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 16);
+              final object = StockLocationHistoryObjectBoxModel(
+                  id: idParam,
+                  date: dateParam,
+                  itemId: itemIdParam,
+                  containerId: containerIdParam,
+                  warehouseLocation: warehouseLocationParam,
+                  comments: commentsParam,
+                  staff: staffParam);
 
-          return object;
-        }),
-    StockModel: obx_int.EntityDefinition<StockModel>(
+              return object;
+            }),
+    StockObjectBoxModel: obx_int.EntityDefinition<StockObjectBoxModel>(
         model: _entities[4],
-        toOneRelations: (StockModel object) => [],
-        toManyRelations: (StockModel object) => {},
-        getId: (StockModel object) => object.id,
-        setId: (StockModel object, int id) {
+        toOneRelations: (StockObjectBoxModel object) => [],
+        toManyRelations: (StockObjectBoxModel object) => {},
+        getId: (StockObjectBoxModel object) => object.id,
+        setId: (StockObjectBoxModel object, int id) {
           object.id = id;
         },
-        objectToFB: (StockModel object, fb.Builder fbb) {
+        objectToFB: (StockObjectBoxModel object, fb.Builder fbb) {
           final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
           final itemIdOffset = object.itemId == null ? null : fbb.writeString(object.itemId!);
           final serialNumberOffset =
@@ -728,7 +731,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final archivedParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 58);
           final updateTimeParam =
               updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
-          final object = StockModel(
+          final object = StockObjectBoxModel(
               id: idParam,
               date: dateParam,
               category: categoryParam,
@@ -766,238 +769,270 @@ obx_int.ModelDefinition getObjectBoxModel() {
   return obx_int.ModelDefinition(model, bindings);
 }
 
-/// [CategoryModel] entity fields to define ObjectBox queries.
+/// [CategoryObjectBoxModel] entity fields to define ObjectBox queries.
 class CategoryModel_ {
-  /// see [CategoryModel.id]
-  static final id = obx.QueryIntegerProperty<CategoryModel>(_entities[0].properties[0]);
+  /// see [CategoryObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<CategoryObjectBoxModel>(_entities[0].properties[0]);
 
-  /// see [CategoryModel.category]
-  static final category = obx.QueryStringProperty<CategoryModel>(_entities[0].properties[1]);
+  /// see [CategoryObjectBoxModel.category]
+  static final category =
+      obx.QueryStringProperty<CategoryObjectBoxModel>(_entities[0].properties[1]);
 
-  /// see [CategoryModel.ref]
-  static final ref = obx.QueryStringProperty<CategoryModel>(_entities[0].properties[2]);
+  /// see [CategoryObjectBoxModel.ref]
+  static final ref = obx.QueryStringProperty<CategoryObjectBoxModel>(_entities[0].properties[2]);
 
-  /// see [CategoryModel.updateTime]
-  static final updateTime = obx.QueryDateProperty<CategoryModel>(_entities[0].properties[3]);
+  /// see [CategoryObjectBoxModel.updateTime]
+  static final updateTime =
+      obx.QueryDateProperty<CategoryObjectBoxModel>(_entities[0].properties[3]);
 }
 
-/// [InputFieldsModel] entity fields to define ObjectBox queries.
+/// [InputFieldsObjectBoxModel] entity fields to define ObjectBox queries.
 class InputFieldsModel_ {
-  /// see [InputFieldsModel.id]
-  static final id = obx.QueryIntegerProperty<InputFieldsModel>(_entities[1].properties[0]);
+  /// see [InputFieldsObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(_entities[1].properties[0]);
 
-  /// see [InputFieldsModel.field]
-  static final field = obx.QueryStringProperty<InputFieldsModel>(_entities[1].properties[1]);
+  /// see [InputFieldsObjectBoxModel.field]
+  static final field =
+      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[1]);
 
-  /// see [InputFieldsModel.datatype]
-  static final datatype = obx.QueryStringProperty<InputFieldsModel>(_entities[1].properties[2]);
+  /// see [InputFieldsObjectBoxModel.datatype]
+  static final datatype =
+      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[2]);
 
-  /// see [InputFieldsModel.category]
-  static final category = obx.QueryStringProperty<InputFieldsModel>(_entities[1].properties[3]);
+  /// see [InputFieldsObjectBoxModel.category]
+  static final category =
+      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[3]);
 
-  /// see [InputFieldsModel.isWithSKU]
-  static final isWithSKU = obx.QueryBooleanProperty<InputFieldsModel>(_entities[1].properties[4]);
+  /// see [InputFieldsObjectBoxModel.isWithSKU]
+  static final isWithSKU =
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[4]);
 
-  /// see [InputFieldsModel.isTitleCase]
-  static final isTitleCase = obx.QueryBooleanProperty<InputFieldsModel>(_entities[1].properties[5]);
+  /// see [InputFieldsObjectBoxModel.isTitleCase]
+  static final isTitleCase =
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[5]);
 
-  /// see [InputFieldsModel.isBg]
-  static final isBg = obx.QueryBooleanProperty<InputFieldsModel>(_entities[1].properties[6]);
+  /// see [InputFieldsObjectBoxModel.isBg]
+  static final isBg =
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[6]);
 
-  /// see [InputFieldsModel.lockable]
-  static final lockable = obx.QueryBooleanProperty<InputFieldsModel>(_entities[1].properties[7]);
+  /// see [InputFieldsObjectBoxModel.lockable]
+  static final lockable =
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[7]);
 
-  /// see [InputFieldsModel.order]
-  static final order = obx.QueryIntegerProperty<InputFieldsModel>(_entities[1].properties[8]);
+  /// see [InputFieldsObjectBoxModel.order]
+  static final order =
+      obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(_entities[1].properties[8]);
 
-  /// see [InputFieldsModel.items]
-  static final items = obx.QueryStringVectorProperty<InputFieldsModel>(_entities[1].properties[9]);
+  /// see [InputFieldsObjectBoxModel.items]
+  static final items =
+      obx.QueryStringVectorProperty<InputFieldsObjectBoxModel>(_entities[1].properties[9]);
 
-  /// see [InputFieldsModel.textValue]
-  static final textValue = obx.QueryStringProperty<InputFieldsModel>(_entities[1].properties[10]);
+  /// see [InputFieldsObjectBoxModel.textValue]
+  static final textValue =
+      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[10]);
 
-  /// see [InputFieldsModel.locked]
-  static final locked = obx.QueryBooleanProperty<InputFieldsModel>(_entities[1].properties[11]);
+  /// see [InputFieldsObjectBoxModel.locked]
+  static final locked =
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[11]);
 
-  /// see [InputFieldsModel.updateTime]
-  static final updateTime = obx.QueryDateProperty<InputFieldsModel>(_entities[1].properties[12]);
+  /// see [InputFieldsObjectBoxModel.updateTime]
+  static final updateTime =
+      obx.QueryDateProperty<InputFieldsObjectBoxModel>(_entities[1].properties[12]);
 }
 
-/// [ProductModel] entity fields to define ObjectBox queries.
+/// [ProductObjectBoxModel] entity fields to define ObjectBox queries.
 class ProductModel_ {
-  /// see [ProductModel.id]
-  static final id = obx.QueryIntegerProperty<ProductModel>(_entities[2].properties[0]);
+  /// see [ProductObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<ProductObjectBoxModel>(_entities[2].properties[0]);
 
-  /// see [ProductModel.category]
-  static final category = obx.QueryStringProperty<ProductModel>(_entities[2].properties[1]);
+  /// see [ProductObjectBoxModel.category]
+  static final category =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[1]);
 
-  /// see [ProductModel.sku]
-  static final sku = obx.QueryStringProperty<ProductModel>(_entities[2].properties[2]);
+  /// see [ProductObjectBoxModel.sku]
+  static final sku = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[2]);
 
-  /// see [ProductModel.make]
-  static final make = obx.QueryStringProperty<ProductModel>(_entities[2].properties[3]);
+  /// see [ProductObjectBoxModel.make]
+  static final make = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[3]);
 
-  /// see [ProductModel.model]
-  static final model = obx.QueryStringProperty<ProductModel>(_entities[2].properties[4]);
+  /// see [ProductObjectBoxModel.model]
+  static final model = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[4]);
 
-  /// see [ProductModel.processor]
-  static final processor = obx.QueryStringProperty<ProductModel>(_entities[2].properties[5]);
+  /// see [ProductObjectBoxModel.processor]
+  static final processor =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[5]);
 
-  /// see [ProductModel.ram]
-  static final ram = obx.QueryStringProperty<ProductModel>(_entities[2].properties[6]);
+  /// see [ProductObjectBoxModel.ram]
+  static final ram = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[6]);
 
-  /// see [ProductModel.storage]
-  static final storage = obx.QueryStringProperty<ProductModel>(_entities[2].properties[7]);
+  /// see [ProductObjectBoxModel.storage]
+  static final storage = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[7]);
 
-  /// see [ProductModel.screenResolution]
-  static final screenResolution = obx.QueryStringProperty<ProductModel>(_entities[2].properties[8]);
+  /// see [ProductObjectBoxModel.screenResolution]
+  static final screenResolution =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[8]);
 
-  /// see [ProductModel.os]
-  static final os = obx.QueryStringProperty<ProductModel>(_entities[2].properties[9]);
+  /// see [ProductObjectBoxModel.os]
+  static final os = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[9]);
 
-  /// see [ProductModel.screenSize]
-  static final screenSize = obx.QueryStringProperty<ProductModel>(_entities[2].properties[10]);
+  /// see [ProductObjectBoxModel.screenSize]
+  static final screenSize =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[10]);
 
-  /// see [ProductModel.usbC]
-  static final usbC = obx.QueryStringProperty<ProductModel>(_entities[2].properties[11]);
+  /// see [ProductObjectBoxModel.usbC]
+  static final usbC = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[11]);
 
-  /// see [ProductModel.hdmi]
-  static final hdmi = obx.QueryStringProperty<ProductModel>(_entities[2].properties[12]);
+  /// see [ProductObjectBoxModel.hdmi]
+  static final hdmi = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[12]);
 
-  /// see [ProductModel.displayPort]
-  static final displayPort = obx.QueryStringProperty<ProductModel>(_entities[2].properties[13]);
+  /// see [ProductObjectBoxModel.displayPort]
+  static final displayPort =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[13]);
 
-  /// see [ProductModel.vga]
-  static final vga = obx.QueryStringProperty<ProductModel>(_entities[2].properties[14]);
+  /// see [ProductObjectBoxModel.vga]
+  static final vga = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[14]);
 
-  /// see [ProductModel.ethernet]
-  static final ethernet = obx.QueryStringProperty<ProductModel>(_entities[2].properties[15]);
+  /// see [ProductObjectBoxModel.ethernet]
+  static final ethernet =
+      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[15]);
 
-  /// see [ProductModel.usbA]
-  static final usbA = obx.QueryStringProperty<ProductModel>(_entities[2].properties[16]);
+  /// see [ProductObjectBoxModel.usbA]
+  static final usbA = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[16]);
 
-  /// see [ProductModel.type]
-  static final type = obx.QueryStringProperty<ProductModel>(_entities[2].properties[17]);
+  /// see [ProductObjectBoxModel.type]
+  static final type = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[17]);
 
-  /// see [ProductModel.updateTime]
-  static final updateTime = obx.QueryDateProperty<ProductModel>(_entities[2].properties[18]);
+  /// see [ProductObjectBoxModel.updateTime]
+  static final updateTime =
+      obx.QueryDateProperty<ProductObjectBoxModel>(_entities[2].properties[18]);
 }
 
-/// [StockLocationHistoryModel] entity fields to define ObjectBox queries.
+/// [StockLocationHistoryObjectBoxModel] entity fields to define ObjectBox queries.
 class StockLocationHistoryModel_ {
-  /// see [StockLocationHistoryModel.id]
-  static final id = obx.QueryIntegerProperty<StockLocationHistoryModel>(_entities[3].properties[0]);
+  /// see [StockLocationHistoryObjectBoxModel.id]
+  static final id =
+      obx.QueryIntegerProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[0]);
 
-  /// see [StockLocationHistoryModel.date]
-  static final date = obx.QueryDateProperty<StockLocationHistoryModel>(_entities[3].properties[1]);
+  /// see [StockLocationHistoryObjectBoxModel.date]
+  static final date =
+      obx.QueryDateProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[1]);
 
-  /// see [StockLocationHistoryModel.itemId]
+  /// see [StockLocationHistoryObjectBoxModel.itemId]
   static final itemId =
-      obx.QueryStringProperty<StockLocationHistoryModel>(_entities[3].properties[2]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[2]);
 
-  /// see [StockLocationHistoryModel.containerId]
+  /// see [StockLocationHistoryObjectBoxModel.containerId]
   static final containerId =
-      obx.QueryStringProperty<StockLocationHistoryModel>(_entities[3].properties[3]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[3]);
 
-  /// see [StockLocationHistoryModel.warehouseLocation]
+  /// see [StockLocationHistoryObjectBoxModel.warehouseLocation]
   static final warehouseLocation =
-      obx.QueryStringProperty<StockLocationHistoryModel>(_entities[3].properties[4]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[4]);
 
-  /// see [StockLocationHistoryModel.comments]
+  /// see [StockLocationHistoryObjectBoxModel.comments]
   static final comments =
-      obx.QueryStringProperty<StockLocationHistoryModel>(_entities[3].properties[5]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[5]);
 
-  /// see [StockLocationHistoryModel.staff]
+  /// see [StockLocationHistoryObjectBoxModel.staff]
   static final staff =
-      obx.QueryStringProperty<StockLocationHistoryModel>(_entities[3].properties[6]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[6]);
 }
 
-/// [StockModel] entity fields to define ObjectBox queries.
+/// [StockObjectBoxModel] entity fields to define ObjectBox queries.
 class StockModel_ {
-  /// see [StockModel.id]
-  static final id = obx.QueryIntegerProperty<StockModel>(_entities[4].properties[0]);
+  /// see [StockObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<StockObjectBoxModel>(_entities[4].properties[0]);
 
-  /// see [StockModel.date]
-  static final date = obx.QueryDateProperty<StockModel>(_entities[4].properties[1]);
+  /// see [StockObjectBoxModel.date]
+  static final date = obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[1]);
 
-  /// see [StockModel.category]
-  static final category = obx.QueryStringProperty<StockModel>(_entities[4].properties[2]);
+  /// see [StockObjectBoxModel.category]
+  static final category = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[2]);
 
-  /// see [StockModel.itemId]
-  static final itemId = obx.QueryStringProperty<StockModel>(_entities[4].properties[3]);
+  /// see [StockObjectBoxModel.itemId]
+  static final itemId = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[3]);
 
-  /// see [StockModel.serialNumber]
-  static final serialNumber = obx.QueryStringProperty<StockModel>(_entities[4].properties[4]);
+  /// see [StockObjectBoxModel.serialNumber]
+  static final serialNumber =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[4]);
 
-  /// see [StockModel.sku]
-  static final sku = obx.QueryStringProperty<StockModel>(_entities[4].properties[5]);
+  /// see [StockObjectBoxModel.sku]
+  static final sku = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[5]);
 
-  /// see [StockModel.make]
-  static final make = obx.QueryStringProperty<StockModel>(_entities[4].properties[6]);
+  /// see [StockObjectBoxModel.make]
+  static final make = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[6]);
 
-  /// see [StockModel.model]
-  static final model = obx.QueryStringProperty<StockModel>(_entities[4].properties[7]);
+  /// see [StockObjectBoxModel.model]
+  static final model = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[7]);
 
-  /// see [StockModel.processor]
-  static final processor = obx.QueryStringProperty<StockModel>(_entities[4].properties[8]);
+  /// see [StockObjectBoxModel.processor]
+  static final processor = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[8]);
 
-  /// see [StockModel.ram]
-  static final ram = obx.QueryStringProperty<StockModel>(_entities[4].properties[9]);
+  /// see [StockObjectBoxModel.ram]
+  static final ram = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[9]);
 
-  /// see [StockModel.storage]
-  static final storage = obx.QueryStringProperty<StockModel>(_entities[4].properties[10]);
+  /// see [StockObjectBoxModel.storage]
+  static final storage = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[10]);
 
-  /// see [StockModel.screenResolution]
-  static final screenResolution = obx.QueryStringProperty<StockModel>(_entities[4].properties[11]);
+  /// see [StockObjectBoxModel.screenResolution]
+  static final screenResolution =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[11]);
 
-  /// see [StockModel.os]
-  static final os = obx.QueryStringProperty<StockModel>(_entities[4].properties[12]);
+  /// see [StockObjectBoxModel.os]
+  static final os = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[12]);
 
-  /// see [StockModel.screenSize]
-  static final screenSize = obx.QueryStringProperty<StockModel>(_entities[4].properties[13]);
+  /// see [StockObjectBoxModel.screenSize]
+  static final screenSize =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[13]);
 
-  /// see [StockModel.usbC]
-  static final usbC = obx.QueryStringProperty<StockModel>(_entities[4].properties[14]);
+  /// see [StockObjectBoxModel.usbC]
+  static final usbC = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[14]);
 
-  /// see [StockModel.hdmi]
-  static final hdmi = obx.QueryStringProperty<StockModel>(_entities[4].properties[15]);
+  /// see [StockObjectBoxModel.hdmi]
+  static final hdmi = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[15]);
 
-  /// see [StockModel.displayPort]
-  static final displayPort = obx.QueryStringProperty<StockModel>(_entities[4].properties[16]);
+  /// see [StockObjectBoxModel.displayPort]
+  static final displayPort =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[16]);
 
-  /// see [StockModel.vga]
-  static final vga = obx.QueryStringProperty<StockModel>(_entities[4].properties[17]);
+  /// see [StockObjectBoxModel.vga]
+  static final vga = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[17]);
 
-  /// see [StockModel.ethernet]
-  static final ethernet = obx.QueryStringProperty<StockModel>(_entities[4].properties[18]);
+  /// see [StockObjectBoxModel.ethernet]
+  static final ethernet = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[18]);
 
-  /// see [StockModel.usbA]
-  static final usbA = obx.QueryStringProperty<StockModel>(_entities[4].properties[19]);
+  /// see [StockObjectBoxModel.usbA]
+  static final usbA = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[19]);
 
-  /// see [StockModel.type]
-  static final type = obx.QueryStringProperty<StockModel>(_entities[4].properties[20]);
+  /// see [StockObjectBoxModel.type]
+  static final type = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[20]);
 
-  /// see [StockModel.supplierInfo]
-  static final supplierInfo = obx.QueryStringProperty<StockModel>(_entities[4].properties[21]);
+  /// see [StockObjectBoxModel.supplierInfo]
+  static final supplierInfo =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[21]);
 
-  /// see [StockModel.dispatchInfo]
-  static final dispatchInfo = obx.QueryStringProperty<StockModel>(_entities[4].properties[22]);
+  /// see [StockObjectBoxModel.dispatchInfo]
+  static final dispatchInfo =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[22]);
 
-  /// see [StockModel.containerId]
-  static final containerId = obx.QueryStringProperty<StockModel>(_entities[4].properties[23]);
+  /// see [StockObjectBoxModel.containerId]
+  static final containerId =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[23]);
 
-  /// see [StockModel.warehouseLocation]
-  static final warehouseLocation = obx.QueryStringProperty<StockModel>(_entities[4].properties[24]);
+  /// see [StockObjectBoxModel.warehouseLocation]
+  static final warehouseLocation =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[24]);
 
-  /// see [StockModel.comments]
-  static final comments = obx.QueryStringProperty<StockModel>(_entities[4].properties[25]);
+  /// see [StockObjectBoxModel.comments]
+  static final comments = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[25]);
 
-  /// see [StockModel.staff]
-  static final staff = obx.QueryStringProperty<StockModel>(_entities[4].properties[26]);
+  /// see [StockObjectBoxModel.staff]
+  static final staff = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[26]);
 
-  /// see [StockModel.archived]
-  static final archived = obx.QueryBooleanProperty<StockModel>(_entities[4].properties[27]);
+  /// see [StockObjectBoxModel.archived]
+  static final archived =
+      obx.QueryBooleanProperty<StockObjectBoxModel>(_entities[4].properties[27]);
 
-  /// see [StockModel.updateTime]
-  static final updateTime = obx.QueryDateProperty<StockModel>(_entities[4].properties[28]);
+  /// see [StockObjectBoxModel.updateTime]
+  static final updateTime = obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[28]);
 }

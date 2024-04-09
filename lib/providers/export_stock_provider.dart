@@ -23,7 +23,6 @@ class ExportStockProvider extends ChangeNotifier {
   }
 
   void sortStock({required String field, required Sort sort}) {
-    print("$sort, $field");
     if (sort == Sort.asc) {
       stock.sort((a, b) {
         if (a[field] == null) return 1;

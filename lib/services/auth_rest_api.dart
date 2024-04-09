@@ -135,8 +135,7 @@ class AuthRestApi {
 
   Future<DataState> getUserData() async {
     try {
-      String url =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_apiKey";
+      String url = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=$_apiKey";
 
       Response response = await _dio.post(
         url,

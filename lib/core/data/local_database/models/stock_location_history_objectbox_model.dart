@@ -1,8 +1,8 @@
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class StockLocationHistoryModel {
-  StockLocationHistoryModel({
+class StockLocationHistoryObjectBoxModel {
+  StockLocationHistoryObjectBoxModel({
     this.id = 0,
     required this.date,
     this.itemId,

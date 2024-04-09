@@ -1,89 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:stock_management_tool/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/components/field_sort_widget.dart';
+import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
-import 'package:stock_management_tool/models/all_predefined_data.dart';
 import 'package:stock_management_tool/providers/export_stock_provider.dart';
-import 'package:stock_management_tool/services/firestore_rest_api.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
-class CustomDataGrid extends StatelessWidget {
-  const CustomDataGrid({super.key});
+class VisualiseStockView extends StatelessWidget {
+  VisualiseStockView({super.key});
 
-  Future<void> fetchData({required var provider}) async {
-    Set fields = {};
-    for (String category in AllPredefinedData.data["categories"]) {
-      fields.addAll(AllPredefinedData.data[category]["fields"].map((e) => e["field"]));
-    }
-
-    print(fields);
-
-    List fieldsList = fields
-        .map((e) => {
-              "field": e,
-              "sort": Sort.none,
-              "widget": FieldSortWidget(
-                field: e,
-                sort: Sort.none,
-              ),
-            })
-        .toList();
-
-    List stock = [];
-    stock = (await sl.get<FirestoreRestApi>().getDocuments(path: "stock_data", includeDocRef: true)).data;
-
-    stock = stock
-        .map((element) => element
-            .map((field, value) => MapEntry(field, value.values.first))
-            .cast<String, dynamic>())
-        .toList();
-
-    stock.sort((a, b) => a["date"].compareTo(b["date"]));
-
-    provider.setFields(fields: fieldsList);
-    provider.setStock(stock: stock);
-    provider.setShowTable(showTable: true);
-  }
+  final VisualizeStockBloc _visualizeStockBloc = sl.get<VisualizeStockBloc>();
 
   @override
   Widget build(BuildContext context) {
+    return _buildBody();
+  }
+
+  Widget _buildBody() {
+    return BlocConsumer<VisualizeStockBloc, VisualizeStockState>(
+      bloc: _visualizeStockBloc,
+      listener: (context, state) {},
+      builder: (context, state) {
+        return _blocBuilder(context, state);
+      },
+    );
+  }
+
+  Widget _blocBuilder(BuildContext context, VisualizeStockState state) {
+    switch (state.runtimeType) {
+      case const (LoadingState):
+        _visualizeStockBloc.add(LoadedEvent());
+        return _buildLoadingStateWidget();
+
+      case const (ErrorState):
+        return _buildErrorStateWidget();
+
+      case const (LoadedState):
+        List fields = state.fields!;
+        List stocks = state.stocks!;
+        return _buildLoadedStateWidget(fields, stocks);
+
+      default:
+        return Container();
+    }
+  }
+
+  Widget _buildLoadingStateWidget() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildErrorStateWidget() {
+    return const Center(
+      child: Text('Error'),
+    );
+  }
+
+  Widget _buildLoadedStateWidget(List fields, List stocks) {
     return Consumer<ExportStockProvider>(
       builder: (BuildContext context, provider, Widget? child) {
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            return !provider.showTable
-                ? Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: kSecondaryBackgroundColor,
-                        borderRadius: kBorderRadius,
-                        boxShadow: kBoxShadowList,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 15.0,
-                          horizontal: 22.5,
-                        ),
-                        child: SizedBox(
-                          width: 338,
-                          child: CustomElevatedButton(
-                            text: "Show Table",
-                            onPressed: () async {
-                              await fetchData(provider: provider);
-                              print("${provider.fields.length} ${provider.fields}");
-                              print("${provider.stock.length} ${provider.stock}");
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : Container(
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(52, 80, 52, 40),
+              child: CustomContainer(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
                     decoration: BoxDecoration(
                       color: kTertiaryBackgroundColor,
                       borderRadius: kBorderRadius,
@@ -94,8 +83,8 @@ class CustomDataGrid extends StatelessWidget {
                     child: GestureDetector(
                       child: TableView(
                         delegate: TableCellBuilderDelegate(
-                          columnCount: provider.fields.length,
-                          rowCount: provider.stock.length + 1,
+                          columnCount: fields.length,
+                          rowCount: stocks.length + 1,
                           columnBuilder: (int index) {
                             return const TableSpan(
                               backgroundDecoration: TableSpanDecoration(
@@ -133,9 +122,7 @@ class CustomDataGrid extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      provider.fields[vicinity.column]["field"]
-                                          .toString()
-                                          .toTitleCase(),
+                                      fields[vicinity.column].field.toString().toTitleCase(),
                                       style: GoogleFonts.lato(
                                         textStyle: const TextStyle(
                                           fontSize: 15.0,
@@ -143,19 +130,18 @@ class CustomDataGrid extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    FieldSortWidget(
-                                      field: provider.fields[vicinity.column]["field"],
-                                      sort: provider.fields[vicinity.column]["sort"],
-                                    ),
+                                    // FieldSortWidget(
+                                    //   field: provider.fields[vicinity.column]["field"],
+                                    //   sort: provider.fields[vicinity.column]["sort"],
+                                    // ),
                                   ],
                                 ),
                               );
                             } else {
-                              String text = (provider.stock[vicinity.row - 1]
-                                          [provider.fields[vicinity.column]["field"]] ??
-                                      "")
-                                  .toString()
-                                  .toTitleCase();
+                              String text =
+                                  (stocks[vicinity.row - 1][fields[vicinity.column].field] ?? "")
+                                      .toString()
+                                      .toTitleCase();
                               if (vicinity.column == 0) {
                                 text = DateFormat('dd-MM-yyyy HH:mm:ss')
                                     .format(DateTime.parse(text.toUpperCase()));
@@ -173,7 +159,10 @@ class CustomDataGrid extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
+                  ),
+                ),
+              ),
+            );
           },
         );
       },

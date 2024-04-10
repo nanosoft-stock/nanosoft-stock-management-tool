@@ -21,4 +21,8 @@ class LoadedState extends VisualizeStockState {
   const LoadedState(List fields, List stocks) : super(fields: fields, stocks: stocks);
 }
 
+class ImportTableActionState extends VisualizeStockActionState {}
+
+class ExportTableActionState extends VisualizeStockActionState {}
+
 class ErrorState extends VisualizeStockState {}

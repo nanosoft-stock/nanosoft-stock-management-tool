@@ -4,4 +4,7 @@ abstract class VisualizeStockRepository {
   Future<List<StockFieldEntity>> getAllFields();
 
   Future<List<Map<String, dynamic>>> getAllStocks();
+
+  Future<void> exportToExcel();
+
 }

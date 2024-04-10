@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:stock_management_tool/providers/export_stock_provider.dart';
 
 enum Sort {
   asc,
@@ -20,10 +18,10 @@ class FieldSortWidget extends StatelessWidget {
 
   void switchSort(BuildContext context) {
     sort = Sort.values[(Sort.values.indexOf(sort) + 1) % Sort.values.length];
-    Provider.of<ExportStockProvider>(context, listen: false).sortStock(
-      field: field,
-      sort: sort,
-    );
+    // Provider.of<ExportStockProvider>(context, listen: false).sortStock(
+    //   field: field,
+    //   sort: sort,
+    // );
   }
 
   @override

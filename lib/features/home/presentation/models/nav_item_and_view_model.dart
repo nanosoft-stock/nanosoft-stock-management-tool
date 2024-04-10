@@ -6,7 +6,6 @@ import 'package:stock_management_tool/features/home/presentation/models/nav_item
 import 'package:stock_management_tool/features/visualize_stock/presentation/views/visualise_stock_view.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
 import 'package:stock_management_tool/screens/archive_stock_screen.dart';
-import 'package:stock_management_tool/screens/export_stock_screen.dart';
 import 'package:stock_management_tool/screens/modify_product_screen.dart';
 import 'package:stock_management_tool/screens/modify_stock_screen.dart';
 
@@ -37,17 +36,9 @@ class NavItemAndViewModel {
       ),
       view: VisualiseStockView(),
     ),
-    "Export Stock": NavItemAndView(
-      navItem: NavItemModel(
-        index: 3,
-        title: 'Export Stock',
-        icon: Icons.file_download_outlined,
-      ),
-      view: const ExportStockScreen(),
-    ),
     "Modify Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 4,
+        index: 3,
         title: 'Modify Stock',
         icon: Icons.edit_note_outlined,
       ),
@@ -55,7 +46,7 @@ class NavItemAndViewModel {
     ),
     "Modify Product": NavItemAndView(
       navItem: NavItemModel(
-        index: 5,
+        index: 4,
         title: 'Modify Product',
         icon: Icons.edit_note_outlined,
       ),
@@ -63,7 +54,7 @@ class NavItemAndViewModel {
     ),
     "Archive Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 6,
+        index: 5,
         title: 'Archive Stock',
         icon: Icons.archive_outlined,
       ),
@@ -71,7 +62,7 @@ class NavItemAndViewModel {
     ),
     "Archive Product": NavItemAndView(
       navItem: NavItemModel(
-        index: 7,
+        index: 6,
         title: 'Archive Product',
         icon: Icons.archive_outlined,
       ),
@@ -80,7 +71,7 @@ class NavItemAndViewModel {
   };
 
   static final NavItemModel logOutItemMenuNavItem = NavItemModel(
-    index: 8,
+    index: 7,
     title: 'Log out',
     icon: Icons.logout,
   );

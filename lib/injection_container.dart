@@ -23,6 +23,7 @@ import 'package:stock_management_tool/features/home/domain/usecases/sign_out_use
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
@@ -76,7 +77,8 @@ Future<void> initializeDependencies() async {
       () => VisualizeStockRepositoryImplementation());
   sl.registerLazySingleton<GetAllStockUseCase>(() => GetAllStockUseCase(sl()));
   sl.registerLazySingleton<GetAllFieldsUseCase>(() => GetAllFieldsUseCase(sl()));
-  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(sl(), sl()));
+  sl.registerLazySingleton<ExportToExcelUsecase>(() => ExportToExcelUsecase(sl()));
+  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(sl(), sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

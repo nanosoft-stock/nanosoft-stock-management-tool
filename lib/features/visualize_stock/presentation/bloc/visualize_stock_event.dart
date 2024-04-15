@@ -11,7 +11,12 @@ class LoadingEvent extends VisualizeStockEvent {}
 
 class LoadedEvent extends VisualizeStockEvent {}
 
-class SortFieldEvent extends VisualizeStockEvent {}
+class SortFieldEvent extends VisualizeStockEvent {
+  const SortFieldEvent({required this.field, required this.sort});
+
+  final String field;
+  final Sort sort;
+}
 
 class FilterFieldEvent extends VisualizeStockEvent {}
 

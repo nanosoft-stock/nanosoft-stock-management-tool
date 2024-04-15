@@ -1,34 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
 
-enum Sort {
-  asc,
-  desc,
-  none,
-}
-
-class FieldSortWidget extends StatelessWidget {
-  FieldSortWidget({
+class CustomSortButton extends StatelessWidget {
+  const CustomSortButton({
     super.key,
     required this.field,
-    this.sort = Sort.none,
+    required this.sort,
+    required this.onPressed,
   });
 
   final String field;
-  Sort sort;
-
-  void switchSort(BuildContext context) {
-    sort = Sort.values[(Sort.values.indexOf(sort) + 1) % Sort.values.length];
-    // Provider.of<ExportStockProvider>(context, listen: false).sortStock(
-    //   field: field,
-    //   sort: sort,
-    // );
-  }
+  final Sort sort;
+  final Function(String, Sort) onPressed;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        switchSort(context);
+        onPressed(field, Sort.values[(Sort.values.indexOf(sort) + 1) % Sort.values.length]);
       },
       child: Builder(
         builder: (BuildContext context) {

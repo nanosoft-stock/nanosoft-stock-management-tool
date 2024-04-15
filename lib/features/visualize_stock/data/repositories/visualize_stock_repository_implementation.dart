@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_field_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -23,6 +24,49 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
   @override
   Future<List<Map<String, dynamic>>> getAllStocks() async {
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+
+    return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+  }
+
+  @override
+  Future<List<StockFieldModel>> sortFields({required String field, required Sort sort}) async {
+    List fields = _objectBox.getInputFields().map((e) {
+      Map json = e.toJson();
+      if (json["field"] == field) {
+        json["sort"] = sort;
+      } else {
+        json["sort"] = Sort.none;
+      }
+      return json;
+    }).toList();
+
+    return fields.map((e) => StockFieldModel.fromJson(e)).toSet().toList();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> sortStocks({required String field, required Sort sort}) async {
+    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+
+    compareWithBlank(a, b) {
+      bool isABlank = a == null || a == "";
+      bool isBBlank = b == null || b == "";
+
+      if (sort == Sort.asc) {
+        if (isABlank) return 1;
+        if (isBBlank) return -1;
+      } else if (sort == Sort.desc) {
+        if (isABlank) return -1;
+        if (isBBlank) return 1;
+      }
+
+      return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
+    }
+
+    if (sort == Sort.asc) {
+      stocks.sort((a, b) => compareWithBlank(a[field], b[field]));
+    } else if (sort == Sort.desc) {
+      stocks.sort((a, b) => compareWithBlank(b[field], a[field]));
+    }
 
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
   }

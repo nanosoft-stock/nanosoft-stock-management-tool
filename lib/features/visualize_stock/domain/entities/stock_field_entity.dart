@@ -1,5 +1,11 @@
 import 'package:equatable/equatable.dart';
 
+enum Sort {
+  asc,
+  desc,
+  none,
+}
+
 class StockFieldEntity extends Equatable {
   const StockFieldEntity({
     required this.field,
@@ -9,7 +15,8 @@ class StockFieldEntity extends Equatable {
     required this.isTitleCase,
     required this.isBg,
     // required this.order,
-    required this.locked,
+    // required this.locked,
+    required this.sort,
   });
 
   final String field;
@@ -20,7 +27,8 @@ class StockFieldEntity extends Equatable {
   final bool isBg;
 
   // final int order;
-  final bool locked;
+  // final bool locked;
+  final Sort sort;
 
   @override
   List<Object?> get props => [
@@ -31,6 +39,7 @@ class StockFieldEntity extends Equatable {
         isTitleCase,
         isBg,
         // order,
-        locked,
+        // locked,
+        sort,
       ];
 }

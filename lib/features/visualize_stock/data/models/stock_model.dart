@@ -83,7 +83,7 @@ class StockModel extends StockEntity {
       "display port": displayPort,
       "vga": vga,
       "ethernet": ethernet,
-      "usbA": usbA,
+      "usb a": usbA,
       "type": type,
       "supplier info": supplierInfo,
       "dispatch info": dispatchInfo,

@@ -3,6 +3,7 @@ import 'package:stock_management_tool/features/add_new_product/presentation/view
 import 'package:stock_management_tool/features/add_new_stock/presentation/views/add_new_stock_view.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_model.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_view.dart';
+import 'package:stock_management_tool/features/locate_stock/presentation/views/locate_stock_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/views/visualise_stock_view.dart';
 import 'package:stock_management_tool/screens/archive_product_screen.dart';
 import 'package:stock_management_tool/screens/archive_stock_screen.dart';
@@ -13,7 +14,6 @@ class NavItemAndViewModel {
   static final Map allNavItemAndView = {
     "Add New Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 0,
         title: 'Add New Stock',
         icon: Icons.add_box_outlined,
         isSelected: true,
@@ -22,7 +22,6 @@ class NavItemAndViewModel {
     ),
     "Add New Product": NavItemAndView(
       navItem: NavItemModel(
-        index: 1,
         title: 'Add New Product',
         icon: Icons.add_box_outlined,
       ),
@@ -30,15 +29,20 @@ class NavItemAndViewModel {
     ),
     "Visualise Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 2,
         title: 'Visualise Stock',
         icon: Icons.table_chart_outlined,
       ),
       view: VisualiseStockView(),
     ),
+    "Locate Stock": NavItemAndView(
+      navItem: NavItemModel(
+        title: 'Locate Stock',
+        icon: Icons.my_location_outlined,
+      ),
+      view: LocateStockView(),
+    ),
     "Modify Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 3,
         title: 'Modify Stock',
         icon: Icons.edit_note_outlined,
       ),
@@ -46,7 +50,6 @@ class NavItemAndViewModel {
     ),
     "Modify Product": NavItemAndView(
       navItem: NavItemModel(
-        index: 4,
         title: 'Modify Product',
         icon: Icons.edit_note_outlined,
       ),
@@ -54,7 +57,6 @@ class NavItemAndViewModel {
     ),
     "Archive Stock": NavItemAndView(
       navItem: NavItemModel(
-        index: 5,
         title: 'Archive Stock',
         icon: Icons.archive_outlined,
       ),
@@ -62,7 +64,6 @@ class NavItemAndViewModel {
     ),
     "Archive Product": NavItemAndView(
       navItem: NavItemModel(
-        index: 6,
         title: 'Archive Product',
         icon: Icons.archive_outlined,
       ),
@@ -71,7 +72,6 @@ class NavItemAndViewModel {
   };
 
   static final NavItemModel logOutItemMenuNavItem = NavItemModel(
-    index: 7,
     title: 'Log out',
     icon: Icons.logout,
   );

@@ -72,23 +72,27 @@ class CustomSideMenu extends StatelessWidget {
                 view: view,
                 navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(2).navItem,
               ),
-              const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
                 navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(3).navItem,
               ),
+              const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
                 navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(4).navItem,
               ),
-              const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
                 navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(5).navItem,
               ),
+              const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
                 navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(6).navItem,
+              ),
+              createMenuItem(
+                view: view,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(7).navItem,
               ),
             ],
             footer: Padding(

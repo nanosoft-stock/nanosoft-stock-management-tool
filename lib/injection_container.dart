@@ -21,6 +21,12 @@ import 'package:stock_management_tool/features/home/data/repositories/home_repos
 import 'package:stock_management_tool/features/home/domain/repositories/home_repository.dart';
 import 'package:stock_management_tool/features/home/domain/usecases/sign_out_user_usecase.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_locate_stock_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_selected_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_locate_stock_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_selected_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
@@ -83,6 +89,16 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<SortStockUseCase>(() => SortStockUseCase(sl()));
   sl.registerLazySingleton<ExportToExcelUsecase>(() => ExportToExcelUsecase(sl()));
   sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl()));
+
+  // Locate Stock
+  sl.registerLazySingleton<InitialLocateStockUseCase>(() => InitialLocateStockUseCase());
+  sl.registerLazySingleton<AddNewLocateStockInputRowUseCase>(
+      () => AddNewLocateStockInputRowUseCase());
+  sl.registerLazySingleton<RemoveLocateStockInputRowUseCase>(
+      () => RemoveLocateStockInputRowUseCase());
+  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(() => SearchByFieldSelectedUseCase());
+  sl.registerLazySingleton<IdSelectedUseCase>(() => IdSelectedUseCase());
+  sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(sl(), sl(), sl(), sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

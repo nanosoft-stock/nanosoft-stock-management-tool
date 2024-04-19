@@ -52,6 +52,7 @@ dependencies:
     shared_preferences: ^2.2.2
     font_awesome_flutter: ^10.7.0
     objectbox_flutter_libs: ^2.5.1
+    multiple_search_selection: ^2.6.4
     two_dimensional_scrollables: ^0.2.0
 
 dev_dependencies:

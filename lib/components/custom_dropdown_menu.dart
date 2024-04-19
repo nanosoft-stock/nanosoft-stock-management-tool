@@ -18,6 +18,7 @@ class CustomDropdownMenu extends StatelessWidget {
     return DropdownMenu(
       controller: controller,
       width: 200,
+      menuHeight: 200,
       textStyle: kLabelTextStyle,
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

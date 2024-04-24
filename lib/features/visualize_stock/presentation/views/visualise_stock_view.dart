@@ -93,7 +93,7 @@ class VisualiseStockView extends StatelessWidget {
                               children: [
                                 CustomElevatedButton(
                                   text: "Import Excel",
-                                  onPressed: () {
+                                  onPressed: () async {
                                     _visualizeStockBloc.add(ImportButtonClickedEvent());
                                   },
                                 ),
@@ -215,6 +215,29 @@ class VisualiseStockView extends StatelessWidget {
                 ],
               ),
             ),
+            // // Filter Menu
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(52, 103, 0, 40),
+            //   child: CustomContainer(
+            //     child: SizedBox(
+            //       width: constraints.maxWidth / 3,
+            //       child: Column(
+            //         children: [
+            //           Text("Sort And Filter"),
+            //           Text("Sort A to Z"),
+            //           Text("Sort Z to A"),
+            //           ExpansionTile(
+            //             initiallyExpanded: true,
+            //             title: Text("Show Column by Category"),
+            //           ),
+            //           ExpansionTile(
+            //             title: Text("Contains"),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         );
       },

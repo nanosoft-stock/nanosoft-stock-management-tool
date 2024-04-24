@@ -45,21 +45,6 @@ class StockRepositoryImplementation implements StockRepository {
     }).toList();
 
     return fields.map((e) => StockInputFieldModel.fromJson(e)).toList();
-
-    // List fields = AllPredefinedData.data[category.toLowerCase()]["fields"]
-    //     .where((element) => !element['isBg'] && element['field'] != 'category')
-    //     .toList();
-    // return fields.map((element) {
-    //   if (element['field'] != 'sku') {
-    //     return StockInputFieldModel.fromJson(element);
-    //   } else {
-    //     element['items'] = AllPredefinedData.data[category.toLowerCase()]["products"]
-    //             .map((e) => e["sku"])
-    //             .toList() ??
-    //         [];
-    //     return StockInputFieldModel.fromJson(element);
-    //   }
-    // }).toList();
   }
 
   @override
@@ -69,10 +54,6 @@ class StockRepositoryImplementation implements StockRepository {
         .where((element) => element.category == category.toLowerCase() && element.sku == sku)
         .map((e) => e.toJson())
         .toList()[0];
-
-    // return AllPredefinedData.data[category.toLowerCase()]["products"]
-    //     .where((e) => e["sku"] == sku)
-    //     .toList()[0];
   }
 
   @override

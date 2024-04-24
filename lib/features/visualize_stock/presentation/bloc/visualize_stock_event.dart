@@ -20,6 +20,7 @@ class SortFieldEvent extends VisualizeStockEvent {
 
 class FilterFieldEvent extends VisualizeStockEvent {}
 
-class ImportButtonClickedEvent extends VisualizeStockEvent {}
+class ImportButtonClickedEvent extends VisualizeStockEvent {
+}
 
 class ExportButtonClickedEvent extends VisualizeStockEvent {}

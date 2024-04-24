@@ -11,18 +11,6 @@ class ProductRepositoryImplementation implements ProductRepository {
 
   @override
   Future<List<ProductInputFieldModel>> getInitialInputFields() async {
-    // List fields = _objectBox
-    //     .getInputFields()
-    //     .where((element) => ["category", "sku"].contains(element.field))
-    //     .map((e) {
-    //   if (e.field == "category") {
-    //     e.items = _objectBox.getCategories().map((e) => e.category!.toTitleCase()).toList();
-    //   }
-    //   return e.toJson();
-    // }).toList();
-    //
-    // return fields.map((e) => ProductInputFieldModel.fromJson(e)).toList();
-
     return [
       {
         "field": "category",
@@ -75,12 +63,5 @@ class ProductRepositoryImplementation implements ProductRepository {
             data: data,
           ),
         );
-
-    // await sl.get<ObjectBox>().addProduct(
-    //       ProductModel(
-    //         category: data["category"],
-    //         sku: data['sku'],
-    //       ),
-    //     );
   }
 }

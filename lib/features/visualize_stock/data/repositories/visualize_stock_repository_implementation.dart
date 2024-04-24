@@ -7,9 +7,11 @@ import 'package:stock_management_tool/features/visualize_stock/data/models/stock
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
+import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
+import 'package:stock_management_tool/services/firestore.dart';
 
 class VisualizeStockRepositoryImplementation implements VisualizeStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
@@ -69,6 +71,85 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
     }
 
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+  }
+
+  @override
+  Future<void> importFromExcel() async {
+    var filePath = (await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+      allowMultiple: false,
+    ))!
+        .files
+        .first
+        .path;
+
+    print(filePath);
+
+    var bytes = File(filePath!).readAsBytesSync();
+    Excel excel = Excel.decodeBytes(bytes);
+
+    List header = [];
+
+    for (var table in excel.tables.keys) {
+      print(table);
+      print(excel.tables[table]!.maxColumns);
+      print(excel.tables[table]!.maxRows);
+
+      for (var cell in excel.tables[table]!.rows.first) {
+        header.add((cell!.value! as TextCellValue).value.toLowerCase());
+      }
+
+      print(header);
+
+      for (var row in excel.tables[table]!.rows.sublist(1)) {
+        Map<String, dynamic> rowData = {};
+
+        for (int i = 0; i < row.length; i++) {
+          final cellValue = row[i]!.value;
+
+          Object? value;
+
+          switch (cellValue) {
+            case null:
+              value = null;
+              break;
+            case TextCellValue():
+              value = cellValue.value;
+              break;
+            case IntCellValue():
+              value = cellValue.value;
+              break;
+            case BoolCellValue():
+              value = cellValue.value;
+              break;
+            case DoubleCellValue():
+              value = cellValue.value;
+              break;
+            case DateCellValue():
+              // print('  date: ${cellValue.year} ${cellValue.month} ${cellValue.day} (${cellValue.asDateTimeLocal()})');
+              break;
+            case TimeCellValue():
+              // print('  time: ${cellValue.hour} ${cellValue.minute} ... (${cellValue.asDuration()})');
+              break;
+            case DateTimeCellValue():
+              // print('  date with time: ${cellValue.year} ${cellValue.month} ${cellValue.day} ${cellValue.hour} ... (${cellValue.asDateTimeLocal()})');
+              break;
+            default:
+              break;
+          }
+
+          rowData[header[i]] = value;
+        }
+
+        print(AddNewStockHelper.toJson(data: rowData));
+
+        await sl.get<Firestore>().createDocument(
+              path: "stock_data",
+              data: AddNewStockHelper.toJson(data: rowData),
+            );
+      }
+    }
   }
 
   @override

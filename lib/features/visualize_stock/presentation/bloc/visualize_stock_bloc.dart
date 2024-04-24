@@ -6,6 +6,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/entities/s
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_field_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_stock_usecase.dart';
 
@@ -17,10 +18,11 @@ class VisualizeStockBloc extends Bloc<VisualizeStockEvent, VisualizeStockState> 
   final GetAllStockUseCase? _allStockUseCase;
   final SortFieldUseCase? _sortFieldUseCase;
   final SortStockUseCase? _sortStockUseCase;
+  final ImportFromExcelUseCase? _importFromExcelUseCase;
   final ExportToExcelUsecase? _exportToExcelUsecase;
 
   VisualizeStockBloc(this._allFieldsUseCase, this._allStockUseCase, this._sortFieldUseCase,
-      this._sortStockUseCase, this._exportToExcelUsecase)
+      this._sortStockUseCase, this._importFromExcelUseCase, this._exportToExcelUsecase)
       : super(LoadingState()) {
     on<LoadedEvent>(loadedEvent);
     on<SortFieldEvent>(sortFieldEvent);
@@ -41,8 +43,10 @@ class VisualizeStockBloc extends Bloc<VisualizeStockEvent, VisualizeStockState> 
   FutureOr<void> filterFieldEvent(FilterFieldEvent event, Emitter<VisualizeStockState> emit) {}
 
   FutureOr<void> importButtonClickedEvent(
-      ImportButtonClickedEvent event, Emitter<VisualizeStockState> emit) {
+      ImportButtonClickedEvent event, Emitter<VisualizeStockState> emit) async {
+    await _importFromExcelUseCase!();
     emit(ImportTableActionState());
+    emit(LoadedState(await _allFieldsUseCase!(), await _allStockUseCase!()));
   }
 
   FutureOr<void> exportButtonClickedEvent(

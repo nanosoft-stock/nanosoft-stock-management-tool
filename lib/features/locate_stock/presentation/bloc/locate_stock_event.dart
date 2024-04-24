@@ -35,10 +35,10 @@ class SearchByFieldSelected extends LocateStockEvent {
 }
 
 class IdSelected extends LocateStockEvent {
-  const IdSelected({required this.index, required this.id, required this.locatedItems});
+  const IdSelected({required this.index, required this.ids, required this.locatedItems});
 
   final int? index;
-  final String? id;
+  final List? ids;
   final List? locatedItems;
 }
 

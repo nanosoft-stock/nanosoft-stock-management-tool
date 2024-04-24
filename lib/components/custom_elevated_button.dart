@@ -4,11 +4,13 @@ import 'package:stock_management_tool/constants/constants.dart';
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
     super.key,
-    required this.text,
+    this.text,
+    this.child,
     required this.onPressed,
   });
 
-  final String text;
+  final String? text;
+  final Widget? child;
   final void Function() onPressed;
 
   @override
@@ -28,8 +30,8 @@ class CustomElevatedButton extends StatelessWidget {
             vertical: 15.0,
             horizontal: 10.0,
           ),
-          child: Text(
-            text,
+          child: child ?? Text(
+            text!,
             softWrap: false,
             style: kButtonTextStyle,
           ),

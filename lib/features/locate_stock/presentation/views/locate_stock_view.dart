@@ -9,6 +9,7 @@ class LocateStockView extends StatelessWidget {
   LocateStockView({super.key});
 
   final LocateStockBloc _locateStockBloc = sl.get<LocateStockBloc>();
+  final OverlayPortalController overlayPortalController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,42 +73,51 @@ class LocateStockView extends StatelessWidget {
   Widget _buildLoadedStateWidget(int itemCount, List locatedItems) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(52, 80, 52, 40),
-          child: SizedBox(
-            height: constraints.maxHeight,
-            child: ListView.builder(
-              itemCount: itemCount + 1,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: index < itemCount
-                      ? LocateStockInputRow(
-                          index: index,
-                          locatedItems: locatedItems,
-                          showRemoveButton: itemCount != 1,
-                          removeOnTap: () {
-                            _locateStockBloc.add(RemoveLocateStockInputRowEvent(
-                                index: index, locatedItems: locatedItems));
-                          },
-                          onSearchBySelected: (value) {
-                            _locateStockBloc.add(SearchByFieldSelected(
-                                index: index, searchBy: value, locatedItems: locatedItems));
-                          },
-                          onIdSelected: (value) {
-                            _locateStockBloc.add(IdSelected(
-                                index: index, id: value, locatedItems: locatedItems));
-                          },
-                        )
-                      : LocateStockAddNewInputRow(
-                          onTap: () {
-                            _locateStockBloc
-                                .add(AddNewLocateStockInputRowEvent(locatedItems: locatedItems));
-                          },
-                        ),
-                );
-              },
+        return GestureDetector(
+          onTap: () {
+            if (overlayPortalController.isShowing) {
+              overlayPortalController.hide();
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(52, 80, 52, 40),
+            child: SizedBox(
+              height: constraints.maxHeight,
+              child: ListView.builder(
+                itemCount: itemCount + 1,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: index < itemCount
+                        ? LocateStockInputRow(
+                            index: index,
+                            locatedItems: locatedItems,
+                            showRemoveButton: itemCount != 1,
+                            removeOnTap: () {
+                              _locateStockBloc.add(RemoveLocateStockInputRowEvent(
+                                  index: index, locatedItems: locatedItems));
+                            },
+                            onSearchBySelected: (value) {
+                              _locateStockBloc.add(SearchByFieldSelected(
+                                  index: index, searchBy: value, locatedItems: locatedItems));
+                            },
+                            onIdSelected: (value) {
+                              _locateStockBloc.add(
+                                  IdSelected(index: index, ids: value, locatedItems: locatedItems));
+                            },
+                            // overlayPortalController: overlayPortalController,
+                            overlayPortalController: OverlayPortalController(),
+                          )
+                        : LocateStockAddNewInputRow(
+                            onTap: () {
+                              _locateStockBloc
+                                  .add(AddNewLocateStockInputRowEvent(locatedItems: locatedItems));
+                            },
+                          ),
+                  );
+                },
+              ),
             ),
           ),
         );

@@ -6,13 +6,54 @@ class IdSelectedUseCase extends UseCase {
   @override
   Future call({params}) async {
     int index = params["index"];
-    String id = params["id"];
+    List selectedIds = params["ids"];
     List<Map<String, dynamic>> locatedItems = params["located items"];
-    if (locatedItems[index]["id"] == null) {
-      locatedItems[index]["id"] = [id];
-    } else {
-      locatedItems[index]["id"] = [...locatedItems[index]["id"], id];
-    }
+    locatedItems[index]["selected ids"] = selectedIds;
+    // locatedItems[index]["selected ids"] = selectedIds.map((e) => [
+    //       {
+    //         "id": "",
+    //         "type": "",
+    //         "warehouse": [
+    //           {
+    //             "warehouse location id": "",
+    //           }
+    //         ],
+    //         "container": [
+    //           {
+    //             "warehouse location id": "",
+    //             "container id": "",
+    //             "container history": [
+    //               {
+    //                 "date": "",
+    //                 "movement type": "",
+    //                 "user": "",
+    //                 "new location": {
+    //                   "warehouse location id": "",
+    //                 },
+    //               },
+    //             ],
+    //           }
+    //         ],
+    //         "item": [
+    //           {
+    //             "warehouse location id": "",
+    //             "container id": "",
+    //             "item id": "",
+    //             "item history": [
+    //               {
+    //                 "date": "",
+    //                 "movement type": "",
+    //                 "user": "",
+    //                 "new location": {
+    //                   "warehouse location id": "",
+    //                   "container id": "",
+    //                 },
+    //               }
+    //             ]
+    //           }
+    //         ],
+    //       },
+    //     ]);
 
     return locatedItems;
   }

@@ -29,7 +29,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<AddNewLocateStockInputRowEvent>(addNewLocateStockInputRowEvent);
     on<RemoveLocateStockInputRowEvent>(removeLocateStockInputRowEvent);
     on<SearchByFieldSelected>(searchByFieldSelected);
-    on<IdSelected>(idEntered);
+    on<IdSelected>(idSelected);
   }
 
   FutureOr<void> loadedEvent(LoadedEvent event, Emitter<LocateStockState> emit) async {
@@ -60,9 +60,9 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
-  FutureOr<void> idEntered(IdSelected event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> idSelected(IdSelected event, Emitter<LocateStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(await _idSelectedUseCase!(
-        params: {"index": event.index, "id": event.id, "located items": event.locatedItems})));
+        params: {"index": event.index, "ids": event.ids, "located items": event.locatedItems})));
   }
 }

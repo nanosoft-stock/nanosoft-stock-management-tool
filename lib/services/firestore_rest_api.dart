@@ -109,7 +109,58 @@ class FirestoreRestApi {
 
       if (response.statusCode == 200) {
         var jsonData = response.data;
-        var data = jsonData.map((e) => e["document"]["name"].toString().split("/").last).toList();
+
+        var data = jsonData.map((e) {
+          if (e["document"] != null) {
+            Map map = e["document"]["fields"];
+            map["docRef"] = {
+              "stringValue": e["document"]["name"].toString().split("/").last,
+            };
+
+            return map;
+            // return {
+            //   "fields": e["document"]["fields"],
+            //   "docRef": {
+            //     "stringValue": e["document"]["name"].toString().split("/").last,
+            //   },
+            // };
+          } else {
+            return {};
+          }
+        }).toList();
+
+        return DataSuccess(data);
+      }
+    } on Exception catch (error) {
+      return DataFailed(error);
+    }
+    return DataFailed(Exception("Unknown Exception"));
+  }
+
+  Future<DataState> modifyDocument(
+      {required String path, List? updateMask, required Map data}) async {
+    try {
+      String updateMaskUrl = "";
+
+      if (updateMask != null && updateMask.isNotEmpty) {
+        for (var element in updateMask) {
+          updateMaskUrl = "${updateMaskUrl}updateMask.fieldPaths=$element&";
+        }
+      }
+
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?${updateMaskUrl}key=$apiKey";
+
+      Response response = await _dio.patch(
+        url,
+        data: {
+          "fields": data,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+        var data = jsonData['fields'];
 
         return DataSuccess(data);
       }

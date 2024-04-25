@@ -6,7 +6,7 @@ class RemoveLocateStockInputRowUseCase extends UseCase {
   @override
   Future call({params}) async {
     int index = params["index"];
-    List<Map<String, dynamic>> locatedItems = params["located items"];
+    List<Map<String, dynamic>> locatedItems = params["located_items"];
     locatedItems.removeAt(index);
 
     return locatedItems;

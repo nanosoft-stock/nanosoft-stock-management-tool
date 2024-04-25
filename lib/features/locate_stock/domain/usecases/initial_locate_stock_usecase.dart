@@ -6,7 +6,7 @@ class InitialLocateStockUseCase extends UseCase {
   @override
   Future call({params}) async {
     List<Map<String, dynamic>> locatedItems = [];
-    locatedItems.add({"search by": ""});
+    locatedItems.add({"search_by": ""});
 
     return locatedItems;
   }

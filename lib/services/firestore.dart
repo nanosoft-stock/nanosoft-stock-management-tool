@@ -49,4 +49,19 @@ class Firestore {
 
     return data;
   }
+
+  Future<void> modifyDocument({required String path, List? updateMask, required Map data}) async {
+    if (!kIsLinux) {
+      // await sl.get<FirestoreDefault>().createDocument(
+      //       path: path,
+      //       data: data,
+      //     );
+    } else {
+      await sl.get<FirestoreRestApi>().modifyDocument(
+            path: path,
+            updateMask: updateMask,
+            data: data,
+          );
+    }
+  }
 }

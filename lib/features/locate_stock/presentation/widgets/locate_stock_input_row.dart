@@ -51,6 +51,7 @@ class LocateStockInputRow extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
@@ -83,7 +84,7 @@ class LocateStockInputRow extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: CustomDropdownInputField(
                         text: "Search By",
-                        controller: TextEditingController(text: locatedItems[index]["search by"]),
+                        controller: TextEditingController(text: locatedItems[index]["search_by"]),
                         items: searchableIds,
                         onSelected: (value) {
                           if (searchableIds.contains(value) || value == "") {
@@ -94,33 +95,34 @@ class LocateStockInputRow extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (locatedItems[index]["search by"] != "")
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: SizedBox(
-                      width: 322.5,
-                      child: CustomElevatedButton(
-                        onPressed: () {
-                          overlayPortalController.toggle();
-                        },
-                        child: OverlayPortal(
-                          controller: overlayPortalController,
-                          overlayChildBuilder: overlayChildBuilder,
-                          child: Text(
-                            "Select ${locatedItems[index]["search by"]}",
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                            style: kButtonTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: SizedBox(
+                    width: 322.5,
+                    child: locatedItems[index]["search_by"] != ""
+                        ? CustomElevatedButton(
+                            onPressed: () {
+                              overlayPortalController.toggle();
+                            },
+                            child: OverlayPortal(
+                              controller: overlayPortalController,
+                              overlayChildBuilder: overlayChildBuilder,
+                              child: Text(
+                                "Select ${locatedItems[index]["search_by"]}",
+                                textAlign: TextAlign.center,
+                                softWrap: false,
+                                style: kButtonTextStyle,
+                              ),
+                            ),
+                          )
+                        : Container(),
                   ),
+                ),
               ],
             ),
-            if (locatedItems[index]["selected ids"] != null &&
-                locatedItems[index]["selected ids"].isNotEmpty)
-              Text(locatedItems[index]["selected ids"].toString()),
+            if (locatedItems[index]["selected_ids"] != null &&
+                locatedItems[index]["selected_ids"].isNotEmpty)
+              Text(locatedItems[index]["selected_ids"].toString()),
           ],
         ),
       ),
@@ -152,9 +154,9 @@ class LocateStockInputRow extends StatelessWidget {
                         padding: const EdgeInsets.all(15.0),
                         child: CustomMultipleSearchSelection(
                           multipleSearchController: multipleSearchController,
-                          title: "Select ${locatedItems[index]["search by"]}",
-                          initialPickedItems: locatedItems[index]["selected ids"] ?? [],
-                          items: locatedItems[index]["all ids"],
+                          title: "Select ${locatedItems[index]["search_by"]}",
+                          initialPickedItems: locatedItems[index]["selected_ids"] ?? [],
+                          items: locatedItems[index]["all_ids"],
                         ),
                       ),
                     ),

@@ -51,18 +51,22 @@ class CustomMultipleSearchSelection extends StatelessWidget {
       fieldToCheck: (id) {
         return id;
       },
+      pickedItemsScrollController: ScrollController(),
       pickedItemsContainerBuilder: (widgets) {
         return Row(
           children: [
             Expanded(
               child: Container(
                 height: 100,
+                clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   color: kTertiaryBackgroundColor,
                   borderRadius: kBorderRadius,
                   boxShadow: kBoxShadowList,
                 ),
-                child: Wrap(children: widgets),
+                child: SingleChildScrollView(
+                  child: Wrap(children: widgets),
+                ),
               ),
             ),
           ],

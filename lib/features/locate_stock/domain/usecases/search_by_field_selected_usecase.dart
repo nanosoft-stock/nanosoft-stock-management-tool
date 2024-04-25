@@ -1,24 +1,20 @@
 import 'package:stock_management_tool/core/usecase/usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 
 class SearchByFieldSelectedUseCase extends UseCase {
-  SearchByFieldSelectedUseCase();
+  SearchByFieldSelectedUseCase(this._locateStockRepository);
+
+  final LocateStockRepository _locateStockRepository;
 
   @override
   Future call({params}) async {
     int index = params["index"];
-    String searchBy = params["search by"];
-    List<Map<String, dynamic>> locatedItems = params["located items"];
+    String searchBy = params["search_by"];
+    List<Map<String, dynamic>> locatedItems = params["located_items"];
 
-    locatedItems[index]["search by"] = searchBy;
-    print(searchBy);
-    locatedItems[index]["all ids"] = [
-      "901290",
-      "901291",
-      "901292",
-      "901293",
-      "901294",
-      "901295"
-    ];
+    locatedItems[index]["search_by"] = searchBy;
+
+    locatedItems[index]["all_ids"] = await _locateStockRepository.getIds(searchBy: searchBy);
 
     return locatedItems;
   }

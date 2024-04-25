@@ -21,6 +21,8 @@ import 'package:stock_management_tool/features/home/data/repositories/home_repos
 import 'package:stock_management_tool/features/home/domain/repositories/home_repository.dart';
 import 'package:stock_management_tool/features/home/domain/usecases/sign_out_user_usecase.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
+import 'package:stock_management_tool/features/locate_stock/data/repositories/locate_stock_repository_implementation.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_locate_stock_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_selected_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
@@ -94,13 +96,14 @@ Future<void> initializeDependencies() async {
       () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
+  sl.registerLazySingleton<LocateStockRepository>(() => LocateStockRepositoryImplementation());
   sl.registerLazySingleton<InitialLocateStockUseCase>(() => InitialLocateStockUseCase());
   sl.registerLazySingleton<AddNewLocateStockInputRowUseCase>(
       () => AddNewLocateStockInputRowUseCase());
   sl.registerLazySingleton<RemoveLocateStockInputRowUseCase>(
       () => RemoveLocateStockInputRowUseCase());
-  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(() => SearchByFieldSelectedUseCase());
-  sl.registerLazySingleton<IdSelectedUseCase>(() => IdSelectedUseCase());
+  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(() => SearchByFieldSelectedUseCase(sl()));
+  sl.registerLazySingleton<IdSelectedUseCase>(() => IdSelectedUseCase(sl()));
   sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(sl(), sl(), sl(), sl(), sl()));
 
   // Services

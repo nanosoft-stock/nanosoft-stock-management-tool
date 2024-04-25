@@ -40,14 +40,14 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       AddNewLocateStockInputRowEvent event, Emitter<LocateStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(
-        await _addNewLocateStockInputRowUseCase!(params: {"located items": event.locatedItems})));
+        await _addNewLocateStockInputRowUseCase!(params: {"located_items": event.locatedItems})));
   }
 
   FutureOr<void> removeLocateStockInputRowEvent(
       RemoveLocateStockInputRowEvent event, Emitter<LocateStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(await _removeLocateStockInputRowUseCase!(
-        params: {"index": event.index, "located items": event.locatedItems})));
+        params: {"index": event.index, "located_items": event.locatedItems})));
   }
 
   FutureOr<void> searchByFieldSelected(
@@ -55,14 +55,14 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(await _searchByFieldSelectedUseCase!(params: {
       "index": event.index,
-      "search by": event.searchBy,
-      "located items": event.locatedItems
+      "search_by": event.searchBy,
+      "located_items": event.locatedItems
     })));
   }
 
   FutureOr<void> idSelected(IdSelected event, Emitter<LocateStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(await _idSelectedUseCase!(
-        params: {"index": event.index, "ids": event.ids, "located items": event.locatedItems})));
+        params: {"index": event.index, "ids": event.ids, "located_items": event.locatedItems})));
   }
 }

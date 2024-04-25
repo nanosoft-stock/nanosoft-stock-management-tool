@@ -5,8 +5,8 @@ class AddNewLocateStockInputRowUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    List<Map<String, dynamic>> locatedItems = params["located items"];
-    locatedItems.add({"search by": ""});
+    List<Map<String, dynamic>> locatedItems = params["located_items"];
+    locatedItems.add({"search_by": ""});
 
     return locatedItems;
   }

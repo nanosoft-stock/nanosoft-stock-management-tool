@@ -1,5 +1,6 @@
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
+import 'package:stock_management_tool/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -59,12 +60,104 @@ class StockRepositoryImplementation implements StockRepository {
   @override
   Future addNewStock({required List<dynamic> fields}) async {
     Map data = {};
+
     for (var element in fields) {
       data[element.field] = element.textValue;
     }
+
     await sl.get<Firestore>().createDocument(
           path: "stock_data",
           data: AddNewStockHelper.toJson(data: data),
+        );
+
+    List allLocations = await _fetchAllLocations();
+
+    Map warehouseLocations =
+        allLocations.firstWhere((element) => element.keys.contains("warehouse_locations"));
+    Map containers = allLocations.firstWhere((element) => element.keys.contains("containers"));
+    Map items = allLocations.firstWhere((element) => element.keys.contains("items"));
+
+    await _addNewLocations(
+      locations: warehouseLocations["warehouse_locations"],
+      newValue: data["warehouse location"],
+      docRef: warehouseLocations["docRef"],
+      updateField: "warehouse_locations",
+    );
+
+    await _addNewLocations(
+      locations: containers["containers"],
+      newValue: data["container id"],
+      docRef: containers["docRef"],
+      updateField: "containers",
+    );
+
+    await _addNewLocations(
+      locations: items["items"],
+      newValue: data["item id"],
+      docRef: items["docRef"],
+      updateField: "items",
+    );
+
+    await _addItemLocationHistory(data: data);
+  }
+
+  Future<List> _fetchAllLocations() async {
+    List allLocations =
+        await sl.get<Firestore>().getDocuments(path: "all_locations", includeDocRef: true);
+
+    allLocations = allLocations.map((element) {
+      Map map = {};
+
+      for (var key in element.keys) {
+        if (key == "docRef") {
+          map["docRef"] = element["docRef"]["stringValue"];
+        } else {
+          map[key] = element[key]["arrayValue"]["values"].map((ele) => ele["stringValue"]).toList();
+        }
+      }
+
+      return map;
+    }).toList();
+
+    return allLocations;
+  }
+
+  Future<void> _addNewLocations({
+    required List locations,
+    required String? newValue,
+    required String docRef,
+    required String updateField,
+  }) async {
+    if (newValue != null &&
+        newValue.toString().trim() != "" &&
+        !locations.contains(newValue.toString().trim())) {
+      locations.add(newValue.toString().trim().toUpperCase());
+
+      locations = locations.toSet().toList();
+
+      locations.sort((a, b) => a.toString().compareTo(b.toString()));
+
+      await sl.get<Firestore>().modifyDocument(
+        path: "all_locations/$docRef",
+        updateMask: [updateField],
+        data: {
+          updateField: {
+            "arrayValue": {
+              "values": locations.map((e) => {"stringValue": e}).toList(),
+            }
+          }
+        },
+      );
+    }
+  }
+
+  Future<void> _addItemLocationHistory({required Map data}) async {
+    data["movement method"] = "initial";
+    data["items"] = [data["item id"]];
+
+    await sl.get<Firestore>().createDocument(
+          path: "item_location_history",
+          data: AddNewItemLocationHistoryHelper.toJson(data: data),
         );
   }
 }

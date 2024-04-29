@@ -75,7 +75,6 @@ class CustomDropdownAndCheckboxInputField extends StatelessWidget {
                     ),
                   if (lockable)
                     CustomCheckbox(
-                      text: text.toLowerCase(),
                       locked: locked,
                       onChecked: onChecked,
                     ),

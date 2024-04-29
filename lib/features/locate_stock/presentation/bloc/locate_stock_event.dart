@@ -42,4 +42,48 @@ class IdSelected extends LocateStockEvent {
   final List? locatedItems;
 }
 
+class ShowTableToggled extends LocateStockEvent {
+  const ShowTableToggled(
+      {required this.index, required this.showTable, required this.locatedItems});
+
+  final int? index;
+  final bool? showTable;
+  final List? locatedItems;
+}
+
+class ShowDetailsToggled extends LocateStockEvent {
+  const ShowDetailsToggled(
+      {required this.index, required this.showDetails, required this.locatedItems});
+
+  final int? index;
+  final bool? showDetails;
+  final List? locatedItems;
+}
+
+class CheckBoxToggled extends LocateStockEvent {
+  const CheckBoxToggled({
+    required this.index,
+    required this.id,
+    required this.state,
+    required this.locatedItems,
+  });
+
+  final int? index;
+  final String? id;
+  final CheckBoxState? state;
+  final List? locatedItems;
+}
+
+class AllCheckBoxToggled extends LocateStockEvent {
+  const AllCheckBoxToggled({
+    required this.index,
+    required this.state,
+    required this.locatedItems,
+  });
+
+  final int? index;
+  final CheckBoxState? state;
+  final List? locatedItems;
+}
+
 class CustomSearchMenuSelected extends LocateStockEvent {}

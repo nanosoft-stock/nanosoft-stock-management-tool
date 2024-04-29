@@ -1,10 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-enum Sort {
-  asc,
-  desc,
-  none,
-}
+import 'package:stock_management_tool/constants/enums.dart';
 
 class StockFieldEntity extends Equatable {
   const StockFieldEntity({

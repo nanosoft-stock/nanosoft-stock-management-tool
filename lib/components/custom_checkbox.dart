@@ -4,13 +4,13 @@ import 'package:stock_management_tool/constants/constants.dart';
 class CustomCheckbox extends StatelessWidget {
   const CustomCheckbox({
     super.key,
-    required this.text,
     required this.locked,
+    this.partial = false,
     required this.onChecked,
   });
 
-  final String text;
   final bool locked;
+  final bool partial;
   final void Function() onChecked;
 
   @override
@@ -25,6 +25,7 @@ class CustomCheckbox extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Material(
             elevation: 7,
+            borderRadius: BorderRadius.circular(4),
             child: Container(
               width: 23.0,
               height: 23.0,
@@ -36,6 +37,7 @@ class CustomCheckbox extends StatelessWidget {
                 child: Container(
                   width: 21.0,
                   height: 21.0,
+                  padding: EdgeInsets.symmetric(vertical: partial ? 8.5 : 0),
                   decoration: BoxDecoration(
                     color: kTertiaryBackgroundColor,
                     borderRadius: BorderRadius.circular(4),
@@ -45,8 +47,8 @@ class CustomCheckbox extends StatelessWidget {
                       width: 15,
                       height: 15,
                       decoration: BoxDecoration(
-                        color: locked ? kCheckboxCheckedColor : kTertiaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(3),
+                        color: partial || locked ? kCheckboxCheckedColor : kTertiaryBackgroundColor,
+                        borderRadius: BorderRadius.circular(partial ? 0 : 3),
                       ),
                     ),
                   ),

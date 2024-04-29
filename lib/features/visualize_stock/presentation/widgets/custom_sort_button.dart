@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
+import 'package:stock_management_tool/constants/enums.dart';
 
 class CustomSortButton extends StatelessWidget {
   const CustomSortButton({

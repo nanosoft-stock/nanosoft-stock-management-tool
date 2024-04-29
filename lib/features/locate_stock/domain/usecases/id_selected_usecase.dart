@@ -1,3 +1,4 @@
+import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 
@@ -11,7 +12,7 @@ class IdSelectedUseCase extends UseCase {
     int index = params["index"];
     List selectedIds = params["ids"];
     List<Map<String, dynamic>> locatedItems = params["located_items"];
-    locatedItems[index]["selected_ids"] = selectedIds;
+    locatedItems[index]["selected_ids"] = selectedIds.toSet().toList();
 
     // locatedItems[index]["selected ids"] = selectedIds.map((e) => [
     //       {
@@ -99,10 +100,40 @@ class IdSelectedUseCase extends UseCase {
     //   }
     // }
 
-    locatedItems[index]["selected_id_details"] = await _locateStockRepository.getIdSpecificData(
+    locatedItems[index]["selected_ids_details"] = await _locateStockRepository.getIdSpecificData(
       searchBy: locatedItems[index]["search_by"],
       selectedIds: selectedIds,
     );
+
+    String searchBy = locatedItems[index]["search_by"];
+
+    if (searchBy != "Item Id") {
+      List uniqueItems = [];
+
+      locatedItems[index]["selected_ids"].forEach((element) {
+        Map data = {};
+
+        if (searchBy == "Container Id") {
+          data = {
+            ...locatedItems[index]["selected_ids_details"]
+                .firstWhere((ele) => ele["container_id"] == element, orElse: () => {})
+          };
+        } else if (searchBy == "Warehouse Location Id") {
+          data = {
+            ...locatedItems[index]["selected_ids_details"]
+                .firstWhere((ele) => ele["warehouse_location_id"] == element, orElse: () => {})
+          };
+        }
+
+        if (data.isNotEmpty) {
+          data.remove("id");
+          data["is_selected"] = CheckBoxState.empty;
+          uniqueItems.add(data);
+        }
+      });
+
+      locatedItems[index]["unique_ids_details"] = uniqueItems;
+    }
 
     return locatedItems;
   }

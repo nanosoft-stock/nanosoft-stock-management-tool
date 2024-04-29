@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stock_management_tool/components/custom_container.dart';
+import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_add_new_input_row.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_input_row.dart';
@@ -73,53 +75,95 @@ class LocateStockView extends StatelessWidget {
   Widget _buildLoadedStateWidget(int itemCount, List locatedItems) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        return GestureDetector(
-          onTap: () {
-            if (overlayPortalController.isShowing) {
-              overlayPortalController.hide();
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(52, 80, 52, 40),
-            child: SizedBox(
-              height: constraints.maxHeight,
-              child: ListView.builder(
-                itemCount: itemCount + 1,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: index < itemCount
-                        ? LocateStockInputRow(
-                            index: index,
-                            locatedItems: locatedItems,
-                            showRemoveButton: itemCount != 1,
-                            removeOnTap: () {
-                              _locateStockBloc.add(RemoveLocateStockInputRowEvent(
-                                  index: index, locatedItems: locatedItems));
-                            },
-                            onSearchBySelected: (value) {
-                              _locateStockBloc.add(SearchByFieldSelected(
-                                  index: index, searchBy: value, locatedItems: locatedItems));
-                            },
-                            onIdSelected: (value) {
-                              _locateStockBloc.add(
-                                  IdSelected(index: index, ids: value, locatedItems: locatedItems));
-                            },
-                            // overlayPortalController: overlayPortalController,
-                            overlayPortalController: OverlayPortalController(),
-                          )
-                        : LocateStockAddNewInputRow(
-                            onTap: () {
-                              _locateStockBloc
-                                  .add(AddNewLocateStockInputRowEvent(locatedItems: locatedItems));
-                            },
-                          ),
-                  );
-                },
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (overlayPortalController.isShowing) {
+                  overlayPortalController.hide();
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(52, 80, 52, 0),
+                child: SizedBox(
+                  height: constraints.maxHeight,
+                  child: ListView.builder(
+                    itemCount: itemCount + 1,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: index < itemCount
+                            ? LocateStockInputRow(
+                                query: locatedItems[index],
+                                showRemoveButton: itemCount != 1,
+                                removeOnTap: () {
+                                  _locateStockBloc.add(RemoveLocateStockInputRowEvent(
+                                      index: index, locatedItems: locatedItems));
+                                },
+                                onSearchBySelected: (value) {
+                                  _locateStockBloc.add(SearchByFieldSelected(
+                                      index: index, searchBy: value, locatedItems: locatedItems));
+                                },
+                                onIdSelected: (value) {
+                                  _locateStockBloc.add(IdSelected(
+                                      index: index, ids: value, locatedItems: locatedItems));
+                                },
+                                // overlayPortalController: overlayPortalController,
+                                overlayPortalController: OverlayPortalController(),
+                                onShowTableToggled: (value) {
+                                  _locateStockBloc.add(ShowTableToggled(
+                                      index: index, showTable: value, locatedItems: locatedItems));
+                                },
+                                onShowDetailsToggled: (value) {
+                                  _locateStockBloc.add(ShowDetailsToggled(
+                                      index: index,
+                                      showDetails: value,
+                                      locatedItems: locatedItems));
+                                },
+                                onCheckBoxToggled: (id, state) {
+                                  _locateStockBloc.add(CheckBoxToggled(
+                                      index: index,
+                                      id: id,
+                                      state: state,
+                                      locatedItems: locatedItems));
+                                },
+                                onAllCheckBoxToggled: (state) {
+                                  _locateStockBloc.add(AllCheckBoxToggled(
+                                      index: index, state: state, locatedItems: locatedItems));
+                                },
+                              )
+                            : LocateStockAddNewInputRow(
+                                onTap: () {
+                                  _locateStockBloc.add(
+                                      AddNewLocateStockInputRowEvent(locatedItems: locatedItems));
+                                },
+                              ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+            if (locatedItems.any((element) =>
+                (element["selected_ids_details"] != null) &&
+                (element["selected_ids_details"].any((ele) => ele["is_selected"] == true))))
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: CustomContainer(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: CustomElevatedButton(
+                        onPressed: () {},
+                        text: "Move Selected Items",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         );
       },
     );

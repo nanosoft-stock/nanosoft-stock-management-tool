@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
+import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';

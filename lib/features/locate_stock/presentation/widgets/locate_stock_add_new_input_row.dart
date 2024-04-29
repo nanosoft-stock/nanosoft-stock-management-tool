@@ -14,27 +14,34 @@ class LocateStockAddNewInputRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: CustomContainer(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Center(
-            child: SizedBox(
-              width: 55,
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: CustomContainer(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Center(
+              child: SizedBox(
+                width: 55,
+                height: 55,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Material(
+                    elevation: 7,
                     borderRadius: BorderRadius.circular(7),
-                    boxShadow: kBoxShadowList,
-                  ),
-                  child: const SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Icon(
-                      Icons.add_rounded,
-                      size: 28,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(7),
+                        boxShadow: kBoxShadowList,
+                      ),
+                      child: const SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Icon(
+                          Icons.add_rounded,
+                          size: 28,
+                        ),
+                      ),
                     ),
                   ),
                 ),

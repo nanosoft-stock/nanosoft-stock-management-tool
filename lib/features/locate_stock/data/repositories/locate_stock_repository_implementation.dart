@@ -1,3 +1,4 @@
+import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/services/firestore.dart';
@@ -25,16 +26,24 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     List selectedIdDetails = [];
 
     for (var id in selectedIds) {
+      List data = [];
+
       if (searchBy == "Warehouse Location Id") {
-        selectedIdDetails.add(await _fetchWarehouseLocationDetails(id: id));
+        data = await _fetchWarehouseLocationDetails(id: id);
       } else if (searchBy == "Container Id") {
-        selectedIdDetails.add(await _fetchContainerDetails(id: id));
+        data = await _fetchContainerDetails(id: id);
       } else if (searchBy == "Item Id") {
-        selectedIdDetails.add(await _fetchItemDetails(id: id));
+        data = await _fetchItemDetails(id: id);
+      }
+
+      if (data.isNotEmpty) {
+        for (var element in data) {
+          selectedIdDetails.add(element);
+        }
       }
     }
 
-    print(selectedIdDetails);
+    selectedIdDetails = selectedIdDetails.toSet().toList();
 
     return selectedIdDetails;
   }
@@ -60,10 +69,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     return allLocations;
   }
 
-  Future<Map> _fetchWarehouseLocationDetails({required String id}) async {
-    Map data = {};
-
-    data["id"] = id;
+  Future<List> _fetchWarehouseLocationDetails({required String id}) async {
+    List dataList = [];
 
     List list = await sl.get<Firestore>().filterQuery(
       path: "",
@@ -88,23 +95,26 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       },
     );
 
-    data["containers"] = list.map((e) => e["container id"]["stringValue"]).toList()
-      ..sort((a, b) => a.compareTo(b));
-    data["items"] = list
-        .map((e) => {
-              "item id": e["item id"]["stringValue"],
-              "container id": e["container id"]["stringValue"]
-            })
-        .toList()
-      ..sort((a, b) => a["item id"].compareTo(b["item id"]));
+    if (list.isNotEmpty && list.first.isNotEmpty) {
+      for (var e in list) {
+        dataList.add({
+          "id": e["item id"]["stringValue"],
+          "container_id": e["container id"]["stringValue"],
+          "warehouse_location_id": id,
+          "item_quantity": list.length,
+          "container_quantity":
+              list.map((element) => element["container id"]["stringValue"]).toSet().toList().length,
+          "is_selected": CheckBoxState.empty,
+        });
+      }
 
-    return data;
+      dataList.sort((a, b) => a["id"].compareTo(b["id"]));
+    }
+    return dataList;
   }
 
-  Future<Map> _fetchContainerDetails({required String id}) async {
-    Map data = {};
-
-    data["id"] = id;
+  Future<List> _fetchContainerDetails({required String id}) async {
+    List dataList = [];
 
     List list = await sl.get<Firestore>().filterQuery(
       path: "",
@@ -129,17 +139,24 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       },
     );
 
-    data["warehouse_location_id"] = list.first["warehouse location"]["stringValue"];
-    data["items"] = list.map((e) => e["item id"]["stringValue"]).toList()
-      ..sort((a, b) => a.compareTo(b));
+    if (list.isNotEmpty && list.first.isNotEmpty) {
+      for (var e in list) {
+        dataList.add({
+          "id": e["item id"]["stringValue"],
+          "container_id": id,
+          "warehouse_location_id": list.first["warehouse location"]["stringValue"],
+          "item_quantity": list.length,
+          "is_selected": CheckBoxState.empty,
+        });
+      }
 
-    return data;
+      dataList.sort((a, b) => a["id"].compareTo(b["id"]));
+    }
+    return dataList;
   }
 
-  Future<Map> _fetchItemDetails({required String id}) async {
-    Map data = {};
-
-    data["id"] = id;
+  Future<List> _fetchItemDetails({required String id}) async {
+    List dataList = [];
 
     List list = await sl.get<Firestore>().filterQuery(
       path: "",
@@ -164,10 +181,18 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       },
     );
 
-    data["warehouse_location_id"] = list.first["warehouse location"]["stringValue"];
-    data["container_id"] = list.first["container id"]["stringValue"];
+    if (list.isNotEmpty && list.first.isNotEmpty) {
+      for (var e in list) {
+        dataList.add({
+          'id': id,
+          "container_id": e["container id"]["stringValue"],
+          "warehouse_location_id": e["warehouse location"]["stringValue"],
+          "is_selected": CheckBoxState.empty,
+        });
+      }
+    }
 
-    return data;
+    return dataList;
   }
 
 // Future<void> _addAllLocations() async {

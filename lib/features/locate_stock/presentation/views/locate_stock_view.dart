@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
+import 'package:stock_management_tool/components/custom_dropdown_input_field.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_add_new_input_row.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_input_row.dart';
@@ -11,7 +13,7 @@ class LocateStockView extends StatelessWidget {
   LocateStockView({super.key});
 
   final LocateStockBloc _locateStockBloc = sl.get<LocateStockBloc>();
-  final OverlayPortalController overlayPortalController = OverlayPortalController();
+  final OverlayPortalController previewMoveOverlayPortalController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,12 @@ class LocateStockView extends StatelessWidget {
 
   void _blocListener(BuildContext context, LocateStockState state) {
     debugPrint("listen: ${state.runtimeType}");
+    // switch (state.runtimeType) {
+    //   case const (PreviewMoveActionState):
+    //     print("${state.selectedItems}");
+    //     previewMoveOverlayPortalController.show();
+    //     return;
+    // }
   }
 
   Widget _blocBuilder(BuildContext context, LocateStockState state) {
@@ -52,8 +60,11 @@ class LocateStockView extends StatelessWidget {
 
       case const (LoadedState):
         List locatedItems = state.locatedItems!;
+        Map selectedItems = state.selectedItems!;
         int itemCount = locatedItems.length;
-        return _buildLoadedStateWidget(itemCount, locatedItems);
+        // if (selectedItems != null) previewMoveOverlayPortalController.show();
+
+        return _buildLoadedStateWidget(itemCount, locatedItems, selectedItems);
 
       default:
         return Container();
@@ -72,15 +83,15 @@ class LocateStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(int itemCount, List locatedItems) {
+  Widget _buildLoadedStateWidget(int itemCount, List locatedItems, Map selectedItems) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
           children: [
             GestureDetector(
               onTap: () {
-                if (overlayPortalController.isShowing) {
-                  overlayPortalController.hide();
+                if (previewMoveOverlayPortalController.isShowing) {
+                  previewMoveOverlayPortalController.hide();
                 }
               },
               child: Padding(
@@ -90,6 +101,8 @@ class LocateStockView extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: itemCount + 1,
                     shrinkWrap: true,
+                    controller: ScrollController(),
+                    physics: const BouncingScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -145,9 +158,12 @@ class LocateStockView extends StatelessWidget {
                 ),
               ),
             ),
-            if (locatedItems.any((element) =>
-                (element["selected_ids_details"] != null) &&
-                (element["selected_ids_details"].any((ele) => ele["is_selected"] == true))))
+            // if (locatedItems.any((element) =>
+            //     (element["selected_ids_details"] != null) &&
+            //     (element["selected_ids_details"]
+            //         .any((ele) => ele["is_selected"] == CheckBoxState.all))))
+            if (selectedItems["selected_items"] != null &&
+                selectedItems["selected_items"].isNotEmpty)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -156,8 +172,179 @@ class LocateStockView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: CustomElevatedButton(
-                        onPressed: () {},
-                        text: "Move Selected Items",
+                        onPressed: () {
+                          previewMoveOverlayPortalController.show();
+                          // _locateStockBloc
+                          //     .add(PreviewMoveButtonPressed(locatedItems: locatedItems));
+                        },
+                        child: OverlayPortal(
+                          controller: previewMoveOverlayPortalController,
+                          overlayChildBuilder: (BuildContext context) {
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(250.0 + 52.0, 90.0, 52.0, 40.0),
+                                child: SizedBox(
+                                  width: 675,
+                                  height: 360,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE0DCDF),
+                                      borderRadius: kBorderRadius,
+                                      boxShadow: kBoxShadowList,
+                                      // backgroundBlendMode: BlendMode.overlay,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: kSecondaryBackgroundColor,
+                                          borderRadius: kBorderRadius,
+                                          boxShadow: kBoxShadowList,
+                                          // backgroundBlendMode: BlendMode.overlay,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: SizedBox(
+                                            width: 400,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: SizedBox(
+                                                    width: 200,
+                                                    height: 300,
+                                                    child: Column(
+                                                      // mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(4.0),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              color: kButtonBackgroundColor,
+                                                              borderRadius: kBorderRadius,
+                                                              boxShadow: kBoxShadowList,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "Item Total:  ${selectedItems["selected_items"].length}",
+                                                                  style: kLabelTextStyle,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: ListView.builder(
+                                                            itemCount:
+                                                                selectedItems["selected_items"]
+                                                                    .length,
+                                                            scrollDirection: Axis.vertical,
+                                                            controller: ScrollController(),
+                                                            physics: const BouncingScrollPhysics(),
+                                                            shrinkWrap: true,
+                                                            itemBuilder:
+                                                                (BuildContext context, int index) {
+                                                              return Padding(
+                                                                padding: const EdgeInsets.all(4.0),
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    color: kTertiaryBackgroundColor,
+                                                                    borderRadius: kBorderRadius,
+                                                                    boxShadow: kBoxShadowList,
+                                                                  ),
+                                                                  child: Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(8.0),
+                                                                    child: Center(
+                                                                      child: Text(
+                                                                        "Item Id:   ${selectedItems["selected_items"][index]["id"]}",
+                                                                        style: kLabelTextStyle,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(12.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: SizedBox(
+                                                          width: 330.0,
+                                                          child: CustomDropdownInputField(
+                                                            text: "Container Id",
+                                                            controller: TextEditingController(
+                                                                text: selectedItems[
+                                                                    "container_text"]),
+                                                            items: selectedItems["container_ids"],
+                                                            onSelected: (_) {},
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: SizedBox(
+                                                          width: 330.0,
+                                                          child: CustomDropdownInputField(
+                                                            text: "Warehouse Location Id",
+                                                            controller: TextEditingController(
+                                                                text: selectedItems[
+                                                                    "warehouse_location_text"]),
+                                                            items: selectedItems[
+                                                                "warehouse_location_ids"],
+                                                            onSelected: (_) {},
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 15),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: SizedBox(
+                                                          width: 330.0,
+                                                          child: CustomElevatedButton(
+                                                            onPressed: () {},
+                                                            text: "Move Items",
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Preview Move",
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            style: kButtonTextStyle,
+                          ),
+                        ),
                       ),
                     ),
                   ),

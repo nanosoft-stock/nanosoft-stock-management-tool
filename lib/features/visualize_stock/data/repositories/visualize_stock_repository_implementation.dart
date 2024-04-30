@@ -84,23 +84,15 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
         .first
         .path;
 
-    print(filePath);
-
     var bytes = File(filePath!).readAsBytesSync();
     Excel excel = Excel.decodeBytes(bytes);
 
     List header = [];
 
     for (var table in excel.tables.keys) {
-      print(table);
-      print(excel.tables[table]!.maxColumns);
-      print(excel.tables[table]!.maxRows);
-
       for (var cell in excel.tables[table]!.rows.first) {
         header.add((cell!.value! as TextCellValue).value.toLowerCase());
       }
-
-      print(header);
 
       for (var row in excel.tables[table]!.rows.sublist(1)) {
         Map<String, dynamic> rowData = {};
@@ -141,8 +133,6 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
 
           rowData[header[i]] = value;
         }
-
-        print(AddNewStockHelper.toJson(data: rowData));
 
         await sl.get<Firestore>().createDocument(
               path: "stock_data",

@@ -107,27 +107,97 @@ class IdSelectedUseCase extends UseCase {
 
     String searchBy = locatedItems[index]["search_by"];
 
+    // locatedItems[index]["selected_ids_details"].forEach((element) {
+    //
+    //   locatedItems.forEach((ele) {
+    //     ele["selected_ids_details"].forEach((e) => {
+    //       if (e["id"] == element["id"]) {
+    //
+    //       }
+    //     });
+    //   });
+    // });
+
+    Set allItemsIds = {};
+    Set allContainerIds = {};
+    Set allWarehouseIds = {};
+
+    locatedItems[index]["selected_ids_details"].forEach((element) {
+      allItemsIds.add(element["id"]);
+      allContainerIds.add(element["container_id"]);
+      allWarehouseIds.add(element["warehouse_location_id"]);
+    });
+
+    for (var itemId in allItemsIds) {
+      for (var element in locatedItems) {
+        for (var ele in element["selected_ids_details"]) {
+          if (ele["id"] == itemId) {
+            List items = locatedItems[index]["selected_ids_details"]
+                .where((e) => e["id"] == itemId)
+                .toList();
+            for (var e in items) {
+              e["is_selected"] = ele["is_selected"];
+            }
+            break;
+          }
+        }
+        break;
+      }
+    }
+
     if (searchBy != "Item Id") {
       List uniqueItems = [];
 
       locatedItems[index]["selected_ids"].forEach((element) {
         Map data = {};
 
+        CheckBoxState state = CheckBoxState.empty;
+
         if (searchBy == "Container Id") {
           data = {
             ...locatedItems[index]["selected_ids_details"]
                 .firstWhere((ele) => ele["container_id"] == element, orElse: () => {})
           };
+
+          data.remove("is_selected");
+
+          List affectedContainers = locatedItems[index]["selected_ids_details"]
+              .where((e) => e["container_id"] == element)
+              .toList();
+
+          if (affectedContainers.every((ele) => ele["is_selected"] == CheckBoxState.all)) {
+            state = CheckBoxState.all;
+          } else if (affectedContainers.any((ele) => ele["is_selected"] == CheckBoxState.all)) {
+            state = CheckBoxState.partial;
+          } else {
+            state = CheckBoxState.empty;
+          }
         } else if (searchBy == "Warehouse Location Id") {
           data = {
             ...locatedItems[index]["selected_ids_details"]
                 .firstWhere((ele) => ele["warehouse_location_id"] == element, orElse: () => {})
           };
+
+          data.remove("container_id");
+          data.remove("is_selected");
+
+          List affectedLocations = locatedItems[index]["selected_ids_details"]
+              .where((e) => e["warehouse_location_id"] == element)
+              .toList();
+
+          if (affectedLocations.every((ele) => ele["is_selected"] == CheckBoxState.all)) {
+            state = CheckBoxState.all;
+          } else if (affectedLocations.any((ele) => ele["is_selected"] == CheckBoxState.all)) {
+            state = CheckBoxState.partial;
+          } else {
+            state = CheckBoxState.empty;
+          }
         }
 
         if (data.isNotEmpty) {
           data.remove("id");
-          data["is_selected"] = CheckBoxState.empty;
+
+          data["is_selected"] = state;
           uniqueItems.add(data);
         }
       });

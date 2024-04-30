@@ -87,3 +87,9 @@ class AllCheckBoxToggled extends LocateStockEvent {
 }
 
 class CustomSearchMenuSelected extends LocateStockEvent {}
+
+class PreviewMoveButtonPressed extends LocateStockEvent {
+  const PreviewMoveButtonPressed({required this.locatedItems});
+
+  final List? locatedItems;
+}

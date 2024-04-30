@@ -120,8 +120,9 @@ class CustomItemDetailsTableView extends StatelessWidget {
                           : CustomCheckbox(
                               locked: items
                                   .every((element) => element["is_selected"] == CheckBoxState.all),
-                              partial: items.any(
-                                      (element) => element["is_selected"] == CheckBoxState.all) &&
+                              partial: items.any((element) =>
+                                      element["is_selected"] == CheckBoxState.all ||
+                                      element["is_selected"] == CheckBoxState.partial) &&
                                   !items.every(
                                       (element) => element["is_selected"] == CheckBoxState.all),
                               onChecked: () {

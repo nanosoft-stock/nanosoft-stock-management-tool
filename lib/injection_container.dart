@@ -26,6 +26,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/repositories/
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_locate_stock_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/all_checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_selected_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_locate_stock_input_row_usecase.dart';
@@ -112,8 +113,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ShowDetailsToggledUseCase>(() => ShowDetailsToggledUseCase());
   sl.registerLazySingleton<CheckBoxToggledUseCase>(() => CheckBoxToggledUseCase());
   sl.registerLazySingleton<AllCheckBoxToggledUseCase>(() => AllCheckBoxToggledUseCase());
+  sl.registerLazySingleton<GetSelectedItemsUseCase>(() => GetSelectedItemsUseCase(sl()));
   sl.registerFactory<LocateStockBloc>(
-      () => LocateStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      () => LocateStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

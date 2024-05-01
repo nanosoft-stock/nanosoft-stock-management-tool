@@ -1,3 +1,4 @@
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/helper/add_new_item_location_history_helper.dart';
@@ -21,13 +22,17 @@ class StockRepositoryImplementation implements StockRepository {
         "isTitleCase": true,
         "isBg": false,
         "order": 2,
-        "items": _objectBox.getCategories().map((e) => e.category!.toTitleCase()).toList()
+        "items": _objectBox
+            .getCategories()
+            .map((e) => e.category!.toTitleCase())
+            .toList()
       },
     ].map((e) => StockInputFieldModel.fromJson(e)).toList();
   }
 
   @override
-  Future<List<StockInputFieldModel>> getCategoryBasedInputFields({required String category}) async {
+  Future<List<StockInputFieldModel>> getCategoryBasedInputFields(
+      {required String category}) async {
     List fields = _objectBox
         .getInputFields()
         .where((element) =>
@@ -49,10 +54,12 @@ class StockRepositoryImplementation implements StockRepository {
   }
 
   @override
-  Future<Map> getProductDescription({required String category, required String sku}) async {
+  Future<Map> getProductDescription(
+      {required String category, required String sku}) async {
     return _objectBox
         .getProducts()
-        .where((element) => element.category == category.toLowerCase() && element.sku == sku)
+        .where((element) =>
+            element.category == category.toLowerCase() && element.sku == sku)
         .map((e) => e.toJson())
         .toList()[0];
   }
@@ -72,10 +79,12 @@ class StockRepositoryImplementation implements StockRepository {
 
     List allLocations = await _fetchAllLocations();
 
-    Map warehouseLocations =
-        allLocations.firstWhere((element) => element.keys.contains("warehouse_locations"));
-    Map containers = allLocations.firstWhere((element) => element.keys.contains("containers"));
-    Map items = allLocations.firstWhere((element) => element.keys.contains("items"));
+    Map warehouseLocations = allLocations
+        .firstWhere((element) => element.keys.contains("warehouse_locations"));
+    Map containers = allLocations
+        .firstWhere((element) => element.keys.contains("containers"));
+    Map items =
+        allLocations.firstWhere((element) => element.keys.contains("items"));
 
     await _addNewLocations(
       locations: warehouseLocations["warehouse_locations"],
@@ -102,22 +111,27 @@ class StockRepositoryImplementation implements StockRepository {
   }
 
   Future<List> _fetchAllLocations() async {
-    List allLocations =
-        await sl.get<Firestore>().getDocuments(path: "all_locations", includeDocRef: true);
+    List allLocations = await sl
+        .get<Firestore>()
+        .getDocuments(path: "all_locations", includeDocRef: true);
 
-    allLocations = allLocations.map((element) {
-      Map map = {};
+    if (kIsLinux) {
+      allLocations = allLocations.map((element) {
+        Map map = {};
 
-      for (var key in element.keys) {
-        if (key == "docRef") {
-          map["docRef"] = element["docRef"]["stringValue"];
-        } else {
-          map[key] = element[key]["arrayValue"]["values"].map((ele) => ele["stringValue"]).toList();
+        for (var key in element.keys) {
+          if (key == "docRef") {
+            map["docRef"] = element["docRef"]["stringValue"];
+          } else {
+            map[key] = element[key]["arrayValue"]["values"]
+                .map((ele) => ele["stringValue"])
+                .toList();
+          }
         }
-      }
 
-      return map;
-    }).toList();
+        return map;
+      }).toList();
+    }
 
     return allLocations;
   }
@@ -138,16 +152,22 @@ class StockRepositoryImplementation implements StockRepository {
       locations.sort((a, b) => a.toString().compareTo(b.toString()));
 
       await sl.get<Firestore>().modifyDocument(
-        path: "all_locations/$docRef",
-        updateMask: [updateField],
-        data: {
-          updateField: {
-            "arrayValue": {
-              "values": locations.map((e) => {"stringValue": e}).toList(),
-            }
-          }
-        },
-      );
+            path: "all_locations",
+            docRef: docRef,
+            updateMask: [updateField],
+            data: !kIsLinux
+                ? {
+                    updateField: locations,
+                  }
+                : {
+                    updateField: {
+                      "arrayValue": {
+                        "values":
+                            locations.map((e) => {"stringValue": e}).toList(),
+                      }
+                    }
+                  },
+          );
     }
   }
 

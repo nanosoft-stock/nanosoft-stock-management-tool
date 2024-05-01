@@ -279,7 +279,7 @@ class LocateStockView extends StatelessWidget {
                                                   width: 20,
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.all(12.0),
+                                                  padding: const EdgeInsets.all(10.0),
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     mainAxisSize: MainAxisSize.min,

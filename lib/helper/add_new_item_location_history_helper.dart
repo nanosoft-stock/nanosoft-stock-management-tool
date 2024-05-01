@@ -19,7 +19,7 @@ class AddNewItemLocationHistoryHelper {
     if (!kIsLinux) {
       for (var field in fields) {
         if (field == "date") {
-          convertedData[field] = FieldValue.serverTimestamp();
+          convertedData[field] = Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (field == "staff") {
           convertedData[field] = userName;
         } else {

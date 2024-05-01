@@ -17,25 +17,43 @@ class FirestoreDefault {
     return data;
   }
 
+  Stream<QuerySnapshot> listenToDocumentChanges({required String path}) {
+    CollectionReference collectionRef = firestore.collection(path);
+    return collectionRef.snapshots();
+  }
+
   Future<void> createDocument({required String path, required Map data}) async {
     CollectionReference collectionRef = firestore.collection(path);
     await collectionRef.add(data.cast<String, dynamic>());
   }
 
+  Future<void> modifyDocument(
+      {required String path, required String docRef, required Map data}) async {
+    DocumentReference doc = firestore.collection(path).doc(docRef);
+    await doc.update(data.cast<String, dynamic>());
+  }
+
   Future<List> filterQuery({required String path, required Map query}) async {
-    CollectionReference collectionRef = firestore.collection(path);
+    CollectionReference collectionRef =
+        firestore.collection(query["from"].first["collectionId"]);
 
     QuerySnapshot? snapshot;
 
     if (query["where"] != null) {
-      if (query["where"]["op"] == "isEqualTo") {
+      if (query["where"]["fieldFilter"]["op"] == "EQUAL") {
         snapshot = await collectionRef
-            .where(query["where"]["field"], isEqualTo: query["where"]["value"])
+            .where(query["where"]["fieldFilter"]["field"]["fieldPath"],
+                isEqualTo: query["where"]["fieldFilter"]["value"].values.first)
             .get();
       }
     }
 
-    final data = snapshot!.docs.map((doc) => doc.id).toList();
+    final data = snapshot!.docs.map((e) {
+      Map map = e.data() as Map;
+      map["docRef"] = e.id;
+
+      return map;
+    }).toList();
     return data;
   }
 }

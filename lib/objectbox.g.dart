@@ -25,57 +25,102 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(1, 115768193643236440),
-      name: 'CategoryModel',
-      lastPropertyId: const obx_int.IdUid(4, 8748949600333974867),
+      id: const obx_int.IdUid(6, 3279551612065122085),
+      name: 'CategoryObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(4, 513454205277183482),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 2247178619311132399), name: 'id', type: 6, flags: 1),
+            id: const obx_int.IdUid(1, 4403181726243648539),
+            name: 'id',
+            type: 6,
+            flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2713008352137297076), name: 'category', type: 9, flags: 0),
+            id: const obx_int.IdUid(2, 8861508340603668137),
+            name: 'category',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 8649976572082106997), name: 'ref', type: 9, flags: 0),
+            id: const obx_int.IdUid(3, 231179492036876718),
+            name: 'ref',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8748949600333974867), name: 'updateTime', type: 10, flags: 0)
+            id: const obx_int.IdUid(4, 513454205277183482),
+            name: 'updateTime',
+            type: 10,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(2, 4498366187129196935),
-      name: 'InputFieldsModel',
-      lastPropertyId: const obx_int.IdUid(13, 3745156033302547545),
+      id: const obx_int.IdUid(7, 8485441126565221193),
+      name: 'InputFieldsObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(13, 2204498220852388215),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 202435983539514328), name: 'id', type: 6, flags: 1),
+            id: const obx_int.IdUid(1, 8045295451714285725),
+            name: 'id',
+            type: 6,
+            flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 8355494844896868735), name: 'field', type: 9, flags: 0),
+            id: const obx_int.IdUid(2, 5451891932923467615),
+            name: 'field',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 5431476710661053420), name: 'datatype', type: 9, flags: 0),
+            id: const obx_int.IdUid(3, 4145791479446149695),
+            name: 'datatype',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 3539373982214706512), name: 'category', type: 9, flags: 0),
+            id: const obx_int.IdUid(4, 8175046254736736363),
+            name: 'category',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4470135786161090218), name: 'isWithSKU', type: 1, flags: 0),
+            id: const obx_int.IdUid(5, 3467964010716723111),
+            name: 'isWithSKU',
+            type: 1,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 6739491182670368323),
+            id: const obx_int.IdUid(6, 3417742199554809307),
             name: 'isTitleCase',
             type: 1,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 6283435366312830352), name: 'isBg', type: 1, flags: 0),
+            id: const obx_int.IdUid(7, 1192272342135156638),
+            name: 'isBg',
+            type: 1,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 8346731166956904133), name: 'lockable', type: 1, flags: 0),
+            id: const obx_int.IdUid(8, 5172208356487940317),
+            name: 'lockable',
+            type: 1,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 3715218025783938920), name: 'order', type: 6, flags: 0),
+            id: const obx_int.IdUid(9, 7145276315578964431),
+            name: 'order',
+            type: 6,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 4513509928408335197), name: 'items', type: 30, flags: 0),
+            id: const obx_int.IdUid(10, 1253580881841840002),
+            name: 'items',
+            type: 30,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 5423410102377221427), name: 'textValue', type: 9, flags: 0),
+            id: const obx_int.IdUid(11, 6143414728452045584),
+            name: 'textValue',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(12, 388221934445529623), name: 'locked', type: 1, flags: 0),
+            id: const obx_int.IdUid(12, 6136831421646016040),
+            name: 'locked',
+            type: 1,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(13, 3745156033302547545),
+            id: const obx_int.IdUid(13, 2204498220852388215),
             name: 'updateTime',
             type: 10,
             flags: 0)
@@ -83,178 +128,301 @@ final _entities = <obx_int.ModelEntity>[
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[]),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(3, 4941576589595947486),
-      name: 'ProductModel',
-      lastPropertyId: const obx_int.IdUid(19, 2508515853086180317),
+      id: const obx_int.IdUid(8, 4141691065785177202),
+      name: 'ProductObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(19, 748087498145807481),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5274888884826195896), name: 'id', type: 6, flags: 1),
+            id: const obx_int.IdUid(1, 4867700781495511551),
+            name: 'id',
+            type: 6,
+            flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 8777189826031002536), name: 'category', type: 9, flags: 0),
+            id: const obx_int.IdUid(2, 68752794182575786),
+            name: 'category',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 738290895404256581), name: 'sku', type: 9, flags: 0),
+            id: const obx_int.IdUid(3, 5009878696016247992),
+            name: 'sku',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 6330953894352556664), name: 'make', type: 9, flags: 0),
+            id: const obx_int.IdUid(4, 6965238397085432491),
+            name: 'make',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 8392276463018327300), name: 'model', type: 9, flags: 0),
+            id: const obx_int.IdUid(5, 872602155445678901),
+            name: 'model',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 8500910074651380537), name: 'processor', type: 9, flags: 0),
+            id: const obx_int.IdUid(6, 4633781764111584761),
+            name: 'processor',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 2880259993092890974), name: 'ram', type: 9, flags: 0),
+            id: const obx_int.IdUid(7, 3695794870824581208),
+            name: 'ram',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 6935748556222125260), name: 'storage', type: 9, flags: 0),
+            id: const obx_int.IdUid(8, 8739530616706670194),
+            name: 'storage',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 3262062846147267361),
+            id: const obx_int.IdUid(9, 2768502660731652685),
             name: 'screenResolution',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 5329897367482510061), name: 'os', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 662767557113346718), name: 'screenSize', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(12, 4736497072061183312), name: 'usbC', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(13, 1271629750915986512), name: 'hdmi', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(14, 3257516387398194714),
-            name: 'displayPort',
+            id: const obx_int.IdUid(10, 7546774662602217803),
+            name: 'os',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(15, 9176844804407090362), name: 'vga', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(16, 6067529247810517105), name: 'ethernet', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(17, 4538766512240501477), name: 'usbA', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(18, 3935932613264492070), name: 'type', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(19, 2508515853086180317),
-            name: 'updateTime',
-            type: 10,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
-  obx_int.ModelEntity(
-      id: const obx_int.IdUid(4, 4006601827538858093),
-      name: 'StockLocationHistoryModel',
-      lastPropertyId: const obx_int.IdUid(7, 1901759616111056195),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 301330922450907131), name: 'id', type: 6, flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 8435503500090402605), name: 'date', type: 10, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 68093823571291223), name: 'itemId', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 3282212939916168277),
-            name: 'containerId',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4994565927406361783),
-            name: 'warehouseLocation',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 6183930038347003600), name: 'comments', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 1901759616111056195), name: 'staff', type: 9, flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
-  obx_int.ModelEntity(
-      id: const obx_int.IdUid(5, 1822525163420425049),
-      name: 'StockModel',
-      lastPropertyId: const obx_int.IdUid(29, 4244842460663819587),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5882788199714033951), name: 'id', type: 6, flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 1227644137036014803), name: 'date', type: 10, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4136787169351185914), name: 'category', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 1790521698418551855), name: 'itemId', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 8199663530700390218),
-            name: 'serialNumber',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3006258940614161502), name: 'sku', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 313382672128181047), name: 'make', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 480764611909005632), name: 'model', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 2612476791207485515), name: 'processor', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(10, 2188153453481376796), name: 'ram', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 2989890264290627151), name: 'storage', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(12, 8688039732898311962),
-            name: 'screenResolution',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(13, 4703379804524044207), name: 'os', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(14, 8764344677090561810),
+            id: const obx_int.IdUid(11, 4172629010360625579),
             name: 'screenSize',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(15, 3019417299759924292), name: 'usbC', type: 9, flags: 0),
+            id: const obx_int.IdUid(12, 2857939984383049966),
+            name: 'usbC',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(16, 3163158103847927562), name: 'hdmi', type: 9, flags: 0),
+            id: const obx_int.IdUid(13, 4941206609568062546),
+            name: 'hdmi',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(17, 2699716490522283531),
+            id: const obx_int.IdUid(14, 7543440560317797966),
             name: 'displayPort',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(18, 9204905606121712460), name: 'vga', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(19, 8153688700414077519), name: 'ethernet', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(20, 3219585842847679378), name: 'usbA', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(21, 9212589769775811006), name: 'type', type: 9, flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(22, 8843852649042032310),
-            name: 'supplierInfo',
+            id: const obx_int.IdUid(15, 6180002008552014100),
+            name: 'vga',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(23, 4346226259510496964),
-            name: 'dispatchInfo',
+            id: const obx_int.IdUid(16, 1562521085325068343),
+            name: 'ethernet',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(24, 6219449817307617880),
+            id: const obx_int.IdUid(17, 6571185623631512187),
+            name: 'usbA',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(18, 8826964254478115820),
+            name: 'type',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(19, 748087498145807481),
+            name: 'updateTime',
+            type: 10,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(9, 7878301964298954903),
+      name: 'StockLocationHistoryObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(7, 6104919663265641752),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 6915762631601158155),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1537646992710910879),
+            name: 'date',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 7716995902251311121),
+            name: 'itemId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 330965801336816986),
             name: 'containerId',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(25, 8500558903919383482),
+            id: const obx_int.IdUid(5, 5633997830570794166),
             name: 'warehouseLocation',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(26, 8320200346754956927), name: 'comments', type: 9, flags: 0),
+            id: const obx_int.IdUid(6, 4784750344366697416),
+            name: 'comments',
+            type: 9,
+            flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(27, 541858986232586884), name: 'staff', type: 9, flags: 0),
+            id: const obx_int.IdUid(7, 6104919663265641752),
+            name: 'staff',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(10, 5281460078578457063),
+      name: 'StockObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(29, 5449841582608409634),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(28, 4231092600033086896), name: 'archived', type: 1, flags: 0),
+            id: const obx_int.IdUid(1, 7020731462045766427),
+            name: 'id',
+            type: 6,
+            flags: 1),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(29, 4244842460663819587),
+            id: const obx_int.IdUid(2, 6387853620102777327),
+            name: 'date',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 2547087316281728667),
+            name: 'category',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 2029189865663734617),
+            name: 'itemId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 9048610260798561663),
+            name: 'serialNumber',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 4307693110479034568),
+            name: 'sku',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 3670042484286019713),
+            name: 'make',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 5341050371797736631),
+            name: 'model',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 76197409361200103),
+            name: 'processor',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 7997333294947764022),
+            name: 'ram',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 2791513486043063712),
+            name: 'storage',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(12, 2452518765064635007),
+            name: 'screenResolution',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(13, 4698308498316394995),
+            name: 'os',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(14, 3336657640557653961),
+            name: 'screenSize',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(15, 7840287659796049751),
+            name: 'usbC',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(16, 7335928913386589045),
+            name: 'hdmi',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(17, 2636875153048060532),
+            name: 'displayPort',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(18, 8511038597848960965),
+            name: 'vga',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(19, 909524369452579391),
+            name: 'ethernet',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(20, 6882026027547946943),
+            name: 'usbA',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(21, 2119277492553071361),
+            name: 'type',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(22, 8520733399935372001),
+            name: 'supplierInfo',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(23, 5806125914537044538),
+            name: 'dispatchInfo',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(24, 589685530112799733),
+            name: 'containerId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(25, 2324248722440631036),
+            name: 'warehouseLocation',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(26, 46880092172569087),
+            name: 'comments',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(27, 8101044747573957541),
+            name: 'staff',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(28, 3097616630526892076),
+            name: 'archived',
+            type: 1,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(29, 5449841582608409634),
             name: 'updateTime',
             type: 10,
             flags: 0)
@@ -298,13 +466,92 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(5, 1822525163420425049),
+      lastEntityId: const obx_int.IdUid(10, 5281460078578457063),
       lastIndexId: const obx_int.IdUid(0, 0),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [
+        115768193643236440,
+        4498366187129196935,
+        4941576589595947486,
+        4006601827538858093,
+        1822525163420425049
+      ],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        2247178619311132399,
+        2713008352137297076,
+        8649976572082106997,
+        8748949600333974867,
+        202435983539514328,
+        8355494844896868735,
+        5431476710661053420,
+        3539373982214706512,
+        4470135786161090218,
+        6739491182670368323,
+        6283435366312830352,
+        8346731166956904133,
+        3715218025783938920,
+        4513509928408335197,
+        5423410102377221427,
+        388221934445529623,
+        3745156033302547545,
+        5274888884826195896,
+        8777189826031002536,
+        738290895404256581,
+        6330953894352556664,
+        8392276463018327300,
+        8500910074651380537,
+        2880259993092890974,
+        6935748556222125260,
+        3262062846147267361,
+        5329897367482510061,
+        662767557113346718,
+        4736497072061183312,
+        1271629750915986512,
+        3257516387398194714,
+        9176844804407090362,
+        6067529247810517105,
+        4538766512240501477,
+        3935932613264492070,
+        2508515853086180317,
+        301330922450907131,
+        8435503500090402605,
+        68093823571291223,
+        3282212939916168277,
+        4994565927406361783,
+        6183930038347003600,
+        1901759616111056195,
+        5882788199714033951,
+        1227644137036014803,
+        4136787169351185914,
+        1790521698418551855,
+        8199663530700390218,
+        3006258940614161502,
+        313382672128181047,
+        480764611909005632,
+        2612476791207485515,
+        2188153453481376796,
+        2989890264290627151,
+        8688039732898311962,
+        4703379804524044207,
+        8764344677090561810,
+        3019417299759924292,
+        3163158103847927562,
+        2699716490522283531,
+        9204905606121712460,
+        8153688700414077519,
+        3219585842847679378,
+        9212589769775811006,
+        8843852649042032310,
+        4346226259510496964,
+        6219449817307617880,
+        8500558903919383482,
+        8320200346754956927,
+        541858986232586884,
+        4231092600033086896,
+        4244842460663819587
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -320,8 +567,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.id = id;
         },
         objectToFB: (CategoryObjectBoxModel object, fb.Builder fbb) {
-          final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
-          final refOffset = object.ref == null ? null : fbb.writeString(object.ref!);
+          final categoryOffset = object.category == null
+              ? null
+              : fbb.writeString(object.category!);
+          final refOffset =
+              object.ref == null ? null : fbb.writeString(object.ref!);
           fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, categoryOffset);
@@ -333,20 +583,27 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final updateTimeValue = const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final updateTimeValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
           final refParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 8);
-          final updateTimeParam =
-              updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
+          final updateTimeParam = updateTimeValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = CategoryObjectBoxModel(
-              id: idParam, category: categoryParam, ref: refParam, updateTime: updateTimeParam);
+              id: idParam,
+              category: categoryParam,
+              ref: refParam,
+              updateTime: updateTimeParam);
 
           return object;
         }),
-    InputFieldsObjectBoxModel: obx_int.EntityDefinition<InputFieldsObjectBoxModel>(
+    InputFieldsObjectBoxModel: obx_int.EntityDefinition<
+            InputFieldsObjectBoxModel>(
         model: _entities[1],
         toOneRelations: (InputFieldsObjectBoxModel object) => [],
         toManyRelations: (InputFieldsObjectBoxModel object) => {},
@@ -355,14 +612,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.id = id;
         },
         objectToFB: (InputFieldsObjectBoxModel object, fb.Builder fbb) {
-          final fieldOffset = object.field == null ? null : fbb.writeString(object.field!);
-          final datatypeOffset = object.datatype == null ? null : fbb.writeString(object.datatype!);
-          final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
+          final fieldOffset =
+              object.field == null ? null : fbb.writeString(object.field!);
+          final datatypeOffset = object.datatype == null
+              ? null
+              : fbb.writeString(object.datatype!);
+          final categoryOffset = object.category == null
+              ? null
+              : fbb.writeString(object.category!);
           final itemsOffset = object.items == null
               ? null
-              : fbb.writeList(object.items!.map(fbb.writeString).toList(growable: false));
-          final textValueOffset =
-              object.textValue == null ? null : fbb.writeString(object.textValue!);
+              : fbb.writeList(
+                  object.items!.map(fbb.writeString).toList(growable: false));
+          final textValueOffset = object.textValue == null
+              ? null
+              : fbb.writeString(object.textValue!);
           fbb.startTable(14);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, fieldOffset);
@@ -383,27 +647,37 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final updateTimeValue = const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 28);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final updateTimeValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 28);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final fieldParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
           final datatypeParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 8);
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 10);
-          final isWithSKUParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 12);
-          final isTitleCaseParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 14);
-          final isBgParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 16);
-          final lockableParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 18);
-          final orderParam = const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 20);
-          final itemsParam =
-              const fb.ListReader<String>(fb.StringReader(asciiOptimization: true), lazy: false)
-                  .vTableGetNullable(buffer, rootOffset, 22);
+          final isWithSKUParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 12);
+          final isTitleCaseParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 14);
+          final isBgParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 16);
+          final lockableParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 18);
+          final orderParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 20);
+          final itemsParam = const fb.ListReader<String>(
+                  fb.StringReader(asciiOptimization: true),
+                  lazy: false)
+              .vTableGetNullable(buffer, rootOffset, 22);
           final textValueParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 24);
-          final lockedParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 26);
-          final updateTimeParam =
-              updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
+          final lockedParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 26);
+          final updateTimeParam = updateTimeValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = InputFieldsObjectBoxModel(
               id: idParam,
               field: fieldParam,
@@ -430,27 +704,46 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.id = id;
         },
         objectToFB: (ProductObjectBoxModel object, fb.Builder fbb) {
-          final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
-          final skuOffset = object.sku == null ? null : fbb.writeString(object.sku!);
-          final makeOffset = object.make == null ? null : fbb.writeString(object.make!);
-          final modelOffset = object.model == null ? null : fbb.writeString(object.model!);
-          final processorOffset =
-              object.processor == null ? null : fbb.writeString(object.processor!);
-          final ramOffset = object.ram == null ? null : fbb.writeString(object.ram!);
-          final storageOffset = object.storage == null ? null : fbb.writeString(object.storage!);
-          final screenResolutionOffset =
-              object.screenResolution == null ? null : fbb.writeString(object.screenResolution!);
-          final osOffset = object.os == null ? null : fbb.writeString(object.os!);
-          final screenSizeOffset =
-              object.screenSize == null ? null : fbb.writeString(object.screenSize!);
-          final usbCOffset = object.usbC == null ? null : fbb.writeString(object.usbC!);
-          final hdmiOffset = object.hdmi == null ? null : fbb.writeString(object.hdmi!);
-          final displayPortOffset =
-              object.displayPort == null ? null : fbb.writeString(object.displayPort!);
-          final vgaOffset = object.vga == null ? null : fbb.writeString(object.vga!);
-          final ethernetOffset = object.ethernet == null ? null : fbb.writeString(object.ethernet!);
-          final usbAOffset = object.usbA == null ? null : fbb.writeString(object.usbA!);
-          final typeOffset = object.type == null ? null : fbb.writeString(object.type!);
+          final categoryOffset = object.category == null
+              ? null
+              : fbb.writeString(object.category!);
+          final skuOffset =
+              object.sku == null ? null : fbb.writeString(object.sku!);
+          final makeOffset =
+              object.make == null ? null : fbb.writeString(object.make!);
+          final modelOffset =
+              object.model == null ? null : fbb.writeString(object.model!);
+          final processorOffset = object.processor == null
+              ? null
+              : fbb.writeString(object.processor!);
+          final ramOffset =
+              object.ram == null ? null : fbb.writeString(object.ram!);
+          final storageOffset =
+              object.storage == null ? null : fbb.writeString(object.storage!);
+          final screenResolutionOffset = object.screenResolution == null
+              ? null
+              : fbb.writeString(object.screenResolution!);
+          final osOffset =
+              object.os == null ? null : fbb.writeString(object.os!);
+          final screenSizeOffset = object.screenSize == null
+              ? null
+              : fbb.writeString(object.screenSize!);
+          final usbCOffset =
+              object.usbC == null ? null : fbb.writeString(object.usbC!);
+          final hdmiOffset =
+              object.hdmi == null ? null : fbb.writeString(object.hdmi!);
+          final displayPortOffset = object.displayPort == null
+              ? null
+              : fbb.writeString(object.displayPort!);
+          final vgaOffset =
+              object.vga == null ? null : fbb.writeString(object.vga!);
+          final ethernetOffset = object.ethernet == null
+              ? null
+              : fbb.writeString(object.ethernet!);
+          final usbAOffset =
+              object.usbA == null ? null : fbb.writeString(object.usbA!);
+          final typeOffset =
+              object.type == null ? null : fbb.writeString(object.type!);
           fbb.startTable(20);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, categoryOffset);
@@ -477,8 +770,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final updateTimeValue = const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 40);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final updateTimeValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 40);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
           final skuParam = const fb.StringReader(asciiOptimization: true)
@@ -493,8 +788,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 16);
           final storageParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 18);
-          final screenResolutionParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 20);
+          final screenResolutionParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 20);
           final osParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 22);
           final screenSizeParam = const fb.StringReader(asciiOptimization: true)
@@ -503,8 +799,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 26);
           final hdmiParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 28);
-          final displayPortParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 30);
+          final displayPortParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 30);
           final vgaParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 32);
           final ethernetParam = const fb.StringReader(asciiOptimization: true)
@@ -513,8 +810,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 36);
           final typeParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 38);
-          final updateTimeParam =
-              updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
+          final updateTimeParam = updateTimeValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = ProductObjectBoxModel(
               id: idParam,
               category: categoryParam,
@@ -547,16 +845,22 @@ obx_int.ModelDefinition getObjectBoxModel() {
             setId: (StockLocationHistoryObjectBoxModel object, int id) {
               object.id = id;
             },
-            objectToFB: (StockLocationHistoryObjectBoxModel object, fb.Builder fbb) {
-              final itemIdOffset = object.itemId == null ? null : fbb.writeString(object.itemId!);
-              final containerIdOffset =
-                  object.containerId == null ? null : fbb.writeString(object.containerId!);
+            objectToFB:
+                (StockLocationHistoryObjectBoxModel object, fb.Builder fbb) {
+              final itemIdOffset = object.itemId == null
+                  ? null
+                  : fbb.writeString(object.itemId!);
+              final containerIdOffset = object.containerId == null
+                  ? null
+                  : fbb.writeString(object.containerId!);
               final warehouseLocationOffset = object.warehouseLocation == null
                   ? null
                   : fbb.writeString(object.warehouseLocation!);
-              final commentsOffset =
-                  object.comments == null ? null : fbb.writeString(object.comments!);
-              final staffOffset = object.staff == null ? null : fbb.writeString(object.staff!);
+              final commentsOffset = object.comments == null
+                  ? null
+                  : fbb.writeString(object.comments!);
+              final staffOffset =
+                  object.staff == null ? null : fbb.writeString(object.staff!);
               fbb.startTable(8);
               fbb.addInt64(0, object.id);
               fbb.addInt64(1, object.date.millisecondsSinceEpoch);
@@ -571,17 +875,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
             objectFromFB: (obx.Store store, ByteData fbData) {
               final buffer = fb.BufferContext(fbData);
               final rootOffset = buffer.derefObject(0);
-              final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              final idParam =
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
               final dateParam = DateTime.fromMillisecondsSinceEpoch(
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
               final itemIdParam = const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 8);
-              final containerIdParam = const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 10);
-              final warehouseLocationParam = const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 12);
-              final commentsParam = const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 14);
+              final containerIdParam =
+                  const fb.StringReader(asciiOptimization: true)
+                      .vTableGetNullable(buffer, rootOffset, 10);
+              final warehouseLocationParam =
+                  const fb.StringReader(asciiOptimization: true)
+                      .vTableGetNullable(buffer, rootOffset, 12);
+              final commentsParam =
+                  const fb.StringReader(asciiOptimization: true)
+                      .vTableGetNullable(buffer, rootOffset, 14);
               final staffParam = const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 16);
               final object = StockLocationHistoryObjectBoxModel(
@@ -604,40 +912,68 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.id = id;
         },
         objectToFB: (StockObjectBoxModel object, fb.Builder fbb) {
-          final categoryOffset = object.category == null ? null : fbb.writeString(object.category!);
-          final itemIdOffset = object.itemId == null ? null : fbb.writeString(object.itemId!);
-          final serialNumberOffset =
-              object.serialNumber == null ? null : fbb.writeString(object.serialNumber!);
-          final skuOffset = object.sku == null ? null : fbb.writeString(object.sku!);
-          final makeOffset = object.make == null ? null : fbb.writeString(object.make!);
-          final modelOffset = object.model == null ? null : fbb.writeString(object.model!);
-          final processorOffset =
-              object.processor == null ? null : fbb.writeString(object.processor!);
-          final ramOffset = object.ram == null ? null : fbb.writeString(object.ram!);
-          final storageOffset = object.storage == null ? null : fbb.writeString(object.storage!);
-          final screenResolutionOffset =
-              object.screenResolution == null ? null : fbb.writeString(object.screenResolution!);
-          final osOffset = object.os == null ? null : fbb.writeString(object.os!);
-          final screenSizeOffset =
-              object.screenSize == null ? null : fbb.writeString(object.screenSize!);
-          final usbCOffset = object.usbC == null ? null : fbb.writeString(object.usbC!);
-          final hdmiOffset = object.hdmi == null ? null : fbb.writeString(object.hdmi!);
-          final displayPortOffset =
-              object.displayPort == null ? null : fbb.writeString(object.displayPort!);
-          final vgaOffset = object.vga == null ? null : fbb.writeString(object.vga!);
-          final ethernetOffset = object.ethernet == null ? null : fbb.writeString(object.ethernet!);
-          final usbAOffset = object.usbA == null ? null : fbb.writeString(object.usbA!);
-          final typeOffset = object.type == null ? null : fbb.writeString(object.type!);
-          final supplierInfoOffset =
-              object.supplierInfo == null ? null : fbb.writeString(object.supplierInfo!);
-          final dispatchInfoOffset =
-              object.dispatchInfo == null ? null : fbb.writeString(object.dispatchInfo!);
-          final containerIdOffset =
-              object.containerId == null ? null : fbb.writeString(object.containerId!);
-          final warehouseLocationOffset =
-              object.warehouseLocation == null ? null : fbb.writeString(object.warehouseLocation!);
-          final commentsOffset = object.comments == null ? null : fbb.writeString(object.comments!);
-          final staffOffset = object.staff == null ? null : fbb.writeString(object.staff!);
+          final categoryOffset = object.category == null
+              ? null
+              : fbb.writeString(object.category!);
+          final itemIdOffset =
+              object.itemId == null ? null : fbb.writeString(object.itemId!);
+          final serialNumberOffset = object.serialNumber == null
+              ? null
+              : fbb.writeString(object.serialNumber!);
+          final skuOffset =
+              object.sku == null ? null : fbb.writeString(object.sku!);
+          final makeOffset =
+              object.make == null ? null : fbb.writeString(object.make!);
+          final modelOffset =
+              object.model == null ? null : fbb.writeString(object.model!);
+          final processorOffset = object.processor == null
+              ? null
+              : fbb.writeString(object.processor!);
+          final ramOffset =
+              object.ram == null ? null : fbb.writeString(object.ram!);
+          final storageOffset =
+              object.storage == null ? null : fbb.writeString(object.storage!);
+          final screenResolutionOffset = object.screenResolution == null
+              ? null
+              : fbb.writeString(object.screenResolution!);
+          final osOffset =
+              object.os == null ? null : fbb.writeString(object.os!);
+          final screenSizeOffset = object.screenSize == null
+              ? null
+              : fbb.writeString(object.screenSize!);
+          final usbCOffset =
+              object.usbC == null ? null : fbb.writeString(object.usbC!);
+          final hdmiOffset =
+              object.hdmi == null ? null : fbb.writeString(object.hdmi!);
+          final displayPortOffset = object.displayPort == null
+              ? null
+              : fbb.writeString(object.displayPort!);
+          final vgaOffset =
+              object.vga == null ? null : fbb.writeString(object.vga!);
+          final ethernetOffset = object.ethernet == null
+              ? null
+              : fbb.writeString(object.ethernet!);
+          final usbAOffset =
+              object.usbA == null ? null : fbb.writeString(object.usbA!);
+          final typeOffset =
+              object.type == null ? null : fbb.writeString(object.type!);
+          final supplierInfoOffset = object.supplierInfo == null
+              ? null
+              : fbb.writeString(object.supplierInfo!);
+          final dispatchInfoOffset = object.dispatchInfo == null
+              ? null
+              : fbb.writeString(object.dispatchInfo!);
+          final containerIdOffset = object.containerId == null
+              ? null
+              : fbb.writeString(object.containerId!);
+          final warehouseLocationOffset = object.warehouseLocation == null
+              ? null
+              : fbb.writeString(object.warehouseLocation!);
+          final commentsOffset = object.comments == null
+              ? null
+              : fbb.writeString(object.comments!);
+          final staffOffset =
+              object.staff == null ? null : fbb.writeString(object.staff!);
           fbb.startTable(30);
           fbb.addInt64(0, object.id);
           fbb.addInt64(1, object.date.millisecondsSinceEpoch);
@@ -674,16 +1010,19 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final updateTimeValue = const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 60);
-          final idParam = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final updateTimeValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 60);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final dateParam = DateTime.fromMillisecondsSinceEpoch(
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 8);
           final itemIdParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 10);
-          final serialNumberParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 12);
+          final serialNumberParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 12);
           final skuParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 14);
           final makeParam = const fb.StringReader(asciiOptimization: true)
@@ -696,8 +1035,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 22);
           final storageParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 24);
-          final screenResolutionParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 26);
+          final screenResolutionParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 26);
           final osParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 28);
           final screenSizeParam = const fb.StringReader(asciiOptimization: true)
@@ -706,8 +1046,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 32);
           final hdmiParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 34);
-          final displayPortParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 36);
+          final displayPortParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 36);
           final vgaParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 38);
           final ethernetParam = const fb.StringReader(asciiOptimization: true)
@@ -716,21 +1057,27 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 42);
           final typeParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 44);
-          final supplierInfoParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 46);
-          final dispatchInfoParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 48);
-          final containerIdParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 50);
-          final warehouseLocationParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 52);
+          final supplierInfoParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 46);
+          final dispatchInfoParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 48);
+          final containerIdParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 50);
+          final warehouseLocationParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 52);
           final commentsParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 54);
           final staffParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 56);
-          final archivedParam = const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 58);
-          final updateTimeParam =
-              updateTimeValue == null ? null : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
+          final archivedParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 58);
+          final updateTimeParam = updateTimeValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = StockObjectBoxModel(
               id: idParam,
               date: dateParam,
@@ -770,16 +1117,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
 }
 
 /// [CategoryObjectBoxModel] entity fields to define ObjectBox queries.
-class CategoryModel_ {
+class CategoryObjectBoxModel_ {
   /// see [CategoryObjectBoxModel.id]
-  static final id = obx.QueryIntegerProperty<CategoryObjectBoxModel>(_entities[0].properties[0]);
+  static final id = obx.QueryIntegerProperty<CategoryObjectBoxModel>(
+      _entities[0].properties[0]);
 
   /// see [CategoryObjectBoxModel.category]
-  static final category =
-      obx.QueryStringProperty<CategoryObjectBoxModel>(_entities[0].properties[1]);
+  static final category = obx.QueryStringProperty<CategoryObjectBoxModel>(
+      _entities[0].properties[1]);
 
   /// see [CategoryObjectBoxModel.ref]
-  static final ref = obx.QueryStringProperty<CategoryObjectBoxModel>(_entities[0].properties[2]);
+  static final ref = obx.QueryStringProperty<CategoryObjectBoxModel>(
+      _entities[0].properties[2]);
 
   /// see [CategoryObjectBoxModel.updateTime]
   static final updateTime =
@@ -787,120 +1136,135 @@ class CategoryModel_ {
 }
 
 /// [InputFieldsObjectBoxModel] entity fields to define ObjectBox queries.
-class InputFieldsModel_ {
+class InputFieldsObjectBoxModel_ {
   /// see [InputFieldsObjectBoxModel.id]
-  static final id = obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(_entities[1].properties[0]);
+  static final id = obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[0]);
 
   /// see [InputFieldsObjectBoxModel.field]
-  static final field =
-      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[1]);
+  static final field = obx.QueryStringProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[1]);
 
   /// see [InputFieldsObjectBoxModel.datatype]
-  static final datatype =
-      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[2]);
+  static final datatype = obx.QueryStringProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[2]);
 
   /// see [InputFieldsObjectBoxModel.category]
-  static final category =
-      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[3]);
+  static final category = obx.QueryStringProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[3]);
 
   /// see [InputFieldsObjectBoxModel.isWithSKU]
-  static final isWithSKU =
-      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[4]);
+  static final isWithSKU = obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[4]);
 
   /// see [InputFieldsObjectBoxModel.isTitleCase]
   static final isTitleCase =
-      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[5]);
+      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(
+          _entities[1].properties[5]);
 
   /// see [InputFieldsObjectBoxModel.isBg]
-  static final isBg =
-      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[6]);
+  static final isBg = obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[6]);
 
   /// see [InputFieldsObjectBoxModel.lockable]
-  static final lockable =
-      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[7]);
+  static final lockable = obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[7]);
 
   /// see [InputFieldsObjectBoxModel.order]
-  static final order =
-      obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(_entities[1].properties[8]);
+  static final order = obx.QueryIntegerProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[8]);
 
   /// see [InputFieldsObjectBoxModel.items]
-  static final items =
-      obx.QueryStringVectorProperty<InputFieldsObjectBoxModel>(_entities[1].properties[9]);
+  static final items = obx.QueryStringVectorProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[9]);
 
   /// see [InputFieldsObjectBoxModel.textValue]
-  static final textValue =
-      obx.QueryStringProperty<InputFieldsObjectBoxModel>(_entities[1].properties[10]);
+  static final textValue = obx.QueryStringProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[10]);
 
   /// see [InputFieldsObjectBoxModel.locked]
-  static final locked =
-      obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(_entities[1].properties[11]);
+  static final locked = obx.QueryBooleanProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[11]);
 
   /// see [InputFieldsObjectBoxModel.updateTime]
-  static final updateTime =
-      obx.QueryDateProperty<InputFieldsObjectBoxModel>(_entities[1].properties[12]);
+  static final updateTime = obx.QueryDateProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[12]);
 }
 
 /// [ProductObjectBoxModel] entity fields to define ObjectBox queries.
-class ProductModel_ {
+class ProductObjectBoxModel_ {
   /// see [ProductObjectBoxModel.id]
-  static final id = obx.QueryIntegerProperty<ProductObjectBoxModel>(_entities[2].properties[0]);
+  static final id = obx.QueryIntegerProperty<ProductObjectBoxModel>(
+      _entities[2].properties[0]);
 
   /// see [ProductObjectBoxModel.category]
-  static final category =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[1]);
+  static final category = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[1]);
 
   /// see [ProductObjectBoxModel.sku]
-  static final sku = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[2]);
+  static final sku = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[2]);
 
   /// see [ProductObjectBoxModel.make]
-  static final make = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[3]);
+  static final make = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[3]);
 
   /// see [ProductObjectBoxModel.model]
-  static final model = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[4]);
+  static final model = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[4]);
 
   /// see [ProductObjectBoxModel.processor]
-  static final processor =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[5]);
+  static final processor = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[5]);
 
   /// see [ProductObjectBoxModel.ram]
-  static final ram = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[6]);
+  static final ram = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[6]);
 
   /// see [ProductObjectBoxModel.storage]
-  static final storage = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[7]);
+  static final storage = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[7]);
 
   /// see [ProductObjectBoxModel.screenResolution]
   static final screenResolution =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[8]);
+      obx.QueryStringProperty<ProductObjectBoxModel>(
+          _entities[2].properties[8]);
 
   /// see [ProductObjectBoxModel.os]
-  static final os = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[9]);
+  static final os = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[9]);
 
   /// see [ProductObjectBoxModel.screenSize]
-  static final screenSize =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[10]);
+  static final screenSize = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[10]);
 
   /// see [ProductObjectBoxModel.usbC]
-  static final usbC = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[11]);
+  static final usbC = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[11]);
 
   /// see [ProductObjectBoxModel.hdmi]
-  static final hdmi = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[12]);
+  static final hdmi = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[12]);
 
   /// see [ProductObjectBoxModel.displayPort]
-  static final displayPort =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[13]);
+  static final displayPort = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[13]);
 
   /// see [ProductObjectBoxModel.vga]
-  static final vga = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[14]);
+  static final vga = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[14]);
 
   /// see [ProductObjectBoxModel.ethernet]
-  static final ethernet =
-      obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[15]);
+  static final ethernet = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[15]);
 
   /// see [ProductObjectBoxModel.usbA]
-  static final usbA = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[16]);
+  static final usbA = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[16]);
 
   /// see [ProductObjectBoxModel.type]
-  static final type = obx.QueryStringProperty<ProductObjectBoxModel>(_entities[2].properties[17]);
+  static final type = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[17]);
 
   /// see [ProductObjectBoxModel.updateTime]
   static final updateTime =
@@ -908,104 +1272,127 @@ class ProductModel_ {
 }
 
 /// [StockLocationHistoryObjectBoxModel] entity fields to define ObjectBox queries.
-class StockLocationHistoryModel_ {
+class StockLocationHistoryObjectBoxModel_ {
   /// see [StockLocationHistoryObjectBoxModel.id]
   static final id =
-      obx.QueryIntegerProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[0]);
+      obx.QueryIntegerProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[0]);
 
   /// see [StockLocationHistoryObjectBoxModel.date]
-  static final date =
-      obx.QueryDateProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[1]);
+  static final date = obx.QueryDateProperty<StockLocationHistoryObjectBoxModel>(
+      _entities[3].properties[1]);
 
   /// see [StockLocationHistoryObjectBoxModel.itemId]
   static final itemId =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[2]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[2]);
 
   /// see [StockLocationHistoryObjectBoxModel.containerId]
   static final containerId =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[3]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[3]);
 
   /// see [StockLocationHistoryObjectBoxModel.warehouseLocation]
   static final warehouseLocation =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[4]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[4]);
 
   /// see [StockLocationHistoryObjectBoxModel.comments]
   static final comments =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[5]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[5]);
 
   /// see [StockLocationHistoryObjectBoxModel.staff]
   static final staff =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(_entities[3].properties[6]);
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[6]);
 }
 
 /// [StockObjectBoxModel] entity fields to define ObjectBox queries.
-class StockModel_ {
+class StockObjectBoxModel_ {
   /// see [StockObjectBoxModel.id]
-  static final id = obx.QueryIntegerProperty<StockObjectBoxModel>(_entities[4].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<StockObjectBoxModel>(_entities[4].properties[0]);
 
   /// see [StockObjectBoxModel.date]
-  static final date = obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[1]);
+  static final date =
+      obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[1]);
 
   /// see [StockObjectBoxModel.category]
-  static final category = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[2]);
+  static final category =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[2]);
 
   /// see [StockObjectBoxModel.itemId]
-  static final itemId = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[3]);
+  static final itemId =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[3]);
 
   /// see [StockObjectBoxModel.serialNumber]
   static final serialNumber =
       obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[4]);
 
   /// see [StockObjectBoxModel.sku]
-  static final sku = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[5]);
+  static final sku =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[5]);
 
   /// see [StockObjectBoxModel.make]
-  static final make = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[6]);
+  static final make =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[6]);
 
   /// see [StockObjectBoxModel.model]
-  static final model = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[7]);
+  static final model =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[7]);
 
   /// see [StockObjectBoxModel.processor]
-  static final processor = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[8]);
+  static final processor =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[8]);
 
   /// see [StockObjectBoxModel.ram]
-  static final ram = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[9]);
+  static final ram =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[9]);
 
   /// see [StockObjectBoxModel.storage]
-  static final storage = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[10]);
+  static final storage =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[10]);
 
   /// see [StockObjectBoxModel.screenResolution]
   static final screenResolution =
       obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[11]);
 
   /// see [StockObjectBoxModel.os]
-  static final os = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[12]);
+  static final os =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[12]);
 
   /// see [StockObjectBoxModel.screenSize]
   static final screenSize =
       obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[13]);
 
   /// see [StockObjectBoxModel.usbC]
-  static final usbC = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[14]);
+  static final usbC =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[14]);
 
   /// see [StockObjectBoxModel.hdmi]
-  static final hdmi = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[15]);
+  static final hdmi =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[15]);
 
   /// see [StockObjectBoxModel.displayPort]
   static final displayPort =
       obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[16]);
 
   /// see [StockObjectBoxModel.vga]
-  static final vga = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[17]);
+  static final vga =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[17]);
 
   /// see [StockObjectBoxModel.ethernet]
-  static final ethernet = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[18]);
+  static final ethernet =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[18]);
 
   /// see [StockObjectBoxModel.usbA]
-  static final usbA = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[19]);
+  static final usbA =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[19]);
 
   /// see [StockObjectBoxModel.type]
-  static final type = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[20]);
+  static final type =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[20]);
 
   /// see [StockObjectBoxModel.supplierInfo]
   static final supplierInfo =
@@ -1024,15 +1411,18 @@ class StockModel_ {
       obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[24]);
 
   /// see [StockObjectBoxModel.comments]
-  static final comments = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[25]);
+  static final comments =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[25]);
 
   /// see [StockObjectBoxModel.staff]
-  static final staff = obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[26]);
+  static final staff =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[26]);
 
   /// see [StockObjectBoxModel.archived]
-  static final archived =
-      obx.QueryBooleanProperty<StockObjectBoxModel>(_entities[4].properties[27]);
+  static final archived = obx.QueryBooleanProperty<StockObjectBoxModel>(
+      _entities[4].properties[27]);
 
   /// see [StockObjectBoxModel.updateTime]
-  static final updateTime = obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[28]);
+  static final updateTime =
+      obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[28]);
 }

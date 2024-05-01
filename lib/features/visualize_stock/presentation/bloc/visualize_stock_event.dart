@@ -23,3 +23,5 @@ class FilterFieldEvent extends VisualizeStockEvent {}
 class ImportButtonClickedEvent extends VisualizeStockEvent {}
 
 class ExportButtonClickedEvent extends VisualizeStockEvent {}
+
+class CloudDataChangeEvent extends VisualizeStockEvent {}

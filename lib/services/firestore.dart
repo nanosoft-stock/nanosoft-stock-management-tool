@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/services/firestore_default.dart';
@@ -25,6 +26,12 @@ class Firestore {
     return data;
   }
 
+  Stream<QuerySnapshot> listenToDocumentChanges({required String path}) {
+    // if (!kIsLinux) {
+    return sl.get<FirestoreDefault>().listenToDocumentChanges(path: path);
+    // }
+  }
+
   Future<void> createDocument({required String path, required Map data}) async {
     if (!kIsLinux) {
       await sl.get<FirestoreDefault>().createDocument(
@@ -42,23 +49,34 @@ class Firestore {
   Future<List> filterQuery({required String path, required Map query}) async {
     List data;
     if (!kIsLinux) {
-      data = await sl.get<FirestoreDefault>().filterQuery(path: path, query: query);
+      data = await sl
+          .get<FirestoreDefault>()
+          .filterQuery(path: path, query: query);
     } else {
-      data = (await sl.get<FirestoreRestApi>().filterQuery(path: path, query: query)).data;
+      data = (await sl
+              .get<FirestoreRestApi>()
+              .filterQuery(path: path, query: query))
+          .data;
     }
 
     return data;
   }
 
-  Future<void> modifyDocument({required String path, List? updateMask, required Map data}) async {
+  Future<void> modifyDocument(
+      {required String path,
+      required String docRef,
+      List? updateMask,
+      required Map data}) async {
     if (!kIsLinux) {
-      // await sl.get<FirestoreDefault>().createDocument(
-      //       path: path,
-      //       data: data,
-      //     );
+      await sl.get<FirestoreDefault>().modifyDocument(
+            path: path,
+            docRef: docRef,
+            data: data,
+          );
     } else {
       await sl.get<FirestoreRestApi>().modifyDocument(
             path: path,
+            docRef: docRef,
             updateMask: updateMask,
             data: data,
           );

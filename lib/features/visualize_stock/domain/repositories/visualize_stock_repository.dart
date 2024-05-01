@@ -13,4 +13,6 @@ abstract class VisualizeStockRepository {
   Future<void> importFromExcel();
 
   Future<void> exportToExcel();
+
+  Future listenToCloudDataChange({required Function() onChange});
 }

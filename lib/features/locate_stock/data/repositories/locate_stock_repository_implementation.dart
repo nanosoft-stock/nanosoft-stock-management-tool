@@ -1,3 +1,4 @@
+import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -9,20 +10,22 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     List allLocations = await _fetchAllLocations();
 
     if (searchBy == "Warehouse Location Id") {
-      return allLocations.firstWhere(
-          (element) => element.keys.contains("warehouse_locations"))["warehouse_locations"];
+      return allLocations.firstWhere((element) =>
+          element.keys.contains("warehouse_locations"))["warehouse_locations"];
     } else if (searchBy == "Container Id") {
-      return allLocations
-          .firstWhere((element) => element.keys.contains("containers"))["containers"];
+      return allLocations.firstWhere(
+          (element) => element.keys.contains("containers"))["containers"];
     } else if (searchBy == "Item Id") {
-      return allLocations.firstWhere((element) => element.keys.contains("items"))["items"];
+      return allLocations
+          .firstWhere((element) => element.keys.contains("items"))["items"];
     }
 
     return [];
   }
 
   @override
-  Future<List> getIdSpecificData({required String searchBy, required List selectedIds}) async {
+  Future<List> getIdSpecificData(
+      {required String searchBy, required List selectedIds}) async {
     List selectedIdDetails = [];
 
     for (var id in selectedIds) {
@@ -49,17 +52,28 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   Future<List> _fetchAllLocations() async {
-    List allLocations =
-        await sl.get<Firestore>().getDocuments(path: "all_locations", includeDocRef: true);
+    List allLocations = await sl
+        .get<Firestore>()
+        .getDocuments(path: "all_locations", includeDocRef: true);
 
     allLocations = allLocations.map((element) {
       Map map = {};
 
       for (var key in element.keys) {
-        if (key == "docRef") {
-          map["docRef"] = element["docRef"]["stringValue"];
+        if (!kIsLinux) {
+          if (key == "docRef") {
+            map["docRef"] = element["docRef"];
+          } else {
+            map[key] = element[key];
+          }
         } else {
-          map[key] = element[key]["arrayValue"]["values"].map((ele) => ele["stringValue"]).toList();
+          if (key == "docRef") {
+            map["docRef"] = element["docRef"]["stringValue"];
+          } else {
+            map[key] = element[key]["arrayValue"]["values"]
+                .map((ele) => ele["stringValue"])
+                .toList();
+          }
         }
       }
 
@@ -84,7 +98,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         "where": {
           "fieldFilter": {
             "field": {
-              "fieldPath": "`warehouse location`",
+              "fieldPath":
+                  !kIsLinux ? "warehouse location" : "`warehouse location`",
             },
             "op": "EQUAL",
             "value": {
@@ -97,15 +112,33 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     if (list.isNotEmpty && list.first.isNotEmpty) {
       for (var e in list) {
-        dataList.add({
-          "id": e["item id"]["stringValue"],
-          "container_id": e["container id"]["stringValue"],
-          "warehouse_location_id": id,
-          "item_quantity": list.length,
-          "container_quantity":
-              list.map((element) => element["container id"]["stringValue"]).toSet().toList().length,
-          "is_selected": CheckBoxState.empty,
-        });
+        if (!kIsLinux) {
+          dataList.add({
+            "id": e["item id"],
+            "container_id": e["container id"],
+            "warehouse_location_id": id,
+            "item_quantity": list.length,
+            "container_quantity": list
+                .map((element) => element["container id"])
+                .toSet()
+                .toList()
+                .length,
+            "is_selected": CheckBoxState.empty,
+          });
+        } else {
+          dataList.add({
+            "id": e["item id"]["stringValue"],
+            "container_id": e["container id"]["stringValue"],
+            "warehouse_location_id": id,
+            "item_quantity": list.length,
+            "container_quantity": list
+                .map((element) => element["container id"]["stringValue"])
+                .toSet()
+                .toList()
+                .length,
+            "is_selected": CheckBoxState.empty,
+          });
+        }
       }
 
       dataList.sort((a, b) => a["id"].compareTo(b["id"]));
@@ -128,7 +161,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         "where": {
           "fieldFilter": {
             "field": {
-              "fieldPath": "`container id`",
+              "fieldPath": !kIsLinux ? "container id" : "`container id`",
             },
             "op": "EQUAL",
             "value": {
@@ -141,13 +174,24 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     if (list.isNotEmpty && list.first.isNotEmpty) {
       for (var e in list) {
-        dataList.add({
-          "id": e["item id"]["stringValue"],
-          "container_id": id,
-          "warehouse_location_id": list.first["warehouse location"]["stringValue"],
-          "item_quantity": list.length,
-          "is_selected": CheckBoxState.empty,
-        });
+        if (!kIsLinux) {
+          dataList.add({
+            "id": e["item id"],
+            "container_id": id,
+            "warehouse_location_id": list.first["warehouse location"],
+            "item_quantity": list.length,
+            "is_selected": CheckBoxState.empty,
+          });
+        } else {
+          dataList.add({
+            "id": e["item id"]["stringValue"],
+            "container_id": id,
+            "warehouse_location_id": list.first["warehouse location"]
+                ["stringValue"],
+            "item_quantity": list.length,
+            "is_selected": CheckBoxState.empty,
+          });
+        }
       }
 
       dataList.sort((a, b) => a["id"].compareTo(b["id"]));
@@ -170,7 +214,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         "where": {
           "fieldFilter": {
             "field": {
-              "fieldPath": "`item id`",
+              "fieldPath": !kIsLinux ? "item id" : "`item id`",
             },
             "op": "EQUAL",
             "value": {
@@ -183,12 +227,21 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     if (list.isNotEmpty && list.first.isNotEmpty) {
       for (var e in list) {
-        dataList.add({
-          'id': id,
-          "container_id": e["container id"]["stringValue"],
-          "warehouse_location_id": e["warehouse location"]["stringValue"],
-          "is_selected": CheckBoxState.empty,
-        });
+        if (!kIsLinux) {
+          dataList.add({
+            'id': id,
+            "container_id": e["container id"],
+            "warehouse_location_id": e["warehouse location"],
+            "is_selected": CheckBoxState.empty,
+          });
+        } else {
+          dataList.add({
+            'id': id,
+            "container_id": e["container id"]["stringValue"],
+            "warehouse_location_id": e["warehouse location"]["stringValue"],
+            "is_selected": CheckBoxState.empty,
+          });
+        }
       }
     }
 
@@ -199,7 +252,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 //   warehouseLocations = warehouseLocations.map((e) => {"stringValue": e.toUpperCase()}).toList();
 //
 //   await sl.get<Firestore>().createDocument(
-//     path: "all_locations",
+//     path: !kIsLinux ? "all_locations" : "",
 //     data: {
 //       "warehouse_locations": {
 //         "arrayValue": {

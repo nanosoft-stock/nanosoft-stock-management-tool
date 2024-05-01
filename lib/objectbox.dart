@@ -26,7 +26,8 @@ class ObjectBox {
     inputFieldsBox = Box<InputFieldsObjectBoxModel>(store);
     productModelBox = Box<ProductObjectBoxModel>(store);
     stockModelBox = Box<StockObjectBoxModel>(store);
-    stockLocationHistoryModelBox = Box<StockLocationHistoryObjectBoxModel>(store);
+    stockLocationHistoryModelBox =
+        Box<StockLocationHistoryObjectBoxModel>(store);
   }
 
   // Categories
@@ -38,8 +39,8 @@ class ObjectBox {
     await categoryModelBox!.putAsync(category);
   }
 
-  Future<List<int>> addCategoryList(List<CategoryObjectBoxModel> category) async {
-    return await categoryModelBox!.putManyAsync(category);
+  List<int> addCategoryList(List<CategoryObjectBoxModel> category) {
+    return categoryModelBox!.putMany(category);
   }
 
   List<CategoryObjectBoxModel> getCategories() {
@@ -50,9 +51,12 @@ class ObjectBox {
     return await categoryModelBox!.getAllAsync();
   }
 
-  Stream<List<CategoryObjectBoxModel>> getCategoryStream() {
+  Stream<List<CategoryObjectBoxModel>> getCategoryStream(
+      {bool triggerImmediately = false}) {
     final builder = categoryModelBox!.query();
-    return builder.watch(triggerImmediately: true).map((event) => event.find());
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
   }
 
   // Input Fields
@@ -64,8 +68,8 @@ class ObjectBox {
     await inputFieldsBox!.putAsync(field);
   }
 
-  Future<List<int>> addInputFieldList(List<InputFieldsObjectBoxModel> fields) async {
-    return await inputFieldsBox!.putManyAsync(fields);
+  List<int> addInputFieldList(List<InputFieldsObjectBoxModel> fields) {
+    return inputFieldsBox!.putMany(fields);
   }
 
   List<InputFieldsObjectBoxModel> getInputFields() {
@@ -76,9 +80,12 @@ class ObjectBox {
     return await inputFieldsBox!.getAllAsync();
   }
 
-  Stream<List<InputFieldsObjectBoxModel>> getInputFieldStream() {
+  Stream<List<InputFieldsObjectBoxModel>> getInputFieldStream(
+      {bool triggerImmediately = false}) {
     final builder = inputFieldsBox!.query();
-    return builder.watch(triggerImmediately: true).map((event) => event.find());
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
   }
 
   Future<void> removeAllInputFields() async {
@@ -94,8 +101,8 @@ class ObjectBox {
     await productModelBox!.putAsync(product);
   }
 
-  Future<List<int>> addProductList(List<ProductObjectBoxModel> products) async {
-    return await productModelBox!.putManyAsync(products);
+  List<int> addProductList(List<ProductObjectBoxModel> products) {
+    return productModelBox!.putMany(products);
   }
 
   List<ProductObjectBoxModel> getProducts() {
@@ -106,9 +113,12 @@ class ObjectBox {
     return await productModelBox!.getAllAsync();
   }
 
-  Stream<List<ProductObjectBoxModel>> getProductStream() {
+  Stream<List<ProductObjectBoxModel>> getProductStream(
+      {bool triggerImmediately = false}) {
     final builder = productModelBox!.query();
-    return builder.watch(triggerImmediately: true).map((event) => event.find());
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
   }
 
   Future<void> removeAllProducts() async {
@@ -124,8 +134,8 @@ class ObjectBox {
     await stockModelBox!.putAsync(stock);
   }
 
-  Future<List<int>> addStockList(List<StockObjectBoxModel> stocks) async {
-    return await stockModelBox!.putManyAsync(stocks);
+  List<int> addStockList(List<StockObjectBoxModel> stocks) {
+    return stockModelBox!.putMany(stocks);
   }
 
   List<StockObjectBoxModel> getStocks() {
@@ -136,9 +146,12 @@ class ObjectBox {
     return await stockModelBox!.getAllAsync();
   }
 
-  Stream<List<StockObjectBoxModel>> getStockStream() {
+  Stream<List<StockObjectBoxModel>> getStockStream(
+      {bool triggerImmediately = false}) {
     final builder = stockModelBox!.query();
-    return builder.watch(triggerImmediately: true).map((event) => event.find());
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
   }
 
   Future<void> removeAllStocks() async {
@@ -146,12 +159,14 @@ class ObjectBox {
   }
 
   // Location History
-  Future<void> addLocationHistory(StockLocationHistoryObjectBoxModel stock) async {
+  Future<void> addLocationHistory(
+      StockLocationHistoryObjectBoxModel stock) async {
     await stockLocationHistoryModelBox!.putAsync(stock);
   }
 
-  Future<List<int>> addLocationHistoryList(List<StockLocationHistoryObjectBoxModel> stocks) async {
-    return await stockLocationHistoryModelBox!.putManyAsync(stocks);
+  List<int> addLocationHistoryList(
+      List<StockLocationHistoryObjectBoxModel> stocks) {
+    return stockLocationHistoryModelBox!.putMany(stocks);
   }
 
   // Database

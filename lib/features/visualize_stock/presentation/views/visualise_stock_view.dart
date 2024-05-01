@@ -43,6 +43,7 @@ class VisualiseStockView extends StatelessWidget {
     debugPrint("build: ${state.runtimeType}");
     switch (state.runtimeType) {
       case const (LoadingState):
+        _visualizeStockBloc.add(CloudDataChangeEvent());
         _visualizeStockBloc.add(LoadedEvent());
         return _buildLoadingStateWidget();
 

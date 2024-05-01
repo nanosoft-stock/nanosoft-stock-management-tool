@@ -40,6 +40,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/e
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_field_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
@@ -58,18 +59,21 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ObjectBox>(() => ObjectBox());
 
   // Auth
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImplementation());
+  sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImplementation());
   sl.registerLazySingleton<SignInUserUseCase>(() => SignInUserUseCase(sl()));
   sl.registerLazySingleton<SignUpUserUseCase>(() => SignUpUserUseCase(sl()));
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl()));
 
   //Home
-  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImplementation());
+  sl.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImplementation());
   sl.registerLazySingleton<SignOutUserUseCase>(() => SignOutUserUseCase(sl()));
   sl.registerFactory<HomeBloc>(() => HomeBloc(sl()));
 
   // Add New Stock
-  sl.registerLazySingleton<StockRepository>(() => StockRepositoryImplementation());
+  sl.registerLazySingleton<StockRepository>(
+      () => StockRepositoryImplementation());
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
       () => GetStockInitialInputFieldsUseCase(sl()));
   sl.registerLazySingleton<GetStockCategoryBasedInputFieldsUseCase>(
@@ -77,45 +81,62 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AutofillFieldsWithSelectedSkuUseCase>(
       () => AutofillFieldsWithSelectedSkuUseCase(sl()));
   sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
-  sl.registerFactory<AddNewStockBloc>(() => AddNewStockBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<AddNewStockBloc>(
+      () => AddNewStockBloc(sl(), sl(), sl(), sl()));
 
   // Add New Product
-  sl.registerLazySingleton<ProductRepository>(() => ProductRepositoryImplementation());
+  sl.registerLazySingleton<ProductRepository>(
+      () => ProductRepositoryImplementation());
   sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
       () => GetProductInitialInputFieldsUseCase(sl()));
   sl.registerLazySingleton<GetProductCategoryBasedInputFieldsUseCase>(
       () => GetProductCategoryBasedInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<AddNewProductUseCase>(() => AddNewProductUseCase(sl()));
-  sl.registerFactory<AddNewProductBloc>(() => AddNewProductBloc(sl(), sl(), sl()));
+  sl.registerLazySingleton<AddNewProductUseCase>(
+      () => AddNewProductUseCase(sl()));
+  sl.registerFactory<AddNewProductBloc>(
+      () => AddNewProductBloc(sl(), sl(), sl()));
 
   // Visualize Stock
   sl.registerLazySingleton<VisualizeStockRepository>(
       () => VisualizeStockRepositoryImplementation());
   sl.registerLazySingleton<GetAllStockUseCase>(() => GetAllStockUseCase(sl()));
-  sl.registerLazySingleton<GetAllFieldsUseCase>(() => GetAllFieldsUseCase(sl()));
+  sl.registerLazySingleton<GetAllFieldsUseCase>(
+      () => GetAllFieldsUseCase(sl()));
   sl.registerLazySingleton<SortFieldUseCase>(() => SortFieldUseCase(sl()));
   sl.registerLazySingleton<SortStockUseCase>(() => SortStockUseCase(sl()));
-  sl.registerLazySingleton<ImportFromExcelUseCase>(() => ImportFromExcelUseCase(sl()));
-  sl.registerLazySingleton<ExportToExcelUsecase>(() => ExportToExcelUsecase(sl()));
+  sl.registerLazySingleton<ImportFromExcelUseCase>(
+      () => ImportFromExcelUseCase(sl()));
+  sl.registerLazySingleton<ExportToExcelUseCase>(
+      () => ExportToExcelUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeUseCase>(
+      () => ListenToCloudDataChangeUseCase(sl()));
   sl.registerFactory<VisualizeStockBloc>(
-      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
-  sl.registerLazySingleton<LocateStockRepository>(() => LocateStockRepositoryImplementation());
-  sl.registerLazySingleton<InitialLocateStockUseCase>(() => InitialLocateStockUseCase());
+  sl.registerLazySingleton<LocateStockRepository>(
+      () => LocateStockRepositoryImplementation());
+  sl.registerLazySingleton<InitialLocateStockUseCase>(
+      () => InitialLocateStockUseCase());
   sl.registerLazySingleton<AddNewLocateStockInputRowUseCase>(
       () => AddNewLocateStockInputRowUseCase());
   sl.registerLazySingleton<RemoveLocateStockInputRowUseCase>(
       () => RemoveLocateStockInputRowUseCase());
-  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(() => SearchByFieldSelectedUseCase(sl()));
+  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(
+      () => SearchByFieldSelectedUseCase(sl()));
   sl.registerLazySingleton<IdSelectedUseCase>(() => IdSelectedUseCase(sl()));
-  sl.registerLazySingleton<ShowTableToggledUseCase>(() => ShowTableToggledUseCase());
-  sl.registerLazySingleton<ShowDetailsToggledUseCase>(() => ShowDetailsToggledUseCase());
-  sl.registerLazySingleton<CheckBoxToggledUseCase>(() => CheckBoxToggledUseCase());
-  sl.registerLazySingleton<AllCheckBoxToggledUseCase>(() => AllCheckBoxToggledUseCase());
-  sl.registerLazySingleton<GetSelectedItemsUseCase>(() => GetSelectedItemsUseCase(sl()));
-  sl.registerFactory<LocateStockBloc>(
-      () => LocateStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerLazySingleton<ShowTableToggledUseCase>(
+      () => ShowTableToggledUseCase());
+  sl.registerLazySingleton<ShowDetailsToggledUseCase>(
+      () => ShowDetailsToggledUseCase());
+  sl.registerLazySingleton<CheckBoxToggledUseCase>(
+      () => CheckBoxToggledUseCase());
+  sl.registerLazySingleton<AllCheckBoxToggledUseCase>(
+      () => AllCheckBoxToggledUseCase());
+  sl.registerLazySingleton<GetSelectedItemsUseCase>(
+      () => GetSelectedItemsUseCase(sl()));
+  sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

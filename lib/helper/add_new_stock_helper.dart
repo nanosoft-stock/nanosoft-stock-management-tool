@@ -43,7 +43,7 @@ class AddNewStockHelper {
     } else {
       for (var e in fields) {
         if (e["field"] == "date") {
-          convertedData[e["field"]] = FieldValue.serverTimestamp();
+          convertedData[e["field"]] = Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (e["field"] == "staff") {
           convertedData[e["field"]] = userName;
         } else if (e["field"] == "archived") {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:excel/excel.dart';
@@ -13,7 +14,8 @@ import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/services/firestore.dart';
 
-class VisualizeStockRepositoryImplementation implements VisualizeStockRepository {
+class VisualizeStockRepositoryImplementation
+    implements VisualizeStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
@@ -31,7 +33,8 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
   }
 
   @override
-  Future<List<StockFieldModel>> sortFields({required String field, required Sort sort}) async {
+  Future<List<StockFieldModel>> sortFields(
+      {required String field, required Sort sort}) async {
     List fields = _objectBox.getInputFields().map((e) {
       Map json = e.toJson();
       if (json["field"] == field) {
@@ -46,7 +49,8 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
   }
 
   @override
-  Future<List<Map<String, dynamic>>> sortStocks({required String field, required Sort sort}) async {
+  Future<List<Map<String, dynamic>>> sortStocks(
+      {required String field, required Sort sort}) async {
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
 
     compareWithBlank(a, b) {
@@ -158,16 +162,17 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
       column = 0;
       if (row == 0) {
         for (var field in fields) {
-          var cell =
-              sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(
-              field.isTitleCase ? field.field.toString().toTitleCase() : field.field.toUpperCase());
+          var cell = sheetObject.cell(
+              CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
+          cell.value = TextCellValue(field.isTitleCase
+              ? field.field.toString().toTitleCase()
+              : field.field.toUpperCase());
           column++;
         }
       } else {
         for (var field in fields) {
-          var cell =
-              sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
+          var cell = sheetObject.cell(
+              CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
           cell.value = TextCellValue(stock[row - 1][field.field].toString());
           column++;
         }
@@ -176,16 +181,28 @@ class VisualizeStockRepositoryImplementation implements VisualizeStockRepository
     }
 
     final path = await FilePicker.platform.saveFile(
-        fileName: "Stock-${DateFormat("yyyy-MM-dd").format(DateTime.now())}.xlsx",
+        fileName:
+            "Stock-${DateFormat("yyyy-MM-dd").format(DateTime.now())}.xlsx",
         lockParentWindow: true);
 
     if (path != null) {
-      List<int> excelFileBytes =
-          excel.save(fileName: "Stock-${DateFormat("yyyy-MM-dd").format(DateTime.now())}.xlsx")!;
+      List<int> excelFileBytes = excel.save(
+          fileName:
+              "Stock-${DateFormat("yyyy-MM-dd").format(DateTime.now())}.xlsx")!;
 
       File(path)
         ..createSync(recursive: true)
         ..writeAsBytesSync(excelFileBytes);
     }
+  }
+
+  @override
+  Future listenToCloudDataChange({required Function() onChange}) async {
+    _objectBox.getStockStream().listen((event) {
+      onChange();
+    });
+    _objectBox.getInputFieldStream().listen((event) {
+      onChange();
+    });
   }
 }

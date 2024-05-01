@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -72,7 +73,9 @@ class StockObjectBoxModel {
 
   factory StockObjectBoxModel.fromJson(Map json) {
     return StockObjectBoxModel(
-      date: DateTime.parse(json["date"]),
+      date: json["date"].runtimeType == Timestamp
+          ? json["date"].toDate()
+          : DateTime.parse(json["date"]),
       category: json["category"],
       itemId: json["item id"],
       serialNumber: json["serial number"],

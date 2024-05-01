@@ -138,7 +138,7 @@ class FirestoreRestApi {
   }
 
   Future<DataState> modifyDocument(
-      {required String path, List? updateMask, required Map data}) async {
+      {required String path, required String docRef, List? updateMask, required Map data}) async {
     try {
       String updateMaskUrl = "";
 
@@ -149,7 +149,7 @@ class FirestoreRestApi {
       }
 
       String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?${updateMaskUrl}key=$apiKey";
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path/$docRef?${updateMaskUrl}key=$apiKey";
 
       Response response = await _dio.patch(
         url,

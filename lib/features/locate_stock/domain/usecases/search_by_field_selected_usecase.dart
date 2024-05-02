@@ -14,7 +14,8 @@ class SearchByFieldSelectedUseCase extends UseCase {
 
     locatedItems[index]["search_by"] = searchBy;
 
-    locatedItems[index]["all_ids"] = await _locateStockRepository.getIds(searchBy: searchBy);
+    locatedItems[index]["all_ids"] =
+        await _locateStockRepository.getIds(searchBy: searchBy);
 
     locatedItems[index]["show_details"] =
         locatedItems[index]["search_by"] != "Item Id" ? false : true;

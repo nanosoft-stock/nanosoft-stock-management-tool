@@ -3,6 +3,7 @@ import 'package:stock_management_tool/constants/enums.dart';
 
 class StockFieldEntity extends Equatable {
   const StockFieldEntity({
+    required this.uid,
     required this.field,
     required this.datatype,
     required this.lockable,
@@ -14,6 +15,7 @@ class StockFieldEntity extends Equatable {
     required this.sort,
   });
 
+  final String uid;
   final String field;
   final String datatype;
   final bool lockable;
@@ -27,6 +29,7 @@ class StockFieldEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        // uid,
         field,
         datatype,
         lockable,

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "6:3279551612065122085",
-      "lastPropertyId": "4:513454205277183482",
+      "lastPropertyId": "5:7815811777297089635",
       "name": "CategoryObjectBoxModel",
       "properties": [
         {
@@ -20,21 +20,21 @@
           "type": 9
         },
         {
-          "id": "3:231179492036876718",
-          "name": "ref",
-          "type": 9
-        },
-        {
           "id": "4:513454205277183482",
           "name": "updateTime",
           "type": 10
+        },
+        {
+          "id": "5:7815811777297089635",
+          "name": "uid",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "7:8485441126565221193",
-      "lastPropertyId": "13:2204498220852388215",
+      "lastPropertyId": "14:5734890730584549242",
       "name": "InputFieldsObjectBoxModel",
       "properties": [
         {
@@ -102,13 +102,18 @@
           "id": "13:2204498220852388215",
           "name": "updateTime",
           "type": 10
+        },
+        {
+          "id": "14:5734890730584549242",
+          "name": "uid",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "8:4141691065785177202",
-      "lastPropertyId": "19:748087498145807481",
+      "lastPropertyId": "20:4022381446667231775",
       "name": "ProductObjectBoxModel",
       "properties": [
         {
@@ -206,13 +211,18 @@
           "id": "19:748087498145807481",
           "name": "updateTime",
           "type": 10
+        },
+        {
+          "id": "20:4022381446667231775",
+          "name": "uid",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "9:7878301964298954903",
-      "lastPropertyId": "7:6104919663265641752",
+      "lastPropertyId": "12:6265414374706244787",
       "name": "StockLocationHistoryObjectBoxModel",
       "properties": [
         {
@@ -227,28 +237,38 @@
           "type": 10
         },
         {
-          "id": "3:7716995902251311121",
-          "name": "itemId",
-          "type": 9
-        },
-        {
           "id": "4:330965801336816986",
           "name": "containerId",
           "type": 9
         },
         {
-          "id": "5:5633997830570794166",
-          "name": "warehouseLocation",
-          "type": 9
-        },
-        {
-          "id": "6:4784750344366697416",
-          "name": "comments",
-          "type": 9
-        },
-        {
           "id": "7:6104919663265641752",
           "name": "staff",
+          "type": 9
+        },
+        {
+          "id": "8:1207177273672419404",
+          "name": "uid",
+          "type": 9
+        },
+        {
+          "id": "9:5063706353912211007",
+          "name": "items",
+          "type": 30
+        },
+        {
+          "id": "10:7969739137674007997",
+          "name": "warehouseLocationId",
+          "type": 9
+        },
+        {
+          "id": "11:1813318769925472317",
+          "name": "moveType",
+          "type": 9
+        },
+        {
+          "id": "12:6265414374706244787",
+          "name": "state",
           "type": 9
         }
       ],
@@ -256,7 +276,7 @@
     },
     {
       "id": "10:5281460078578457063",
-      "lastPropertyId": "29:5449841582608409634",
+      "lastPropertyId": "30:4331176590220757613",
       "name": "StockObjectBoxModel",
       "properties": [
         {
@@ -404,12 +424,74 @@
           "id": "29:5449841582608409634",
           "name": "updateTime",
           "type": 10
+        },
+        {
+          "id": "30:4331176590220757613",
+          "name": "uid",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "11:1221214447477733281",
+      "lastPropertyId": "2:5958765478249987092",
+      "name": "ContainerIdObjectBoxModel",
+      "properties": [
+        {
+          "id": "1:3707360942549200141",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5958765478249987092",
+          "name": "containerId",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "12:6442862417131488460",
+      "lastPropertyId": "2:3891850740529716294",
+      "name": "ItemIdObjectBoxModel",
+      "properties": [
+        {
+          "id": "1:7274390621435172253",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3891850740529716294",
+          "name": "itemId",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "13:5966558177066967921",
+      "lastPropertyId": "2:1380821111038884014",
+      "name": "WarehouseLocationIdObjectBoxModel",
+      "properties": [
+        {
+          "id": "1:2151724383836186674",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1380821111038884014",
+          "name": "warehouseLocationId",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "10:5281460078578457063",
+  "lastEntityId": "13:5966558177066967921",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -495,7 +577,11 @@
     8320200346754956927,
     541858986232586884,
     4231092600033086896,
-    4244842460663819587
+    4244842460663819587,
+    231179492036876718,
+    7716995902251311121,
+    5633997830570794166,
+    4784750344366697416
   ],
   "retiredRelationUids": [],
   "version": 1

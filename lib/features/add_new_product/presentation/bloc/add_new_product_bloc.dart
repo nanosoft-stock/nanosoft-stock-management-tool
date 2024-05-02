@@ -7,11 +7,13 @@ import 'package:stock_management_tool/features/add_new_product/domain/usecases/g
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
 
 part 'add_new_product_event.dart';
+
 part 'add_new_product_state.dart';
 
 class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
   final GetProductInitialInputFieldsUseCase? _productInitialInputFieldsUseCase;
-  final GetProductCategoryBasedInputFieldsUseCase? _productCategoryBasedInputFieldsUseCase;
+  final GetProductCategoryBasedInputFieldsUseCase?
+      _productCategoryBasedInputFieldsUseCase;
   final AddNewProductUseCase? _addNewProductUseCase;
 
   AddNewProductBloc(
@@ -24,7 +26,8 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     on<AddNewProductButtonClickedEvent>(addNewProductButtonClickedEvent);
   }
 
-  FutureOr<void> loadedEvent(LoadedEvent event, Emitter<AddNewProductState> emit) async {
+  FutureOr<void> loadedEvent(
+      LoadedEvent event, Emitter<AddNewProductState> emit) async {
     emit(LoadedState(await _productInitialInputFieldsUseCase!()));
   }
 
@@ -33,12 +36,14 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     emit(LoadedState([
       event.fields![0],
       event.fields![1],
-      ...await _productCategoryBasedInputFieldsUseCase!(params: event.fields![0].textValue)
+      ...await _productCategoryBasedInputFieldsUseCase!(
+          params: event.fields![0].textValue)
     ]));
   }
 
   FutureOr<void> addNewProductButtonClickedEvent(
-      AddNewProductButtonClickedEvent event, Emitter<AddNewProductState> emit) async {
+      AddNewProductButtonClickedEvent event,
+      Emitter<AddNewProductState> emit) async {
     await _addNewProductUseCase!(params: event.fields!);
     emit(NewProductAddedActionState());
     emit(LoadedState(await _productInitialInputFieldsUseCase!()));

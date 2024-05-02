@@ -2,6 +2,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/entities/s
 
 class StockModel extends StockEntity {
   const StockModel({
+    required super.uid,
     required super.date,
     required super.category,
     required super.itemId,
@@ -33,6 +34,7 @@ class StockModel extends StockEntity {
 
   factory StockModel.fromJson(Map<String, dynamic> json) {
     return StockModel(
+      uid: json["uid"],
       date: json["date"],
       category: json["category"] ?? "",
       itemId: json["item id"] ?? "",
@@ -65,6 +67,7 @@ class StockModel extends StockEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      "uid": uid,
       "date": date,
       "category": category,
       "item id": itemId,
@@ -96,6 +99,7 @@ class StockModel extends StockEntity {
   }
 
   StockModel copyWith({
+    String? uid,
     DateTime? date,
     String? category,
     String? itemId,
@@ -125,6 +129,7 @@ class StockModel extends StockEntity {
     bool? archived,
   }) {
     return StockModel(
+      uid: uid ?? this.uid,
       date: date ?? this.date,
       category: category ?? this.category,
       itemId: itemId ?? this.itemId,

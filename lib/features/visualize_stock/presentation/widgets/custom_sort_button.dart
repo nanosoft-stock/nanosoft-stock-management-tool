@@ -17,7 +17,8 @@ class CustomSortButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onPressed(field, Sort.values[(Sort.values.indexOf(sort) + 1) % Sort.values.length]);
+        onPressed(field,
+            Sort.values[(Sort.values.indexOf(sort) + 1) % Sort.values.length]);
       },
       child: Builder(
         builder: (BuildContext context) {

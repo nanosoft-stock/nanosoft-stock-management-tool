@@ -4,6 +4,7 @@ import 'package:objectbox/objectbox.dart';
 class InputFieldsObjectBoxModel {
   InputFieldsObjectBoxModel({
     this.id = 0,
+    required this.uid,
     required this.field,
     required this.datatype,
     required this.category,
@@ -21,6 +22,7 @@ class InputFieldsObjectBoxModel {
   @Id()
   int id;
 
+  String? uid;
   String? field;
   String? datatype;
   String? category;
@@ -38,6 +40,7 @@ class InputFieldsObjectBoxModel {
 
   factory InputFieldsObjectBoxModel.fromJson(Map json) {
     return InputFieldsObjectBoxModel(
+      uid: json["uid"],
       field: json["field"],
       datatype: json["datatype"],
       category: json["category"],
@@ -55,6 +58,7 @@ class InputFieldsObjectBoxModel {
 
   Map<String, dynamic> toJson() {
     return {
+      "uid": uid,
       "field": field,
       "datatype": datatype,
       "category": category,
@@ -71,6 +75,6 @@ class InputFieldsObjectBoxModel {
 
   @override
   String toString() {
-    return "InputFieldsModel(id:$id, field:$field, datatype:$datatype, category:$category, isWithSKU:$isWithSKU, isTitleCase:$isTitleCase, isBg:$isBg, lockable:$lockable, order:$order, items:$items, textValue:$textValue, locked:$locked, updateTime:$updateTime)";
+    return "InputFieldsModel(id:$id, uid: $uid, field:$field, datatype:$datatype, category:$category, isWithSKU:$isWithSKU, isTitleCase:$isTitleCase, isBg:$isBg, lockable:$lockable, order:$order, items:$items, textValue:$textValue, locked:$locked, updateTime:$updateTime)";
   }
 }

@@ -58,41 +58,58 @@ class CustomSideMenu extends StatelessWidget {
                   )
                 : const SizedBox.shrink(),
             items: [
-              if (data.isOpen) const SideMenuItemDataDivider(divider: Divider()),
+              if (data.isOpen)
+                const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(0).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(0)
+                    .navItem,
               ),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(1).navItem,
-              ),
-              const SideMenuItemDataDivider(divider: Divider()),
-              createMenuItem(
-                view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(2).navItem,
-              ),
-              createMenuItem(
-                view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(3).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(1)
+                    .navItem,
               ),
               const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(4).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(2)
+                    .navItem,
               ),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(5).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(3)
+                    .navItem,
               ),
               const SideMenuItemDataDivider(divider: Divider()),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(6).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(4)
+                    .navItem,
               ),
               createMenuItem(
                 view: view,
-                navItemModel: NavItemAndViewModel.allNavItemAndView.values.elementAt(7).navItem,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(5)
+                    .navItem,
+              ),
+              const SideMenuItemDataDivider(divider: Divider()),
+              createMenuItem(
+                view: view,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(6)
+                    .navItem,
+              ),
+              createMenuItem(
+                view: view,
+                navItemModel: NavItemAndViewModel.allNavItemAndView.values
+                    .elementAt(7)
+                    .navItem,
               ),
             ],
             footer: Padding(
@@ -101,7 +118,8 @@ class CustomSideMenu extends StatelessWidget {
                   : const EdgeInsets.symmetric(vertical: 15.0),
               child: data.currentWidth == data.maxWidth
                   ? ListTile(
-                      leading: Icon(NavItemAndViewModel.logOutItemMenuNavItem.icon),
+                      leading:
+                          Icon(NavItemAndViewModel.logOutItemMenuNavItem.icon),
                       title: Text(
                         NavItemAndViewModel.logOutItemMenuNavItem.title,
                         style: kLabelTextStyle,
@@ -114,7 +132,8 @@ class CustomSideMenu extends StatelessWidget {
                       onTap: () async {
                         homeBloc.add(SignOutEvent());
                       },
-                      child: Icon(NavItemAndViewModel.logOutItemMenuNavItem.icon),
+                      child:
+                          Icon(NavItemAndViewModel.logOutItemMenuNavItem.icon),
                     ),
             ),
           );

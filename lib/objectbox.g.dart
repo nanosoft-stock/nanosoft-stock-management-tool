@@ -16,10 +16,13 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'core/data/local_database/models/category_objectbox_model.dart';
+import 'core/data/local_database/models/container_id_objectbox_model.dart';
 import 'core/data/local_database/models/input_fields_objectbox_model.dart';
+import 'core/data/local_database/models/item_id_objectbox_model.dart';
 import 'core/data/local_database/models/product_objectbox_model.dart';
 import 'core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'core/data/local_database/models/stock_objectbox_model.dart';
+import 'core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -27,7 +30,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(6, 3279551612065122085),
       name: 'CategoryObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(4, 513454205277183482),
+      lastPropertyId: const obx_int.IdUid(5, 7815811777297089635),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -41,14 +44,14 @@ final _entities = <obx_int.ModelEntity>[
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 231179492036876718),
-            name: 'ref',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
             id: const obx_int.IdUid(4, 513454205277183482),
             name: 'updateTime',
             type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 7815811777297089635),
+            name: 'uid',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -56,7 +59,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(7, 8485441126565221193),
       name: 'InputFieldsObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(13, 2204498220852388215),
+      lastPropertyId: const obx_int.IdUid(14, 5734890730584549242),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -123,6 +126,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(13, 2204498220852388215),
             name: 'updateTime',
             type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(14, 5734890730584549242),
+            name: 'uid',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -130,7 +138,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(8, 4141691065785177202),
       name: 'ProductObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(19, 748087498145807481),
+      lastPropertyId: const obx_int.IdUid(20, 4022381446667231775),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -227,6 +235,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(19, 748087498145807481),
             name: 'updateTime',
             type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(20, 4022381446667231775),
+            name: 'uid',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -234,7 +247,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(9, 7878301964298954903),
       name: 'StockLocationHistoryObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(7, 6104919663265641752),
+      lastPropertyId: const obx_int.IdUid(12, 6265414374706244787),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -248,28 +261,38 @@ final _entities = <obx_int.ModelEntity>[
             type: 10,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 7716995902251311121),
-            name: 'itemId',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
             id: const obx_int.IdUid(4, 330965801336816986),
             name: 'containerId',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 5633997830570794166),
-            name: 'warehouseLocation',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 4784750344366697416),
-            name: 'comments',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
             id: const obx_int.IdUid(7, 6104919663265641752),
             name: 'staff',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 1207177273672419404),
+            name: 'uid',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 5063706353912211007),
+            name: 'items',
+            type: 30,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 7969739137674007997),
+            name: 'warehouseLocationId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 1813318769925472317),
+            name: 'moveType',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(12, 6265414374706244787),
+            name: 'state',
             type: 9,
             flags: 0)
       ],
@@ -278,7 +301,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(10, 5281460078578457063),
       name: 'StockObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(29, 5449841582608409634),
+      lastPropertyId: const obx_int.IdUid(30, 4331176590220757613),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -425,6 +448,68 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(29, 5449841582608409634),
             name: 'updateTime',
             type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(30, 4331176590220757613),
+            name: 'uid',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(11, 1221214447477733281),
+      name: 'ContainerIdObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(2, 5958765478249987092),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 3707360942549200141),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5958765478249987092),
+            name: 'containerId',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(12, 6442862417131488460),
+      name: 'ItemIdObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(2, 3891850740529716294),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 7274390621435172253),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 3891850740529716294),
+            name: 'itemId',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(13, 5966558177066967921),
+      name: 'WarehouseLocationIdObjectBoxModel',
+      lastPropertyId: const obx_int.IdUid(2, 1380821111038884014),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 2151724383836186674),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1380821111038884014),
+            name: 'warehouseLocationId',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -466,7 +551,7 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(10, 5281460078578457063),
+      lastEntityId: const obx_int.IdUid(13, 5966558177066967921),
       lastIndexId: const obx_int.IdUid(0, 0),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
@@ -550,7 +635,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         8320200346754956927,
         541858986232586884,
         4231092600033086896,
-        4244842460663819587
+        4244842460663819587,
+        231179492036876718,
+        7716995902251311121,
+        5633997830570794166,
+        4784750344366697416
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -570,13 +659,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final categoryOffset = object.category == null
               ? null
               : fbb.writeString(object.category!);
-          final refOffset =
-              object.ref == null ? null : fbb.writeString(object.ref!);
-          fbb.startTable(5);
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, categoryOffset);
-          fbb.addOffset(2, refOffset);
           fbb.addInt64(3, object.updateTime?.millisecondsSinceEpoch);
+          fbb.addOffset(4, uidOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -587,17 +676,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
           final idParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
-          final refParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 8);
           final updateTimeParam = updateTimeValue == null
               ? null
               : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = CategoryObjectBoxModel(
               id: idParam,
+              uid: uidParam,
               category: categoryParam,
-              ref: refParam,
               updateTime: updateTimeParam);
 
           return object;
@@ -627,7 +716,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final textValueOffset = object.textValue == null
               ? null
               : fbb.writeString(object.textValue!);
-          fbb.startTable(14);
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          fbb.startTable(15);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, fieldOffset);
           fbb.addOffset(2, datatypeOffset);
@@ -641,6 +732,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addOffset(10, textValueOffset);
           fbb.addBool(11, object.locked);
           fbb.addInt64(12, object.updateTime?.millisecondsSinceEpoch);
+          fbb.addOffset(13, uidOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -651,6 +743,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 28);
           final idParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 30);
           final fieldParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
           final datatypeParam = const fb.StringReader(asciiOptimization: true)
@@ -680,6 +774,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = InputFieldsObjectBoxModel(
               id: idParam,
+              uid: uidParam,
               field: fieldParam,
               datatype: datatypeParam,
               category: categoryParam,
@@ -744,7 +839,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               object.usbA == null ? null : fbb.writeString(object.usbA!);
           final typeOffset =
               object.type == null ? null : fbb.writeString(object.type!);
-          fbb.startTable(20);
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          fbb.startTable(21);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, categoryOffset);
           fbb.addOffset(2, skuOffset);
@@ -764,6 +861,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addOffset(16, usbAOffset);
           fbb.addOffset(17, typeOffset);
           fbb.addInt64(18, object.updateTime?.millisecondsSinceEpoch);
+          fbb.addOffset(19, uidOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -774,6 +872,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 40);
           final idParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 42);
           final categoryParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
           final skuParam = const fb.StringReader(asciiOptimization: true)
@@ -815,6 +915,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = ProductObjectBoxModel(
               id: idParam,
+              uid: uidParam,
               category: categoryParam,
               sku: skuParam,
               make: makeParam,
@@ -836,73 +937,87 @@ obx_int.ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    StockLocationHistoryObjectBoxModel:
-        obx_int.EntityDefinition<StockLocationHistoryObjectBoxModel>(
-            model: _entities[3],
-            toOneRelations: (StockLocationHistoryObjectBoxModel object) => [],
-            toManyRelations: (StockLocationHistoryObjectBoxModel object) => {},
-            getId: (StockLocationHistoryObjectBoxModel object) => object.id,
-            setId: (StockLocationHistoryObjectBoxModel object, int id) {
-              object.id = id;
-            },
-            objectToFB:
-                (StockLocationHistoryObjectBoxModel object, fb.Builder fbb) {
-              final itemIdOffset = object.itemId == null
-                  ? null
-                  : fbb.writeString(object.itemId!);
-              final containerIdOffset = object.containerId == null
-                  ? null
-                  : fbb.writeString(object.containerId!);
-              final warehouseLocationOffset = object.warehouseLocation == null
-                  ? null
-                  : fbb.writeString(object.warehouseLocation!);
-              final commentsOffset = object.comments == null
-                  ? null
-                  : fbb.writeString(object.comments!);
-              final staffOffset =
-                  object.staff == null ? null : fbb.writeString(object.staff!);
-              fbb.startTable(8);
-              fbb.addInt64(0, object.id);
-              fbb.addInt64(1, object.date.millisecondsSinceEpoch);
-              fbb.addOffset(2, itemIdOffset);
-              fbb.addOffset(3, containerIdOffset);
-              fbb.addOffset(4, warehouseLocationOffset);
-              fbb.addOffset(5, commentsOffset);
-              fbb.addOffset(6, staffOffset);
-              fbb.finish(fbb.endTable());
-              return object.id;
-            },
-            objectFromFB: (obx.Store store, ByteData fbData) {
-              final buffer = fb.BufferContext(fbData);
-              final rootOffset = buffer.derefObject(0);
-              final idParam =
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-              final dateParam = DateTime.fromMillisecondsSinceEpoch(
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
-              final itemIdParam = const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8);
-              final containerIdParam =
-                  const fb.StringReader(asciiOptimization: true)
-                      .vTableGetNullable(buffer, rootOffset, 10);
-              final warehouseLocationParam =
-                  const fb.StringReader(asciiOptimization: true)
-                      .vTableGetNullable(buffer, rootOffset, 12);
-              final commentsParam =
-                  const fb.StringReader(asciiOptimization: true)
-                      .vTableGetNullable(buffer, rootOffset, 14);
-              final staffParam = const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 16);
-              final object = StockLocationHistoryObjectBoxModel(
-                  id: idParam,
-                  date: dateParam,
-                  itemId: itemIdParam,
-                  containerId: containerIdParam,
-                  warehouseLocation: warehouseLocationParam,
-                  comments: commentsParam,
-                  staff: staffParam);
+    StockLocationHistoryObjectBoxModel: obx_int.EntityDefinition<
+            StockLocationHistoryObjectBoxModel>(
+        model: _entities[3],
+        toOneRelations: (StockLocationHistoryObjectBoxModel object) => [],
+        toManyRelations: (StockLocationHistoryObjectBoxModel object) => {},
+        getId: (StockLocationHistoryObjectBoxModel object) => object.id,
+        setId: (StockLocationHistoryObjectBoxModel object, int id) {
+          object.id = id;
+        },
+        objectToFB:
+            (StockLocationHistoryObjectBoxModel object, fb.Builder fbb) {
+          final containerIdOffset = object.containerId == null
+              ? null
+              : fbb.writeString(object.containerId!);
+          final staffOffset =
+              object.staff == null ? null : fbb.writeString(object.staff!);
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          final itemsOffset = object.items == null
+              ? null
+              : fbb.writeList(
+                  object.items!.map(fbb.writeString).toList(growable: false));
+          final warehouseLocationIdOffset = object.warehouseLocationId == null
+              ? null
+              : fbb.writeString(object.warehouseLocationId!);
+          final moveTypeOffset = object.moveType == null
+              ? null
+              : fbb.writeString(object.moveType!);
+          final stateOffset =
+              object.state == null ? null : fbb.writeString(object.state!);
+          fbb.startTable(13);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.date.millisecondsSinceEpoch);
+          fbb.addOffset(3, containerIdOffset);
+          fbb.addOffset(6, staffOffset);
+          fbb.addOffset(7, uidOffset);
+          fbb.addOffset(8, itemsOffset);
+          fbb.addOffset(9, warehouseLocationIdOffset);
+          fbb.addOffset(10, moveTypeOffset);
+          fbb.addOffset(11, stateOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 18);
+          final dateParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
+          final itemsParam = const fb.ListReader<String>(
+                  fb.StringReader(asciiOptimization: true),
+                  lazy: false)
+              .vTableGetNullable(buffer, rootOffset, 20);
+          final containerIdParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 10);
+          final warehouseLocationIdParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 22);
+          final moveTypeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 24);
+          final stateParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 26);
+          final staffParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 16);
+          final object = StockLocationHistoryObjectBoxModel(
+              id: idParam,
+              uid: uidParam,
+              date: dateParam,
+              items: itemsParam,
+              containerId: containerIdParam,
+              warehouseLocationId: warehouseLocationIdParam,
+              moveType: moveTypeParam,
+              state: stateParam,
+              staff: staffParam);
 
-              return object;
-            }),
+          return object;
+        }),
     StockObjectBoxModel: obx_int.EntityDefinition<StockObjectBoxModel>(
         model: _entities[4],
         toOneRelations: (StockObjectBoxModel object) => [],
@@ -974,7 +1089,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : fbb.writeString(object.comments!);
           final staffOffset =
               object.staff == null ? null : fbb.writeString(object.staff!);
-          fbb.startTable(30);
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          fbb.startTable(31);
           fbb.addInt64(0, object.id);
           fbb.addInt64(1, object.date.millisecondsSinceEpoch);
           fbb.addOffset(2, categoryOffset);
@@ -1004,6 +1121,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addOffset(26, staffOffset);
           fbb.addBool(27, object.archived);
           fbb.addInt64(28, object.updateTime?.millisecondsSinceEpoch);
+          fbb.addOffset(29, uidOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1014,6 +1132,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 60);
           final idParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 62);
           final dateParam = DateTime.fromMillisecondsSinceEpoch(
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
           final categoryParam = const fb.StringReader(asciiOptimization: true)
@@ -1080,6 +1200,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : DateTime.fromMillisecondsSinceEpoch(updateTimeValue);
           final object = StockObjectBoxModel(
               id: idParam,
+              uid: uidParam,
               date: dateParam,
               category: categoryParam,
               itemId: itemIdParam,
@@ -1110,6 +1231,98 @@ obx_int.ModelDefinition getObjectBoxModel() {
               updateTime: updateTimeParam);
 
           return object;
+        }),
+    ContainerIdObjectBoxModel:
+        obx_int.EntityDefinition<ContainerIdObjectBoxModel>(
+            model: _entities[5],
+            toOneRelations: (ContainerIdObjectBoxModel object) => [],
+            toManyRelations: (ContainerIdObjectBoxModel object) => {},
+            getId: (ContainerIdObjectBoxModel object) => object.id,
+            setId: (ContainerIdObjectBoxModel object, int id) {
+              object.id = id;
+            },
+            objectToFB: (ContainerIdObjectBoxModel object, fb.Builder fbb) {
+              final containerIdOffset = object.containerId == null
+                  ? null
+                  : fbb.writeString(object.containerId!);
+              fbb.startTable(3);
+              fbb.addInt64(0, object.id);
+              fbb.addOffset(1, containerIdOffset);
+              fbb.finish(fbb.endTable());
+              return object.id;
+            },
+            objectFromFB: (obx.Store store, ByteData fbData) {
+              final buffer = fb.BufferContext(fbData);
+              final rootOffset = buffer.derefObject(0);
+              final idParam =
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              final containerIdParam =
+                  const fb.StringReader(asciiOptimization: true)
+                      .vTableGetNullable(buffer, rootOffset, 6);
+              final object = ContainerIdObjectBoxModel(
+                  id: idParam, containerId: containerIdParam);
+
+              return object;
+            }),
+    ItemIdObjectBoxModel: obx_int.EntityDefinition<ItemIdObjectBoxModel>(
+        model: _entities[6],
+        toOneRelations: (ItemIdObjectBoxModel object) => [],
+        toManyRelations: (ItemIdObjectBoxModel object) => {},
+        getId: (ItemIdObjectBoxModel object) => object.id,
+        setId: (ItemIdObjectBoxModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (ItemIdObjectBoxModel object, fb.Builder fbb) {
+          final itemIdOffset =
+              object.itemId == null ? null : fbb.writeString(object.itemId!);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, itemIdOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final itemIdParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final object = ItemIdObjectBoxModel(id: idParam, itemId: itemIdParam);
+
+          return object;
+        }),
+    WarehouseLocationIdObjectBoxModel: obx_int.EntityDefinition<
+            WarehouseLocationIdObjectBoxModel>(
+        model: _entities[7],
+        toOneRelations: (WarehouseLocationIdObjectBoxModel object) => [],
+        toManyRelations: (WarehouseLocationIdObjectBoxModel object) => {},
+        getId: (WarehouseLocationIdObjectBoxModel object) => object.id,
+        setId: (WarehouseLocationIdObjectBoxModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (WarehouseLocationIdObjectBoxModel object, fb.Builder fbb) {
+          final warehouseLocationIdOffset = object.warehouseLocationId == null
+              ? null
+              : fbb.writeString(object.warehouseLocationId!);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, warehouseLocationIdOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final warehouseLocationIdParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 6);
+          final object = WarehouseLocationIdObjectBoxModel(
+              id: idParam, warehouseLocationId: warehouseLocationIdParam);
+
+          return object;
         })
   };
 
@@ -1126,13 +1339,13 @@ class CategoryObjectBoxModel_ {
   static final category = obx.QueryStringProperty<CategoryObjectBoxModel>(
       _entities[0].properties[1]);
 
-  /// see [CategoryObjectBoxModel.ref]
-  static final ref = obx.QueryStringProperty<CategoryObjectBoxModel>(
-      _entities[0].properties[2]);
-
   /// see [CategoryObjectBoxModel.updateTime]
   static final updateTime =
-      obx.QueryDateProperty<CategoryObjectBoxModel>(_entities[0].properties[3]);
+      obx.QueryDateProperty<CategoryObjectBoxModel>(_entities[0].properties[2]);
+
+  /// see [CategoryObjectBoxModel.uid]
+  static final uid = obx.QueryStringProperty<CategoryObjectBoxModel>(
+      _entities[0].properties[3]);
 }
 
 /// [InputFieldsObjectBoxModel] entity fields to define ObjectBox queries.
@@ -1189,6 +1402,10 @@ class InputFieldsObjectBoxModel_ {
   /// see [InputFieldsObjectBoxModel.updateTime]
   static final updateTime = obx.QueryDateProperty<InputFieldsObjectBoxModel>(
       _entities[1].properties[12]);
+
+  /// see [InputFieldsObjectBoxModel.uid]
+  static final uid = obx.QueryStringProperty<InputFieldsObjectBoxModel>(
+      _entities[1].properties[13]);
 }
 
 /// [ProductObjectBoxModel] entity fields to define ObjectBox queries.
@@ -1269,6 +1486,10 @@ class ProductObjectBoxModel_ {
   /// see [ProductObjectBoxModel.updateTime]
   static final updateTime =
       obx.QueryDateProperty<ProductObjectBoxModel>(_entities[2].properties[18]);
+
+  /// see [ProductObjectBoxModel.uid]
+  static final uid = obx.QueryStringProperty<ProductObjectBoxModel>(
+      _entities[2].properties[19]);
 }
 
 /// [StockLocationHistoryObjectBoxModel] entity fields to define ObjectBox queries.
@@ -1282,30 +1503,40 @@ class StockLocationHistoryObjectBoxModel_ {
   static final date = obx.QueryDateProperty<StockLocationHistoryObjectBoxModel>(
       _entities[3].properties[1]);
 
-  /// see [StockLocationHistoryObjectBoxModel.itemId]
-  static final itemId =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
-          _entities[3].properties[2]);
-
   /// see [StockLocationHistoryObjectBoxModel.containerId]
   static final containerId =
       obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
-          _entities[3].properties[3]);
-
-  /// see [StockLocationHistoryObjectBoxModel.warehouseLocation]
-  static final warehouseLocation =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
-          _entities[3].properties[4]);
-
-  /// see [StockLocationHistoryObjectBoxModel.comments]
-  static final comments =
-      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
-          _entities[3].properties[5]);
+          _entities[3].properties[2]);
 
   /// see [StockLocationHistoryObjectBoxModel.staff]
   static final staff =
       obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[3]);
+
+  /// see [StockLocationHistoryObjectBoxModel.uid]
+  static final uid =
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[4]);
+
+  /// see [StockLocationHistoryObjectBoxModel.items]
+  static final items =
+      obx.QueryStringVectorProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[5]);
+
+  /// see [StockLocationHistoryObjectBoxModel.warehouseLocationId]
+  static final warehouseLocationId =
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
           _entities[3].properties[6]);
+
+  /// see [StockLocationHistoryObjectBoxModel.moveType]
+  static final moveType =
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[7]);
+
+  /// see [StockLocationHistoryObjectBoxModel.state]
+  static final state =
+      obx.QueryStringProperty<StockLocationHistoryObjectBoxModel>(
+          _entities[3].properties[8]);
 }
 
 /// [StockObjectBoxModel] entity fields to define ObjectBox queries.
@@ -1425,4 +1656,42 @@ class StockObjectBoxModel_ {
   /// see [StockObjectBoxModel.updateTime]
   static final updateTime =
       obx.QueryDateProperty<StockObjectBoxModel>(_entities[4].properties[28]);
+
+  /// see [StockObjectBoxModel.uid]
+  static final uid =
+      obx.QueryStringProperty<StockObjectBoxModel>(_entities[4].properties[29]);
+}
+
+/// [ContainerIdObjectBoxModel] entity fields to define ObjectBox queries.
+class ContainerIdObjectBoxModel_ {
+  /// see [ContainerIdObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<ContainerIdObjectBoxModel>(
+      _entities[5].properties[0]);
+
+  /// see [ContainerIdObjectBoxModel.containerId]
+  static final containerId = obx.QueryStringProperty<ContainerIdObjectBoxModel>(
+      _entities[5].properties[1]);
+}
+
+/// [ItemIdObjectBoxModel] entity fields to define ObjectBox queries.
+class ItemIdObjectBoxModel_ {
+  /// see [ItemIdObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<ItemIdObjectBoxModel>(
+      _entities[6].properties[0]);
+
+  /// see [ItemIdObjectBoxModel.itemId]
+  static final itemId =
+      obx.QueryStringProperty<ItemIdObjectBoxModel>(_entities[6].properties[1]);
+}
+
+/// [WarehouseLocationIdObjectBoxModel] entity fields to define ObjectBox queries.
+class WarehouseLocationIdObjectBoxModel_ {
+  /// see [WarehouseLocationIdObjectBoxModel.id]
+  static final id = obx.QueryIntegerProperty<WarehouseLocationIdObjectBoxModel>(
+      _entities[7].properties[0]);
+
+  /// see [WarehouseLocationIdObjectBoxModel.warehouseLocationId]
+  static final warehouseLocationId =
+      obx.QueryStringProperty<WarehouseLocationIdObjectBoxModel>(
+          _entities[7].properties[1]);
 }

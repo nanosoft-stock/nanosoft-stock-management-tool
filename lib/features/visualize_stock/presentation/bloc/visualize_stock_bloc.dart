@@ -23,7 +23,8 @@ class VisualizeStockBloc
   final SortStockUseCase? _sortStockUseCase;
   final ImportFromExcelUseCase? _importFromExcelUseCase;
   final ExportToExcelUseCase? _exportToExcelUseCase;
-  final ListenToCloudDataChangeUseCase? _listenToCloudDataChangeUseCase;
+  final ListenToCloudDataChangeVisualizeStockUseCase?
+      _listenToCloudDataChangeUseCase;
 
   VisualizeStockBloc(
       this._allFieldsUseCase,

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:stock_management_tool/constants/constants.dart';
 
 class AuthDefault {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,6 +16,7 @@ class AuthDefault {
       email: email,
       password: password,
     );
+    userName = currentUser!.displayName!;
   }
 
   Future<void> createUserWithEmailAndPassword({
@@ -27,6 +29,7 @@ class AuthDefault {
       password: password,
     );
     await _auth.currentUser?.updateDisplayName(username);
+    userName = currentUser!.displayName!;
   }
 
   Future<void> signOut() async {

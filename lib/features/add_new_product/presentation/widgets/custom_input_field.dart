@@ -5,7 +5,10 @@ import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField(
-      {super.key, required this.fields, required this.index, required this.onSelected});
+      {super.key,
+      required this.fields,
+      required this.index,
+      required this.onSelected});
 
   final int index;
   final List fields;

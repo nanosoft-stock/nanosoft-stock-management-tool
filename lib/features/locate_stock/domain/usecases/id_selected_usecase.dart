@@ -100,7 +100,8 @@ class IdSelectedUseCase extends UseCase {
     //   }
     // }
 
-    locatedItems[index]["selected_ids_details"] = await _locateStockRepository.getIdSpecificData(
+    locatedItems[index]["selected_ids_details"] =
+        await _locateStockRepository.getIdSpecificData(
       searchBy: locatedItems[index]["search_by"],
       selectedIds: selectedIds,
     );
@@ -155,8 +156,9 @@ class IdSelectedUseCase extends UseCase {
 
         if (searchBy == "Container Id") {
           data = {
-            ...locatedItems[index]["selected_ids_details"]
-                .firstWhere((ele) => ele["container_id"] == element, orElse: () => {})
+            ...locatedItems[index]["selected_ids_details"].firstWhere(
+                (ele) => ele["container_id"] == element,
+                orElse: () => {})
           };
 
           data.remove("is_selected");
@@ -165,17 +167,20 @@ class IdSelectedUseCase extends UseCase {
               .where((e) => e["container_id"] == element)
               .toList();
 
-          if (affectedContainers.every((ele) => ele["is_selected"] == CheckBoxState.all)) {
+          if (affectedContainers
+              .every((ele) => ele["is_selected"] == CheckBoxState.all)) {
             state = CheckBoxState.all;
-          } else if (affectedContainers.any((ele) => ele["is_selected"] == CheckBoxState.all)) {
+          } else if (affectedContainers
+              .any((ele) => ele["is_selected"] == CheckBoxState.all)) {
             state = CheckBoxState.partial;
           } else {
             state = CheckBoxState.empty;
           }
         } else if (searchBy == "Warehouse Location Id") {
           data = {
-            ...locatedItems[index]["selected_ids_details"]
-                .firstWhere((ele) => ele["warehouse_location_id"] == element, orElse: () => {})
+            ...locatedItems[index]["selected_ids_details"].firstWhere(
+                (ele) => ele["warehouse_location_id"] == element,
+                orElse: () => {})
           };
 
           data.remove("container_id");
@@ -185,9 +190,11 @@ class IdSelectedUseCase extends UseCase {
               .where((e) => e["warehouse_location_id"] == element)
               .toList();
 
-          if (affectedLocations.every((ele) => ele["is_selected"] == CheckBoxState.all)) {
+          if (affectedLocations
+              .every((ele) => ele["is_selected"] == CheckBoxState.all)) {
             state = CheckBoxState.all;
-          } else if (affectedLocations.any((ele) => ele["is_selected"] == CheckBoxState.all)) {
+          } else if (affectedLocations
+              .any((ele) => ele["is_selected"] == CheckBoxState.all)) {
             state = CheckBoxState.partial;
           } else {
             state = CheckBoxState.empty;

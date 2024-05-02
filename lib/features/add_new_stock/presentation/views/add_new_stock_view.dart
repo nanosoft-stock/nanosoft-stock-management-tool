@@ -39,8 +39,8 @@ class AddNewStockView extends StatelessWidget {
     );
   }
 
-  void _blocListener(
-      BuildContext context, AddNewStockState state, BoxConstraints constraints, double pad) {
+  void _blocListener(BuildContext context, AddNewStockState state,
+      BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (NewStockAddedActionState):
         SnackBar snackBar = CustomSnackBar(
@@ -48,8 +48,10 @@ class AddNewStockView extends StatelessWidget {
             "New stock added successfully",
             style: kLabelTextStyle,
           ),
-          margin:
-              EdgeInsets.only(left: 302 + pad, bottom: constraints.maxHeight - 60, right: 52 + pad),
+          margin: EdgeInsets.only(
+              left: 302 + pad,
+              bottom: constraints.maxHeight - 60,
+              right: 52 + pad),
         ).build();
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -60,8 +62,8 @@ class AddNewStockView extends StatelessWidget {
     }
   }
 
-  Widget _blocBuilder(
-      BuildContext context, AddNewStockState state, BoxConstraints constraints, int n, double pad) {
+  Widget _blocBuilder(BuildContext context, AddNewStockState state,
+      BoxConstraints constraints, int n, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewStockBloc.add(LoadedEvent());
@@ -91,7 +93,8 @@ class AddNewStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(List fields, BoxConstraints constraints, int n, double pad) {
+  Widget _buildLoadedStateWidget(
+      List fields, BoxConstraints constraints, int n, double pad) {
     return constraints.maxWidth > 525
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
@@ -128,18 +131,21 @@ class AddNewStockView extends StatelessWidget {
                 fields: fields,
                 index: index,
                 onSelected: (value) {
-                  if (fields[index].field == "category" && fields[index].textValue != value) {
+                  if (fields[index].field == "category" &&
+                      fields[index].textValue != value) {
                     fields[index] = fields[index].copyWith(textValue: value);
                     _addNewStockBloc.add(CategorySelectedEvent(fields: fields));
                   } else {
                     fields[index] = fields[index].copyWith(textValue: value);
-                    if (fields[index].field == 'sku' && fields[index].items.contains(value)) {
+                    if (fields[index].field == 'sku' &&
+                        fields[index].items.contains(value)) {
                       _addNewStockBloc.add(SkuSelectedEvent(fields: fields));
                     }
                   }
                 },
                 onChecked: () {
-                  fields[index] = fields[index].copyWith(locked: !fields[index].locked);
+                  fields[index] =
+                      fields[index].copyWith(locked: !fields[index].locked);
                   _addNewStockBloc.add(CheckBoxTapEvent(fields: fields));
                 },
               );
@@ -162,7 +168,8 @@ class AddNewStockView extends StatelessWidget {
           child: CustomElevatedButton(
             text: "Add New Stock",
             onPressed: () async {
-              _addNewStockBloc.add(AddNewStockButtonClickedEvent(fields: fields));
+              _addNewStockBloc
+                  .add(AddNewStockButtonClickedEvent(fields: fields));
             },
           ),
         ),

@@ -64,7 +64,8 @@ class AuthenticationView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
               child: SizedBox(
                 width: 250,
                 child: CustomSegmentedButton(

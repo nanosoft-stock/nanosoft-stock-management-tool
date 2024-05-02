@@ -3,7 +3,9 @@ import 'package:stock_management_tool/features/add_new_product/domain/repositori
 
 class GetProductInitialInputFieldsUseCase extends UseCase {
   GetProductInitialInputFieldsUseCase(this._productRepository);
+
   final ProductRepository _productRepository;
+
   @override
   Future call({params}) async {
     return _productRepository.getInitialInputFields();

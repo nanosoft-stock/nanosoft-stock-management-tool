@@ -18,7 +18,8 @@ class VisualizeStockActionState extends VisualizeStockState {}
 class LoadingState extends VisualizeStockState {}
 
 class LoadedState extends VisualizeStockState {
-  const LoadedState(List fields, List stocks) : super(fields: fields, stocks: stocks);
+  const LoadedState(List fields, List stocks)
+      : super(fields: fields, stocks: stocks);
 }
 
 class ImportTableActionState extends VisualizeStockActionState {}

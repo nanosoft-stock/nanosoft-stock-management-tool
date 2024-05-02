@@ -10,16 +10,18 @@ class AddNewItemLocationHistoryHelper {
     List fields = [
       "date",
       "items",
-      "movement method",
-      "container id",
-      "warehouse location",
+      "move_type",
+      "container_id",
+      "warehouse_location_id",
+      "state",
       "staff",
     ];
 
     if (!kIsLinux) {
       for (var field in fields) {
         if (field == "date") {
-          convertedData[field] = Timestamp.now(); // FieldValue.serverTimestamp();
+          convertedData[field] =
+              Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (field == "staff") {
           convertedData[field] = userName;
         } else {

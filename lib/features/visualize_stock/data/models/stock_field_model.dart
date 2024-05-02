@@ -3,6 +3,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/entities/s
 
 class StockFieldModel extends StockFieldEntity {
   const StockFieldModel({
+    required super.uid,
     required super.field,
     required super.datatype,
     required super.lockable,
@@ -16,6 +17,7 @@ class StockFieldModel extends StockFieldEntity {
 
   factory StockFieldModel.fromJson(Map<String, dynamic> map) {
     return StockFieldModel(
+      uid: map['uid'],
       field: map['field'],
       datatype: map['datatype'],
       lockable: map['lockable'],
@@ -29,6 +31,7 @@ class StockFieldModel extends StockFieldEntity {
   }
 
   StockFieldModel copyWith({
+    String? uid,
     String? field,
     String? datatype,
     bool? lockable,
@@ -40,6 +43,7 @@ class StockFieldModel extends StockFieldEntity {
     Sort? sort,
   }) {
     return StockFieldModel(
+      uid: uid ?? this.uid,
       field: field ?? this.field,
       datatype: datatype ?? this.datatype,
       lockable: lockable ?? this.lockable,

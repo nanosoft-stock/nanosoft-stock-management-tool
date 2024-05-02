@@ -3,9 +3,11 @@ import 'package:stock_management_tool/features/add_new_stock/domain/entities/sto
 abstract class StockRepository {
   Future<List<StockInputFieldEntity>> getInitialInputFields();
 
-  Future<List<StockInputFieldEntity>> getCategoryBasedInputFields({required String category});
+  Future<List<StockInputFieldEntity>> getCategoryBasedInputFields(
+      {required String category});
 
-  Future<Map> getProductDescription({required String category, required String sku});
+  Future<Map> getProductDescription(
+      {required String category, required String sku});
 
-  Future addNewStock({required List fields});
+  Future<void> addNewStock({required List fields});
 }

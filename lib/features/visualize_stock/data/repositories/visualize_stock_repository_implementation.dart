@@ -29,6 +29,8 @@ class VisualizeStockRepositoryImplementation
   Future<List<Map<String, dynamic>>> getAllStocks() async {
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
 
+    stocks.sort((a, b) => a["date"].compareTo(b["date"]));
+
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
   }
 

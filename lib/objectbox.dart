@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:stock_management_tool/core/data/local_database/models/category_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/item_id_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/product_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
 
 import 'objectbox.g.dart';
 
@@ -17,6 +20,9 @@ class ObjectBox {
   Box<InputFieldsObjectBoxModel>? inputFieldsBox;
   Box<ProductObjectBoxModel>? productModelBox;
   Box<StockObjectBoxModel>? stockModelBox;
+  Box<ItemIdObjectBoxModel>? itemIdBox;
+  Box<ContainerIdObjectBoxModel>? containerIdBox;
+  Box<WarehouseLocationIdObjectBoxModel>? warehouseLocationIdBox;
   Box<StockLocationHistoryObjectBoxModel>? stockLocationHistoryModelBox;
 
   Future<void> create() async {
@@ -26,6 +32,9 @@ class ObjectBox {
     inputFieldsBox = Box<InputFieldsObjectBoxModel>(store);
     productModelBox = Box<ProductObjectBoxModel>(store);
     stockModelBox = Box<StockObjectBoxModel>(store);
+    itemIdBox = Box<ItemIdObjectBoxModel>(store);
+    containerIdBox = Box<ContainerIdObjectBoxModel>(store);
+    warehouseLocationIdBox = Box<WarehouseLocationIdObjectBoxModel>(store);
     stockLocationHistoryModelBox =
         Box<StockLocationHistoryObjectBoxModel>(store);
   }
@@ -154,19 +163,168 @@ class ObjectBox {
         .map((event) => event.find());
   }
 
+  void removeStock(int id) async {
+    stockModelBox!.remove(id);
+  }
+
   Future<void> removeAllStocks() async {
     await stockModelBox!.removeAllAsync();
   }
 
-  // Location History
-  Future<void> addLocationHistory(
-      StockLocationHistoryObjectBoxModel stock) async {
-    await stockLocationHistoryModelBox!.putAsync(stock);
+  // Item Id
+  void addItemId(ItemIdObjectBoxModel itemId) {
+    itemIdBox!.put(itemId);
   }
 
-  List<int> addLocationHistoryList(
-      List<StockLocationHistoryObjectBoxModel> stocks) {
-    return stockLocationHistoryModelBox!.putMany(stocks);
+  Future<void> addItemIdAsync(ItemIdObjectBoxModel itemId) async {
+    await itemIdBox!.putAsync(itemId);
+  }
+
+  List<int> addItemIdList(List<ItemIdObjectBoxModel> itemIds) {
+    return itemIdBox!.putMany(itemIds);
+  }
+
+  List<ItemIdObjectBoxModel> getItemIds() {
+    return itemIdBox!.getAll();
+  }
+
+  Future<List<ItemIdObjectBoxModel>> getItemIdAsync() async {
+    return await itemIdBox!.getAllAsync();
+  }
+
+  Stream<List<ItemIdObjectBoxModel>> getItemIdStream(
+      {bool triggerImmediately = false}) {
+    final builder = itemIdBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeItem(int id) async {
+    itemIdBox!.remove(id);
+  }
+
+  Future<void> removeAllItemIds() async {
+    await itemIdBox!.removeAllAsync();
+  }
+
+  // Container Id
+  void addContainerId(ContainerIdObjectBoxModel containerId) {
+    containerIdBox!.put(containerId);
+  }
+
+  Future<void> addContainerIdAsync(
+      ContainerIdObjectBoxModel containerId) async {
+    await containerIdBox!.putAsync(containerId);
+  }
+
+  List<int> addContainerIdList(List<ContainerIdObjectBoxModel> containerIds) {
+    return containerIdBox!.putMany(containerIds);
+  }
+
+  List<ContainerIdObjectBoxModel> getContainerIds() {
+    return containerIdBox!.getAll();
+  }
+
+  Future<List<ContainerIdObjectBoxModel>> getContainerIdAsync() async {
+    return await containerIdBox!.getAllAsync();
+  }
+
+  Stream<List<ContainerIdObjectBoxModel>> getContainerIdStream(
+      {bool triggerImmediately = false}) {
+    final builder = containerIdBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeContainer(int id) async {
+    containerIdBox!.remove(id);
+  }
+
+  Future<void> removeAllContainerIds() async {
+    await containerIdBox!.removeAllAsync();
+  }
+
+  //Warehouse Location Id
+  void addWarehouseLocationId(
+      WarehouseLocationIdObjectBoxModel warehouseLocationId) {
+    warehouseLocationIdBox!.put(warehouseLocationId);
+  }
+
+  Future<void> addWarehouseLocationIdAsync(
+      WarehouseLocationIdObjectBoxModel warehouseLocationId) async {
+    await warehouseLocationIdBox!.putAsync(warehouseLocationId);
+  }
+
+  List<int> addWarehouseLocationIdList(
+      List<WarehouseLocationIdObjectBoxModel> warehouseLocationIds) {
+    return warehouseLocationIdBox!.putMany(warehouseLocationIds);
+  }
+
+  List<WarehouseLocationIdObjectBoxModel> getWarehouseLocationIds() {
+    return warehouseLocationIdBox!.getAll();
+  }
+
+  Future<List<WarehouseLocationIdObjectBoxModel>>
+      getWarehouseLocationIdAsync() async {
+    return await warehouseLocationIdBox!.getAllAsync();
+  }
+
+  Stream<List<WarehouseLocationIdObjectBoxModel>> getWarehouseLocationIdStream(
+      {bool triggerImmediately = false}) {
+    final builder = warehouseLocationIdBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeWarehouseLocation(int id) async {
+    warehouseLocationIdBox!.remove(id);
+  }
+
+  Future<void> removeAllWarehouseLocationIds() async {
+    await warehouseLocationIdBox!.removeAllAsync();
+  }
+
+  // Location History
+  void addStockLocationHistory(StockLocationHistoryObjectBoxModel history) {
+    stockLocationHistoryModelBox!.put(history);
+  }
+
+  Future<void> addStockLocationHistoryAsync(
+      StockLocationHistoryObjectBoxModel history) async {
+    stockLocationHistoryModelBox!.putAsync(history);
+  }
+
+  List<int> addStockLocationHistoryList(
+      List<StockLocationHistoryObjectBoxModel> histories) {
+    return stockLocationHistoryModelBox!.putMany(histories);
+  }
+
+  List<StockLocationHistoryObjectBoxModel> getStockLocationHistory() {
+    return stockLocationHistoryModelBox!.getAll();
+  }
+
+  Future<List<StockLocationHistoryObjectBoxModel>>
+      getStockLocationHistoryAsync() async {
+    return await stockLocationHistoryModelBox!.getAllAsync();
+  }
+
+  Stream<List<StockLocationHistoryObjectBoxModel>>
+      getStockLocationHistoryStream({bool triggerImmediately = false}) {
+    final builder = stockLocationHistoryModelBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeStockLocationHistory(int id) async {
+    stockLocationHistoryModelBox!.remove(id);
+  }
+
+  Future<void> removeAllStockLocationHistory() async {
+    await stockLocationHistoryModelBox!.removeAllAsync();
   }
 
   // Database

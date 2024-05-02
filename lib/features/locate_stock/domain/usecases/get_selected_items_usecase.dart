@@ -19,7 +19,8 @@ class GetSelectedItemsUseCase extends UseCase {
     for (var element in locatedItems) {
       if (element["selected_ids_details"] != null) {
         element["selected_ids_details"].forEach((ele) {
-          if (ele["is_selected"] == CheckBoxState.all && !itemIds.contains(ele["id"])) {
+          if (ele["is_selected"] == CheckBoxState.all &&
+              !itemIds.contains(ele["id"])) {
             itemIds.add(ele["id"]);
             selectedItems.add({
               "id": ele["id"],
@@ -31,12 +32,13 @@ class GetSelectedItemsUseCase extends UseCase {
       }
     }
 
-    data["selected_items"] = selectedItems;
+    data["items"] = selectedItems;
 
     if (selectedItems.isNotEmpty) {
-      data["container_ids"] = await _locateStockRepository.getIds(searchBy: "Container Id");
-      data["warehouse_location_ids"] =
-          await _locateStockRepository.getIds(searchBy: "Warehouse Location Id");
+      data["container_ids"] =
+          await _locateStockRepository.getIds(searchBy: "Container Id");
+      data["warehouse_location_ids"] = await _locateStockRepository.getIds(
+          searchBy: "Warehouse Location Id");
       data["container_text"] = "";
       data["warehouse_location_text"] = "";
     }

@@ -36,14 +36,16 @@ class AddNewStockHelper {
           };
         } else {
           convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]): data[e["field"]],
+            DatatypeConverterHelper.convert(datatype: e["datatype"]):
+                data[e["field"]],
           };
         }
       }
     } else {
       for (var e in fields) {
         if (e["field"] == "date") {
-          convertedData[e["field"]] = Timestamp.now(); // FieldValue.serverTimestamp();
+          convertedData[e["field"]] =
+              Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (e["field"] == "staff") {
           convertedData[e["field"]] = userName;
         } else if (e["field"] == "archived") {

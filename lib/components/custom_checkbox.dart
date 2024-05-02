@@ -47,7 +47,9 @@ class CustomCheckbox extends StatelessWidget {
                       width: 15,
                       height: 15,
                       decoration: BoxDecoration(
-                        color: partial || locked ? kCheckboxCheckedColor : kTertiaryBackgroundColor,
+                        color: partial || locked
+                            ? kCheckboxCheckedColor
+                            : kTertiaryBackgroundColor,
                         borderRadius: BorderRadius.circular(partial ? 0 : 3),
                       ),
                     ),

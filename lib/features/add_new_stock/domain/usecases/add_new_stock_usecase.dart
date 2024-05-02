@@ -7,7 +7,21 @@ class AddNewStockUseCase extends UseCase {
   final StockRepository _stockRepository;
 
   @override
-  Future call({params}) {
-    return _stockRepository.addNewStock(fields: params);
+  Future call({params}) async {
+    List fields = params;
+
+    await _stockRepository.addNewStock(fields: params);
+
+    if (fields[0].field == "category" && fields[0].locked == true) {
+      for (int i = 0; i < fields.length; i++) {
+        if (!fields[i].locked) {
+          fields[i] = fields[i].copyWith(textValue: "");
+        }
+      }
+    } else {
+      fields = await _stockRepository.getInitialInputFields();
+    }
+
+    return fields;
   }
 }

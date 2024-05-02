@@ -3,7 +3,8 @@ import 'package:stock_management_tool/features/add_new_product/domain/entities/p
 abstract class ProductRepository {
   Future<List<ProductInputFieldEntity>> getInitialInputFields();
 
-  Future<List<ProductInputFieldEntity>> getCategoryBasedInputFields({required String category});
+  Future<List<ProductInputFieldEntity>> getCategoryBasedInputFields(
+      {required String category});
 
   Future addNewProduct({required List fields});
 }

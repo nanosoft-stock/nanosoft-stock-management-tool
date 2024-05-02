@@ -19,7 +19,8 @@ class AddNewProductView extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       int n = ((constraints.maxWidth - 135) / 338).floor();
       double pad = ((constraints.maxWidth - 135) % 338) / 2;
       return BlocConsumer<AddNewProductBloc, AddNewProductState>(
@@ -36,8 +37,8 @@ class AddNewProductView extends StatelessWidget {
     });
   }
 
-  void _blocListener(
-      BuildContext context, AddNewProductState state, BoxConstraints constraints, double pad) {
+  void _blocListener(BuildContext context, AddNewProductState state,
+      BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (NewProductAddedActionState):
         SnackBar snackBar = CustomSnackBar(
@@ -45,8 +46,10 @@ class AddNewProductView extends StatelessWidget {
             "New SKU added successfully",
             style: kLabelTextStyle,
           ),
-          margin:
-              EdgeInsets.only(left: 302 + pad, bottom: constraints.maxHeight - 60, right: 52 + pad),
+          margin: EdgeInsets.only(
+              left: 302 + pad,
+              bottom: constraints.maxHeight - 60,
+              right: 52 + pad),
         ).build();
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -57,8 +60,8 @@ class AddNewProductView extends StatelessWidget {
     }
   }
 
-  Widget _blocBuilder(BuildContext context, AddNewProductState state, BoxConstraints constraints,
-      int n, double pad) {
+  Widget _blocBuilder(BuildContext context, AddNewProductState state,
+      BoxConstraints constraints, int n, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewProductBloc.add(LoadedEvent());
@@ -88,7 +91,8 @@ class AddNewProductView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(List fields, BoxConstraints constraints, int n, double pad) {
+  Widget _buildLoadedStateWidget(
+      List fields, BoxConstraints constraints, int n, double pad) {
     return constraints.maxWidth > 475
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
@@ -125,9 +129,11 @@ class AddNewProductView extends StatelessWidget {
                 fields: fields,
                 index: index,
                 onSelected: (value) {
-                  if (fields[index].field == "category" && fields[index].textValue != value) {
+                  if (fields[index].field == "category" &&
+                      fields[index].textValue != value) {
                     fields[index] = fields[index].copyWith(textValue: value);
-                    _addNewProductBloc.add(CategorySelectedEvent(fields: fields));
+                    _addNewProductBloc
+                        .add(CategorySelectedEvent(fields: fields));
                   } else {
                     fields[index] = fields[index].copyWith(textValue: value);
                   }
@@ -152,7 +158,8 @@ class AddNewProductView extends StatelessWidget {
           child: CustomElevatedButton(
             text: "Add New Product",
             onPressed: () async {
-              _addNewProductBloc.add(AddNewProductButtonClickedEvent(fields: fields));
+              _addNewProductBloc
+                  .add(AddNewProductButtonClickedEvent(fields: fields));
             },
           ),
         ),

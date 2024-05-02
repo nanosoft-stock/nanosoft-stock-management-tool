@@ -3,6 +3,7 @@ import 'package:stock_management_tool/features/add_new_product/domain/repositori
 
 class GetProductCategoryBasedInputFieldsUseCase extends UseCase {
   GetProductCategoryBasedInputFieldsUseCase(this._productRepository);
+
   final ProductRepository _productRepository;
 
   @override

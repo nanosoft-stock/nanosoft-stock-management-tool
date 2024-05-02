@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class StockEntity extends Equatable {
   const StockEntity({
+    required this.uid,
     required this.date,
     required this.category,
     required this.itemId,
@@ -31,6 +32,7 @@ class StockEntity extends Equatable {
     required this.archived,
   });
 
+  final String uid;
   final DateTime date;
   final String category;
   final String itemId;
@@ -61,6 +63,7 @@ class StockEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        uid,
         date,
         category,
         itemId,

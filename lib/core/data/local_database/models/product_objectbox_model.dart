@@ -4,6 +4,7 @@ import 'package:objectbox/objectbox.dart';
 class ProductObjectBoxModel {
   ProductObjectBoxModel({
     this.id = 0,
+    this.uid,
     this.category,
     this.sku,
     this.make,
@@ -27,6 +28,7 @@ class ProductObjectBoxModel {
   @Id()
   int id;
 
+  String? uid;
   String? category;
   String? sku;
   String? make;
@@ -50,6 +52,7 @@ class ProductObjectBoxModel {
 
   factory ProductObjectBoxModel.fromJson(Map json) {
     return ProductObjectBoxModel(
+      uid: json['uid'],
       category: json['category'],
       sku: json['sku'],
       make: json['make'],
@@ -73,6 +76,7 @@ class ProductObjectBoxModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'uid': uid,
       'category': category,
       'sku': sku,
       'make': make,
@@ -96,6 +100,6 @@ class ProductObjectBoxModel {
 
   @override
   String toString() {
-    return "ProductModel(id:$id, category:$category, sku:$sku, make:$make, model:$model, processor:$processor, ram:$ram, storage:$storage, screenResolution:$screenResolution, os:$os, screenSize:$screenSize, usbC:$usbC, hdmi:$hdmi, displayPort:$displayPort, vga:$vga, ethernet:$ethernet, usbA:$usbA, type:$type, updateTime:$updateTime)";
+    return "ProductModel(id:$id, uid:$uid, category:$category, sku:$sku, make:$make, model:$model, processor:$processor, ram:$ram, storage:$storage, screenResolution:$screenResolution, os:$os, screenSize:$screenSize, usbC:$usbC, hdmi:$hdmi, displayPort:$displayPort, vga:$vga, ethernet:$ethernet, usbA:$usbA, type:$type, updateTime:$updateTime)";
   }
 }

@@ -8,6 +8,7 @@ class SignInUserUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    return await _authRepository.signInUser(email: params['email'], password: params['password']);
+    return await _authRepository.signInUser(
+        email: params['email'], password: params['password']);
   }
 }

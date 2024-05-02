@@ -42,12 +42,14 @@ class LocateStockInputRow extends StatelessWidget {
   final Function(CheckBoxState) onAllCheckBoxToggled;
 
   final OverlayPortalController overlayPortalController;
-  final MultipleSearchController multipleSearchController = MultipleSearchController();
+  final MultipleSearchController multipleSearchController =
+      MultipleSearchController();
   final TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       return CustomContainer(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -84,7 +86,8 @@ class LocateStockInputRow extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: CustomDropdownInputField(
                           text: "Search By",
-                          controller: TextEditingController(text: query["search_by"]),
+                          controller:
+                              TextEditingController(text: query["search_by"]),
                           items: searchableIds,
                           onSelected: (value) {
                             if (searchableIds.contains(value) || value == "") {
@@ -139,7 +142,8 @@ class LocateStockInputRow extends StatelessWidget {
                               selected: {query["show_details"]},
                               selectedIcon: const SizedBox.shrink(),
                               style: ButtonStyle(
-                                shape: MaterialStateProperty.all<OutlinedBorder>(
+                                shape:
+                                    MaterialStateProperty.all<OutlinedBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: kBorderRadius,
                                   ),
@@ -238,7 +242,9 @@ class LocateStockInputRow extends StatelessWidget {
 
   Widget _buildQueryTable(BoxConstraints constraints) {
     return CustomItemDetailsTableView(
-      items: !query["show_details"] ? query["unique_ids_details"] : query["selected_ids_details"],
+      items: !query["show_details"]
+          ? query["unique_ids_details"]
+          : query["selected_ids_details"],
       searchBy: query["search_by"],
       showDetails: query["show_details"],
       constraints: constraints,

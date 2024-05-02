@@ -13,13 +13,18 @@ class ProductRepositoryImplementation implements ProductRepository {
   Future<List<ProductInputFieldModel>> getInitialInputFields() async {
     return [
       {
+        "uid": "",
         "field": "category",
         "datatype": "string",
         "isWithSKU": true,
         "isTitleCase": true,
-        "items": _objectBox.getCategories().map((e) => e.category!.toTitleCase()).toList(),
+        "items": _objectBox
+            .getCategories()
+            .map((e) => e.category!.toTitleCase())
+            .toList(),
       },
       {
+        "uid": "",
         "field": "sku",
         "datatype": "string",
         "isWithSKU": true,
@@ -54,7 +59,7 @@ class ProductRepositoryImplementation implements ProductRepository {
         .getCategories()
         .where((element) => element.category == data["category"].toLowerCase())
         .first
-        .ref!;
+        .uid!;
 
     await sl.get<Firestore>().createDocument(
           path: "category_list/$ref/product_list",

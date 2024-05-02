@@ -6,9 +6,11 @@ abstract class VisualizeStockRepository {
 
   Future<List<Map<String, dynamic>>> getAllStocks();
 
-  Future<List<StockFieldEntity>> sortFields({required String field, required Sort sort});
+  Future<List<StockFieldEntity>> sortFields(
+      {required String field, required Sort sort});
 
-  Future<List<Map<String, dynamic>>> sortStocks({required String field, required Sort sort});
+  Future<List<Map<String, dynamic>>> sortStocks(
+      {required String field, required Sort sort});
 
   Future<void> importFromExcel();
 

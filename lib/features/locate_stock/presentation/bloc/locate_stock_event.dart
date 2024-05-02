@@ -7,7 +7,12 @@ abstract class LocateStockEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadedEvent extends LocateStockEvent {}
+class LoadedEvent extends LocateStockEvent {
+  const LoadedEvent({this.locatedItems, this.selectedItems});
+
+  final List? locatedItems;
+  final Map? selectedItems;
+}
 
 class AddNewLocateStockInputRowEvent extends LocateStockEvent {
   const AddNewLocateStockInputRowEvent({required this.locatedItems});
@@ -27,7 +32,9 @@ class RemoveLocateStockInputRowEvent extends LocateStockEvent {
 
 class SearchByFieldSelected extends LocateStockEvent {
   const SearchByFieldSelected(
-      {required this.index, required this.searchBy, required this.locatedItems});
+      {required this.index,
+      required this.searchBy,
+      required this.locatedItems});
 
   final int? index;
   final String? searchBy;
@@ -35,7 +42,8 @@ class SearchByFieldSelected extends LocateStockEvent {
 }
 
 class IdSelected extends LocateStockEvent {
-  const IdSelected({required this.index, required this.ids, required this.locatedItems});
+  const IdSelected(
+      {required this.index, required this.ids, required this.locatedItems});
 
   final int? index;
   final List? ids;
@@ -44,7 +52,9 @@ class IdSelected extends LocateStockEvent {
 
 class ShowTableToggled extends LocateStockEvent {
   const ShowTableToggled(
-      {required this.index, required this.showTable, required this.locatedItems});
+      {required this.index,
+      required this.showTable,
+      required this.locatedItems});
 
   final int? index;
   final bool? showTable;
@@ -53,7 +63,9 @@ class ShowTableToggled extends LocateStockEvent {
 
 class ShowDetailsToggled extends LocateStockEvent {
   const ShowDetailsToggled(
-      {required this.index, required this.showDetails, required this.locatedItems});
+      {required this.index,
+      required this.showDetails,
+      required this.locatedItems});
 
   final int? index;
   final bool? showDetails;
@@ -92,4 +104,41 @@ class PreviewMoveButtonPressed extends LocateStockEvent {
   const PreviewMoveButtonPressed({required this.locatedItems});
 
   final List? locatedItems;
+}
+
+class ContainerIdEntered extends LocateStockEvent {
+  const ContainerIdEntered({
+    required this.locatedItems,
+    required this.selectedItems,
+  });
+
+  final List? locatedItems;
+  final Map? selectedItems;
+}
+
+class WarehouseLocationIdEntered extends LocateStockEvent {
+  const WarehouseLocationIdEntered({
+    required this.locatedItems,
+    required this.selectedItems,
+  });
+
+  final List? locatedItems;
+  final Map? selectedItems;
+}
+
+class MoveItemsButtonPressed extends LocateStockEvent {
+  const MoveItemsButtonPressed({
+    required this.locatedItems,
+    required this.selectedItems,
+  });
+
+  final List? locatedItems;
+  final Map? selectedItems;
+}
+
+class CloudDataChangeEvent extends LocateStockEvent {
+  const CloudDataChangeEvent({this.locatedItems, this.selectedItems});
+
+  final List? locatedItems;
+  final Map? selectedItems;
 }

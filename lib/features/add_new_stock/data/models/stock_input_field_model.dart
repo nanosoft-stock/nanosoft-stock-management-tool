@@ -2,6 +2,7 @@ import 'package:stock_management_tool/features/add_new_stock/domain/entities/sto
 
 class StockInputFieldModel extends StockInputFieldEntity {
   const StockInputFieldModel({
+    required super.uid,
     required super.field,
     required super.datatype,
     required super.lockable,
@@ -16,6 +17,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
 
   factory StockInputFieldModel.fromJson(Map<String, dynamic> map) {
     return StockInputFieldModel(
+      uid: map['uid'],
       field: map['field'],
       datatype: map['datatype'],
       lockable: map['lockable'],
@@ -30,6 +32,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
   }
 
   StockInputFieldModel copyWith({
+    String? uid,
     String? field,
     String? datatype,
     bool? lockable,
@@ -42,6 +45,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
     bool? locked,
   }) {
     return StockInputFieldModel(
+      uid: uid ?? this.uid,
       field: field ?? this.field,
       datatype: datatype ?? this.datatype,
       lockable: lockable ?? this.lockable,

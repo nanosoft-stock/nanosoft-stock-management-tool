@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class ProductInputFieldEntity extends Equatable {
   const ProductInputFieldEntity({
+    required this.uid,
     required this.field,
     required this.datatype,
     required this.isWithSKU,
@@ -10,6 +11,7 @@ class ProductInputFieldEntity extends Equatable {
     required this.textValue,
   });
 
+  final String uid;
   final String field;
   final String datatype;
   final bool isWithSKU;
@@ -19,6 +21,7 @@ class ProductInputFieldEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        uid,
         field,
         datatype,
         isWithSKU,

@@ -7,18 +7,19 @@ import 'package:stock_management_tool/services/firestore_rest_api.dart';
 class Firestore {
   Future<List> getDocuments({
     required String path,
-    bool includeDocRef = false,
+    bool includeUid = false,
     bool includeUpdateTime = false,
   }) async {
     List data;
     if (!kIsLinux) {
       data = await sl.get<FirestoreDefault>().getDocuments(
             path: path,
+            includeUid: includeUid,
           );
     } else {
       data = (await sl.get<FirestoreRestApi>().getDocuments(
                 path: path,
-                includeDocRef: includeDocRef,
+                includeUid: includeUid,
                 includeUpdateTime: includeUpdateTime,
               ))
           .data;
@@ -64,19 +65,19 @@ class Firestore {
 
   Future<void> modifyDocument(
       {required String path,
-      required String docRef,
+      required String uid,
       List? updateMask,
       required Map data}) async {
     if (!kIsLinux) {
       await sl.get<FirestoreDefault>().modifyDocument(
             path: path,
-            docRef: docRef,
+            uid: uid,
             data: data,
           );
     } else {
       await sl.get<FirestoreRestApi>().modifyDocument(
             path: path,
-            docRef: docRef,
+            uid: uid,
             updateMask: updateMask,
             data: data,
           );

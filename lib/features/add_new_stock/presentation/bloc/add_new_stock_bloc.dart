@@ -8,12 +8,15 @@ import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
 
 part 'add_new_stock_event.dart';
+
 part 'add_new_stock_state.dart';
 
 class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
   final GetStockInitialInputFieldsUseCase? _stockInitialInputFieldsUseCase;
-  final GetStockCategoryBasedInputFieldsUseCase? _stockCategoryBasedInputFieldsUseCase;
-  final AutofillFieldsWithSelectedSkuUseCase? _autofillFieldsWithSelectedSkuUseCase;
+  final GetStockCategoryBasedInputFieldsUseCase?
+      _stockCategoryBasedInputFieldsUseCase;
+  final AutofillFieldsWithSelectedSkuUseCase?
+      _autofillFieldsWithSelectedSkuUseCase;
   final AddNewStockUseCase? _addNewStockUseCase;
 
   AddNewStockBloc(
@@ -29,7 +32,8 @@ class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
     on<AddNewStockButtonClickedEvent>(addNewStockButtonClickedEvent);
   }
 
-  FutureOr<void> loadedEvent(LoadedEvent event, Emitter<AddNewStockState> emit) async {
+  FutureOr<void> loadedEvent(
+      LoadedEvent event, Emitter<AddNewStockState> emit) async {
     emit(LoadedState(await _stockInitialInputFieldsUseCase!()));
   }
 
@@ -37,24 +41,28 @@ class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
       CategorySelectedEvent event, Emitter<AddNewStockState> emit) async {
     emit(LoadedState([
       event.fields![0],
-      ...await _stockCategoryBasedInputFieldsUseCase!(params: event.fields![0].textValue)
+      ...await _stockCategoryBasedInputFieldsUseCase!(
+          params: event.fields![0].textValue)
     ]));
   }
 
-  FutureOr<void> skuSelectedEvent(SkuSelectedEvent event, Emitter<AddNewStockState> emit) async {
+  FutureOr<void> skuSelectedEvent(
+      SkuSelectedEvent event, Emitter<AddNewStockState> emit) async {
     emit(ReduceDuplicationActionState());
-    emit(LoadedState(await _autofillFieldsWithSelectedSkuUseCase!(params: event.fields!)));
+    emit(LoadedState(
+        await _autofillFieldsWithSelectedSkuUseCase!(params: event.fields!)));
   }
 
-  FutureOr<void> checkBoxTapEvent(CheckBoxTapEvent event, Emitter<AddNewStockState> emit) async {
+  FutureOr<void> checkBoxTapEvent(
+      CheckBoxTapEvent event, Emitter<AddNewStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(event.fields!));
   }
 
   FutureOr<void> addNewStockButtonClickedEvent(
-      AddNewStockButtonClickedEvent event, Emitter<AddNewStockState> emit) async {
-    await _addNewStockUseCase!(params: event.fields!);
+      AddNewStockButtonClickedEvent event,
+      Emitter<AddNewStockState> emit) async {
     emit(NewStockAddedActionState());
-    emit(LoadedState(await _stockInitialInputFieldsUseCase!()));
+    emit(LoadedState(await _addNewStockUseCase!(params: event.fields!)));
   }
 }

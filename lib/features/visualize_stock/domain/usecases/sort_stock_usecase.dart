@@ -8,6 +8,7 @@ class SortStockUseCase extends UseCase {
 
   @override
   Future call({params}) {
-    return _visualizeStockRepository.sortStocks(field: params["field"], sort: params["sort"]);
+    return _visualizeStockRepository.sortStocks(
+        field: params["field"], sort: params["sort"]);
   }
 }

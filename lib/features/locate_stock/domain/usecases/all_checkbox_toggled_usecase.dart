@@ -37,9 +37,11 @@ class AllCheckBoxToggledUseCase extends UseCase {
 
             CheckBoxState containerState;
 
-            if (affectedContainers.every((e) => e["is_selected"] == CheckBoxState.all)) {
+            if (affectedContainers
+                .every((e) => e["is_selected"] == CheckBoxState.all)) {
               containerState = CheckBoxState.all;
-            } else if (affectedContainers.any((e) => e["is_selected"] == CheckBoxState.all)) {
+            } else if (affectedContainers
+                .any((e) => e["is_selected"] == CheckBoxState.all)) {
               containerState = CheckBoxState.partial;
             } else {
               containerState = CheckBoxState.empty;
@@ -54,14 +56,17 @@ class AllCheckBoxToggledUseCase extends UseCase {
         element["unique_ids_details"].forEach((ele) {
           if (warehouseIds.contains(ele["warehouse_location_id"])) {
             List affectedLocations = element["selected_ids_details"]
-                .where((e) => e["warehouse_location_id"] == ele["warehouse_location_id"])
+                .where((e) =>
+                    e["warehouse_location_id"] == ele["warehouse_location_id"])
                 .toList();
 
             CheckBoxState warehouseState;
 
-            if (affectedLocations.every((e) => e["is_selected"] == CheckBoxState.all)) {
+            if (affectedLocations
+                .every((e) => e["is_selected"] == CheckBoxState.all)) {
               warehouseState = CheckBoxState.all;
-            } else if (affectedLocations.any((e) => e["is_selected"] == CheckBoxState.all)) {
+            } else if (affectedLocations
+                .any((e) => e["is_selected"] == CheckBoxState.all)) {
               warehouseState = CheckBoxState.partial;
             } else {
               warehouseState = CheckBoxState.empty;

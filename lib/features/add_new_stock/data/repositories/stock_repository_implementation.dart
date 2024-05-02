@@ -15,6 +15,7 @@ class StockRepositoryImplementation implements StockRepository {
   Future<List<StockInputFieldModel>> getInitialInputFields() async {
     return [
       {
+        "uid": "",
         "field": "category",
         "datatype": "string",
         "lockable": true,
@@ -89,21 +90,21 @@ class StockRepositoryImplementation implements StockRepository {
     await _addNewLocations(
       locations: warehouseLocations["warehouse_locations"],
       newValue: data["warehouse location"],
-      docRef: warehouseLocations["docRef"],
+      uid: warehouseLocations["uid"],
       updateField: "warehouse_locations",
     );
 
     await _addNewLocations(
       locations: containers["containers"],
       newValue: data["container id"],
-      docRef: containers["docRef"],
+      uid: containers["uid"],
       updateField: "containers",
     );
 
     await _addNewLocations(
       locations: items["items"],
       newValue: data["item id"],
-      docRef: items["docRef"],
+      uid: items["uid"],
       updateField: "items",
     );
 
@@ -113,15 +114,15 @@ class StockRepositoryImplementation implements StockRepository {
   Future<List> _fetchAllLocations() async {
     List allLocations = await sl
         .get<Firestore>()
-        .getDocuments(path: "all_locations", includeDocRef: true);
+        .getDocuments(path: "all_locations", includeUid: true);
 
     if (kIsLinux) {
       allLocations = allLocations.map((element) {
         Map map = {};
 
         for (var key in element.keys) {
-          if (key == "docRef") {
-            map["docRef"] = element["docRef"]["stringValue"];
+          if (key == "uid") {
+            map["uid"] = element["uid"]["stringValue"];
           } else {
             map[key] = element[key]["arrayValue"]["values"]
                 .map((ele) => ele["stringValue"])
@@ -139,7 +140,7 @@ class StockRepositoryImplementation implements StockRepository {
   Future<void> _addNewLocations({
     required List locations,
     required String? newValue,
-    required String docRef,
+    required String uid,
     required String updateField,
   }) async {
     if (newValue != null &&
@@ -153,7 +154,7 @@ class StockRepositoryImplementation implements StockRepository {
 
       await sl.get<Firestore>().modifyDocument(
             path: "all_locations",
-            docRef: docRef,
+            uid: uid,
             updateMask: [updateField],
             data: !kIsLinux
                 ? {
@@ -172,12 +173,17 @@ class StockRepositoryImplementation implements StockRepository {
   }
 
   Future<void> _addItemLocationHistory({required Map data}) async {
-    data["movement method"] = "initial";
-    data["items"] = [data["item id"]];
+    Map map = {
+      "items": [data["item id"]],
+      "container_id": data["container id"],
+      "warehouse_location_id": data["warehouse location"],
+      "move_type": "initial",
+      "state": "completed",
+    };
 
     await sl.get<Firestore>().createDocument(
-          path: "item_location_history",
-          data: AddNewItemLocationHistoryHelper.toJson(data: data),
+          path: "stock_location_history",
+          data: AddNewItemLocationHistoryHelper.toJson(data: map),
         );
   }
 }

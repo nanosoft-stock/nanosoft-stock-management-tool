@@ -3,13 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreDefault {
   final firestore = FirebaseFirestore.instance;
 
-  Future<List> getDocuments({required String path}) async {
+  Future<List> getDocuments(
+      {required String path, bool includeUid = false}) async {
     CollectionReference collectionRef = firestore.collection(path);
 
     QuerySnapshot snapshot = await collectionRef.get();
     final data = snapshot.docs.map((doc) {
       final data = doc.data() as Map;
-      data["docRef"] = doc.reference.id;
+      if (includeUid) data["uid"] = doc.reference.id;
 
       return data;
     }).toList();
@@ -28,9 +29,9 @@ class FirestoreDefault {
   }
 
   Future<void> modifyDocument(
-      {required String path, required String docRef, required Map data}) async {
-    DocumentReference doc = firestore.collection(path).doc(docRef);
-    await doc.update(data.cast<String, dynamic>());
+      {required String path, required String uid, required Map data}) async {
+    DocumentReference docRef = firestore.collection(path).doc(uid);
+    await docRef.update(data.cast<String, dynamic>());
   }
 
   Future<List> filterQuery({required String path, required Map query}) async {

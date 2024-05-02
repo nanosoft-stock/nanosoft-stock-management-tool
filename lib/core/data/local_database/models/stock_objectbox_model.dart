@@ -5,6 +5,7 @@ import 'package:objectbox/objectbox.dart';
 class StockObjectBoxModel {
   StockObjectBoxModel({
     this.id = 0,
+    this.uid,
     required this.date,
     this.category,
     this.itemId,
@@ -37,6 +38,8 @@ class StockObjectBoxModel {
 
   @Id()
   int id;
+
+  String? uid;
 
   @Property(type: PropertyType.date)
   DateTime date;
@@ -73,6 +76,8 @@ class StockObjectBoxModel {
 
   factory StockObjectBoxModel.fromJson(Map json) {
     return StockObjectBoxModel(
+      // id: json["id"] ?? 0,
+      uid: json["uid"],
       date: json["date"].runtimeType == Timestamp
           ? json["date"].toDate()
           : DateTime.parse(json["date"]),
@@ -108,6 +113,7 @@ class StockObjectBoxModel {
 
   Map<String, dynamic> toJson() {
     return {
+      "uid": uid,
       "date": date,
       "category": category,
       "item id": itemId,
@@ -141,6 +147,6 @@ class StockObjectBoxModel {
 
   @override
   String toString() {
-    return "StockModel(date: $date, category: $category, itemId: $itemId, serialNumber: $serialNumber, sku: $sku, make: $make, model: $model, processor: $processor, ram: $ram, storage: $storage, screenResolution: $screenResolution, os: $os, screenSize: $screenSize, usbC: $usbC, hdmi: $hdmi, displayPort: $displayPort, vga: $vga, ethernet: $ethernet, usbA: $usbA, type: $type, supplierInfo: $supplierInfo, dispatchInfo: $dispatchInfo, containerId: $containerId, warehouseLocation: $warehouseLocation, comments: $comments, staff: $staff, archived: $archived, updateTime: $updateTime)";
+    return "StockModel(date: $date, uid: $uid, category: $category, itemId: $itemId, serialNumber: $serialNumber, sku: $sku, make: $make, model: $model, processor: $processor, ram: $ram, storage: $storage, screenResolution: $screenResolution, os: $os, screenSize: $screenSize, usbC: $usbC, hdmi: $hdmi, displayPort: $displayPort, vga: $vga, ethernet: $ethernet, usbA: $usbA, type: $type, supplierInfo: $supplierInfo, dispatchInfo: $dispatchInfo, containerId: $containerId, warehouseLocation: $warehouseLocation, comments: $comments, staff: $staff, archived: $archived, updateTime: $updateTime)";
   }
 }

@@ -14,7 +14,7 @@ class FirestoreRestApi {
 
   Future<DataState> getDocuments({
     required String path,
-    bool includeDocRef = false,
+    bool includeUid = false,
     bool includeUpdateTime = false,
   }) async {
     try {
@@ -30,8 +30,10 @@ class FirestoreRestApi {
             ? jsonData['documents'].map(
                 (element) {
                   Map map = element['fields'];
-                  if (includeDocRef) {
-                    map["docRef"] = {"stringValue": element['name'].toString().split('/').last};
+                  if (includeUid) {
+                    map["uid"] = {
+                      "stringValue": element['name'].toString().split('/').last
+                    };
                   }
                   if (includeUpdateTime) {
                     map["updateTime"] = element["updateTime"];
@@ -50,7 +52,8 @@ class FirestoreRestApi {
     return DataFailed(Exception("Unknown Exception"));
   }
 
-  Future<DataState> createDocument({required String path, required Map data}) async {
+  Future<DataState> createDocument(
+      {required String path, required Map data}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
@@ -74,7 +77,8 @@ class FirestoreRestApi {
     return DataFailed(Exception("Unknown Exception"));
   }
 
-  Future<DataState> filterQuery({required String path, required Map query}) async {
+  Future<DataState> filterQuery(
+      {required String path, required Map query}) async {
     try {
       String url =
           "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents${path != '' ? '/$path' : ''}:runQuery?key=$apiKey";
@@ -113,17 +117,11 @@ class FirestoreRestApi {
         var data = jsonData.map((e) {
           if (e["document"] != null) {
             Map map = e["document"]["fields"];
-            map["docRef"] = {
+            map["uid"] = {
               "stringValue": e["document"]["name"].toString().split("/").last,
             };
 
             return map;
-            // return {
-            //   "fields": e["document"]["fields"],
-            //   "docRef": {
-            //     "stringValue": e["document"]["name"].toString().split("/").last,
-            //   },
-            // };
           } else {
             return {};
           }
@@ -138,7 +136,10 @@ class FirestoreRestApi {
   }
 
   Future<DataState> modifyDocument(
-      {required String path, required String docRef, List? updateMask, required Map data}) async {
+      {required String path,
+      required String uid,
+      List? updateMask,
+      required Map data}) async {
     try {
       String updateMaskUrl = "";
 
@@ -149,7 +150,7 @@ class FirestoreRestApi {
       }
 
       String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path/$docRef?${updateMaskUrl}key=$apiKey";
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path/$uid?${updateMaskUrl}key=$apiKey";
 
       Response response = await _dio.patch(
         url,

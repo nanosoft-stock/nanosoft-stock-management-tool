@@ -8,16 +8,18 @@ class AutofillFieldsWithSelectedSkuUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    final skuElement = params[params.indexWhere((element) => element.field == 'sku')];
+    final skuElement =
+        params[params.indexWhere((element) => element.field == 'sku')];
     var productDesc = await _stockRepository.getProductDescription(
         category: params[0].textValue, sku: skuElement.textValue);
 
-    var affectedFields =
-        params.where((element) => element.isWithSKU && element.field != "category").toList();
+    var affectedFields = params
+        .where((element) => element.isWithSKU && element.field != "category")
+        .toList();
 
     for (var element in affectedFields) {
-      params[params.indexOf(element)] =
-          element.copyWith(textValue: productDesc[element.field.toString()].toString());
+      params[params.indexOf(element)] = element.copyWith(
+          textValue: productDesc[element.field.toString()].toString());
     }
 
     return params;

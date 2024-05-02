@@ -95,7 +95,8 @@ class VisualiseStockView extends StatelessWidget {
                                 CustomElevatedButton(
                                   text: "Import Excel",
                                   onPressed: () async {
-                                    _visualizeStockBloc.add(ImportButtonClickedEvent());
+                                    _visualizeStockBloc
+                                        .add(ImportButtonClickedEvent());
                                   },
                                 ),
                                 const SizedBox(
@@ -104,7 +105,8 @@ class VisualiseStockView extends StatelessWidget {
                                 CustomElevatedButton(
                                   text: "Export Table",
                                   onPressed: () {
-                                    _visualizeStockBloc.add(ExportButtonClickedEvent());
+                                    _visualizeStockBloc
+                                        .add(ExportButtonClickedEvent());
                                   },
                                 ),
                               ],
@@ -161,14 +163,19 @@ class VisualiseStockView extends StatelessWidget {
                                     extent: FixedTableSpanExtent(25),
                                   );
                                 },
-                                cellBuilder: (BuildContext context, TableVicinity vicinity) {
+                                cellBuilder: (BuildContext context,
+                                    TableVicinity vicinity) {
                                   if (vicinity.row == 0) {
                                     return TableViewCell(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Text(
-                                            fields[vicinity.column].field.toString().toTitleCase(),
+                                            fields[vicinity.column]
+                                                .field
+                                                .toString()
+                                                .toTitleCase(),
                                             style: GoogleFonts.lato(
                                               textStyle: const TextStyle(
                                                 fontSize: 15.0,
@@ -177,24 +184,29 @@ class VisualiseStockView extends StatelessWidget {
                                             ),
                                           ),
                                           CustomSortButton(
-                                            field: fields[vicinity.column].field.toString(),
+                                            field: fields[vicinity.column]
+                                                .field
+                                                .toString(),
                                             sort: fields[vicinity.column].sort,
                                             onPressed: (field, sort) {
-                                              _visualizeStockBloc
-                                                  .add(SortFieldEvent(field: field, sort: sort));
+                                              _visualizeStockBloc.add(
+                                                  SortFieldEvent(
+                                                      field: field,
+                                                      sort: sort));
                                             },
                                           ),
                                         ],
                                       ),
                                     );
                                   } else {
-                                    String text = (stocks[vicinity.row - 1]
-                                                [fields[vicinity.column].field] ??
+                                    String text = (stocks[vicinity.row - 1][
+                                                fields[vicinity.column]
+                                                    .field] ??
                                             "")
                                         .toString();
                                     if (vicinity.column == 0) {
-                                      text = DateFormat('dd-MM-yyyy')
-                                          .format(DateTime.parse(text.toUpperCase()));
+                                      text = DateFormat('dd-MM-yyyy').format(
+                                          DateTime.parse(text.toUpperCase()));
                                     }
                                     return TableViewCell(
                                       child: Center(

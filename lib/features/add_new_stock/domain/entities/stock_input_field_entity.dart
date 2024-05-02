@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class StockInputFieldEntity extends Equatable {
   const StockInputFieldEntity({
+    required this.uid,
     required this.field,
     required this.datatype,
     required this.lockable,
@@ -14,6 +15,7 @@ class StockInputFieldEntity extends Equatable {
     required this.locked,
   });
 
+  final String uid;
   final String field;
   final String datatype;
   final bool lockable;
@@ -27,6 +29,7 @@ class StockInputFieldEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        uid,
         field,
         datatype,
         lockable,

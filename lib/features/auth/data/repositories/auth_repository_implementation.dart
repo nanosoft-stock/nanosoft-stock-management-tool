@@ -10,7 +10,11 @@ class AuthRepositoryImplementation implements AuthRepository {
 
   @override
   Future signUpUser(
-      {required String username, required String email, required String password}) async {
-    return await sl.get<Auth>().signUpUser(username: username, email: email, password: password);
+      {required String username,
+      required String email,
+      required String password}) async {
+    return await sl
+        .get<Auth>()
+        .signUpUser(username: username, email: email, password: password);
   }
 }

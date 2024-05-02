@@ -47,7 +47,8 @@ class CustomItemDetailsTableView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> columns = searchBy == "Container Id" ? containerColumns : warehouseColumns;
+    List<String> columns =
+        searchBy == "Container Id" ? containerColumns : warehouseColumns;
     columns = showDetails ? itemColumns : columns;
 
     double pad = 15.0;
@@ -67,6 +68,14 @@ class CustomItemDetailsTableView extends StatelessWidget {
         ),
         clipBehavior: Clip.hardEdge,
         child: TableView(
+          horizontalDetails: ScrollableDetails.horizontal(
+            controller: ScrollController(),
+            physics: const BouncingScrollPhysics(),
+          ),
+          verticalDetails: ScrollableDetails.vertical(
+            controller: ScrollController(),
+            physics: const BouncingScrollPhysics(),
+          ),
           delegate: TableCellBuilderDelegate(
             columnCount: columns.length,
             rowCount: items.length + 1,
@@ -118,13 +127,16 @@ class CustomItemDetailsTableView extends StatelessWidget {
                               ),
                             )
                           : CustomCheckbox(
-                              locked: items
-                                  .every((element) => element["is_selected"] == CheckBoxState.all),
+                              locked: items.every((element) =>
+                                  element["is_selected"] == CheckBoxState.all),
                               partial: items.any((element) =>
-                                      element["is_selected"] == CheckBoxState.all ||
-                                      element["is_selected"] == CheckBoxState.partial) &&
-                                  !items.every(
-                                      (element) => element["is_selected"] == CheckBoxState.all),
+                                      element["is_selected"] ==
+                                          CheckBoxState.all ||
+                                      element["is_selected"] ==
+                                          CheckBoxState.partial) &&
+                                  !items.every((element) =>
+                                      element["is_selected"] ==
+                                      CheckBoxState.all),
                               onChecked: () {
                                 CheckBoxState state;
 
@@ -146,8 +158,8 @@ class CustomItemDetailsTableView extends StatelessWidget {
               } else {
                 Map item = (items[vicinity.row - 1]);
                 if (vicinity.column == 0) {
-                  bool locked =
-                      [CheckBoxState.all, CheckBoxState.partial].contains(item["is_selected"]);
+                  bool locked = [CheckBoxState.all, CheckBoxState.partial]
+                      .contains(item["is_selected"]);
                   bool partial = item["is_selected"] == CheckBoxState.partial;
 
                   return TableViewCell(
@@ -182,14 +194,17 @@ class CustomItemDetailsTableView extends StatelessWidget {
 
                 String text = "";
                 if (vicinity.column == 1) {
-                  text = showDetails ? item["id"] : item["item_quantity"].toString();
+                  text = showDetails
+                      ? item["id"]
+                      : item["item_quantity"].toString();
                 }
                 if (vicinity.column == 2) {
                   if (searchBy != "Warehouse Location Id") {
                     text = item["container_id"];
                   } else {
-                    text =
-                        showDetails ? item["container_id"] : item["container_quantity"].toString();
+                    text = showDetails
+                        ? item["container_id"]
+                        : item["container_quantity"].toString();
                   }
                 }
                 if (vicinity.column == 3) {

@@ -12,13 +12,15 @@ class AddNewProductHelper {
 
       List fields = objectbox
           .getInputFields()
-          .where((element) => element.isWithSKU! && element.category == category.toLowerCase())
+          .where((element) =>
+              element.isWithSKU! && element.category == category.toLowerCase())
           .map((e) => e.toJson())
           .toList();
 
       for (var e in fields) {
         convertedData[e["field"]] = {
-          DatatypeConverterHelper.convert(datatype: e["datatype"]): data[e["field"]],
+          DatatypeConverterHelper.convert(datatype: e["datatype"]):
+              data[e["field"]],
         };
       }
     } else {

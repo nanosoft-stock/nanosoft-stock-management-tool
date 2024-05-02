@@ -13,7 +13,8 @@ class LocateStockView extends StatelessWidget {
   LocateStockView({super.key});
 
   final LocateStockBloc _locateStockBloc = sl.get<LocateStockBloc>();
-  final OverlayPortalController previewMoveOverlayPortalController = OverlayPortalController();
+  final OverlayPortalController previewMoveOverlayPortalController =
+      OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,8 @@ class LocateStockView extends StatelessWidget {
     debugPrint("build: ${state.runtimeType}");
     switch (state.runtimeType) {
       case const (LoadingState):
-        _locateStockBloc.add(LoadedEvent());
+        _locateStockBloc.add(const CloudDataChangeEvent());
+        // _locateStockBloc.add(LoadedEvent());
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
@@ -83,7 +85,8 @@ class LocateStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(int itemCount, List locatedItems, Map selectedItems) {
+  Widget _buildLoadedStateWidget(
+      int itemCount, List locatedItems, Map selectedItems) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
@@ -111,22 +114,31 @@ class LocateStockView extends StatelessWidget {
                                 query: locatedItems[index],
                                 showRemoveButton: itemCount != 1,
                                 removeOnTap: () {
-                                  _locateStockBloc.add(RemoveLocateStockInputRowEvent(
-                                      index: index, locatedItems: locatedItems));
+                                  _locateStockBloc.add(
+                                      RemoveLocateStockInputRowEvent(
+                                          index: index,
+                                          locatedItems: locatedItems));
                                 },
                                 onSearchBySelected: (value) {
                                   _locateStockBloc.add(SearchByFieldSelected(
-                                      index: index, searchBy: value, locatedItems: locatedItems));
+                                      index: index,
+                                      searchBy: value,
+                                      locatedItems: locatedItems));
                                 },
                                 onIdSelected: (value) {
                                   _locateStockBloc.add(IdSelected(
-                                      index: index, ids: value, locatedItems: locatedItems));
+                                      index: index,
+                                      ids: value,
+                                      locatedItems: locatedItems));
                                 },
                                 // overlayPortalController: overlayPortalController,
-                                overlayPortalController: OverlayPortalController(),
+                                overlayPortalController:
+                                    OverlayPortalController(),
                                 onShowTableToggled: (value) {
                                   _locateStockBloc.add(ShowTableToggled(
-                                      index: index, showTable: value, locatedItems: locatedItems));
+                                      index: index,
+                                      showTable: value,
+                                      locatedItems: locatedItems));
                                 },
                                 onShowDetailsToggled: (value) {
                                   _locateStockBloc.add(ShowDetailsToggled(
@@ -143,13 +155,16 @@ class LocateStockView extends StatelessWidget {
                                 },
                                 onAllCheckBoxToggled: (state) {
                                   _locateStockBloc.add(AllCheckBoxToggled(
-                                      index: index, state: state, locatedItems: locatedItems));
+                                      index: index,
+                                      state: state,
+                                      locatedItems: locatedItems));
                                 },
                               )
                             : LocateStockAddNewInputRow(
                                 onTap: () {
                                   _locateStockBloc.add(
-                                      AddNewLocateStockInputRowEvent(locatedItems: locatedItems));
+                                      AddNewLocateStockInputRowEvent(
+                                          locatedItems: locatedItems));
                                 },
                               ),
                       );
@@ -162,8 +177,8 @@ class LocateStockView extends StatelessWidget {
             //     (element["selected_ids_details"] != null) &&
             //     (element["selected_ids_details"]
             //         .any((ele) => ele["is_selected"] == CheckBoxState.all))))
-            if (selectedItems["selected_items"] != null &&
-                selectedItems["selected_items"].isNotEmpty)
+            if (selectedItems["items"] != null &&
+                selectedItems["items"].isNotEmpty)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -182,7 +197,8 @@ class LocateStockView extends StatelessWidget {
                           overlayChildBuilder: (BuildContext context) {
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(250.0 + 52.0, 90.0, 52.0, 40.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    250.0 + 52.0, 90.0, 52.0, 40.0),
                                 child: SizedBox(
                                   width: 675,
                                   height: 360,
@@ -208,10 +224,12 @@ class LocateStockView extends StatelessWidget {
                                             width: 400,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Padding(
-                                                  padding: const EdgeInsets.all(10.0),
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
                                                   child: SizedBox(
                                                     width: 200,
                                                     height: 300,
@@ -219,50 +237,80 @@ class LocateStockView extends StatelessWidget {
                                                       // mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets.all(4.0),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
                                                           child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: kButtonBackgroundColor,
-                                                              borderRadius: kBorderRadius,
-                                                              boxShadow: kBoxShadowList,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  kButtonBackgroundColor,
+                                                              borderRadius:
+                                                                  kBorderRadius,
+                                                              boxShadow:
+                                                                  kBoxShadowList,
                                                             ),
                                                             child: Padding(
-                                                              padding: const EdgeInsets.all(8.0),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
                                                               child: Center(
                                                                 child: Text(
-                                                                  "Item Total:  ${selectedItems["selected_items"].length}",
-                                                                  style: kLabelTextStyle,
+                                                                  "Item Total:  ${selectedItems["items"].length}",
+                                                                  style:
+                                                                      kLabelTextStyle,
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
                                                         ),
                                                         Expanded(
-                                                          child: ListView.builder(
+                                                          child:
+                                                              ListView.builder(
                                                             itemCount:
-                                                                selectedItems["selected_items"]
+                                                                selectedItems[
+                                                                        "items"]
                                                                     .length,
-                                                            scrollDirection: Axis.vertical,
-                                                            controller: ScrollController(),
-                                                            physics: const BouncingScrollPhysics(),
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            controller:
+                                                                ScrollController(),
+                                                            physics:
+                                                                const BouncingScrollPhysics(),
                                                             shrinkWrap: true,
                                                             itemBuilder:
-                                                                (BuildContext context, int index) {
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
                                                               return Padding(
-                                                                padding: const EdgeInsets.all(4.0),
-                                                                child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: kTertiaryBackgroundColor,
-                                                                    borderRadius: kBorderRadius,
-                                                                    boxShadow: kBoxShadowList,
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        4.0),
+                                                                child:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color:
+                                                                        kTertiaryBackgroundColor,
+                                                                    borderRadius:
+                                                                        kBorderRadius,
+                                                                    boxShadow:
+                                                                        kBoxShadowList,
                                                                   ),
-                                                                  child: Padding(
+                                                                  child:
+                                                                      Padding(
                                                                     padding:
-                                                                        const EdgeInsets.all(8.0),
-                                                                    child: Center(
-                                                                      child: Text(
-                                                                        "Item Id:   ${selectedItems["selected_items"][index]["id"]}",
-                                                                        style: kLabelTextStyle,
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          Text(
+                                                                        "Item Id:   ${selectedItems["items"][index]["id"]}",
+                                                                        style:
+                                                                            kLabelTextStyle,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -279,47 +327,91 @@ class LocateStockView extends StatelessWidget {
                                                   width: 20,
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.all(10.0),
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets.all(10.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
                                                         child: SizedBox(
                                                           width: 330.0,
-                                                          child: CustomDropdownInputField(
-                                                            text: "Container Id",
+                                                          child:
+                                                              CustomDropdownInputField(
+                                                            text:
+                                                                "Container Id",
                                                             controller: TextEditingController(
                                                                 text: selectedItems[
                                                                     "container_text"]),
-                                                            items: selectedItems["container_ids"],
-                                                            onSelected: (_) {},
+                                                            items: selectedItems[
+                                                                "container_ids"],
+                                                            onSelected:
+                                                                (value) {
+                                                              selectedItems[
+                                                                      "container_text"] =
+                                                                  value;
+                                                              _locateStockBloc.add(ContainerIdEntered(
+                                                                  locatedItems:
+                                                                      locatedItems,
+                                                                  selectedItems:
+                                                                      selectedItems));
+                                                            },
                                                           ),
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.all(10.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
                                                         child: SizedBox(
                                                           width: 330.0,
-                                                          child: CustomDropdownInputField(
-                                                            text: "Warehouse Location Id",
+                                                          child:
+                                                              CustomDropdownInputField(
+                                                            text:
+                                                                "Warehouse Location Id",
                                                             controller: TextEditingController(
                                                                 text: selectedItems[
                                                                     "warehouse_location_text"]),
                                                             items: selectedItems[
                                                                 "warehouse_location_ids"],
-                                                            onSelected: (_) {},
+                                                            onSelected:
+                                                                (value) {
+                                                              selectedItems[
+                                                                      "warehouse_location_text"] =
+                                                                  value;
+                                                              _locateStockBloc.add(WarehouseLocationIdEntered(
+                                                                  locatedItems:
+                                                                      locatedItems,
+                                                                  selectedItems:
+                                                                      selectedItems));
+                                                            },
                                                           ),
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 15),
+                                                      const SizedBox(
+                                                          height: 15),
                                                       Padding(
-                                                        padding: const EdgeInsets.all(10.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
                                                         child: SizedBox(
                                                           width: 330.0,
-                                                          child: CustomElevatedButton(
-                                                            onPressed: () {},
+                                                          child:
+                                                              CustomElevatedButton(
+                                                            onPressed: () {
+                                                              _locateStockBloc.add(MoveItemsButtonPressed(
+                                                                  locatedItems:
+                                                                      locatedItems,
+                                                                  selectedItems:
+                                                                      selectedItems));
+                                                              previewMoveOverlayPortalController
+                                                                  .hide();
+                                                            },
                                                             text: "Move Items",
                                                           ),
                                                         ),

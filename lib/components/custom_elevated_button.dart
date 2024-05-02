@@ -30,11 +30,12 @@ class CustomElevatedButton extends StatelessWidget {
             vertical: 15.0,
             horizontal: 10.0,
           ),
-          child: child ?? Text(
-            text!,
-            softWrap: false,
-            style: kButtonTextStyle,
-          ),
+          child: child ??
+              Text(
+                text!,
+                softWrap: false,
+                style: kButtonTextStyle,
+              ),
         ),
       ),
     );

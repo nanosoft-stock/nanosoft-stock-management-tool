@@ -31,10 +31,12 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    userName = sl.get<AuthDefault>().currentUser!.displayName!;
   }
 
   await sl.get<ObjectBox>().create();
-  await FetchDataForObjectbox(sl.get<ObjectBox>()).fetchData(deletePrevious: true);
+  await FetchDataForObjectbox(sl.get<ObjectBox>())
+      .fetchData(deletePrevious: true);
 
   runApp(const StockManagementToolApp());
 }
@@ -75,7 +77,10 @@ class StockManagementToolApp extends StatelessWidget {
                     },
                   )
                 : StreamBuilder<bool>(
-                    stream: sl.get<AuthRestApi>().userLogInStatusStreamController.stream,
+                    stream: sl
+                        .get<AuthRestApi>()
+                        .userLogInStatusStreamController
+                        .stream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data == true) {
                         return HomeView();

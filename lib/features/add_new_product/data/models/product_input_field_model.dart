@@ -2,6 +2,7 @@ import 'package:stock_management_tool/features/add_new_product/domain/entities/p
 
 class ProductInputFieldModel extends ProductInputFieldEntity {
   const ProductInputFieldModel({
+    required super.uid,
     required super.field,
     required super.datatype,
     required super.isWithSKU,
@@ -12,6 +13,7 @@ class ProductInputFieldModel extends ProductInputFieldEntity {
 
   factory ProductInputFieldModel.fromJson(Map<String, dynamic> map) {
     return ProductInputFieldModel(
+      uid: map['uid'],
       field: map['field'],
       datatype: map['datatype'],
       isWithSKU: map['isWithSKU'],
@@ -22,6 +24,7 @@ class ProductInputFieldModel extends ProductInputFieldEntity {
   }
 
   ProductInputFieldModel copyWith({
+    String? uid,
     String? field,
     String? datatype,
     bool? isWithSKU,
@@ -30,6 +33,7 @@ class ProductInputFieldModel extends ProductInputFieldEntity {
     String? textValue,
   }) {
     return ProductInputFieldModel(
+      uid: uid ?? this.uid,
       field: field ?? this.field,
       datatype: datatype ?? this.datatype,
       isWithSKU: isWithSKU ?? this.isWithSKU,

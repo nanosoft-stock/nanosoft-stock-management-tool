@@ -31,7 +31,9 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    userName = sl.get<AuthDefault>().currentUser!.displayName!;
+    if (sl.get<AuthDefault>().currentUser != null) {
+      userName = sl.get<AuthDefault>().currentUser!.displayName!;
+    }
   }
 
   await sl.get<ObjectBox>().create();

@@ -10,15 +10,15 @@ class WarehouseLocationIDEnteredUseCase extends UseCase {
   Future call({params}) async {
     Map<String, dynamic> selectedItems = params["selected_items"];
 
-    String warehouseLocationId = selectedItems["warehouse_location_text"];
-
-    if (selectedItems["warehouse_location_ids"].contains(warehouseLocationId)) {
-      selectedItems["container_ids"] = await _locateStockRepository
-          .getContainerIds(warehouseLocationId: warehouseLocationId);
-    } else {
-      selectedItems["container_ids"] =
-          await _locateStockRepository.getIds(searchBy: "Container Id");
-    }
+    // String warehouseLocationId = selectedItems["warehouse_location_text"];
+    //
+    // if (selectedItems["warehouse_location_ids"].contains(warehouseLocationId)) {
+    //   selectedItems["container_ids"] = await _locateStockRepository
+    //       .getContainerIds(warehouseLocationId: warehouseLocationId);
+    // } else {
+    //   selectedItems["container_ids"] =
+    //       await _locateStockRepository.getIds(searchBy: "Container Id");
+    // }
 
     return selectedItems;
   }

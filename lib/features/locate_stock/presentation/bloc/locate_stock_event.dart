@@ -8,137 +8,143 @@ abstract class LocateStockEvent extends Equatable {
 }
 
 class LoadedEvent extends LocateStockEvent {
-  const LoadedEvent({this.locatedItems, this.selectedItems});
+  const LoadedEvent({this.locatedStock});
 
-  final List? locatedItems;
-  final Map? selectedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class AddNewLocateStockInputRowEvent extends LocateStockEvent {
-  const AddNewLocateStockInputRowEvent({required this.locatedItems});
+class CloudDataChangeEvent extends LocateStockEvent {
+  const CloudDataChangeEvent({this.locatedStock});
 
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class RemoveLocateStockInputRowEvent extends LocateStockEvent {
-  const RemoveLocateStockInputRowEvent({
+class AddNewInputRowEvent extends LocateStockEvent {
+  const AddNewInputRowEvent({required this.locatedStock});
+
+  final Map<String, dynamic>? locatedStock;
+}
+
+class RemoveInputRowEvent extends LocateStockEvent {
+  const RemoveInputRowEvent({
     required this.index,
-    required this.locatedItems,
+    required this.locatedStock,
   });
 
   final int? index;
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class SearchByFieldSelected extends LocateStockEvent {
-  const SearchByFieldSelected(
-      {required this.index,
-      required this.searchBy,
-      required this.locatedItems});
+class SearchByFieldFilled extends LocateStockEvent {
+  const SearchByFieldFilled({
+    required this.index,
+    required this.searchBy,
+    required this.locatedStock,
+  });
 
   final int? index;
   final String? searchBy;
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class IdSelected extends LocateStockEvent {
-  const IdSelected(
-      {required this.index, required this.ids, required this.locatedItems});
+class CustomSearchMenuSelected extends LocateStockEvent {}
+
+class IdsChosen extends LocateStockEvent {
+  const IdsChosen({
+    required this.index,
+    required this.chosenIds,
+    required this.locatedStock,
+  });
 
   final int? index;
-  final List? ids;
-  final List? locatedItems;
+  final List? chosenIds;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class ShowTableToggled extends LocateStockEvent {
-  const ShowTableToggled(
-      {required this.index,
-      required this.showTable,
-      required this.locatedItems});
+class SwitchTableView extends LocateStockEvent {
+  const SwitchTableView({
+    required this.index,
+    required this.showTable,
+    required this.locatedStock,
+  });
 
   final int? index;
   final bool? showTable;
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class ShowDetailsToggled extends LocateStockEvent {
-  const ShowDetailsToggled(
-      {required this.index,
-      required this.showDetails,
-      required this.locatedItems});
+class SwitchStockViewMode extends LocateStockEvent {
+  const SwitchStockViewMode({
+    required this.index,
+    required this.mode,
+    required this.locatedStock,
+  });
 
   final int? index;
-  final bool? showDetails;
-  final List? locatedItems;
+  final StockViewMode? mode;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class CheckBoxToggled extends LocateStockEvent {
-  const CheckBoxToggled({
+class IdCheckBoxToggled extends LocateStockEvent {
+  const IdCheckBoxToggled({
     required this.index,
     required this.id,
     required this.state,
-    required this.locatedItems,
+    required this.locatedStock,
   });
 
   final int? index;
   final String? id;
   final CheckBoxState? state;
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class AllCheckBoxToggled extends LocateStockEvent {
-  const AllCheckBoxToggled({
+class SelectAllCheckBoxToggled extends LocateStockEvent {
+  const SelectAllCheckBoxToggled({
     required this.index,
     required this.state,
-    required this.locatedItems,
+    required this.locatedStock,
   });
 
   final int? index;
   final CheckBoxState? state;
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
-class CustomSearchMenuSelected extends LocateStockEvent {}
-
 class PreviewMoveButtonPressed extends LocateStockEvent {
-  const PreviewMoveButtonPressed({required this.locatedItems});
+  const PreviewMoveButtonPressed({required this.locatedStock});
 
-  final List? locatedItems;
+  final Map<String, dynamic>? locatedStock;
 }
 
 class ContainerIdEntered extends LocateStockEvent {
   const ContainerIdEntered({
-    required this.locatedItems,
+    required this.locatedStock,
     required this.selectedItems,
   });
 
-  final List? locatedItems;
-  final Map? selectedItems;
+  final Map<String, dynamic>? locatedStock;
+  final Map<String, dynamic>? selectedItems;
 }
 
 class WarehouseLocationIdEntered extends LocateStockEvent {
   const WarehouseLocationIdEntered({
-    required this.locatedItems,
+    required this.locatedStock,
     required this.selectedItems,
   });
 
-  final List? locatedItems;
-  final Map? selectedItems;
+  final Map<String, dynamic>? locatedStock;
+  final Map<String, dynamic>? selectedItems;
 }
 
 class MoveItemsButtonPressed extends LocateStockEvent {
   const MoveItemsButtonPressed({
-    required this.locatedItems,
+    required this.locatedStock,
     required this.selectedItems,
   });
 
-  final List? locatedItems;
-  final Map? selectedItems;
+  final Map<String, dynamic>? locatedStock;
+  final Map<String, dynamic>? selectedItems;
 }
 
-class CloudDataChangeEvent extends LocateStockEvent {
-  const CloudDataChangeEvent({this.locatedItems, this.selectedItems});
 
-  final List? locatedItems;
-  final Map? selectedItems;
-}

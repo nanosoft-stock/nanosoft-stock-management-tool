@@ -23,19 +23,19 @@ import 'package:stock_management_tool/features/home/domain/usecases/sign_out_use
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/locate_stock/data/repositories/locate_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_locate_stock_input_row_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/all_checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_selected_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/locate_stock_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_locate_stock_input_row_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_selected_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/show_details_toggled_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/show_table_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_stock_view_mode_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/warehouse_location_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
@@ -121,24 +121,24 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<LocateStockRepository>(
       () => LocateStockRepositoryImplementation());
   sl.registerLazySingleton<InitialLocateStockUseCase>(
-      () => InitialLocateStockUseCase());
-  sl.registerLazySingleton<ListenToCloudDataChangeLocateStockUseCase>(
-      () => ListenToCloudDataChangeLocateStockUseCase(sl()));
-  sl.registerLazySingleton<AddNewLocateStockInputRowUseCase>(
-      () => AddNewLocateStockInputRowUseCase());
-  sl.registerLazySingleton<RemoveLocateStockInputRowUseCase>(
-      () => RemoveLocateStockInputRowUseCase());
-  sl.registerLazySingleton<SearchByFieldSelectedUseCase>(
-      () => SearchByFieldSelectedUseCase(sl()));
-  sl.registerLazySingleton<IdSelectedUseCase>(() => IdSelectedUseCase(sl()));
-  sl.registerLazySingleton<ShowTableToggledUseCase>(
-      () => ShowTableToggledUseCase());
-  sl.registerLazySingleton<ShowDetailsToggledUseCase>(
-      () => ShowDetailsToggledUseCase());
-  sl.registerLazySingleton<CheckBoxToggledUseCase>(
-      () => CheckBoxToggledUseCase());
-  sl.registerLazySingleton<AllCheckBoxToggledUseCase>(
-      () => AllCheckBoxToggledUseCase());
+      () => InitialLocateStockUseCase(sl()));
+  sl.registerLazySingleton<LocateStockCloudDataChangeUseCase>(
+      () => LocateStockCloudDataChangeUseCase(sl()));
+  sl.registerLazySingleton<AddNewInputRowUseCase>(
+      () => AddNewInputRowUseCase());
+  sl.registerLazySingleton<RemoveInputRowUseCase>(
+      () => RemoveInputRowUseCase());
+  sl.registerLazySingleton<SearchByFieldFilledUseCase>(
+      () => SearchByFieldFilledUseCase());
+  sl.registerLazySingleton<IdsChosenUseCase>(() => IdsChosenUseCase(sl()));
+  sl.registerLazySingleton<SwitchTableViewUseCase>(
+      () => SwitchTableViewUseCase());
+  sl.registerLazySingleton<SwitchStockViewModeUseCase>(
+      () => SwitchStockViewModeUseCase());
+  sl.registerLazySingleton<IdCheckBoxToggledUseCase>(
+      () => IdCheckBoxToggledUseCase(sl()));
+  sl.registerLazySingleton<SelectAllCheckBoxToggledUseCase>(
+      () => SelectAllCheckBoxToggledUseCase(sl()));
   sl.registerLazySingleton<GetSelectedItemsUseCase>(
       () => GetSelectedItemsUseCase(sl()));
   sl.registerLazySingleton<ContainerIDEnteredUseCase>(

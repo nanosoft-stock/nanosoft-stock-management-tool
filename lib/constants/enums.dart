@@ -9,3 +9,9 @@ enum Sort {
   desc,
   none,
 }
+
+enum StockViewMode {
+  item,
+  container,
+  warehouse,
+}

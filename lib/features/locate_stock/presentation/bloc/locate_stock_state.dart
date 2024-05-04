@@ -2,16 +2,16 @@ part of 'locate_stock_bloc.dart';
 
 abstract class LocateStockState extends Equatable {
   const LocateStockState({
-    this.locatedItems,
+    this.locatedStock,
     this.selectedItems,
   });
 
-  final List<Map<String, dynamic>>? locatedItems;
+  final Map<String, dynamic>? locatedStock;
   final Map<String, dynamic>? selectedItems;
 
   @override
   List<Object> get props => [
-        locatedItems!,
+        locatedStock!,
       ];
 }
 
@@ -20,7 +20,7 @@ abstract class LocateStockActionState extends LocateStockState {}
 class LoadingState extends LocateStockState {}
 
 class LoadedState extends LocateStockState {
-  const LoadedState({super.locatedItems, super.selectedItems});
+  const LoadedState({super.locatedStock, super.selectedItems});
 }
 
 class ReduceDuplicationActionState extends LocateStockActionState {}

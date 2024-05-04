@@ -12,11 +12,12 @@ import 'package:stock_management_tool/features/locate_stock/presentation/widgets
 class LocateStockInputRow extends StatelessWidget {
   LocateStockInputRow({
     super.key,
-    required this.query,
+    required this.rowData,
+    required this.allIds,
     required this.showRemoveButton,
     required this.removeOnTap,
     required this.onSearchBySelected,
-    required this.onIdSelected,
+    required this.onIdsChosen,
     required this.onShowTableToggled,
     required this.onShowDetailsToggled,
     required this.overlayPortalController,
@@ -31,13 +32,14 @@ class LocateStockInputRow extends StatelessWidget {
     "Custom Search",
   ];
 
-  final Map query;
+  final Map rowData;
+  final Map allIds;
   final bool showRemoveButton;
   final Function() removeOnTap;
   final Function(String) onSearchBySelected;
-  final Function(List) onIdSelected;
+  final Function(List) onIdsChosen;
   final Function(bool) onShowTableToggled;
-  final Function(bool) onShowDetailsToggled;
+  final Function(StockViewMode) onShowDetailsToggled;
   final Function(String, CheckBoxState) onCheckBoxToggled;
   final Function(CheckBoxState) onAllCheckBoxToggled;
 
@@ -87,7 +89,7 @@ class LocateStockInputRow extends StatelessWidget {
                         child: CustomDropdownInputField(
                           text: "Search By",
                           controller:
-                              TextEditingController(text: query["search_by"]),
+                              TextEditingController(text: rowData["search_by"]),
                           items: searchableIds,
                           onSelected: (value) {
                             if (searchableIds.contains(value) || value == "") {
@@ -102,7 +104,7 @@ class LocateStockInputRow extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: SizedBox(
                       width: 322.5,
-                      child: query["search_by"] != ""
+                      child: rowData["search_by"] != ""
                           ? CustomElevatedButton(
                               onPressed: () {
                                 overlayPortalController.toggle();
@@ -111,7 +113,7 @@ class LocateStockInputRow extends StatelessWidget {
                                 controller: overlayPortalController,
                                 overlayChildBuilder: overlayChildBuilder,
                                 child: Text(
-                                  "Select ${query["search_by"]}",
+                                  "Select ${rowData["search_by"]}s",
                                   textAlign: TextAlign.center,
                                   softWrap: false,
                                   style: kButtonTextStyle,
@@ -125,21 +127,24 @@ class LocateStockInputRow extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       width: 110,
-                      child: query["search_by"] != "Item Id" &&
-                              query["selected_ids_details"] != null &&
-                              query["selected_ids_details"].isNotEmpty
+                      child: rowData["items"] != null &&
+                              rowData["items"].isNotEmpty
                           ? SegmentedButton(
                               segments: const [
-                                ButtonSegment<bool>(
-                                  value: true,
+                                ButtonSegment<StockViewMode>(
+                                  value: StockViewMode.item,
                                   icon: Icon(Icons.grid_on_rounded),
                                 ),
-                                ButtonSegment<bool>(
-                                  value: false,
+                                ButtonSegment<StockViewMode>(
+                                  value: StockViewMode.container,
                                   icon: Icon(Icons.grid_off_rounded),
-                                )
+                                ),
+                                ButtonSegment<StockViewMode>(
+                                  value: StockViewMode.warehouse,
+                                  icon: Icon(Icons.grid_off_rounded),
+                                ),
                               ],
-                              selected: {query["show_details"]},
+                              selected: {rowData["view_mode"]},
                               selectedIcon: const SizedBox.shrink(),
                               style: ButtonStyle(
                                 shape:
@@ -160,14 +165,14 @@ class LocateStockInputRow extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       width: 43,
-                      child: query["selected_ids_details"] != null &&
-                              query["selected_ids_details"].isNotEmpty
+                      child: rowData["items"] != null &&
+                              rowData["items"].isNotEmpty
                           ? CustomIconButton(
                               onTap: () {
-                                onShowTableToggled(!query["show_table"]);
+                                onShowTableToggled(!rowData["show_table"]);
                               },
                               icon: Icon(
-                                query["show_table"]
+                                rowData["show_table"]
                                     ? Icons.keyboard_arrow_up_outlined
                                     : Icons.keyboard_arrow_down_outlined,
                                 size: 26,
@@ -178,9 +183,9 @@ class LocateStockInputRow extends StatelessWidget {
                   ),
                 ],
               ),
-              if (query["selected_ids_details"] != null &&
-                  query["selected_ids_details"].isNotEmpty &&
-                  query["show_table"])
+              if (rowData["items"] != null &&
+                  rowData["items"].isNotEmpty &&
+                  rowData["show_table"])
                 _buildQueryTable(constraints),
             ],
           ),
@@ -214,9 +219,9 @@ class LocateStockInputRow extends StatelessWidget {
                         padding: const EdgeInsets.all(15.0),
                         child: CustomMultipleSearchSelection(
                           multipleSearchController: multipleSearchController,
-                          title: "Select ${query["search_by"]}",
-                          initialPickedItems: query["selected_ids"] ?? [],
-                          items: query["all_ids"],
+                          title: "Select ${rowData["search_by"]}s",
+                          initialPickedItems: rowData["chosen_ids"] ?? [],
+                          items: allIds[rowData["search_by"]],
                         ),
                       ),
                     ),
@@ -226,7 +231,7 @@ class LocateStockInputRow extends StatelessWidget {
                     child: CustomElevatedButton(
                       onPressed: () {
                         overlayPortalController.hide();
-                        onIdSelected(multipleSearchController.getPickedItems());
+                        onIdsChosen(multipleSearchController.getPickedItems());
                       },
                       text: 'Done',
                     ),
@@ -241,12 +246,16 @@ class LocateStockInputRow extends StatelessWidget {
   }
 
   Widget _buildQueryTable(BoxConstraints constraints) {
+    List items = [];
+    StockViewMode viewMode = rowData["view_mode"];
+    if (viewMode == StockViewMode.item) items = rowData["items"];
+    if (viewMode == StockViewMode.container) items = rowData["containers"];
+    if (viewMode == StockViewMode.warehouse) items = rowData["warehouse_locations"];
+
     return CustomItemDetailsTableView(
-      items: !query["show_details"]
-          ? query["unique_ids_details"]
-          : query["selected_ids_details"],
-      searchBy: query["search_by"],
-      showDetails: query["show_details"],
+      items: items,
+      searchBy: rowData["search_by"],
+      viewMode: viewMode,
       constraints: constraints,
       onCheckBoxToggled: onCheckBoxToggled,
       onAllCheckBoxToggled: onAllCheckBoxToggled,

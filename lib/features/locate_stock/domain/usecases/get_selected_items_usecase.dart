@@ -16,32 +16,32 @@ class GetSelectedItemsUseCase extends UseCase {
     Set itemIds = {};
     List<Map<String, dynamic>> selectedItems = [];
 
-    for (var element in locatedItems) {
-      if (element["selected_ids_details"] != null) {
-        element["selected_ids_details"].forEach((ele) {
-          if (ele["is_selected"] == CheckBoxState.all &&
-              !itemIds.contains(ele["id"])) {
-            itemIds.add(ele["id"]);
-            selectedItems.add({
-              "id": ele["id"],
-              "container_id": ele["container_id"],
-              "warehouse_location_id": ele["warehouse_location_id"],
-            });
-          }
-        });
-      }
-    }
-
-    data["items"] = selectedItems;
-
-    if (selectedItems.isNotEmpty) {
-      data["container_ids"] =
-          await _locateStockRepository.getIds(searchBy: "Container Id");
-      data["warehouse_location_ids"] = await _locateStockRepository.getIds(
-          searchBy: "Warehouse Location Id");
-      data["container_text"] = "";
-      data["warehouse_location_text"] = "";
-    }
+    // for (var element in locatedItems) {
+    //   if (element["selected_ids_details"] != null) {
+    //     element["selected_ids_details"].forEach((ele) {
+    //       if (ele["is_selected"] == CheckBoxState.all &&
+    //           !itemIds.contains(ele["id"])) {
+    //         itemIds.add(ele["id"]);
+    //         selectedItems.add({
+    //           "id": ele["id"],
+    //           "container_id": ele["container_id"],
+    //           "warehouse_location_id": ele["warehouse_location_id"],
+    //         });
+    //       }
+    //     });
+    //   }
+    // }
+    //
+    // data["items"] = selectedItems;
+    //
+    // if (selectedItems.isNotEmpty) {
+    //   data["container_ids"] =
+    //       await _locateStockRepository.getIds(searchBy: "Container Id");
+    //   data["warehouse_location_ids"] = await _locateStockRepository.getIds(
+    //       searchBy: "Warehouse Location Id");
+    //   data["container_text"] = "";
+    //   data["warehouse_location_text"] = "";
+    // }
 
     return data;
   }

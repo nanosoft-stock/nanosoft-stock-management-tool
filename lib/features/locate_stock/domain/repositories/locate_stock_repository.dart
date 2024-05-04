@@ -1,17 +1,29 @@
-abstract class LocateStockRepository {
-  Future<List> getIds({required String searchBy});
+import 'package:stock_management_tool/constants/enums.dart';
 
-  Future<List> getIdSpecificData(
-      {required String searchBy, required List selectedIds});
+abstract class LocateStockRepository {
+  Map<String, dynamic> getAllIds();
+
+  Map<String, dynamic> getChosenIdsDetails({
+    required String searchBy,
+    required List chosenIds,
+    required List selectedItemIds,
+  });
+
+  CheckBoxState getCheckBoxState(
+      {required String key, required String id, required List items});
+
+  Map<String, dynamic> changeAllStockState({
+    required Map locatedStock,
+  });
 
   Future<List> getContainerIds({required String warehouseLocationId});
 
   Future<String> getWarehouseLocationId({required String containerId});
 
-  Future listenToCloudDataChange(
-      {required List locatedItems,
-      required Map selectedItems,
-      required Function(List, Map) onChange});
+  Future<void> listenToCloudDataChange({
+    required Map locatedStock,
+    required Function(Map) onChange,
+  });
 
-  Future moveItemsToPendingState({required Map selectedItems});
+  Future<void> moveItemsToPendingState({required Map selectedItems});
 }

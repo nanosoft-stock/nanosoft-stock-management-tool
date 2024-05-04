@@ -11,7 +11,7 @@ class CustomItemDetailsTableView extends StatelessWidget {
     super.key,
     required this.items,
     required this.searchBy,
-    this.showDetails = true,
+    required this.viewMode,
     required this.constraints,
     required this.onCheckBoxToggled,
     required this.onAllCheckBoxToggled,
@@ -19,7 +19,7 @@ class CustomItemDetailsTableView extends StatelessWidget {
 
   final List items;
   final String searchBy;
-  final bool showDetails;
+  final StockViewMode viewMode;
   final BoxConstraints constraints;
   final Function(String, CheckBoxState) onCheckBoxToggled;
   final Function(CheckBoxState) onAllCheckBoxToggled;
@@ -47,9 +47,11 @@ class CustomItemDetailsTableView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> columns =
-        searchBy == "Container Id" ? containerColumns : warehouseColumns;
-    columns = showDetails ? itemColumns : columns;
+    List<String> columns = [];
+
+    if (viewMode == StockViewMode.item) columns = itemColumns;
+    if (viewMode == StockViewMode.container) columns = containerColumns;
+    if (viewMode == StockViewMode.warehouse) columns = warehouseColumns;
 
     double pad = 15.0;
     if (constraints.maxWidth > 834) {
@@ -128,22 +130,20 @@ class CustomItemDetailsTableView extends StatelessWidget {
                             )
                           : CustomCheckbox(
                               locked: items.every((element) =>
-                                  element["is_selected"] == CheckBoxState.all),
+                                  element["state"] == CheckBoxState.all),
                               partial: items.any((element) =>
-                                      element["is_selected"] ==
-                                          CheckBoxState.all ||
-                                      element["is_selected"] ==
+                                      element["state"] == CheckBoxState.all ||
+                                      element["state"] ==
                                           CheckBoxState.partial) &&
                                   !items.every((element) =>
-                                      element["is_selected"] ==
-                                      CheckBoxState.all),
+                                      element["state"] == CheckBoxState.all),
                               onChecked: () {
                                 CheckBoxState state;
 
                                 if (items.every((element) => [
                                       CheckBoxState.empty,
                                       CheckBoxState.partial
-                                    ].contains(element["is_selected"]))) {
+                                    ].contains(element["state"]))) {
                                   state = CheckBoxState.all;
                                 } else {
                                   state = CheckBoxState.empty;
@@ -158,28 +158,23 @@ class CustomItemDetailsTableView extends StatelessWidget {
               } else {
                 Map item = (items[vicinity.row - 1]);
                 if (vicinity.column == 0) {
-                  bool locked = [CheckBoxState.all, CheckBoxState.partial]
-                      .contains(item["is_selected"]);
-                  bool partial = item["is_selected"] == CheckBoxState.partial;
-
                   return TableViewCell(
                     child: Center(
                       child: CustomCheckbox(
-                        locked: locked,
-                        partial: partial,
+                        locked: item["state"] != CheckBoxState.empty,
+                        partial: item["state"] == CheckBoxState.partial,
                         onChecked: () {
                           String id = "";
-                          if (showDetails == true) {
-                            id = item["id"];
-                          } else if (searchBy == "Container Id") {
+                          if (viewMode == StockViewMode.item) {
+                            id = item["item_id"];
+                          } else if (viewMode == StockViewMode.container) {
                             id = item["container_id"];
-                          } else if (searchBy == "Warehouse Location Id") {
+                          } else if (viewMode == StockViewMode.warehouse) {
                             id = item["warehouse_location_id"];
                           }
 
                           CheckBoxState state;
-                          if ([CheckBoxState.empty, CheckBoxState.partial]
-                              .contains(item["is_selected"])) {
+                          if (item["state"] != CheckBoxState.all) {
                             state = CheckBoxState.all;
                           } else {
                             state = CheckBoxState.empty;
@@ -194,18 +189,14 @@ class CustomItemDetailsTableView extends StatelessWidget {
 
                 String text = "";
                 if (vicinity.column == 1) {
-                  text = showDetails
-                      ? item["id"]
-                      : item["item_quantity"].toString();
+                  text = viewMode == StockViewMode.item
+                      ? item["item_id"]
+                      : item["item_quantity"];
                 }
                 if (vicinity.column == 2) {
-                  if (searchBy != "Warehouse Location Id") {
-                    text = item["container_id"];
-                  } else {
-                    text = showDetails
-                        ? item["container_id"]
-                        : item["container_quantity"].toString();
-                  }
+                  text = viewMode != StockViewMode.warehouse
+                      ? item["container_id"]
+                      : item["container_quantity"];
                 }
                 if (vicinity.column == 3) {
                   text = item["warehouse_location_id"];

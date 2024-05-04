@@ -11,324 +11,252 @@ import 'package:stock_management_tool/services/firestore.dart';
 class LocateStockRepositoryImplementation implements LocateStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
+  // final Map locatedStock = {
+  //   "all_ids": {
+  //     "Item Id": [],
+  //     "Container Id": [],
+  //     "Warehouse Location Id": [],
+  //   },
+  //   "selected_item_ids": [],
+  //   "rows": [
+  //     {
+  //       "search_by": "",
+  //       "show_table": "",
+  //       "view_mode": "",
+  //       "chosen_ids": [],
+  //       "items": [
+  //         {
+  //           "item_id": "",
+  //           "container_id": "",
+  //           "warehouse_location_id": "",
+  //           "state": "",
+  //         },
+  //       ],
+  //       "containers": [
+  //         {
+  //           "item_quantity": "",
+  //           "container_id": "",
+  //           "warehouse_location_id": "",
+  //           "state": "",
+  //         },
+  //       ],
+  //       "warehouse_locations": [
+  //         {
+  //           "item_quantity": "",
+  //           "container_quantity": "",
+  //           "warehouse_location_id": "",
+  //           "state": "",
+  //         },
+  //       ],
+  //     },
+  //   ]
+  // };
+
   @override
-  Future<List> getIds({required String searchBy}) async {
-    // List allLocations = await _fetchAllLocations();
-    //
-    // print(allLocations);
-
-    if (searchBy == "Warehouse Location Id") {
-      return _objectBox
-          .getWarehouseLocationIds()
-          .map((e) => e.toJson()["warehouse_location_id"])
-          .toList();
-      // return allLocations.firstWhere((element) =>
-      //     element.keys.contains("warehouse_locations"))["warehouse_locations"];
-    } else if (searchBy == "Container Id") {
-      return _objectBox
-          .getContainerIds()
-          .map((e) => e.toJson()["container_id"])
-          .toList();
-      // return allLocations.firstWhere(
-      //     (element) => element.keys.contains("containers"))["containers"];
-    } else if (searchBy == "Item Id") {
-      return _objectBox.getItemIds().map((e) => e.toJson()["item_id"]).toList();
-      // return allLocations
-      //     .firstWhere((element) => element.keys.contains("items"))["items"];
-    }
-
-    return [];
+  Future<void> listenToCloudDataChange(
+      {required Map locatedStock, required Function(Map) onChange}) async {
+    // _objectBox.getStockStream(triggerImmediately: true).listen((event) {
+    //   onChange([], {});
+    // });
+    _objectBox.getItemIdStream(triggerImmediately: false).listen((event) {
+      // locatedStock.forEach((element) async {
+      //   if (element["search_by"] == "Item Id") {
+      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
+      //   }
+      // });
+      //
+      // onChange(locatedItems);
+    });
+    _objectBox.getContainerIdStream(triggerImmediately: false).listen((event) {
+      // locatedStock.forEach((element) async {
+      //   if (element["search_by"] == "Container Id") {
+      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
+      //   }
+      // });
+      //
+      // onChange(locatedItems);
+    });
+    _objectBox
+        .getWarehouseLocationIdStream(triggerImmediately: false)
+        .listen((event) {
+      // locatedStock.forEach((element) async {
+      //   if (element["search_by"] == "Warehouse Location Id") {
+      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
+      //   }
+      // });
+      //
+      // onChange(locatedItems);
+    });
   }
 
   @override
-  Future<List> getIdSpecificData(
-      {required String searchBy, required List selectedIds}) async {
-    List selectedIdDetails = [];
+  Map<String, dynamic> getAllIds() {
+    Map<String, dynamic> data = {};
 
-    for (var id in selectedIds) {
-      List data = [];
+    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId).toList();
+    data["Container Id"] =
+        _objectBox.getContainerIds().map((e) => e.containerId).toList();
+    data["Warehouse Location Id"] = _objectBox
+        .getWarehouseLocationIds()
+        .map((e) => e.warehouseLocationId)
+        .toList();
 
-      if (searchBy == "Warehouse Location Id") {
-        data = await _fetchWarehouseLocationDetails(id: id);
+    return data;
+  }
+
+  @override
+  Map<String, dynamic> getChosenIdsDetails({
+    required String searchBy,
+    required List chosenIds,
+    required List selectedItemIds,
+  }) {
+    Map<String, dynamic> details = {};
+    details["items"] = [];
+
+    for (String id in chosenIds) {
+      List stocks = [];
+
+      if (searchBy == "Item Id") {
+        Query query = _objectBox.stockModelBox!
+            .query(StockObjectBoxModel_.itemId.equals(id))
+            .build();
+        stocks = query.find() as List<StockObjectBoxModel>;
+        query.close();
       } else if (searchBy == "Container Id") {
-        data = await _fetchContainerDetails(id: id);
-      } else if (searchBy == "Item Id") {
-        data = await _fetchItemDetails(id: id);
+        Query query = _objectBox.stockModelBox!
+            .query(StockObjectBoxModel_.containerId.equals(id))
+            .build();
+        stocks = query.find() as List<StockObjectBoxModel>;
+        query.close();
+      } else if (searchBy == "Warehouse Location Id") {
+        Query query = _objectBox.stockModelBox!
+            .query(StockObjectBoxModel_.warehouseLocation.equals(id))
+            .build();
+        stocks = query.find() as List<StockObjectBoxModel>;
+        query.close();
       }
 
-      if (data.isNotEmpty) {
-        for (var element in data) {
-          selectedIdDetails.add(element);
+      details["items"].addAll(stocks
+          .map((e) => {
+                "item_id": e.itemId,
+                "container_id": e.containerId,
+                "warehouse_location_id": e.warehouseLocation,
+                "state": selectedItemIds.contains(e.itemId)
+                    ? CheckBoxState.all
+                    : CheckBoxState.empty,
+              })
+          .toList());
+    }
+
+    List uniqueContainers =
+        details["items"].map((e) => e["container_id"]).toSet().toList();
+
+    details["containers"] = uniqueContainers
+        .map((e) => {
+              "item_quantity": details["items"]
+                  .where((element) => element["container_id"] == e)
+                  .length
+                  .toString(),
+              "container_id": e,
+              "warehouse_location_id": details["items"].firstWhere((element) =>
+                  element["container_id"] == e)["warehouse_location_id"],
+              "state": getCheckBoxState(
+                key: "container_id",
+                id: e,
+                items: details["items"],
+              ),
+            })
+        .toList();
+
+    List uniqueWarehouseLocations = details["items"]
+        .map((e) => e["warehouse_location_id"])
+        .toSet()
+        .toList();
+
+    details["warehouse_locations"] = uniqueWarehouseLocations
+        .map((e) => {
+              'item_quantity': details["items"]
+                  .where((element) => element["warehouse_location_id"] == e)
+                  .length
+                  .toString(),
+              "container_quantity": details["containers"]
+                  .where((element) => element["warehouse_location_id"] == e)
+                  .length
+                  .toString(),
+              "warehouse_location_id": e,
+              "state": getCheckBoxState(
+                key: "warehouse_location_id",
+                id: e,
+                items: details["items"],
+              ),
+            })
+        .toList();
+
+    return details;
+  }
+
+  @override
+  CheckBoxState getCheckBoxState(
+      {required String key, required String id, required List items}) {
+    CheckBoxState state = CheckBoxState.empty;
+    List affected = items.where((element) => element[key] == id).toList();
+
+    if (affected.every((element) => element["state"] == CheckBoxState.all)) {
+      state = CheckBoxState.all;
+    } else if (affected
+        .any((element) => element["state"] == CheckBoxState.all)) {
+      state = CheckBoxState.partial;
+    } else {
+      state = CheckBoxState.empty;
+    }
+
+    return state;
+  }
+
+  @override
+  Map<String, dynamic> changeAllStockState({
+    required Map locatedStock,
+  }) {
+    List selectedItemIds = locatedStock["selected_item_ids"];
+
+    for (int i = 0; i < locatedStock["rows"].length; i++) {
+      List items = locatedStock["rows"][i]["items"]
+          .map((element) => element["item_id"])
+          .toList();
+
+      if (selectedItemIds.any((element) => items.contains(element))) {
+        for (var element in selectedItemIds) {
+          for (var ele in locatedStock["rows"][i]["items"]) {
+            if (ele["item_id"] == element) {
+              ele["state"] = CheckBoxState.all;
+            } else if (!selectedItemIds.contains(ele["item_id"])) {
+              ele["state"] = CheckBoxState.empty;
+            }
+          }
         }
-      }
-    }
-
-    selectedIdDetails = selectedIdDetails.toSet().toList();
-
-    return selectedIdDetails;
-  }
-
-  // Future<List> _fetchAllLocations() async {
-  //   List allLocations = await sl
-  //       .get<Firestore>()
-  //       .getDocuments(path: "all_locations", includeDocRef: true);
-  //
-  //   allLocations = allLocations.map((element) {
-  //     Map map = {};
-  //
-  //     for (var key in element.keys) {
-  //       if (!kIsLinux) {
-  //         if (key == "docRef") {
-  //           map["docRef"] = element["docRef"];
-  //         } else {
-  //           map[key] = element[key];
-  //         }
-  //       } else {
-  //         if (key == "docRef") {
-  //           map["docRef"] = element["docRef"]["stringValue"];
-  //         } else {
-  //           map[key] = element[key]["arrayValue"]["values"]
-  //               .map((ele) => ele["stringValue"])
-  //               .toList();
-  //         }
-  //       }
-  //     }
-  //
-  //     return map;
-  //   }).toList();
-  //
-  //   return allLocations;
-  // }
-
-  Future<List> _fetchWarehouseLocationDetails({required String id}) async {
-    List dataList = [];
-
-    Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
-        .query(StockObjectBoxModel_.warehouseLocation.equals(id))
-        .build();
-
-    List<StockObjectBoxModel> list = query.find();
-
-    query.close();
-
-    if (list.isNotEmpty) {
-      for (var element in list) {
-        dataList.add({
-          "id": element.itemId,
-          "container_id": element.containerId,
-          "warehouse_location_id": element.warehouseLocation,
-          "item_quantity": list.length,
-          "container_quantity":
-              list.map((e) => e.containerId).toSet().toList().length,
-          "is_selected": CheckBoxState.empty,
+      } else {
+        locatedStock["rows"][i]["items"].forEach((ele) {
+          ele["state"] = CheckBoxState.empty;
         });
       }
-      dataList.sort((a, b) => a["id"].compareTo(b["id"]));
-    }
 
-    // // Cloud
-    // List list = await sl.get<Firestore>().filterQuery(
-    //   path: "",
-    //   query: {
-    //     "from": [
-    //       {
-    //         "collectionId": "stock_data",
-    //         "allDescendants": false,
-    //       }
-    //     ],
-    //     "where": {
-    //       "fieldFilter": {
-    //         "field": {
-    //           "fieldPath":
-    //               !kIsLinux ? "warehouse location" : "`warehouse location`",
-    //         },
-    //         "op": "EQUAL",
-    //         "value": {
-    //           "stringValue": id,
-    //         },
-    //       },
-    //     },
-    //   },
-    // );
-    //
-    // if (list.isNotEmpty && list.first.isNotEmpty) {
-    //   for (var e in list) {
-    //     if (!kIsLinux) {
-    //       dataList.add({
-    //         "id": e["item id"],
-    //         "container_id": e["container id"],
-    //         "warehouse_location_id": id,
-    //         "item_quantity": list.length,
-    //         "container_quantity": list
-    //             .map((element) => element["container id"])
-    //             .toSet()
-    //             .toList()
-    //             .length,
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     } else {
-    //       dataList.add({
-    //         "id": e["item id"]["stringValue"],
-    //         "container_id": e["container id"]["stringValue"],
-    //         "warehouse_location_id": id,
-    //         "item_quantity": list.length,
-    //         "container_quantity": list
-    //             .map((element) => element["container id"]["stringValue"])
-    //             .toSet()
-    //             .toList()
-    //             .length,
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     }
-    //   }
-    //
-    //   dataList.sort((a, b) => a["id"].compareTo(b["id"]));
-    // }
+      locatedStock["rows"][i]["containers"].forEach((element) {
+        element["state"] = getCheckBoxState(
+          key: "container_id",
+          id: element["container_id"],
+          items: locatedStock["rows"][i]["items"],
+        );
+      });
 
-    return dataList;
-  }
-
-  Future<List> _fetchContainerDetails({required String id}) async {
-    List dataList = [];
-
-    Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
-        .query(StockObjectBoxModel_.containerId.equals(id))
-        .build();
-
-    List<StockObjectBoxModel> list = query.find();
-
-    query.close();
-
-    if (list.isNotEmpty) {
-      for (var element in list) {
-        dataList.add({
-          "id": element.itemId,
-          "container_id": element.containerId,
-          "warehouse_location_id": element.warehouseLocation,
-          "item_quantity": list.length,
-          "is_selected": CheckBoxState.empty,
-        });
-      }
-      dataList.sort((a, b) => a["id"].compareTo(b["id"]));
-    }
-
-    // // Cloud
-    // List list = await sl.get<Firestore>().filterQuery(
-    //   path: "",
-    //   query: {
-    //     "from": [
-    //       {
-    //         "collectionId": "stock_data",
-    //         "allDescendants": false,
-    //       }
-    //     ],
-    //     "where": {
-    //       "fieldFilter": {
-    //         "field": {
-    //           "fieldPath": !kIsLinux ? "container id" : "`container id`",
-    //         },
-    //         "op": "EQUAL",
-    //         "value": {
-    //           "stringValue": id,
-    //         },
-    //       },
-    //     },
-    //   },
-    // );
-    //
-    // if (list.isNotEmpty && list.first.isNotEmpty) {
-    //   for (var e in list) {
-    //     if (!kIsLinux) {
-    //       dataList.add({
-    //         "id": e["item id"],
-    //         "container_id": id,
-    //         "warehouse_location_id": list.first["warehouse location"],
-    //         "item_quantity": list.length,
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     } else {
-    //       dataList.add({
-    //         "id": e["item id"]["stringValue"],
-    //         "container_id": id,
-    //         "warehouse_location_id": list.first["warehouse location"]
-    //             ["stringValue"],
-    //         "item_quantity": list.length,
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     }
-    //   }
-    //
-    //   dataList.sort((a, b) => a["id"].compareTo(b["id"]));
-    // }
-
-    return dataList;
-  }
-
-  Future<List> _fetchItemDetails({required String id}) async {
-    List dataList = [];
-
-    Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
-        .query(StockObjectBoxModel_.itemId.equals(id))
-        .build();
-
-    StockObjectBoxModel? stock = query.findFirst();
-
-    query.close();
-
-    if (stock != null) {
-      dataList.add({
-        "id": stock.itemId,
-        "container_id": stock.containerId,
-        "warehouse_location_id": stock.warehouseLocation,
-        "is_selected": CheckBoxState.empty,
+      locatedStock["rows"][i]["warehouse_locations"].forEach((element) {
+        element["state"] = getCheckBoxState(
+            key: "warehouse_location_id",
+            id: element["warehouse_location_id"],
+            items: locatedStock["rows"][i]["items"]);
       });
     }
 
-    // // Cloud
-    // List list = await sl.get<Firestore>().filterQuery(
-    //   path: "",
-    //   query: {
-    //     "from": [
-    //       {
-    //         "collectionId": "stock_data",
-    //         "allDescendants": false,
-    //       }
-    //     ],
-    //     "where": {
-    //       "fieldFilter": {
-    //         "field": {
-    //           "fieldPath": !kIsLinux ? "item id" : "`item id`",
-    //         },
-    //         "op": "EQUAL",
-    //         "value": {
-    //           "stringValue": id,
-    //         },
-    //       },
-    //     },
-    //   },
-    // );
-    //
-    // if (list.isNotEmpty && list.first.isNotEmpty) {
-    //   for (var e in list) {
-    //     if (!kIsLinux) {
-    //       dataList.add({
-    //         'id': id,
-    //         "container_id": e["container id"],
-    //         "warehouse_location_id": e["warehouse location"],
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     } else {
-    //       dataList.add({
-    //         'id': id,
-    //         "container_id": e["container id"]["stringValue"],
-    //         "warehouse_location_id": e["warehouse location"]["stringValue"],
-    //         "is_selected": CheckBoxState.empty,
-    //       });
-    //     }
-    //   }
-    // }
-
-    return dataList;
+    return locatedStock as Map<String, dynamic>;
   }
 
   @override
@@ -360,50 +288,11 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     query.close();
 
-    return stock!.warehouseLocation ?? "";
+    return stock?.warehouseLocation ?? "";
   }
 
   @override
-  Future listenToCloudDataChange(
-      {required List locatedItems,
-      required Map selectedItems,
-      required Function(List, Map) onChange}) async {
-    // _objectBox.getStockStream(triggerImmediately: true).listen((event) {
-    //   onChange([], {});
-    // });
-    _objectBox.getItemIdStream(triggerImmediately: false).listen((event) {
-      locatedItems.forEach((element) async {
-        if (element["search_by"] == "Item Id") {
-          element["all_ids"] = await getIds(searchBy: element["search_by"]);
-        }
-      });
-
-      onChange(locatedItems, selectedItems);
-    });
-    _objectBox.getContainerIdStream(triggerImmediately: false).listen((event) {
-      locatedItems.forEach((element) async {
-        if (element["search_by"] == "Container Id") {
-          element["all_ids"] = await getIds(searchBy: element["search_by"]);
-        }
-      });
-
-      onChange(locatedItems, selectedItems);
-    });
-    _objectBox
-        .getWarehouseLocationIdStream(triggerImmediately: false)
-        .listen((event) {
-      locatedItems.forEach((element) async {
-        if (element["search_by"] == "Warehouse Location Id") {
-          element["all_ids"] = await getIds(searchBy: element["search_by"]);
-        }
-      });
-
-      onChange(locatedItems, selectedItems);
-    });
-  }
-
-  @override
-  Future moveItemsToPendingState({required Map selectedItems}) async {
+  Future<void> moveItemsToPendingState({required Map selectedItems}) async {
     List items = selectedItems["items"].map((e) => e["id"]).toList();
 
     Map data = {
@@ -462,7 +351,6 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       uid: containers["uid"],
       updateField: "containers",
     );
-    // await sl.get<Firestore>().modifyDocument(path: "stock_data", docRef: , data: data)
   }
 
   Future<List> _fetchAllLocations() async {

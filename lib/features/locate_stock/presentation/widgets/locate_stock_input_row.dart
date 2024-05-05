@@ -7,7 +7,6 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_icon_button.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_item_details_table_view.dart';
-import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_multiple_search_selection.dart';
 
 class LocateStockInputRow extends StatelessWidget {
   LocateStockInputRow({
@@ -17,6 +16,7 @@ class LocateStockInputRow extends StatelessWidget {
     required this.showRemoveButton,
     required this.removeOnTap,
     required this.onSearchBySelected,
+    required this.onChooseIds,
     required this.onIdsChosen,
     required this.onShowTableToggled,
     required this.onShowDetailsToggled,
@@ -37,6 +37,7 @@ class LocateStockInputRow extends StatelessWidget {
   final bool showRemoveButton;
   final Function() removeOnTap;
   final Function(String) onSearchBySelected;
+  final Function() onChooseIds;
   final Function(List) onIdsChosen;
   final Function(bool) onShowTableToggled;
   final Function(StockViewMode) onShowDetailsToggled;
@@ -58,105 +59,61 @@ class LocateStockInputRow extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Wrap(
-                direction: Axis.horizontal,
-                runSpacing: 15,
-                alignment: WrapAlignment.end,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: showRemoveButton
-                            ? CustomIconButton(
-                                onTap: removeOnTap,
-                                icon: const Icon(
-                                  Icons.close_rounded,
-                                  size: 26,
-                                ),
-                              )
-                            : const SizedBox(
-                                width: 43,
-                                height: 43,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: CustomDropdownInputField(
-                          text: "Search By",
-                          controller:
-                              TextEditingController(text: rowData["search_by"]),
-                          items: searchableIds,
-                          onSelected: (value) {
-                            if (searchableIds.contains(value) || value == "") {
-                              onSearchBySelected(value);
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: showRemoveButton
+                        ? CustomIconButton(
+                            onTap: removeOnTap,
+                            icon: const Icon(
+                              Icons.close_rounded,
+                              size: 26,
+                            ),
+                          )
+                        : const SizedBox(
+                            width: 43,
+                            height: 43,
+                          ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: SizedBox(
-                      width: 322.5,
-                      child: rowData["search_by"] != ""
-                          ? CustomElevatedButton(
-                              onPressed: () {
-                                overlayPortalController.toggle();
-                              },
-                              child: OverlayPortal(
-                                controller: overlayPortalController,
-                                overlayChildBuilder: overlayChildBuilder,
-                                child: Text(
-                                  "Select ${rowData["search_by"]}s",
-                                  textAlign: TextAlign.center,
-                                  softWrap: false,
-                                  style: kButtonTextStyle,
-                                ),
-                              ),
-                            )
-                          : Container(),
+                    padding: const EdgeInsets.all(10.0),
+                    child: CustomDropdownInputField(
+                      text: "Search By",
+                      controller:
+                          TextEditingController(text: rowData["search_by"]),
+                      items: searchableIds,
+                      onSelected: (value) {
+                        if (searchableIds.contains(value) || value == "") {
+                          onSearchBySelected(value);
+                        }
+                      },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
-                      width: 110,
-                      child: rowData["items"] != null &&
-                              rowData["items"].isNotEmpty
-                          ? SegmentedButton(
-                              segments: const [
-                                ButtonSegment<StockViewMode>(
-                                  value: StockViewMode.item,
-                                  icon: Icon(Icons.grid_on_rounded),
-                                ),
-                                ButtonSegment<StockViewMode>(
-                                  value: StockViewMode.container,
-                                  icon: Icon(Icons.grid_off_rounded),
-                                ),
-                                ButtonSegment<StockViewMode>(
-                                  value: StockViewMode.warehouse,
-                                  icon: Icon(Icons.grid_off_rounded),
-                                ),
-                              ],
-                              selected: {rowData["view_mode"]},
-                              selectedIcon: const SizedBox.shrink(),
-                              style: ButtonStyle(
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: kBorderRadius,
-                                  ),
-                                ),
-                              ),
-                              onSelectionChanged: (value) {
-                                onShowDetailsToggled(value.first);
+                      width: 322.5,
+                      child: rowData["search_by"] != ""
+                          ? CustomElevatedButton(
+                              onPressed: () {
+                                onChooseIds();
+                                // overlayPortalController.toggle();
                               },
+                              child:
+                                  // OverlayPortal(
+                                  //   controller: overlayPortalController,
+                                  //   overlayChildBuilder: overlayChildBuilder,
+                                  //   child:
+                                  Text(
+                                "Select ${rowData["search_by"]}s",
+                                textAlign: TextAlign.center,
+                                softWrap: false,
+                                style: kButtonTextStyle,
+                              ),
+                              // ),
                             )
                           : Container(),
                     ),
@@ -186,6 +143,56 @@ class LocateStockInputRow extends StatelessWidget {
               if (rowData["items"] != null &&
                   rowData["items"].isNotEmpty &&
                   rowData["show_table"])
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SizedBox(
+                        width: 400,
+                        child: rowData["items"] != null &&
+                                rowData["items"].isNotEmpty
+                            ? SegmentedButton(
+                                segments: const [
+                                  ButtonSegment<StockViewMode>(
+                                    value: StockViewMode.item,
+                                    label: Text("Item"),
+                                    // icon: Icon(Icons.grid_on_rounded),
+                                  ),
+                                  ButtonSegment<StockViewMode>(
+                                    value: StockViewMode.container,
+                                    label: Text("Container"),
+                                    // icon: Icon(Icons.grid_off_rounded),
+                                  ),
+                                  ButtonSegment<StockViewMode>(
+                                    value: StockViewMode.warehouse,
+                                    label: Text("Warehouse"),
+                                    // icon: Icon(Icons.grid_off_rounded),
+                                  ),
+                                ],
+                                selected: {rowData["view_mode"]},
+                                selectedIcon: const SizedBox.shrink(),
+                                style: ButtonStyle(
+                                  shape:
+                                      MaterialStateProperty.all<OutlinedBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: kBorderRadius,
+                                    ),
+                                  ),
+                                ),
+                                onSelectionChanged: (value) {
+                                  onShowDetailsToggled(value.first);
+                                },
+                              )
+                            : Container(),
+                      ),
+                    ),
+                  ],
+                ),
+              if (rowData["items"] != null &&
+                  rowData["items"].isNotEmpty &&
+                  rowData["show_table"])
                 _buildQueryTable(constraints),
             ],
           ),
@@ -194,63 +201,64 @@ class LocateStockInputRow extends StatelessWidget {
     });
   }
 
-  Widget overlayChildBuilder(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(250.0 + 52.0, 90.0, 52.0, 40.0),
-        child: SizedBox(
-          width: 500,
-          child: CustomContainer(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kTertiaryBackgroundColor,
-                      borderRadius: kBorderRadius,
-                      boxShadow: kBoxShadowList,
-                    ),
-                    child: SizedBox(
-                      height: 420.0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: CustomMultipleSearchSelection(
-                          multipleSearchController: multipleSearchController,
-                          title: "Select ${rowData["search_by"]}s",
-                          initialPickedItems: rowData["chosen_ids"] ?? [],
-                          items: allIds[rowData["search_by"]],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        overlayPortalController.hide();
-                        onIdsChosen(multipleSearchController.getPickedItems());
-                      },
-                      text: 'Done',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget overlayChildBuilder(BuildContext context) {
+  //   return Center(
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(250.0 + 52.0, 90.0, 52.0, 40.0),
+  //       child: SizedBox(
+  //         width: 500,
+  //         child: CustomContainer(
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(20.0),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.end,
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 Container(
+  //                   decoration: BoxDecoration(
+  //                     color: kTertiaryBackgroundColor,
+  //                     borderRadius: kBorderRadius,
+  //                     boxShadow: kBoxShadowList,
+  //                   ),
+  //                   child: SizedBox(
+  //                     height: 420.0,
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.all(15.0),
+  //                       child: CustomMultipleSearchSelection(
+  //                         multipleSearchController: multipleSearchController,
+  //                         title: "Select ${rowData["search_by"]}s",
+  //                         initialPickedItems: rowData["chosen_ids"] ?? [],
+  //                         items: allIds[rowData["search_by"]],
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+  //                   child: CustomElevatedButton(
+  //                     onPressed: () {
+  //                       overlayPortalController.hide();
+  //                       onIdsChosen(multipleSearchController.getPickedItems());
+  //                     },
+  //                     text: 'Done',
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildQueryTable(BoxConstraints constraints) {
     List items = [];
     StockViewMode viewMode = rowData["view_mode"];
     if (viewMode == StockViewMode.item) items = rowData["items"];
     if (viewMode == StockViewMode.container) items = rowData["containers"];
-    if (viewMode == StockViewMode.warehouse) items = rowData["warehouse_locations"];
+    if (viewMode == StockViewMode.warehouse)
+      items = rowData["warehouse_locations"];
 
     return CustomItemDetailsTableView(
       items: items,

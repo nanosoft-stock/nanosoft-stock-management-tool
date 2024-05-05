@@ -1,6 +1,11 @@
 import 'package:stock_management_tool/constants/enums.dart';
 
 abstract class LocateStockRepository {
+  void listenToCloudDataChange({
+    required Map locatedStock,
+    required Function(Map) onChange,
+  });
+
   Map<String, dynamic> getAllIds();
 
   Map<String, dynamic> getChosenIdsDetails({
@@ -16,14 +21,13 @@ abstract class LocateStockRepository {
     required Map locatedStock,
   });
 
-  Future<List> getContainerIds({required String warehouseLocationId});
-
-  Future<String> getWarehouseLocationId({required String containerId});
-
-  Future<void> listenToCloudDataChange({
-    required Map locatedStock,
-    required Function(Map) onChange,
+  List<Map<String, dynamic>> getSelectedIdsDetails({
+    required List selectedItemIds,
   });
+
+  List getContainerIds({required String warehouseLocationId});
+
+  String getWarehouseLocationId({required String containerId});
 
   Future<void> moveItemsToPendingState({required Map selectedItems});
 }

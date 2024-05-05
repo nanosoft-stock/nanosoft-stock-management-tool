@@ -8,12 +8,13 @@ class ContainerIDEnteredUseCase extends UseCase {
 
   @override
   Future call({params}) async {
+    String containerId = params["text"];
     Map<String, dynamic> selectedItems = params["selected_items"];
 
-    String containerId = selectedItems["container_text"];
+    selectedItems["container_text"] = containerId;
 
     if (selectedItems["container_ids"].contains(containerId)) {
-      selectedItems["warehouse_location_text"] = await _locateStockRepository
+      selectedItems["warehouse_location_text"] = _locateStockRepository
           .getWarehouseLocationId(containerId: containerId);
     }
 

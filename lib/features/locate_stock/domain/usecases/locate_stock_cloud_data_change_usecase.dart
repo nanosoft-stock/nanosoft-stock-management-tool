@@ -8,7 +8,7 @@ class LocateStockCloudDataChangeUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    return await _locateStockRepository.listenToCloudDataChange(
+    return _locateStockRepository.listenToCloudDataChange(
       locatedStock: params["located_stock"],
       onChange: params["on_change"],
     );

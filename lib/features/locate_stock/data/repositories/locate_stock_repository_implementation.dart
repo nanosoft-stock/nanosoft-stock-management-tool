@@ -53,40 +53,97 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   // };
 
   @override
-  Future<void> listenToCloudDataChange(
-      {required Map locatedStock, required Function(Map) onChange}) async {
-    // _objectBox.getStockStream(triggerImmediately: true).listen((event) {
-    //   onChange([], {});
-    // });
-    _objectBox.getItemIdStream(triggerImmediately: false).listen((event) {
-      // locatedStock.forEach((element) async {
-      //   if (element["search_by"] == "Item Id") {
-      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
-      //   }
-      // });
-      //
-      // onChange(locatedItems);
+  void listenToCloudDataChange(
+      {required Map locatedStock, required Function(Map) onChange}) {
+    _objectBox.getItemIdStream(triggerImmediately: false).listen((snapshot) {
+      locatedStock["all_ids"]["Item id"] = snapshot;
+      onChange(locatedStock);
     });
-    _objectBox.getContainerIdStream(triggerImmediately: false).listen((event) {
-      // locatedStock.forEach((element) async {
-      //   if (element["search_by"] == "Container Id") {
-      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
-      //   }
-      // });
-      //
-      // onChange(locatedItems);
+    _objectBox
+        .getContainerIdStream(triggerImmediately: false)
+        .listen((snapshot) {
+      locatedStock["all_ids"]["Container id"] = snapshot;
+      onChange(locatedStock);
     });
     _objectBox
         .getWarehouseLocationIdStream(triggerImmediately: false)
-        .listen((event) {
-      // locatedStock.forEach((element) async {
-      //   if (element["search_by"] == "Warehouse Location Id") {
-      //     element["all_ids"] = await getIds(searchBy: element["search_by"]);
-      //   }
-      // });
-      //
-      // onChange(locatedItems);
+        .listen((snapshot) {
+      locatedStock["all_ids"]["Warehouse Location id"] = snapshot;
+      onChange(locatedStock);
     });
+
+    // if (!kIsLinux) {
+    //   sl
+    //       .get<Firestore>()
+    //       .listenToDocumentChanges(path: "stock_data")
+    //       .listen((snapshot) {
+    //     for (var element in snapshot.docChanges) {
+    //       if (element.type.name == "added") {
+    //         Map<String, dynamic> stock =
+    //             element.doc.data() as Map<String, dynamic>;
+    //
+    //         for (int i = 0; i < locatedStock["rows"].length; i++) {
+    //           Map rowData = locatedStock["rows"][i];
+    //
+    //           if (rowData["search_by"] == "Container Id" &&
+    //               rowData["chosen_ids"].contains(stock["container id"])) {
+    //             Map details = getChosenIdsDetails(
+    //                 searchBy: "Container Id",
+    //                 chosenIds: rowData["chosen_ids"],
+    //                 selectedItemIds: locatedStock["selected_items"]);
+    //             locatedStock["rows"][i]["items"] = details["items"];
+    //             locatedStock["rows"][i]["containers"] = details["containers"];
+    //             locatedStock["rows"][i]["warehouse_locations"] =
+    //                 details["warehouse_locations"];
+    //           } else if (rowData["search_by"] == "Warehouse Location Id" &&
+    //               rowData["chosen_ids"].contains(stock["warehouse location"])) {
+    //             Map details = getChosenIdsDetails(
+    //                 searchBy: "Warehouse Location Id",
+    //                 chosenIds: rowData["chosen_ids"],
+    //                 selectedItemIds: locatedStock["selected_items"]);
+    //             locatedStock["rows"][i]["items"] = details["items"];
+    //             locatedStock["rows"][i]["containers"] = details["containers"];
+    //             locatedStock["rows"][i]["warehouse_locations"] =
+    //                 details["warehouse_locations"];
+    //           }
+    //         }
+    //       } else if (element.type.name == "modified") {
+    //         Map<String, dynamic> stock =
+    //             element.doc.data() as Map<String, dynamic>;
+    //
+    //         for (int i = 0; i < locatedStock["rows"].length; i++) {
+    //           Map rowData = locatedStock["rows"][i];
+    //
+    //           if (rowData["search_by"] == "Item Id" &&
+    //               rowData["chosen_ids"].contains(stock["item id"])) {}
+    //         }
+    //       } else if (element.type.name == "removed") {
+    //         // Query query = _objectBox.stockModelBox!
+    //         //     .query(StockObjectBoxModel_.uid.equals(element.doc.id))
+    //         //     .build();
+    //         // StockObjectBoxModel stock = query.findFirst();
+    //         // query.close();
+    //         //
+    //         // _objectBox.removeStock(stock.id);
+    //       }
+    //     }
+    //   });
+    // } else {
+    _objectBox.getStockStream(triggerImmediately: false).listen((snapshot) {
+      locatedStock["rows"].forEach((element) {
+        Map details = getChosenIdsDetails(
+          searchBy: element["search_by"],
+          chosenIds: element["chosen_ids"],
+          selectedItemIds: locatedStock["selected_item_ids"],
+        );
+
+        element["items"] = details["items"];
+        element["containers"] = details["containers"];
+        element["warehouse_locations"] = details["warehouse_locations"];
+      });
+      onChange(locatedStock);
+    });
+    // }
   }
 
   @override
@@ -220,47 +277,70 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     List selectedItemIds = locatedStock["selected_item_ids"];
 
     for (int i = 0; i < locatedStock["rows"].length; i++) {
-      List items = locatedStock["rows"][i]["items"]
-          .map((element) => element["item_id"])
-          .toList();
+      if (locatedStock["rows"][i]["items"] != null &&
+          locatedStock["rows"][i]["items"].isNotEmpty) {
+        List items = locatedStock["rows"][i]["items"]
+            .map((element) => element["item_id"])
+            .toList();
 
-      if (selectedItemIds.any((element) => items.contains(element))) {
-        for (var element in selectedItemIds) {
-          for (var ele in locatedStock["rows"][i]["items"]) {
-            if (ele["item_id"] == element) {
-              ele["state"] = CheckBoxState.all;
-            } else if (!selectedItemIds.contains(ele["item_id"])) {
-              ele["state"] = CheckBoxState.empty;
+        if (selectedItemIds.any((element) => items.contains(element))) {
+          for (var element in selectedItemIds) {
+            for (var ele in locatedStock["rows"][i]["items"]) {
+              if (ele["item_id"] == element) {
+                ele["state"] = CheckBoxState.all;
+              } else if (!selectedItemIds.contains(ele["item_id"])) {
+                ele["state"] = CheckBoxState.empty;
+              }
             }
           }
+        } else {
+          locatedStock["rows"][i]["items"].forEach((ele) {
+            ele["state"] = CheckBoxState.empty;
+          });
         }
-      } else {
-        locatedStock["rows"][i]["items"].forEach((ele) {
-          ele["state"] = CheckBoxState.empty;
+
+        locatedStock["rows"][i]["containers"].forEach((element) {
+          element["state"] = getCheckBoxState(
+            key: "container_id",
+            id: element["container_id"],
+            items: locatedStock["rows"][i]["items"],
+          );
+        });
+
+        locatedStock["rows"][i]["warehouse_locations"].forEach((element) {
+          element["state"] = getCheckBoxState(
+              key: "warehouse_location_id",
+              id: element["warehouse_location_id"],
+              items: locatedStock["rows"][i]["items"]);
         });
       }
-
-      locatedStock["rows"][i]["containers"].forEach((element) {
-        element["state"] = getCheckBoxState(
-          key: "container_id",
-          id: element["container_id"],
-          items: locatedStock["rows"][i]["items"],
-        );
-      });
-
-      locatedStock["rows"][i]["warehouse_locations"].forEach((element) {
-        element["state"] = getCheckBoxState(
-            key: "warehouse_location_id",
-            id: element["warehouse_location_id"],
-            items: locatedStock["rows"][i]["items"]);
-      });
     }
 
     return locatedStock as Map<String, dynamic>;
   }
 
   @override
-  Future<List> getContainerIds({required String warehouseLocationId}) async {
+  List<Map<String, dynamic>> getSelectedIdsDetails(
+      {required List selectedItemIds}) {
+    List<Map<String, dynamic>> details = [];
+    for (var id in selectedItemIds) {
+      Query query = _objectBox.stockModelBox!
+          .query(StockObjectBoxModel_.itemId.equals(id))
+          .build();
+      StockObjectBoxModel stock = query.findFirst();
+      query.close();
+
+      details.add({
+        "item_id": id,
+        "container_id": stock.containerId,
+        "warehouse_location_id": stock.warehouseLocation,
+      });
+    }
+    return details;
+  }
+
+  @override
+  List getContainerIds({required String warehouseLocationId}) {
     Set dataSet = {};
     Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
         .query(
@@ -279,7 +359,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   @override
-  Future<String> getWarehouseLocationId({required String containerId}) async {
+  String getWarehouseLocationId({required String containerId}) {
     Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
         .query(StockObjectBoxModel_.containerId.equals(containerId))
         .build();
@@ -293,7 +373,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Future<void> moveItemsToPendingState({required Map selectedItems}) async {
-    List items = selectedItems["items"].map((e) => e["id"]).toList();
+    List items = selectedItems["items"].map((e) => e["item_id"]).toList();
 
     Map data = {
       "items": items,

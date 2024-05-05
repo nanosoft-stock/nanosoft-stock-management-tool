@@ -15,42 +15,45 @@ class CustomDropdownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu(
-      controller: controller,
-      width: 200,
-      menuHeight: 200,
-      textStyle: kLabelTextStyle,
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: kBorderRadius,
+    return Material(
+      borderRadius: kBorderRadius,
+      child: DropdownMenu(
+        controller: controller,
+        width: 200,
+        menuHeight: 200,
+        textStyle: kLabelTextStyle,
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: kBorderRadius,
+          ),
+          fillColor: kInputFieldFillColor,
         ),
-        fillColor: kInputFieldFillColor,
-      ),
-      dropdownMenuEntries: items
-          .map(
-            (e) => DropdownMenuEntry(
-              value: e,
-              label: e,
-              style: ButtonStyle(
-                textStyle: MaterialStateProperty.all<TextStyle>(
-                  kLabelTextStyle,
+        dropdownMenuEntries: items
+            .map(
+              (e) => DropdownMenuEntry(
+                value: e,
+                label: e,
+                style: ButtonStyle(
+                  textStyle: MaterialStateProperty.all<TextStyle>(
+                    kLabelTextStyle,
+                  ),
                 ),
               ),
-            ),
-          )
-          .toList(),
-      onSelected: (value) {
-        String text;
-        if (value == null) {
-          text = controller.text;
-        } else {
-          text = value;
-        }
-        controller.text = text;
-        onSelected(controller.text);
-      },
+            )
+            .toList(),
+        onSelected: (value) {
+          String text;
+          if (value == null) {
+            text = controller.text;
+          } else {
+            text = value;
+          }
+          controller.text = text;
+          onSelected(controller.text);
+        },
+      ),
     );
   }
 }

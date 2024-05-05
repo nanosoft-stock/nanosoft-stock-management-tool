@@ -49,6 +49,16 @@ class SearchByFieldFilled extends LocateStockEvent {
 
 class CustomSearchMenuSelected extends LocateStockEvent {}
 
+class ChooseIdsButtonPressed extends LocateStockEvent {
+  const ChooseIdsButtonPressed({
+    required this.index,
+    required this.locatedStock,
+  });
+
+  final int? index;
+  final Map<String, dynamic>? locatedStock;
+}
+
 class IdsChosen extends LocateStockEvent {
   const IdsChosen({
     required this.index,
@@ -119,20 +129,24 @@ class PreviewMoveButtonPressed extends LocateStockEvent {
 
 class ContainerIdEntered extends LocateStockEvent {
   const ContainerIdEntered({
+    required this.text,
     required this.locatedStock,
     required this.selectedItems,
   });
 
+  final String? text;
   final Map<String, dynamic>? locatedStock;
   final Map<String, dynamic>? selectedItems;
 }
 
 class WarehouseLocationIdEntered extends LocateStockEvent {
   const WarehouseLocationIdEntered({
+    required this.text,
     required this.locatedStock,
     required this.selectedItems,
   });
 
+  final String? text;
   final Map<String, dynamic>? locatedStock;
   final Map<String, dynamic>? selectedItems;
 }
@@ -146,5 +160,3 @@ class MoveItemsButtonPressed extends LocateStockEvent {
   final Map<String, dynamic>? locatedStock;
   final Map<String, dynamic>? selectedItems;
 }
-
-

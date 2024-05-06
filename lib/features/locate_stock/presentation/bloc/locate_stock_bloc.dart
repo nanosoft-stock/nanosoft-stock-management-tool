@@ -4,8 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
@@ -36,6 +40,10 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   final ContainerIDEnteredUseCase? _containerIDEnteredUseCase;
   final WarehouseLocationIDEnteredUseCase? _warehouseLocationIDEnteredUseCase;
   final MoveItemsButtonPressedUseCase? _moveItemsButtonPressedUseCase;
+  final GetAllPendingStateItemsUseCase? _getAllPendingStateItemsUseCase;
+  final CompletePendingMoveUseCase? _completePendingMoveUseCase;
+  final CancelPendingMoveUseCase? _cancelPendingMoveUseCase;
+  final GetAllCompletedStateItemsUseCase? _getAllCompletedStateItemsUseCase;
 
   LocateStockBloc(
     this._initialLocateStockUseCase,
@@ -52,6 +60,10 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     this._containerIDEnteredUseCase,
     this._warehouseLocationIDEnteredUseCase,
     this._moveItemsButtonPressedUseCase,
+    this._getAllPendingStateItemsUseCase,
+    this._completePendingMoveUseCase,
+    this._cancelPendingMoveUseCase,
+    this._getAllCompletedStateItemsUseCase,
   ) : super(LoadingState()) {
     on<LoadedEvent>(loadedEvent);
     on<CloudDataChangeEvent>(cloudDataChangeEvent);
@@ -68,6 +80,10 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<ContainerIdEntered>(containerIdEntered);
     on<WarehouseLocationIdEntered>(warehouseLocationIdEntered);
     on<MoveItemsButtonPressed>(moveItemsButtonPressed);
+    on<PendingMovesButtonPressed>(pendingMovesButtonPressed);
+    on<CompleteMoveButtonPressed>(completeMoveButtonPressed);
+    on<CancelMoveButtonPressed>(cancelMoveButtonPressed);
+    on<CompletedMovesButtonPressed>(completedMovesButtonPressed);
   }
 
   FutureOr<void> loadedEvent(
@@ -84,9 +100,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
     await _locateStockCloudDataChangeUseCase!(params: {
       "located_stock": locatedStock,
-      "on_change": (locatedStock) {
-        emit(ReduceDuplicationActionState());
-        add(LoadedEvent(locatedStock: locatedStock));
+      "on_change": (Map locatedStock) {
+        add(LoadedEvent(locatedStock: locatedStock.cast<String, dynamic>()));
       },
     });
     emit(ReduceDuplicationActionState());
@@ -141,6 +156,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       "chosen_ids": event.chosenIds,
       "located_stock": event.locatedStock,
     })));
+    event.removeOverlayEntry!();
   }
 
   FutureOr<void> switchTableView(
@@ -208,6 +224,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         "selected_items": event.selectedItems,
       }),
     ));
+    event.removeOverlayEntry!();
   }
 
   FutureOr<void> warehouseLocationIdEntered(
@@ -221,6 +238,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         "located_stock": event.locatedStock,
       }),
     ));
+    event.removeOverlayEntry!();
   }
 
   FutureOr<void> moveItemsButtonPressed(
@@ -230,6 +248,51 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         params: {"selected_items": event.selectedItems});
     emit(LoadedState(
       locatedStock: event.locatedStock,
+    ));
+    event.removeOverlayEntry!();
+  }
+
+  FutureOr<void> pendingMovesButtonPressed(
+      PendingMovesButtonPressed event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(PendingMoveActionState(
+      locatedStock: event.locatedStock,
+      pendingStateItems: await _getAllPendingStateItemsUseCase!(),
+    ));
+  }
+
+  FutureOr<void> completeMoveButtonPressed(
+      CompleteMoveButtonPressed event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(PendingMoveActionState(
+      locatedStock: event.locatedStock,
+      pendingStateItems: await _completePendingMoveUseCase!(params: {
+        "index": event.index,
+        "pending_state_items": event.pendingStateItems,
+      }),
+    ));
+    event.removeOverlayEntry!();
+  }
+
+  FutureOr<void> cancelMoveButtonPressed(
+      CancelMoveButtonPressed event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(PendingMoveActionState(
+      locatedStock: event.locatedStock,
+      pendingStateItems: await _cancelPendingMoveUseCase!(params: {
+        "index": event.index,
+        "pending_state_items": event.pendingStateItems,
+      }),
+    ));
+    event.removeOverlayEntry!();
+  }
+
+  FutureOr<void> completedMovesButtonPressed(
+      CompletedMovesButtonPressed event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(CompletedMovesActionState(
+      locatedStock: event.locatedStock,
+      completedStateItems: await _getAllCompletedStateItemsUseCase!(),
     ));
   }
 }

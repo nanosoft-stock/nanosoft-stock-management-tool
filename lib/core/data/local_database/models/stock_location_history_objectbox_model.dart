@@ -37,9 +37,9 @@ class StockLocationHistoryObjectBoxModel {
           ? json["date"].toDate()
           : DateTime.parse(json["date"]),
       items: json["items"].cast<String>(),
-      containerId: json["containerId"],
-      warehouseLocationId: json["warehouseLocationId"],
-      moveType: json["moveType"],
+      containerId: json["container_id"],
+      warehouseLocationId: json["warehouse_location_id"],
+      moveType: json["move_type"],
       state: json["state"],
       staff: json["staff"],
     );
@@ -50,9 +50,9 @@ class StockLocationHistoryObjectBoxModel {
       "uid": uid,
       "date": date,
       "items": items,
-      "containerId": containerId,
-      "warehouseLocationId": warehouseLocationId,
-      "moveType": moveType,
+      "container_id": containerId,
+      "warehouse_location_id": warehouseLocationId,
+      "move_type": moveType,
       "state": state,
       "staff": staff,
     };

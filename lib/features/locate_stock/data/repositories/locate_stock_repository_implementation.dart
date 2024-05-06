@@ -54,96 +54,51 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   void listenToCloudDataChange(
-      {required Map locatedStock, required Function(Map) onChange}) {
+      {required Map locatedStock, required void Function(Map) onChange}) {
     _objectBox.getItemIdStream(triggerImmediately: false).listen((snapshot) {
-      locatedStock["all_ids"]["Item id"] = snapshot;
+      if (snapshot.isNotEmpty) {
+        locatedStock["all_ids"]["Item Id"] =
+            snapshot.map((e) => e.itemId).toList();
+      }
       onChange(locatedStock);
     });
+
     _objectBox
         .getContainerIdStream(triggerImmediately: false)
         .listen((snapshot) {
-      locatedStock["all_ids"]["Container id"] = snapshot;
+      if (snapshot.isNotEmpty) {
+        locatedStock["all_ids"]["Container Id"] =
+            snapshot.map((e) => e.containerId).toList();
+      }
       onChange(locatedStock);
     });
+
     _objectBox
         .getWarehouseLocationIdStream(triggerImmediately: false)
         .listen((snapshot) {
-      locatedStock["all_ids"]["Warehouse Location id"] = snapshot;
+      if (snapshot.isNotEmpty) {
+        locatedStock["all_ids"]["Warehouse Location Id"] =
+            snapshot.map((e) => e.warehouseLocationId).toList();
+      }
       onChange(locatedStock);
     });
 
-    // if (!kIsLinux) {
-    //   sl
-    //       .get<Firestore>()
-    //       .listenToDocumentChanges(path: "stock_data")
-    //       .listen((snapshot) {
-    //     for (var element in snapshot.docChanges) {
-    //       if (element.type.name == "added") {
-    //         Map<String, dynamic> stock =
-    //             element.doc.data() as Map<String, dynamic>;
-    //
-    //         for (int i = 0; i < locatedStock["rows"].length; i++) {
-    //           Map rowData = locatedStock["rows"][i];
-    //
-    //           if (rowData["search_by"] == "Container Id" &&
-    //               rowData["chosen_ids"].contains(stock["container id"])) {
-    //             Map details = getChosenIdsDetails(
-    //                 searchBy: "Container Id",
-    //                 chosenIds: rowData["chosen_ids"],
-    //                 selectedItemIds: locatedStock["selected_items"]);
-    //             locatedStock["rows"][i]["items"] = details["items"];
-    //             locatedStock["rows"][i]["containers"] = details["containers"];
-    //             locatedStock["rows"][i]["warehouse_locations"] =
-    //                 details["warehouse_locations"];
-    //           } else if (rowData["search_by"] == "Warehouse Location Id" &&
-    //               rowData["chosen_ids"].contains(stock["warehouse location"])) {
-    //             Map details = getChosenIdsDetails(
-    //                 searchBy: "Warehouse Location Id",
-    //                 chosenIds: rowData["chosen_ids"],
-    //                 selectedItemIds: locatedStock["selected_items"]);
-    //             locatedStock["rows"][i]["items"] = details["items"];
-    //             locatedStock["rows"][i]["containers"] = details["containers"];
-    //             locatedStock["rows"][i]["warehouse_locations"] =
-    //                 details["warehouse_locations"];
-    //           }
-    //         }
-    //       } else if (element.type.name == "modified") {
-    //         Map<String, dynamic> stock =
-    //             element.doc.data() as Map<String, dynamic>;
-    //
-    //         for (int i = 0; i < locatedStock["rows"].length; i++) {
-    //           Map rowData = locatedStock["rows"][i];
-    //
-    //           if (rowData["search_by"] == "Item Id" &&
-    //               rowData["chosen_ids"].contains(stock["item id"])) {}
-    //         }
-    //       } else if (element.type.name == "removed") {
-    //         // Query query = _objectBox.stockModelBox!
-    //         //     .query(StockObjectBoxModel_.uid.equals(element.doc.id))
-    //         //     .build();
-    //         // StockObjectBoxModel stock = query.findFirst();
-    //         // query.close();
-    //         //
-    //         // _objectBox.removeStock(stock.id);
-    //       }
-    //     }
-    //   });
-    // } else {
     _objectBox.getStockStream(triggerImmediately: false).listen((snapshot) {
       locatedStock["rows"].forEach((element) {
-        Map details = getChosenIdsDetails(
-          searchBy: element["search_by"],
-          chosenIds: element["chosen_ids"],
-          selectedItemIds: locatedStock["selected_item_ids"],
-        );
+        if (element["chosen_ids"] != null && element["chosen_ids"].isNotEmpty) {
+          Map details = getChosenIdsDetails(
+            searchBy: element["search_by"],
+            chosenIds: element["chosen_ids"],
+            selectedItemIds: locatedStock["selected_item_ids"],
+          );
 
-        element["items"] = details["items"];
-        element["containers"] = details["containers"];
-        element["warehouse_locations"] = details["warehouse_locations"];
+          element["items"] = details["items"];
+          element["containers"] = details["containers"];
+          element["warehouse_locations"] = details["warehouse_locations"];
+        }
       });
       onChange(locatedStock);
     });
-    // }
   }
 
   @override
@@ -386,8 +341,49 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
           path: "stock_location_history",
           data: AddNewItemLocationHistoryHelper.toJson(data: data),
         );
+  }
 
-    for (var element in items) {
+  @override
+  List<Map<String, dynamic>> getAllPendingStateItems() {
+    List histories = [];
+
+    Query query = _objectBox.stockLocationHistoryModelBox!
+        .query(StockLocationHistoryObjectBoxModel_.state.equals("pending"))
+        .build();
+    histories = query.find();
+    query.close();
+
+    if (histories.isNotEmpty) {
+      histories = histories
+          .map((e) => e.toJson())
+          .toList()
+          .cast<Map<String, dynamic>>();
+      histories.sort((a, b) => b["date"].compareTo(a["date"]));
+    } else {
+      histories = histories.cast<Map<String, dynamic>>();
+    }
+
+    return histories as List<Map<String, dynamic>>;
+  }
+
+  @override
+  Future<void> changeMoveStateToComplete({required Map pendingItem}) async {
+    await sl.get<Firestore>().modifyDocument(
+          path: "stock_location_history",
+          uid: pendingItem["uid"],
+          updateMask: ["state"],
+          data: !kIsLinux
+              ? {
+                  "state": "completed",
+                }
+              : {
+                  "state": {
+                    "stringValue": "completed",
+                  },
+                },
+        );
+
+    for (var element in pendingItem["items"]) {
       Query query = _objectBox.stockModelBox!
           .query(StockObjectBoxModel_.itemId.equals(element))
           .build();
@@ -397,16 +393,15 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
           uid: stock.uid!,
           data: !kIsLinux
               ? {
-                  "container id": selectedItems["container_text"],
-                  "warehouse location":
-                      selectedItems["warehouse_location_text"],
+                  "container id": pendingItem["container_id"],
+                  "warehouse location": pendingItem["warehouse_location_id"],
                 }
               : {
                   "container id": {
-                    "stringValue": selectedItems["container_text"],
+                    "stringValue": pendingItem["container_id"],
                   },
                   "warehouse location": {
-                    "stringValue": selectedItems["warehouse_location_text"],
+                    "stringValue": pendingItem["warehouse_location_id"],
                   },
                 });
     }
@@ -420,17 +415,23 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     await _addNewLocations(
       locations: warehouseLocations["warehouse_locations"],
-      newValue: selectedItems["warehouse_location_text"],
+      newValue: pendingItem["warehouse_location_id"],
       uid: warehouseLocations["uid"],
       updateField: "warehouse_locations",
     );
 
     await _addNewLocations(
       locations: containers["containers"],
-      newValue: selectedItems["container_text"],
+      newValue: pendingItem["container_id"],
       uid: containers["uid"],
       updateField: "containers",
     );
+  }
+
+  @override
+  Future<void> clearPendingMove({required Map pendingItem}) async {
+    await sl.get<Firestore>().deleteDocument(
+        path: "stock_location_history", uid: pendingItem["uid"]);
   }
 
   Future<List> _fetchAllLocations() async {
@@ -465,13 +466,28 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     required String uid,
     required String updateField,
   }) async {
+    if (updateField == "containers") {
+      List stockedContainers = _objectBox.getStocks();
+      if (stockedContainers.isNotEmpty) {
+        stockedContainers =
+            stockedContainers.map((e) => e.containerId).toSet().toList();
+      }
+
+      if (stockedContainers.length == locations.length &&
+          stockedContainers.every((element) => locations.contains(element))) {
+        return;
+      } else {
+        locations = stockedContainers;
+        locations.remove(newValue);
+      }
+    }
+
     if (newValue != null &&
         newValue.toString().trim() != "" &&
         !locations.contains(newValue.toString().trim())) {
       locations.add(newValue.toString().trim().toUpperCase());
 
       locations = locations.toSet().toList();
-
       locations.sort((a, b) => a.toString().compareTo(b.toString()));
 
       await sl.get<Firestore>().modifyDocument(
@@ -492,6 +508,30 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
                   },
           );
     }
+  }
+
+  @override
+  List<Map<String, dynamic>> getAllCompletedStateItems() {
+    List histories = [];
+
+    Query query = _objectBox.stockLocationHistoryModelBox!
+        .query(StockLocationHistoryObjectBoxModel_.state.equals("completed"))
+        .build();
+    histories = query.find();
+    query.close();
+
+    if (histories.isNotEmpty) {
+      histories = histories
+          .map((e) => e.toJson())
+          .toList()
+          .cast<Map<String, dynamic>>();
+      histories.sort((a, b) => b["date"].compareTo(a["date"]));
+      histories = histories.sublist(0, 10);
+    } else {
+      histories = histories.cast<Map<String, dynamic>>();
+    }
+
+    return histories as List<Map<String, dynamic>>;
   }
 
 // Future<void> _addAllLocations() async {

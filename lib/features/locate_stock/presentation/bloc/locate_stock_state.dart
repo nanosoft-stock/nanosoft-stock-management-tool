@@ -2,14 +2,18 @@ part of 'locate_stock_bloc.dart';
 
 abstract class LocateStockState extends Equatable {
   const LocateStockState({
+    this.index,
     this.locatedStock,
     this.selectedItems,
-    this.index,
+    this.pendingStateItems,
+    this.completedStateItems,
   });
 
+  final int? index;
   final Map<String, dynamic>? locatedStock;
   final Map<String, dynamic>? selectedItems;
-  final int? index;
+  final List<Map<String, dynamic>>? pendingStateItems;
+  final List<Map<String, dynamic>>? completedStateItems;
 
   @override
   List<Object> get props => [
@@ -19,9 +23,11 @@ abstract class LocateStockState extends Equatable {
 
 abstract class LocateStockActionState extends LocateStockState {
   const LocateStockActionState({
+    super.index,
     super.locatedStock,
     super.selectedItems,
-    super.index,
+    super.pendingStateItems,
+    super.completedStateItems,
   });
 
   @override
@@ -33,7 +39,10 @@ abstract class LocateStockActionState extends LocateStockState {
 class LoadingState extends LocateStockState {}
 
 class LoadedState extends LocateStockState {
-  const LoadedState({super.locatedStock, super.selectedItems});
+  const LoadedState({
+    super.locatedStock,
+    super.selectedItems,
+  });
 }
 
 class MultipleSelectionOverlayActionState extends LocateStockActionState {
@@ -48,6 +57,20 @@ class PreviewMoveActionState extends LocateStockActionState {
   const PreviewMoveActionState({
     super.locatedStock,
     super.selectedItems,
+  });
+}
+
+class PendingMoveActionState extends LocateStockActionState {
+  const PendingMoveActionState({
+    super.locatedStock,
+    super.pendingStateItems,
+  });
+}
+
+class CompletedMovesActionState extends LocateStockActionState {
+  const CompletedMovesActionState({
+    super.locatedStock,
+    super.completedStateItems,
   });
 }
 

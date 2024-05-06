@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
@@ -76,148 +75,160 @@ class VisualiseStockView extends StatelessWidget {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
-          alignment: Alignment.topRight,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(52, 0, 52, 40),
+              padding: const EdgeInsets.fromLTRB(52, 5, 52, 0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CustomContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                CustomElevatedButton(
-                                  text: "Import Excel",
-                                  onPressed: () async {
-                                    _visualizeStockBloc
-                                        .add(ImportButtonClickedEvent());
-                                  },
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CustomContainer(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: kBorderRadius,
+                                  ),
                                 ),
-                                const SizedBox(
-                                  width: 20.0,
+                                onPressed: () {
+                                  _visualizeStockBloc
+                                      .add(ImportButtonClickedEvent());
+                                },
+                                child: const Text("Import Excel"),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: kBorderRadius,
+                                  ),
                                 ),
-                                CustomElevatedButton(
-                                  text: "Export Table",
-                                  onPressed: () {
-                                    _visualizeStockBloc
-                                        .add(ExportButtonClickedEvent());
-                                  },
-                                ),
-                              ],
-                            ),
+                                onPressed: () {
+                                  _visualizeStockBloc
+                                      .add(ExportButtonClickedEvent());
+                                },
+                                child: const Text("Export Table"),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: CustomContainer(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: kTertiaryBackgroundColor,
-                            borderRadius: kBorderRadius,
-                            boxShadow: kBoxShadowList,
-                            border: Border.all(width: 2),
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          child: GestureDetector(
-                            child: TableView(
-                              delegate: TableCellBuilderDelegate(
-                                columnCount: fields.length,
-                                rowCount: stocks.length + 1,
-                                columnBuilder: (int index) {
-                                  return const TableSpan(
-                                    backgroundDecoration: TableSpanDecoration(
-                                      border: TableSpanBorder(
-                                        leading: BorderSide(
-                                          color: Colors.black54,
-                                        ),
-                                        trailing: BorderSide(
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                    ),
-                                    extent: FixedTableSpanExtent(200),
-                                  );
-                                },
-                                rowBuilder: (int index) {
-                                  return const TableSpan(
-                                    backgroundDecoration: TableSpanDecoration(
-                                      border: TableSpanBorder(
-                                        leading: BorderSide(
-                                          color: Colors.black54,
-                                        ),
-                                        trailing: BorderSide(
-                                          color: Colors.black54,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CustomContainer(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kTertiaryBackgroundColor,
+                              borderRadius: kBorderRadius,
+                              boxShadow: kBoxShadowList,
+                              border: Border.all(width: 2),
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            child: GestureDetector(
+                              child: TableView(
+                                delegate: TableCellBuilderDelegate(
+                                  columnCount: fields.length,
+                                  rowCount: stocks.length + 1,
+                                  columnBuilder: (int index) {
+                                    return const TableSpan(
+                                      backgroundDecoration: TableSpanDecoration(
+                                        border: TableSpanBorder(
+                                          leading: BorderSide(
+                                            color: Colors.black54,
+                                          ),
+                                          trailing: BorderSide(
+                                            color: Colors.black54,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    extent: FixedTableSpanExtent(25),
-                                  );
-                                },
-                                cellBuilder: (BuildContext context,
-                                    TableVicinity vicinity) {
-                                  if (vicinity.row == 0) {
-                                    return TableViewCell(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            fields[vicinity.column]
-                                                .field
-                                                .toString()
-                                                .toTitleCase(),
-                                            style: GoogleFonts.lato(
-                                              textStyle: const TextStyle(
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.w700,
+                                      extent: FixedTableSpanExtent(200),
+                                    );
+                                  },
+                                  rowBuilder: (int index) {
+                                    return const TableSpan(
+                                      backgroundDecoration: TableSpanDecoration(
+                                        border: TableSpanBorder(
+                                          leading: BorderSide(
+                                            color: Colors.black54,
+                                          ),
+                                          trailing: BorderSide(
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                      extent: FixedTableSpanExtent(25),
+                                    );
+                                  },
+                                  cellBuilder: (BuildContext context,
+                                      TableVicinity vicinity) {
+                                    if (vicinity.row == 0) {
+                                      return TableViewCell(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              fields[vicinity.column]
+                                                  .field
+                                                  .toString()
+                                                  .toTitleCase(),
+                                              style: GoogleFonts.lato(
+                                                textStyle: const TextStyle(
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          CustomSortButton(
-                                            field: fields[vicinity.column]
-                                                .field
-                                                .toString(),
-                                            sort: fields[vicinity.column].sort,
-                                            onPressed: (field, sort) {
-                                              _visualizeStockBloc.add(
-                                                  SortFieldEvent(
-                                                      field: field,
-                                                      sort: sort));
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  } else {
-                                    String text = (stocks[vicinity.row - 1][
-                                                fields[vicinity.column]
-                                                    .field] ??
-                                            "")
-                                        .toString();
-                                    if (vicinity.column == 0) {
-                                      text = DateFormat('dd-MM-yyyy').format(
-                                          DateTime.parse(text.toUpperCase()));
-                                    }
-                                    return TableViewCell(
-                                      child: Center(
-                                        child: Text(
-                                          text,
-                                          style: GoogleFonts.lato(),
+                                            CustomSortButton(
+                                              field: fields[vicinity.column]
+                                                  .field
+                                                  .toString(),
+                                              sort:
+                                                  fields[vicinity.column].sort,
+                                              onPressed: (field, sort) {
+                                                _visualizeStockBloc.add(
+                                                    SortFieldEvent(
+                                                        field: field,
+                                                        sort: sort));
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    );
-                                  }
-                                },
+                                      );
+                                    } else {
+                                      String text = (stocks[vicinity.row - 1][
+                                                  fields[vicinity.column]
+                                                      .field] ??
+                                              "")
+                                          .toString();
+                                      if (vicinity.column == 0) {
+                                        text = DateFormat('dd-MM-yyyy').format(
+                                            DateTime.parse(text.toUpperCase()));
+                                      }
+                                      return TableViewCell(
+                                        child: Center(
+                                          child: Text(
+                                            text,
+                                            style: GoogleFonts.lato(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
                             ),
                           ),

@@ -16,7 +16,6 @@ class NavItemAndViewModel {
       navItem: NavItemModel(
         title: 'Add New Stock',
         icon: Icons.add_box_outlined,
-        isSelected: true,
       ),
       view: AddNewStockView(),
     ),
@@ -31,6 +30,7 @@ class NavItemAndViewModel {
       navItem: NavItemModel(
         title: 'Visualise Stock',
         icon: Icons.table_chart_outlined,
+        isSelected: true,
       ),
       view: VisualiseStockView(),
     ),

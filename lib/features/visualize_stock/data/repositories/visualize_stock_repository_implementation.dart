@@ -83,14 +83,19 @@ class VisualizeStockRepositoryImplementation
 
   @override
   Future<void> importFromExcel() async {
-    var filePath = (await FilePicker.platform.pickFiles(
+    var filePathResult = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx'],
       allowMultiple: false,
-    ))!
-        .files
-        .first
-        .path;
+    );
+
+    String? filePath;
+
+    if (filePathResult != null && filePathResult.files.isNotEmpty) {
+      filePath = filePathResult.files.first.path;
+    } else {
+      return;
+    }
 
     var bytes = File(filePath!).readAsBytesSync();
     Excel excel = Excel.decodeBytes(bytes);
@@ -103,15 +108,6 @@ class VisualizeStockRepositoryImplementation
         .firstWhere((element) => element.keys.contains("containers"));
     Map items =
         allLocations.firstWhere((element) => element.keys.contains("items"));
-
-    // warehouseLocations["warehouse_locations"] =
-    //     warehouseLocations["warehouse_locations"].toSet();
-    // containers["containers"] = containers["containers"].toSet();
-    // items["items"] = items["items"].toSet();
-    //
-    // print(warehouseLocations);
-    // print(containers);
-    // print(items);
 
     List header = [];
 
@@ -159,12 +155,6 @@ class VisualizeStockRepositoryImplementation
 
           rowData[header[i]] = value;
         }
-
-        // items["items"].add(rowData["item id"]);
-        // containers["containers"].add(rowData["container id"]);
-        // warehouseLocations["warehouse_locations"].add(rowData["warehouse location"]);
-
-        // print("${rowData}");
 
         await sl.get<Firestore>().createDocument(
               path: "stock_data",

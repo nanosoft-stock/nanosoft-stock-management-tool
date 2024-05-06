@@ -24,9 +24,12 @@ import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.
 import 'package:stock_management_tool/features/locate_stock/data/repositories/locate_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
@@ -34,6 +37,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/loca
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_stock_view_mode_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/warehouse_location_id_entered_usecase.dart';
@@ -147,8 +151,34 @@ Future<void> initializeDependencies() async {
       () => WarehouseLocationIDEnteredUseCase(sl()));
   sl.registerLazySingleton<MoveItemsButtonPressedUseCase>(
       () => MoveItemsButtonPressedUseCase(sl()));
-  sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(sl(), sl(), sl(),
-      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerLazySingleton<GetAllPendingStateItemsUseCase>(
+      () => GetAllPendingStateItemsUseCase(sl()));
+  sl.registerLazySingleton<GetAllCompletedStateItemsUseCase>(
+      () => GetAllCompletedStateItemsUseCase(sl()));
+  sl.registerLazySingleton<CompletePendingMoveUseCase>(
+      () => CompletePendingMoveUseCase(sl()));
+  sl.registerLazySingleton<CancelPendingMoveUseCase>(
+      () => CancelPendingMoveUseCase(sl()));
+  sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+      ));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

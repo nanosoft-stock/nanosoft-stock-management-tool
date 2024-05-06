@@ -5,6 +5,20 @@ import 'package:stock_management_tool/services/firestore_default.dart';
 import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 class Firestore {
+  Future<void> createDocument({required String path, required Map data}) async {
+    if (!kIsLinux) {
+      await sl.get<FirestoreDefault>().createDocument(
+            path: path,
+            data: data,
+          );
+    } else {
+      await sl.get<FirestoreRestApi>().createDocument(
+            path: path,
+            data: data,
+          );
+    }
+  }
+
   Future<List> getDocuments({
     required String path,
     bool includeUid = false,
@@ -31,20 +45,6 @@ class Firestore {
     // if (!kIsLinux) {
     return sl.get<FirestoreDefault>().listenToDocumentChanges(path: path);
     // }
-  }
-
-  Future<void> createDocument({required String path, required Map data}) async {
-    if (!kIsLinux) {
-      await sl.get<FirestoreDefault>().createDocument(
-            path: path,
-            data: data,
-          );
-    } else {
-      await sl.get<FirestoreRestApi>().createDocument(
-            path: path,
-            data: data,
-          );
-    }
   }
 
   Future<List> filterQuery({required String path, required Map query}) async {
@@ -81,6 +81,15 @@ class Firestore {
             updateMask: updateMask,
             data: data,
           );
+    }
+  }
+
+  Future<void> deleteDocument(
+      {required String path, required String uid}) async {
+    if (!kIsLinux) {
+      await sl.get<FirestoreDefault>().deleteDocument(path: path, uid: uid);
+    } else {
+      await sl.get<FirestoreRestApi>().deleteDocument(path: path, uid: uid);
     }
   }
 }

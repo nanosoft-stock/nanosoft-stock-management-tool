@@ -12,6 +12,31 @@ class FirestoreRestApi {
     projectId = DefaultFirebaseOptions.web.projectId;
   }
 
+  Future<DataState> createDocument(
+      {required String path, required Map data}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
+
+      Response response = await _dio.post(
+        url,
+        data: {
+          "fields": data,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+        var data = jsonData['fields'];
+
+        return DataSuccess(data);
+      }
+    } on Exception catch (error) {
+      return DataFailed(error);
+    }
+    return DataFailed(Exception("Unknown Exception"));
+  }
+
   Future<DataState> getDocuments({
     required String path,
     bool includeUid = false,
@@ -43,31 +68,6 @@ class FirestoreRestApi {
                 },
               ).toList()
             : [];
-
-        return DataSuccess(data);
-      }
-    } on Exception catch (error) {
-      return DataFailed(error);
-    }
-    return DataFailed(Exception("Unknown Exception"));
-  }
-
-  Future<DataState> createDocument(
-      {required String path, required Map data}) async {
-    try {
-      String url =
-          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path?key=$apiKey";
-
-      Response response = await _dio.post(
-        url,
-        data: {
-          "fields": data,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var jsonData = response.data;
-        var data = jsonData['fields'];
 
         return DataSuccess(data);
       }
@@ -164,6 +164,23 @@ class FirestoreRestApi {
         var data = jsonData['fields'];
 
         return DataSuccess(data);
+      }
+    } on Exception catch (error) {
+      return DataFailed(error);
+    }
+    return DataFailed(Exception("Unknown Exception"));
+  }
+
+  Future<DataState> deleteDocument(
+      {required String path, required String uid}) async {
+    try {
+      String url =
+          "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/$path/$uid?key=$apiKey";
+
+      Response response = await _dio.delete(url);
+
+      if (response.statusCode == 200) {
+        return const DataSuccess(true);
       }
     } on Exception catch (error) {
       return DataFailed(error);

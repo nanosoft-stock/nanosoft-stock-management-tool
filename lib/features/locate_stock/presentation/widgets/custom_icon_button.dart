@@ -5,10 +5,12 @@ class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     super.key,
     required this.icon,
+    this.backgroundColor = Colors.white,
     required this.onTap,
   });
 
   final Icon icon;
+  final Color backgroundColor;
   final Function() onTap;
 
   @override
@@ -27,7 +29,7 @@ class CustomIconButton extends StatelessWidget {
               width: 27.0,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: backgroundColor,
                 borderRadius: BorderRadius.circular(7),
                 boxShadow: kBoxShadowList,
               ),

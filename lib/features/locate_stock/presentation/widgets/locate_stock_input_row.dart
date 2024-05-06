@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:multiple_search_selection/multiple_search_selection.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/components/custom_dropdown_input_field.dart';
 import 'package:stock_management_tool/components/custom_elevated_button.dart';
@@ -9,18 +8,15 @@ import 'package:stock_management_tool/features/locate_stock/presentation/widgets
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_item_details_table_view.dart';
 
 class LocateStockInputRow extends StatelessWidget {
-  LocateStockInputRow({
+  const LocateStockInputRow({
     super.key,
     required this.rowData,
-    required this.allIds,
     required this.showRemoveButton,
     required this.removeOnTap,
     required this.onSearchBySelected,
     required this.onChooseIds,
-    required this.onIdsChosen,
     required this.onShowTableToggled,
     required this.onShowDetailsToggled,
-    required this.overlayPortalController,
     required this.onCheckBoxToggled,
     required this.onAllCheckBoxToggled,
   });
@@ -33,21 +29,14 @@ class LocateStockInputRow extends StatelessWidget {
   ];
 
   final Map rowData;
-  final Map allIds;
   final bool showRemoveButton;
   final Function() removeOnTap;
   final Function(String) onSearchBySelected;
   final Function() onChooseIds;
-  final Function(List) onIdsChosen;
   final Function(bool) onShowTableToggled;
   final Function(StockViewMode) onShowDetailsToggled;
   final Function(String, CheckBoxState) onCheckBoxToggled;
   final Function(CheckBoxState) onAllCheckBoxToggled;
-
-  final OverlayPortalController overlayPortalController;
-  final MultipleSearchController multipleSearchController =
-      MultipleSearchController();
-  final TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

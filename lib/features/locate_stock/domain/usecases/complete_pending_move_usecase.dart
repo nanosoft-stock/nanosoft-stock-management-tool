@@ -15,7 +15,9 @@ class CompletePendingMoveUseCase extends UseCase {
     await _locateStockRepository.changeMoveStateToComplete(
         pendingItem: pendingStateItems[index]);
 
-    pendingStateItems = _locateStockRepository.getAllPendingStateItems();
+    pendingStateItems =
+        _locateStockRepository.getAllPendingStateItems(pendingStateItems);
+    locatedStock["pending_state_items"] = pendingStateItems;
 
     return locatedStock;
   }

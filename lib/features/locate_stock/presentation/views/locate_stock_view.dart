@@ -268,6 +268,7 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("preview_move_overlay"))
               CustomPreviewMoveOverlay(
+                key: UniqueKey(),
                 selectedItems: locatedStock["selected_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(
@@ -294,11 +295,19 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("pending_moves_overlay"))
               CustomPendingMovesOverlay(
+                key: UniqueKey(),
                 pendingStateItems: locatedStock["pending_state_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(
                       layer: "pending_moves_overlay",
                       locatedStock: locatedStock));
+                },
+                onExpand: (index, value) {
+                  _locateStockBloc.add(ExpandPendingMovesItem(
+                    index: index,
+                    isExpanded: value,
+                    locatedStock: locatedStock,
+                  ));
                 },
                 onCompleted: (value) {
                   _locateStockBloc.add(CompleteMoveButtonPressed(
@@ -315,11 +324,19 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("completed_moves_overlay"))
               CustomCompletedMovesOverlay(
+                key: UniqueKey(),
                 completedStateItems: locatedStock["completed_state_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(
                       layer: "completed_moves_overlay",
                       locatedStock: locatedStock));
+                },
+                onExpand: (index, value) {
+                  _locateStockBloc.add(ExpandCompletedMovesItem(
+                    index: index,
+                    isExpanded: value,
+                    locatedStock: locatedStock,
+                  ));
                 },
               ),
           ],

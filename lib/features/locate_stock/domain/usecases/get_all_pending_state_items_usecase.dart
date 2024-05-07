@@ -11,7 +11,7 @@ class GetAllPendingStateItemsUseCase extends UseCase {
     Map<String, dynamic> locatedStock = params["located_stock"];
 
     locatedStock["pending_state_items"] =
-        _locateStockRepository.getAllPendingStateItems();
+        _locateStockRepository.getAllPendingStateItems([]);
 
     locatedStock["layers"].add("pending_moves_overlay");
 

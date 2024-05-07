@@ -29,6 +29,8 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/chec
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/choose_ids_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_completed_moves_item_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_pending_moves_item_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
@@ -160,13 +162,19 @@ Future<void> initializeDependencies() async {
       () => MoveItemsButtonPressedUseCase(sl()));
   sl.registerLazySingleton<GetAllPendingStateItemsUseCase>(
       () => GetAllPendingStateItemsUseCase(sl()));
-  sl.registerLazySingleton<GetAllCompletedStateItemsUseCase>(
-      () => GetAllCompletedStateItemsUseCase(sl()));
+  sl.registerLazySingleton<ExpandPendingMovesItemUseCase>(
+      () => ExpandPendingMovesItemUseCase());
   sl.registerLazySingleton<CompletePendingMoveUseCase>(
       () => CompletePendingMoveUseCase(sl()));
   sl.registerLazySingleton<CancelPendingMoveUseCase>(
       () => CancelPendingMoveUseCase(sl()));
+  sl.registerLazySingleton<GetAllCompletedStateItemsUseCase>(
+      () => GetAllCompletedStateItemsUseCase(sl()));
+  sl.registerLazySingleton<ExpandCompletedMovesItemUseCase>(
+      () => ExpandCompletedMovesItemUseCase());
   sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+        sl(),
+        sl(),
         sl(),
         sl(),
         sl(),

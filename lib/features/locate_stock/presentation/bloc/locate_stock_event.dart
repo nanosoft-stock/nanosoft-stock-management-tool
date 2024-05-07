@@ -185,6 +185,18 @@ class PendingMovesButtonPressed extends LocateStockEvent {
   final Map<String, dynamic>? locatedStock;
 }
 
+class ExpandPendingMovesItem extends LocateStockEvent {
+  const ExpandPendingMovesItem({
+    required this.index,
+    required this.isExpanded,
+    required this.locatedStock,
+  });
+
+  final int? index;
+  final bool? isExpanded;
+  final Map<String, dynamic>? locatedStock;
+}
+
 class CompleteMoveButtonPressed extends LocateStockEvent {
   const CompleteMoveButtonPressed({
     required this.index,
@@ -210,5 +222,17 @@ class CompletedMovesButtonPressed extends LocateStockEvent {
     required this.locatedStock,
   });
 
+  final Map<String, dynamic>? locatedStock;
+}
+
+class ExpandCompletedMovesItem extends LocateStockEvent {
+  const ExpandCompletedMovesItem({
+    required this.index,
+    required this.isExpanded,
+    required this.locatedStock,
+  });
+
+  final int? index;
+  final bool? isExpanded;
   final Map<String, dynamic>? locatedStock;
 }

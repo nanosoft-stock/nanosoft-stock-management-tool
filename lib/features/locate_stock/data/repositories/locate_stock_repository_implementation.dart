@@ -344,7 +344,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   @override
-  List<Map<String, dynamic>> getAllPendingStateItems() {
+  List<Map<String, dynamic>> getAllPendingStateItems(List pendingStateItems) {
     List histories = [];
 
     Query query = _objectBox.stockLocationHistoryModelBox!
@@ -355,7 +355,15 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     if (histories.isNotEmpty) {
       histories = histories
-          .map((e) => e.toJson())
+          .map((e) => {
+                ...e.toJson(),
+                "is_expanded": pendingStateItems.isNotEmpty
+                    ? (pendingStateItems.firstWhere(
+                            (element) => element["uid"] == e.uid,
+                            orElse: () => null)?["is_expanded"] ??
+                        false)
+                    : false,
+              }.cast<String, dynamic>())
           .toList()
           .cast<Map<String, dynamic>>();
       histories.sort((a, b) => b["date"].compareTo(a["date"]));
@@ -522,7 +530,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     if (histories.isNotEmpty) {
       histories = histories
-          .map((e) => e.toJson())
+          .map((e) =>
+              {...e.toJson(), "is_expanded": false}.cast<String, dynamic>())
           .toList()
           .cast<Map<String, dynamic>>();
       histories.sort((a, b) => b["date"].compareTo(a["date"]));

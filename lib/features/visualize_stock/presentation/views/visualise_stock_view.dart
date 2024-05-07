@@ -77,7 +77,7 @@ class VisualiseStockView extends StatelessWidget {
         return Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(52, 5, 52, 0),
+              padding: const EdgeInsets.fromLTRB(52, 5, 52, 40),
               child: Column(
                 children: [
                   Align(

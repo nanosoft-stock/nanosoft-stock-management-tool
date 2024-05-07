@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/constants/constants.dart';
@@ -11,12 +12,14 @@ class CustomPendingMovesOverlay extends StatelessWidget {
     super.key,
     required this.pendingStateItems,
     required this.hideOverlay,
+    required this.onExpand,
     required this.onCompleted,
     required this.onRemove,
   });
 
   final List pendingStateItems;
   final Function() hideOverlay;
+  final Function(int, bool) onExpand;
   final Function(int) onCompleted;
   final Function(int) onRemove;
 
@@ -69,112 +72,200 @@ class CustomPendingMovesOverlay extends StatelessWidget {
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: kTertiaryBackgroundColor,
-                                  borderRadius: kBorderRadius,
-                                  boxShadow: kBoxShadowList,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Date: ",
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                "Container Id: ",
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                "WH Id: ",
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                "Staff: ",
-                                                style: kLabelTextStyle,
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                DateFormat('dd/MM/yyyy HH:mm:ss')
-                                                    .format(DateTime.parse(
-                                                        pendingStateItems[index]
-                                                                ["date"]
-                                                            .toString()
-                                                            .toUpperCase())),
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                pendingStateItems[index]
-                                                        ["container_id"]
-                                                    .toString(),
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                pendingStateItems[index][
-                                                        "warehouse_location_id"]
-                                                    .toString(),
-                                                style: kLabelTextStyle,
-                                              ),
-                                              Text(
-                                                pendingStateItems[index]
-                                                        ["staff"]
-                                                    .toString()
-                                                    .toTitleCase(),
-                                                style: kLabelTextStyle,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          CustomIconButton(
-                                            backgroundColor:
-                                                kPassBackgroundColor,
-                                            icon: Icon(
-                                              Icons.check_rounded,
-                                              color: kPassForegroundColor,
+                            return GestureDetector(
+                              onTap: () {
+                                onExpand(index,
+                                    !pendingStateItems[index]["is_expanded"]);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: kTertiaryBackgroundColor,
+                                    borderRadius: kBorderRadius,
+                                    boxShadow: kBoxShadowList,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Date: ",
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      "Container Id: ",
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      "WH Id: ",
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      "Staff: ",
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      DateFormat(
+                                                              'dd/MM/yyyy HH:mm:ss')
+                                                          .format(DateTime.parse(
+                                                              pendingStateItems[
+                                                                          index]
+                                                                      ["date"]
+                                                                  .toString()
+                                                                  .toUpperCase())),
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      pendingStateItems[index]
+                                                              ["container_id"]
+                                                          .toString(),
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      pendingStateItems[index][
+                                                              "warehouse_location_id"]
+                                                          .toString(),
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                    Text(
+                                                      pendingStateItems[index]
+                                                              ["staff"]
+                                                          .toString()
+                                                          .toTitleCase(),
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                            onTap: () {
-                                              onCompleted(index);
-                                            },
-                                          ),
-                                          CustomIconButton(
-                                            backgroundColor:
-                                                kFailBackgroundColor,
-                                            icon: Icon(
-                                              Icons.close_rounded,
-                                              color: kFailForegroundColor,
+                                            Row(
+                                              children: [
+                                                CustomIconButton(
+                                                  backgroundColor:
+                                                      kPassBackgroundColor,
+                                                  icon: Icon(
+                                                    Icons.check_rounded,
+                                                    color: kPassForegroundColor,
+                                                  ),
+                                                  onTap: () {
+                                                    onCompleted(index);
+                                                  },
+                                                ),
+                                                CustomIconButton(
+                                                  backgroundColor:
+                                                      kFailBackgroundColor,
+                                                  icon: Icon(
+                                                    Icons.close_rounded,
+                                                    color: kFailForegroundColor,
+                                                  ),
+                                                  onTap: () {
+                                                    onRemove(index);
+                                                  },
+                                                ),
+                                              ],
                                             ),
-                                            onTap: () {
-                                              onRemove(index);
-                                            },
+                                          ],
+                                        ),
+                                        if (pendingStateItems[index]
+                                            ["is_expanded"])
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    height: 100,
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          kTertiaryBackgroundColor,
+                                                      borderRadius:
+                                                          kBorderRadius,
+                                                      boxShadow: kBoxShadowList,
+                                                    ),
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Wrap(
+                                                        children:
+                                                            pendingStateItems[
+                                                                        index]
+                                                                    ["items"]
+                                                                .map(
+                                                                  (e) =>
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            5.0),
+                                                                    child:
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color:
+                                                                            kSecondaryBackgroundColor,
+                                                                        borderRadius:
+                                                                            kBorderRadius,
+                                                                        boxShadow:
+                                                                            kBoxShadowList,
+                                                                      ),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            5.0),
+                                                                        child:
+                                                                            Text(
+                                                                          e,
+                                                                          style:
+                                                                              GoogleFonts.lato(
+                                                                            textStyle:
+                                                                                const TextStyle(
+                                                                              fontSize: 15.0,
+                                                                              fontWeight: FontWeight.w700,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                                .toList()
+                                                                .cast<Widget>(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

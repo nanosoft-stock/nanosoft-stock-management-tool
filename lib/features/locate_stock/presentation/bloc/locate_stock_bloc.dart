@@ -9,6 +9,8 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/chec
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/choose_ids_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_completed_moves_item_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_pending_moves_item_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
@@ -47,9 +49,11 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   final WarehouseLocationIDEnteredUseCase? _warehouseLocationIDEnteredUseCase;
   final MoveItemsButtonPressedUseCase? _moveItemsButtonPressedUseCase;
   final GetAllPendingStateItemsUseCase? _getAllPendingStateItemsUseCase;
+  final ExpandPendingMovesItemUseCase? _expandPendingMovesItemUseCase;
   final CompletePendingMoveUseCase? _completePendingMoveUseCase;
   final CancelPendingMoveUseCase? _cancelPendingMoveUseCase;
   final GetAllCompletedStateItemsUseCase? _getAllCompletedStateItemsUseCase;
+  final ExpandCompletedMovesItemUseCase? _expandCompletedMovesItemUseCase;
 
   LocateStockBloc(
     this._initialLocateStockUseCase,
@@ -70,9 +74,11 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     this._warehouseLocationIDEnteredUseCase,
     this._moveItemsButtonPressedUseCase,
     this._getAllPendingStateItemsUseCase,
+    this._expandPendingMovesItemUseCase,
     this._completePendingMoveUseCase,
     this._cancelPendingMoveUseCase,
     this._getAllCompletedStateItemsUseCase,
+    this._expandCompletedMovesItemUseCase,
   ) : super(LoadingState()) {
     on<LoadedEvent>(loadedEvent);
     on<CloudDataChangeEvent>(cloudDataChangeEvent);
@@ -92,9 +98,11 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<WarehouseLocationIdEntered>(warehouseLocationIdEntered);
     on<MoveItemsButtonPressed>(moveItemsButtonPressed);
     on<PendingMovesButtonPressed>(pendingMovesButtonPressed);
+    on<ExpandPendingMovesItem>(expandPendingMovesItem);
     on<CompleteMoveButtonPressed>(completeMoveButtonPressed);
     on<CancelMoveButtonPressed>(cancelMoveButtonPressed);
     on<CompletedMovesButtonPressed>(completedMovesButtonPressed);
+    on<ExpandCompletedMovesItem>(expandCompletedMovesItem);
   }
 
   FutureOr<void> loadedEvent(
@@ -286,13 +294,25 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     ));
   }
 
+  FutureOr<void> expandPendingMovesItem(
+      ExpandPendingMovesItem event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+        locatedStock: await _expandPendingMovesItemUseCase!(params: {
+      "index": event.index,
+      "is_expanded": event.isExpanded,
+      "located_stock": event.locatedStock
+    })));
+  }
+
   FutureOr<void> completeMoveButtonPressed(
       CompleteMoveButtonPressed event, Emitter<LocateStockState> emit) async {
     emit(ReduceDuplicationActionState());
     emit(LoadedState(
-      locatedStock: await _completePendingMoveUseCase!(
-          params: {"index": event.index, "located_stock": event.locatedStock}),
-    ));
+        locatedStock: await _completePendingMoveUseCase!(params: {
+      "index": event.index,
+      "located_stock": event.locatedStock
+    })));
   }
 
   FutureOr<void> cancelMoveButtonPressed(
@@ -311,6 +331,17 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _getAllCompletedStateItemsUseCase!(params: {
       "located_stock": event.locatedStock,
+    })));
+  }
+
+  FutureOr<void> expandCompletedMovesItem(
+      ExpandCompletedMovesItem event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+        locatedStock: await _expandCompletedMovesItemUseCase!(params: {
+      "index": event.index,
+      "is_expanded": event.isExpanded,
+      "located_stock": event.locatedStock
     })));
   }
 }

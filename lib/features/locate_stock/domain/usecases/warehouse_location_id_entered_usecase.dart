@@ -9,8 +9,8 @@ class WarehouseLocationIDEnteredUseCase extends UseCase {
   @override
   Future call({params}) async {
     String warehouseLocationId = params["text"];
-    Map<String, dynamic> selectedItems = params["selected_items"];
     Map<String, dynamic> locatedStock = params["located_stock"];
+    Map<String, dynamic> selectedItems = locatedStock["selected_items"];
 
     selectedItems["warehouse_location_text"] = warehouseLocationId;
 
@@ -27,6 +27,6 @@ class WarehouseLocationIDEnteredUseCase extends UseCase {
       selectedItems["container_ids"] = locatedStock["all_ids"]["Container Id"];
     }
 
-    return selectedItems;
+    return locatedStock;
   }
 }

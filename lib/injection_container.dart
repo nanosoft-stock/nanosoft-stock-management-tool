@@ -26,11 +26,14 @@ import 'package:stock_management_tool/features/locate_stock/domain/repositories/
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/choose_ids_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/hide_overlay_layer_event.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/locate_stock_cloud_data_change_usecase.dart';
@@ -132,8 +135,12 @@ Future<void> initializeDependencies() async {
       () => AddNewInputRowUseCase());
   sl.registerLazySingleton<RemoveInputRowUseCase>(
       () => RemoveInputRowUseCase());
+  sl.registerLazySingleton<HideOverlayLayerUseCase>(
+      () => HideOverlayLayerUseCase());
   sl.registerLazySingleton<SearchByFieldFilledUseCase>(
       () => SearchByFieldFilledUseCase());
+  sl.registerLazySingleton<ChooseIdsUseCase>(() => ChooseIdsUseCase());
+  sl.registerLazySingleton<IdEnteredUseCase>(() => IdEnteredUseCase());
   sl.registerLazySingleton<IdsChosenUseCase>(() => IdsChosenUseCase(sl()));
   sl.registerLazySingleton<SwitchTableViewUseCase>(
       () => SwitchTableViewUseCase());
@@ -160,6 +167,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<CancelPendingMoveUseCase>(
       () => CancelPendingMoveUseCase(sl()));
   sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+        sl(),
+        sl(),
+        sl(),
         sl(),
         sl(),
         sl(),

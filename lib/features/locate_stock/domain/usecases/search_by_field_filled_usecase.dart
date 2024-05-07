@@ -23,10 +23,10 @@ class SearchByFieldFilledUseCase extends UseCase {
     }
 
     locatedStock["rows"][index]["view_mode"] = mode;
-
-    if (locatedStock["rows"][index]["chosen_ids"] != null) {
+    if (locatedStock["rows"][index]["chosen_ids"] == null) {
       locatedStock["rows"][index]["chosen_ids"] = [];
     }
+    locatedStock["layers"].add("multiple_search_selection_overlay");
 
     return locatedStock;
   }

@@ -8,8 +8,13 @@ class GetAllPendingStateItemsUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    List pendingStateItems = _locateStockRepository.getAllPendingStateItems();
+    Map<String, dynamic> locatedStock = params["located_stock"];
 
-    return pendingStateItems;
+    locatedStock["pending_state_items"] =
+        _locateStockRepository.getAllPendingStateItems();
+
+    locatedStock["layers"].add("pending_moves_overlay");
+
+    return locatedStock;
   }
 }

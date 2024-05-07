@@ -1,14 +1,14 @@
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 
-class RemoveInputRowUseCase extends UseCase {
-  RemoveInputRowUseCase();
+class HideOverlayLayerUseCase extends UseCase {
+  HideOverlayLayerUseCase();
 
   @override
   Future call({params}) async {
-    int index = params["index"];
+    String layer = params["layer"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    locatedStock["rows"].removeAt(index);
+    locatedStock["layers"].remove(layer);
 
     return locatedStock;
   }

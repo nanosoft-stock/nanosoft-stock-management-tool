@@ -89,20 +89,13 @@ class LocateStockInputRow extends StatelessWidget {
                           ? CustomElevatedButton(
                               onPressed: () {
                                 onChooseIds();
-                                // overlayPortalController.toggle();
                               },
-                              child:
-                                  // OverlayPortal(
-                                  //   controller: overlayPortalController,
-                                  //   overlayChildBuilder: overlayChildBuilder,
-                                  //   child:
-                                  Text(
+                              child: Text(
                                 "Select ${rowData["search_by"]}s",
                                 textAlign: TextAlign.center,
                                 softWrap: false,
                                 style: kButtonTextStyle,
                               ),
-                              // ),
                             )
                           : Container(),
                     ),
@@ -147,17 +140,14 @@ class LocateStockInputRow extends StatelessWidget {
                                   ButtonSegment<StockViewMode>(
                                     value: StockViewMode.item,
                                     label: Text("Item"),
-                                    // icon: Icon(Icons.grid_on_rounded),
                                   ),
                                   ButtonSegment<StockViewMode>(
                                     value: StockViewMode.container,
                                     label: Text("Container"),
-                                    // icon: Icon(Icons.grid_off_rounded),
                                   ),
                                   ButtonSegment<StockViewMode>(
                                     value: StockViewMode.warehouse,
                                     label: Text("Warehouse"),
-                                    // icon: Icon(Icons.grid_off_rounded),
                                   ),
                                 ],
                                 selected: {rowData["view_mode"]},
@@ -190,64 +180,15 @@ class LocateStockInputRow extends StatelessWidget {
     });
   }
 
-  // Widget overlayChildBuilder(BuildContext context) {
-  //   return Center(
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(250.0 + 52.0, 90.0, 52.0, 40.0),
-  //       child: SizedBox(
-  //         width: 500,
-  //         child: CustomContainer(
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(20.0),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.end,
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Container(
-  //                   decoration: BoxDecoration(
-  //                     color: kTertiaryBackgroundColor,
-  //                     borderRadius: kBorderRadius,
-  //                     boxShadow: kBoxShadowList,
-  //                   ),
-  //                   child: SizedBox(
-  //                     height: 420.0,
-  //                     child: Padding(
-  //                       padding: const EdgeInsets.all(15.0),
-  //                       child: CustomMultipleSearchSelection(
-  //                         multipleSearchController: multipleSearchController,
-  //                         title: "Select ${rowData["search_by"]}s",
-  //                         initialPickedItems: rowData["chosen_ids"] ?? [],
-  //                         items: allIds[rowData["search_by"]],
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 Padding(
-  //                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-  //                   child: CustomElevatedButton(
-  //                     onPressed: () {
-  //                       overlayPortalController.hide();
-  //                       onIdsChosen(multipleSearchController.getPickedItems());
-  //                     },
-  //                     text: 'Done',
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildQueryTable(BoxConstraints constraints) {
     List items = [];
+
     StockViewMode viewMode = rowData["view_mode"];
     if (viewMode == StockViewMode.item) items = rowData["items"];
     if (viewMode == StockViewMode.container) items = rowData["containers"];
-    if (viewMode == StockViewMode.warehouse)
+    if (viewMode == StockViewMode.warehouse) {
       items = rowData["warehouse_locations"];
+    }
 
     return CustomItemDetailsTableView(
       items: items,

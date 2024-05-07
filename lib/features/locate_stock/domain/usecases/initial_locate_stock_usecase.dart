@@ -11,6 +11,7 @@ class InitialLocateStockUseCase extends UseCase {
     Map<String, dynamic> locatedStock = {};
 
     locatedStock["all_ids"] = _locateStockRepository.getAllIds();
+    locatedStock["layers"] = {"base"};
     locatedStock["selected_item_ids"] = [];
     locatedStock["rows"] = [
       {

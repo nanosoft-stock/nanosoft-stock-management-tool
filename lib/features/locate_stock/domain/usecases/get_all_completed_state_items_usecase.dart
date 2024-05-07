@@ -8,9 +8,12 @@ class GetAllCompletedStateItemsUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    List completedStateItems =
+    Map<String, dynamic> locatedStock = params["located_stock"];
+
+    locatedStock["layers"].add("completed_moves_overlay");
+    locatedStock["completed_state_items"] =
         _locateStockRepository.getAllCompletedStateItems();
 
-    return completedStateItems;
+    return locatedStock;
   }
 }

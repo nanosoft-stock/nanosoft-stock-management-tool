@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomOverlayEffect extends StatelessWidget {
   const CustomOverlayEffect({
@@ -15,8 +14,7 @@ class CustomOverlayEffect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      borderRadius: kBorderRadius,
+    return Container(
       color: Colors.transparent,
       child: Stack(
         children: [
@@ -27,22 +25,13 @@ class CustomOverlayEffect extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
           ),
           Positioned.fill(
-            child: Row(
-              children: [
-                Container(
-                  width: 250,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                child: Center(
+                  child: child,
                 ),
-                Expanded(
-                  child: ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                      child: Center(
-                        child: child,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],

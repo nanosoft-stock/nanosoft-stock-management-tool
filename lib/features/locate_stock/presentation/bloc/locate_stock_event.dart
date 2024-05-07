@@ -35,6 +35,16 @@ class RemoveInputRowEvent extends LocateStockEvent {
   final Map<String, dynamic>? locatedStock;
 }
 
+class HideOverlayLayerEvent extends LocateStockEvent {
+  const HideOverlayLayerEvent({
+    required this.layer,
+    required this.locatedStock,
+  });
+
+  final String? layer;
+  final Map<String, dynamic>? locatedStock;
+}
+
 class SearchByFieldFilled extends LocateStockEvent {
   const SearchByFieldFilled({
     required this.index,
@@ -59,18 +69,28 @@ class ChooseIdsButtonPressed extends LocateStockEvent {
   final Map<String, dynamic>? locatedStock;
 }
 
+class IdEntered extends LocateStockEvent {
+  const IdEntered({
+    required this.index,
+    required this.chosenId,
+    required this.locatedStock,
+  });
+
+  final int? index;
+  final String? chosenId;
+  final Map<String, dynamic>? locatedStock;
+}
+
 class IdsChosen extends LocateStockEvent {
   const IdsChosen({
     required this.index,
     required this.chosenIds,
     required this.locatedStock,
-    required this.removeOverlayEntry,
   });
 
   final int? index;
   final List? chosenIds;
   final Map<String, dynamic>? locatedStock;
-  final Function()? removeOverlayEntry;
 }
 
 class SwitchTableView extends LocateStockEvent {
@@ -133,40 +153,28 @@ class ContainerIdEntered extends LocateStockEvent {
   const ContainerIdEntered({
     required this.text,
     required this.locatedStock,
-    required this.selectedItems,
-    required this.removeOverlayEntry,
   });
 
   final String? text;
   final Map<String, dynamic>? locatedStock;
-  final Map<String, dynamic>? selectedItems;
-  final Function()? removeOverlayEntry;
 }
 
 class WarehouseLocationIdEntered extends LocateStockEvent {
   const WarehouseLocationIdEntered({
     required this.text,
     required this.locatedStock,
-    required this.selectedItems,
-    required this.removeOverlayEntry,
   });
 
   final String? text;
   final Map<String, dynamic>? locatedStock;
-  final Map<String, dynamic>? selectedItems;
-  final Function()? removeOverlayEntry;
 }
 
 class MoveItemsButtonPressed extends LocateStockEvent {
   const MoveItemsButtonPressed({
     required this.locatedStock,
-    required this.selectedItems,
-    required this.removeOverlayEntry,
   });
 
   final Map<String, dynamic>? locatedStock;
-  final Map<String, dynamic>? selectedItems;
-  final Function()? removeOverlayEntry;
 }
 
 class PendingMovesButtonPressed extends LocateStockEvent {
@@ -181,28 +189,20 @@ class CompleteMoveButtonPressed extends LocateStockEvent {
   const CompleteMoveButtonPressed({
     required this.index,
     required this.locatedStock,
-    required this.pendingStateItems,
-    required this.removeOverlayEntry,
   });
 
   final int? index;
   final Map<String, dynamic>? locatedStock;
-  final List<Map<String, dynamic>>? pendingStateItems;
-  final Function()? removeOverlayEntry;
 }
 
 class CancelMoveButtonPressed extends LocateStockEvent {
   const CancelMoveButtonPressed({
     required this.index,
     required this.locatedStock,
-    required this.pendingStateItems,
-    required this.removeOverlayEntry,
   });
 
   final int? index;
   final Map<String, dynamic>? locatedStock;
-  final List<Map<String, dynamic>>? pendingStateItems;
-  final Function()? removeOverlayEntry;
 }
 
 class CompletedMovesButtonPressed extends LocateStockEvent {

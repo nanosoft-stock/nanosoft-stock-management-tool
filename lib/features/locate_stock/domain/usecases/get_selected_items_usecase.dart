@@ -8,18 +8,21 @@ class GetSelectedItemsUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    Map<String, dynamic> locateStock = params["located_stock"];
+    Map<String, dynamic> locatedStock = params["located_stock"];
     Map<String, dynamic> data = {};
 
     data["items"] = _locateStockRepository.getSelectedIdsDetails(
-        selectedItemIds: locateStock["selected_item_ids"]);
-
-    data["container_ids"] = locateStock["all_ids"]["Container Id"];
+        selectedItemIds: locatedStock["selected_item_ids"]);
+    data["container_ids"] = locatedStock["all_ids"]["Container Id"];
     data["warehouse_location_ids"] =
-        locateStock["all_ids"]["Warehouse Location Id"];
+        locatedStock["all_ids"]["Warehouse Location Id"];
     data["container_text"] = "";
     data["warehouse_text"] = "";
 
-    return data;
+    locatedStock["selected_items"] = data;
+
+    locatedStock["layers"].add("preview_move_overlay");
+
+    return locatedStock;
   }
 }

@@ -28,7 +28,7 @@ class SelectAllCheckBoxToggledUseCase extends UseCase {
     }
     locatedStock["selected_item_ids"] = selectedItemIds.toSet().toList();
 
-    return await _locateStockRepository.changeAllStockState(
+    return _locateStockRepository.changeAllStockState(
         locatedStock: locatedStock);
   }
 }

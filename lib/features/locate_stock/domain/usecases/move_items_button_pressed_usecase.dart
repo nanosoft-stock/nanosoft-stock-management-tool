@@ -8,9 +8,14 @@ class MoveItemsButtonPressedUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    Map<String, dynamic> selectedItems = params["selected_items"];
+    Map<String, dynamic> locatedStock = params["located_stock"];
 
-    return await _locateStockRepository.moveItemsToPendingState(
-        selectedItems: selectedItems);
+    await _locateStockRepository.moveItemsToPendingState(
+        selectedItems: locatedStock["selected_items"]);
+
+    locatedStock["selected_items"] = {};
+    locatedStock["layers"].remove("preview_move_overlay");
+
+    return locatedStock;
   }
 }

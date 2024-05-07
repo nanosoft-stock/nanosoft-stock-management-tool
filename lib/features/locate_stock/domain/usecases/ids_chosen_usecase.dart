@@ -24,6 +24,8 @@ class IdsChosenUseCase extends UseCase {
       locatedStock['rows'][index][key] = details[key];
     }
 
+    locatedStock["layers"].remove("multiple_search_selection_overlay");
+
     return locatedStock;
   }
 }

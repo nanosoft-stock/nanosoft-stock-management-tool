@@ -6,8 +6,8 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_overlay_effect.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
-class CustomCompletedMovesOverlayEntry extends StatelessWidget {
-  const CustomCompletedMovesOverlayEntry({
+class CustomCompletedMovesOverlay extends StatelessWidget {
+  const CustomCompletedMovesOverlay({
     super.key,
     required this.completedStateItems,
     required this.hideOverlay,
@@ -65,8 +65,7 @@ class CustomCompletedMovesOverlayEntry extends StatelessWidget {
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 5.0),
+                              padding: const EdgeInsets.all(5.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: kTertiaryBackgroundColor,
@@ -110,7 +109,7 @@ class CustomCompletedMovesOverlayEntry extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            DateFormat('dd/MM/yyyy HH:mm')
+                                            DateFormat('dd/MM/yyyy HH:mm:ss')
                                                 .format(DateTime.parse(
                                                     completedStateItems[index]
                                                             ["date"]

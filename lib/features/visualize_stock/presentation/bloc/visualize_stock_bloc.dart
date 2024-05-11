@@ -12,7 +12,6 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/s
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_stock_usecase.dart';
 
 part 'visualize_stock_event.dart';
-
 part 'visualize_stock_state.dart';
 
 class VisualizeStockBloc
@@ -27,14 +26,14 @@ class VisualizeStockBloc
       _listenToCloudDataChangeUseCase;
 
   VisualizeStockBloc(
-      this._allFieldsUseCase,
-      this._allStockUseCase,
-      this._sortFieldUseCase,
-      this._sortStockUseCase,
-      this._importFromExcelUseCase,
-      this._exportToExcelUseCase,
-      this._listenToCloudDataChangeUseCase)
-      : super(LoadingState()) {
+    this._allFieldsUseCase,
+    this._allStockUseCase,
+    this._sortFieldUseCase,
+    this._sortStockUseCase,
+    this._importFromExcelUseCase,
+    this._exportToExcelUseCase,
+    this._listenToCloudDataChangeUseCase,
+  ) : super(LoadingState()) {
     on<LoadedEvent>(loadedEvent);
     on<SortFieldEvent>(sortFieldEvent);
     on<FilterFieldEvent>(filterFieldEvent);

@@ -21,6 +21,16 @@ class VisualizeStockRepositoryImplementation
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
+  Future listenToCloudDataChange({required Function() onChange}) async {
+    _objectBox.getStockStream().listen((event) {
+      onChange();
+    });
+    _objectBox.getInputFieldStream().listen((event) {
+      onChange();
+    });
+  }
+
+  @override
   Future<List<StockFieldModel>> getAllFields() async {
     List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
 
@@ -311,15 +321,5 @@ class VisualizeStockRepositoryImplementation
         ..createSync(recursive: true)
         ..writeAsBytesSync(excelFileBytes);
     }
-  }
-
-  @override
-  Future listenToCloudDataChange({required Function() onChange}) async {
-    _objectBox.getStockStream().listen((event) {
-      onChange();
-    });
-    _objectBox.getInputFieldStream().listen((event) {
-      onChange();
-    });
   }
 }

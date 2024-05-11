@@ -239,6 +239,27 @@ class VisualiseStockView extends StatelessWidget {
                 ],
               ),
             ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 87, 0, 50),
+                child: SizedBox(
+                  width: constraints.maxWidth / 3,
+                  height: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: kSecondaryBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.0),
+                        bottomLeft: Radius.circular(10.0),
+                      ),
+                      boxShadow: kBoxShadowList,
+                    ),
+                    child: Container(),
+                  ),
+                ),
+              ),
+            ),
             // // Filter Menu
             // Padding(
             //   padding: const EdgeInsets.fromLTRB(52, 103, 0, 40),

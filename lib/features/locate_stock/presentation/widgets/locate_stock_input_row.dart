@@ -74,8 +74,9 @@ class LocateStockInputRow extends StatelessWidget {
                       controller:
                           TextEditingController(text: rowData["search_by"]),
                       items: searchableIds,
+                      requestFocusOnTap: false,
                       onSelected: (value) {
-                        if (searchableIds.contains(value) || value == "") {
+                        if (searchableIds.contains(value)) {
                           onSearchBySelected(value);
                         }
                       },

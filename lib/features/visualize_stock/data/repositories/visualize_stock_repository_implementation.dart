@@ -21,7 +21,7 @@ class VisualizeStockRepositoryImplementation
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
-  Future listenToCloudDataChange({required Function() onChange}) async {
+  void listenToCloudDataChange({required Function() onChange}) async {
     _objectBox.getStockStream().listen((event) {
       onChange();
     });
@@ -31,14 +31,14 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  Future<List<StockFieldModel>> getAllFields() async {
+  List<StockFieldModel> getAllFields() {
     List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
 
     return fields.map((e) => StockFieldModel.fromJson(e)).toSet().toList();
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getAllStocks() async {
+  List<Map<String, dynamic>> getAllStocks() {
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
 
     stocks.sort((a, b) => a["date"].compareTo(b["date"]));
@@ -47,8 +47,8 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  Future<List<StockFieldModel>> sortFields(
-      {required String field, required Sort sort}) async {
+  List<StockFieldModel> sortFields(
+      {required String field, required Sort sort}) {
     List fields = _objectBox.getInputFields().map((e) {
       Map json = e.toJson();
       if (json["field"] == field) {
@@ -63,9 +63,9 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  Future<List<Map<String, dynamic>>> sortStocks(
-      {required String field, required Sort sort}) async {
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+  List<Map<String, dynamic>> sortStocks(
+      {required String field, required Sort sort, required List stocks}) {
+    print("in sort stocks");
 
     compareWithBlank(a, b) {
       bool isABlank = a == null || a == "";
@@ -280,8 +280,8 @@ class VisualizeStockRepositoryImplementation
     excel.rename("Sheet1", "Stock");
     Sheet sheetObject = excel["Stock"];
 
-    List fields = await getAllFields();
-    List stock = await getAllStocks();
+    List fields = getAllFields();
+    List stock = getAllStocks();
 
     int column = 0;
     int row = 0;

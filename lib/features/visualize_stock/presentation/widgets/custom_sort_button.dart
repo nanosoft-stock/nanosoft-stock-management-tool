@@ -23,7 +23,7 @@ class CustomSortButton extends StatelessWidget {
       child: Builder(
         builder: (BuildContext context) {
           if (sort == Sort.none) {
-            return const Icon(Icons.remove_rounded);
+            return const Icon(Icons.swap_vert_rounded);
           } else if (sort == Sort.asc) {
             return const Icon(Icons.arrow_downward_rounded);
           } else {

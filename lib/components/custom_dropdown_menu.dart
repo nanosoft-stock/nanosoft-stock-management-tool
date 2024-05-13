@@ -6,11 +6,13 @@ class CustomDropdownMenu extends StatelessWidget {
     super.key,
     required this.controller,
     required this.items,
+    this.requestFocusOnTap = true,
     required this.onSelected,
   });
 
   final TextEditingController controller;
   final List items;
+  final bool requestFocusOnTap;
   final void Function(String) onSelected;
 
   @override
@@ -30,6 +32,7 @@ class CustomDropdownMenu extends StatelessWidget {
           ),
           fillColor: kInputFieldFillColor,
         ),
+        requestFocusOnTap: requestFocusOnTap,
         dropdownMenuEntries: items
             .map(
               (e) => DropdownMenuEntry(

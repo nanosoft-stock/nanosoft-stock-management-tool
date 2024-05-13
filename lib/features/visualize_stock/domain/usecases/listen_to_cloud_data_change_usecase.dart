@@ -7,7 +7,7 @@ class ListenToCloudDataChangeVisualizeStockUseCase extends UseCase {
   final VisualizeStockRepository _visualizeStockRepository;
 
   @override
-  Future call({params}) {
+  Future call({params}) async {
     return _visualizeStockRepository.listenToCloudDataChange(
         onChange: params["onChange"]);
   }

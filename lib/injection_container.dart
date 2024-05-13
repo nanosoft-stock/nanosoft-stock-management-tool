@@ -50,12 +50,10 @@ import 'package:stock_management_tool/features/locate_stock/presentation/bloc/lo
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_fields_usecase.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/usecases/get_all_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_field_usecase.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_stock_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/services/auth.dart';
@@ -112,11 +110,10 @@ Future<void> initializeDependencies() async {
   // Visualize Stock
   sl.registerLazySingleton<VisualizeStockRepository>(
       () => VisualizeStockRepositoryImplementation());
-  sl.registerLazySingleton<GetAllStockUseCase>(() => GetAllStockUseCase(sl()));
-  sl.registerLazySingleton<GetAllFieldsUseCase>(
-      () => GetAllFieldsUseCase(sl()));
-  sl.registerLazySingleton<SortFieldUseCase>(() => SortFieldUseCase(sl()));
-  sl.registerLazySingleton<SortStockUseCase>(() => SortStockUseCase(sl()));
+  sl.registerLazySingleton<InitialVisualizeStockUseCase>(
+      () => InitialVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<SortVisualizeStockUseCase>(
+      () => SortVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<ImportFromExcelUseCase>(
       () => ImportFromExcelUseCase(sl()));
   sl.registerLazySingleton<ExportToExcelUseCase>(
@@ -124,7 +121,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
       () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
   sl.registerFactory<VisualizeStockBloc>(
-      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(

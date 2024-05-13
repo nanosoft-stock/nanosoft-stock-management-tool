@@ -8,12 +8,14 @@ class CustomDropdownInputField extends StatelessWidget {
     required this.text,
     required this.controller,
     required this.items,
+    this.requestFocusOnTap = true,
     required this.onSelected,
   });
 
   final String text;
   final TextEditingController controller;
   final List items;
+  final bool requestFocusOnTap;
   final void Function(String) onSelected;
 
   @override
@@ -58,6 +60,7 @@ class CustomDropdownInputField extends StatelessWidget {
                       child: CustomDropdownMenu(
                         controller: controller,
                         items: items,
+                        requestFocusOnTap: requestFocusOnTap,
                         onSelected: onSelected,
                       ),
                     ),

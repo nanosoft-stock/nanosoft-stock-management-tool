@@ -30,6 +30,19 @@ class StockFieldModel extends StockFieldEntity {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "uid": uid,
+      "field": field,
+      "datatype": datatype,
+      "lockable": lockable,
+      "is_with_sku": isWithSKU,
+      "is_title_case": isTitleCase,
+      "is_bg": isBg,
+      "sort": sort,
+    };
+  }
+
   StockFieldModel copyWith({
     String? uid,
     String? field,

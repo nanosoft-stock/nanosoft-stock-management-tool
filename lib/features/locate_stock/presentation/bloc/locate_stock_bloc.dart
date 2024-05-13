@@ -105,14 +105,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<ExpandCompletedMovesItem>(expandCompletedMovesItem);
   }
 
-  FutureOr<void> loadedEvent(
-      LoadedEvent event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
-    emit(LoadedState(
-      locatedStock: event.locatedStock!.cast<String, dynamic>(),
-    ));
-  }
-
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<LocateStockState> emit) async {
     Map<String, dynamic> locatedStock =
@@ -126,6 +118,14 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     });
     emit(ReduceDuplicationActionState());
     emit(LoadedState(locatedStock: locatedStock));
+  }
+
+  FutureOr<void> loadedEvent(
+      LoadedEvent event, Emitter<LocateStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+      locatedStock: event.locatedStock!.cast<String, dynamic>(),
+    ));
   }
 
   FutureOr<void> addNewInputRowEvent(

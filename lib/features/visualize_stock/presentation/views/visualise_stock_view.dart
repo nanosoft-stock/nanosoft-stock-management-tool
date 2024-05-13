@@ -43,16 +43,14 @@ class VisualiseStockView extends StatelessWidget {
     switch (state.runtimeType) {
       case const (LoadingState):
         _visualizeStockBloc.add(CloudDataChangeEvent());
-        _visualizeStockBloc.add(LoadedEvent());
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
         return _buildErrorStateWidget();
 
       case const (LoadedState):
-        List fields = state.fields!;
-        List stocks = state.stocks!;
-        return _buildLoadedStateWidget(fields, stocks);
+        Map visualizeStock = state.visualizeStock!;
+        return _buildLoadedStateWidget(visualizeStock);
 
       default:
         return Container();
@@ -71,7 +69,9 @@ class VisualiseStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(List fields, List stocks) {
+  Widget _buildLoadedStateWidget(Map visualizeStock) {
+    List fields = visualizeStock["fields"];
+    List stocks = visualizeStock["stocks"];
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
@@ -97,10 +97,14 @@ class VisualiseStockView extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _visualizeStockBloc
-                                      .add(ImportButtonClickedEvent());
+                                  _visualizeStockBloc.add(
+                                      ImportButtonClickedEvent(
+                                          visualizeStock: visualizeStock));
                                 },
-                                child: const Text("Import Excel"),
+                                child: Text(
+                                  "Import Excel",
+                                  style: kLabelTextStyle,
+                                ),
                               ),
                               const SizedBox(
                                 width: 10,
@@ -112,10 +116,14 @@ class VisualiseStockView extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _visualizeStockBloc
-                                      .add(ExportButtonClickedEvent());
+                                  _visualizeStockBloc.add(
+                                      ExportButtonClickedEvent(
+                                          visualizeStock: visualizeStock));
                                 },
-                                child: const Text("Export Table"),
+                                child: Text(
+                                  "Export Table",
+                                  style: kLabelTextStyle,
+                                ),
                               ),
                             ],
                           ),
@@ -199,10 +207,13 @@ class VisualiseStockView extends StatelessWidget {
                                               sort:
                                                   fields[vicinity.column].sort,
                                               onPressed: (field, sort) {
-                                                _visualizeStockBloc.add(
-                                                    SortFieldEvent(
-                                                        field: field,
-                                                        sort: sort));
+                                                _visualizeStockBloc
+                                                    .add(SortFieldEvent(
+                                                  field: field,
+                                                  sort: sort,
+                                                  visualizeStock:
+                                                      visualizeStock,
+                                                ));
                                               },
                                             ),
                                           ],
@@ -249,13 +260,323 @@ class VisualiseStockView extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: kSecondaryBackgroundColor,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10.0),
                         bottomLeft: Radius.circular(10.0),
                       ),
                       boxShadow: kBoxShadowList,
                     ),
-                    child: Container(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: CustomContainer(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: kPrimaryBackgroundColor,
+                            borderRadius: kBorderRadius,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Field",
+                                  style: kLabelTextStyle,
+                                ),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.swap_vert_outlined),
+                                      Text(
+                                        "Sort",
+                                        style: kLabelTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: kBorderRadius,
+                                          ),
+                                        ),
+                                        onPressed: () {},
+                                        child: Text(
+                                          "Ascending",
+                                          style: kLabelTextStyle,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: kBorderRadius,
+                                          ),
+                                        ),
+                                        onPressed: () {},
+                                        child: Text(
+                                          "Descending",
+                                          style: kLabelTextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.filter_alt_outlined),
+                                      Text(
+                                        "Filter",
+                                        style: kLabelTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      // Container(
+                                      //   decoration: BoxDecoration(
+                                      //     borderRadius: kBorderRadius,
+                                      //     boxShadow: kBoxShadowList,
+                                      //   ),
+                                      //   child: CustomDropdownMenu(
+                                      //     controller: TextEditingController(),
+                                      //     items: const [
+                                      //       "Equals",
+                                      //       "Not Equals",
+                                      //       "Begins With",
+                                      //       "Not Begins With",
+                                      //       "Contains",
+                                      //       "Not Contains",
+                                      //       "Ends With",
+                                      //       "Not Ends With",
+                                      //     ],
+                                      //     requestFocusOnTap: false,
+                                      //     onSelected: (value) {},
+                                      //   ),
+                                      // ),
+                                      // Container(
+                                      //   decoration: BoxDecoration(
+                                      //     color: kTertiaryBackgroundColor,
+                                      //     borderRadius:
+                                      //         BorderRadius.circular(7.0),
+                                      //     boxShadow: kBoxShadowList,
+                                      //   ),
+                                      //   child: DropdownMenu(
+                                      //     controller: TextEditingController(),
+                                      //     requestFocusOnTap: false,
+                                      //     menuHeight: 250,
+                                      //     dropdownMenuEntries: [
+                                      //       "Equals",
+                                      //       "Not Equals",
+                                      //       "Begins With",
+                                      //       "Not Begins With",
+                                      //       "Contains",
+                                      //       "Not Contains",
+                                      //       "Ends With",
+                                      //       "Not Ends With",
+                                      //     ]
+                                      //         .map((e) => DropdownMenuEntry(
+                                      //             value: e.toLowerCase(),
+                                      //             label: e))
+                                      //         .toList(),
+                                      //     onSelected: (value) {},
+                                      //   ),
+                                      // ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 7.0,
+                                            vertical: 10.0,
+                                          ),
+                                          child: DropdownButton(
+                                            autofocus: false,
+                                            borderRadius: kBorderRadius,
+                                            hint: Text(
+                                              "Select Filter",
+                                              style: kLabelTextStyle,
+                                            ),
+                                            menuMaxHeight: 250,
+                                            isDense: true,
+                                            icon: Icon(
+                                                Icons.arrow_drop_down_outlined),
+                                            underline: Container(),
+                                            items: [
+                                              "Equals",
+                                              "Not Equals",
+                                              "Begins With",
+                                              "Not Begins With",
+                                              "Contains",
+                                              "Not Contains",
+                                              "Ends With",
+                                              "Not Ends With",
+                                            ]
+                                                .map(
+                                                  (e) => DropdownMenuItem(
+                                                    value: e,
+                                                    child: Text(
+                                                      e,
+                                                      style: kLabelTextStyle,
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (value) {},
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Equals",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Not Equals",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Begins With",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Not Begins With",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Contains",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Not Contains",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Ends With",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       "Not Ends With",
+                                //       style: kLabelTextStyle,
+                                //     ),
+                                //   ],
+                                // ),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.search_outlined),
+                                      Text(
+                                        "Search",
+                                        style: kLabelTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: kTertiaryBackgroundColor,
+                                        borderRadius: kBorderRadius,
+                                        boxShadow: kBoxShadowList,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: kBorderRadius,
+                                          ),
+                                        ),
+                                        onPressed: () {},
+                                        child: Text(
+                                          "Filter",
+                                          style: kLabelTextStyle,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: kBorderRadius,
+                                          ),
+                                        ),
+                                        onPressed: () {},
+                                        child: Text(
+                                          "Clear",
+                                          style: kLabelTextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

@@ -11,10 +11,20 @@ class SortVisualizeStockUseCase extends UseCase {
   Future call({params}) async {
     String field = params["field"];
     Sort sort = params["sort"];
-    Map visualizeStock = params["visualize_stock"];
+    Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["fields"] =
-        _visualizeStockRepository.sortFields(field: field, sort: sort);
+    visualizeStock["filters"].forEach((e) {
+      e["sort"] = Sort.none;
+    });
+
+    visualizeStock["filters"].firstWhere((e) => e["field"] == field)["sort"] =
+        sort;
+
+    if (sort == Sort.none) {
+      field = "date";
+      sort = Sort.desc;
+    }
+
     visualizeStock["stocks"] = _visualizeStockRepository.sortStocks(
         field: field, sort: sort, stocks: visualizeStock["stocks"]);
 

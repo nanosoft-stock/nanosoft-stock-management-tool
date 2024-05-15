@@ -26,8 +26,8 @@ class SortFieldEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
-class FilterFieldEvent extends VisualizeStockEvent {
-  const FilterFieldEvent({required this.visualizeStock});
+class ParentFilterEvent extends VisualizeStockEvent {
+  const ParentFilterEvent({required this.visualizeStock});
 
   final Map? visualizeStock;
 }
@@ -41,5 +41,19 @@ class ImportButtonClickedEvent extends VisualizeStockEvent {
 class ExportButtonClickedEvent extends VisualizeStockEvent {
   const ExportButtonClickedEvent({required this.visualizeStock});
 
+  final Map? visualizeStock;
+}
+
+class FieldFilterEvent extends VisualizeStockEvent {
+  const FieldFilterEvent({required this.field, required this.visualizeStock});
+
+  final String? field;
+  final Map? visualizeStock;
+}
+
+class HideLayerEvent extends VisualizeStockEvent {
+  const HideLayerEvent({required this.layer, required this.visualizeStock});
+
+  final String? layer;
   final Map? visualizeStock;
 }

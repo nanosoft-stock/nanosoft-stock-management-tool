@@ -41,32 +41,14 @@ class VisualizeStockRepositoryImplementation
   List<Map<String, dynamic>> getAllStocks() {
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
 
-    stocks.sort((a, b) => a["date"].compareTo(b["date"]));
+    stocks.sort((a, b) => b["date"].compareTo(a["date"]));
 
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
   }
 
   @override
-  List<StockFieldModel> sortFields(
-      {required String field, required Sort sort}) {
-    List fields = _objectBox.getInputFields().map((e) {
-      Map json = e.toJson();
-      if (json["field"] == field) {
-        json["sort"] = sort;
-      } else {
-        json["sort"] = Sort.none;
-      }
-      return json;
-    }).toList();
-
-    return fields.map((e) => StockFieldModel.fromJson(e)).toSet().toList();
-  }
-
-  @override
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks}) {
-    print("in sort stocks");
-
     compareWithBlank(a, b) {
       bool isABlank = a == null || a == "";
       bool isBBlank = b == null || b == "";

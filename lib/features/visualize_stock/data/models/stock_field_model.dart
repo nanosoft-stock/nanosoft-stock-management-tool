@@ -12,7 +12,7 @@ class StockFieldModel extends StockFieldEntity {
     required super.isBg,
     // required super.order,
     // required super.locked,
-    required super.sort,
+    // required super.sort,
   });
 
   factory StockFieldModel.fromJson(Map<String, dynamic> map) {
@@ -26,7 +26,7 @@ class StockFieldModel extends StockFieldEntity {
       isBg: map['isBg'],
       // order: int.parse(map['order'].toString()),
       // locked: false,
-      sort: map["sort"] ?? Sort.none,
+      // sort: map["sort"] ?? Sort.none,
     );
   }
 
@@ -39,7 +39,7 @@ class StockFieldModel extends StockFieldEntity {
       "is_with_sku": isWithSKU,
       "is_title_case": isTitleCase,
       "is_bg": isBg,
-      "sort": sort,
+      // "sort": sort,
     };
   }
 
@@ -53,7 +53,7 @@ class StockFieldModel extends StockFieldEntity {
     bool? isBg,
     // int? order,
     // bool? locked,
-    Sort? sort,
+    // Sort? sort,
   }) {
     return StockFieldModel(
       uid: uid ?? this.uid,
@@ -65,7 +65,7 @@ class StockFieldModel extends StockFieldEntity {
       isBg: isBg ?? this.isBg,
       // order: order ?? this.order,
       // locked: locked ?? this.locked,
-      sort: sort ?? this.sort,
+      // sort: sort ?? this.sort,
     );
   }
 }

@@ -49,7 +49,9 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/ware
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/hide_visualize_stock_layer_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
@@ -110,6 +112,8 @@ Future<void> initializeDependencies() async {
   // Visualize Stock
   sl.registerLazySingleton<VisualizeStockRepository>(
       () => VisualizeStockRepositoryImplementation());
+  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
+      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<InitialVisualizeStockUseCase>(
       () => InitialVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<SortVisualizeStockUseCase>(
@@ -118,10 +122,12 @@ Future<void> initializeDependencies() async {
       () => ImportFromExcelUseCase(sl()));
   sl.registerLazySingleton<ExportToExcelUseCase>(
       () => ExportToExcelUseCase(sl()));
-  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
-      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<AddVisualizeStockLayerUseCase>(
+      () => AddVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
+      () => HideVisualizeStockLayerUseCase());
   sl.registerFactory<VisualizeStockBloc>(
-      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl()));
+      () => VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(

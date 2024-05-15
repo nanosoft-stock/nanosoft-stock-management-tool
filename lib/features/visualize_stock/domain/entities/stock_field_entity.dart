@@ -12,7 +12,7 @@ class StockFieldEntity extends Equatable {
     required this.isBg,
     // required this.order,
     // required this.locked,
-    required this.sort,
+    // required this.sort,
   });
 
   final String uid;
@@ -25,7 +25,7 @@ class StockFieldEntity extends Equatable {
 
   // final int order;
   // final bool locked;
-  final Sort sort;
+  // final Sort sort;
 
   @override
   List<Object?> get props => [
@@ -38,6 +38,6 @@ class StockFieldEntity extends Equatable {
         isBg,
         // order,
         // locked,
-        sort,
+        // sort,
       ];
 }

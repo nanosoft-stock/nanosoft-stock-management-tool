@@ -8,9 +8,6 @@ abstract class VisualizeStockRepository {
 
   List<Map<String, dynamic>> getAllStocks();
 
-  List<StockFieldEntity> sortFields(
-      {required String field, required Sort sort});
-
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks});
 

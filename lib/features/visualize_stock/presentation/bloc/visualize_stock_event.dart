@@ -18,8 +18,11 @@ class LoadedEvent extends VisualizeStockEvent {
 }
 
 class SortFieldEvent extends VisualizeStockEvent {
-  const SortFieldEvent(
-      {required this.field, required this.sort, required this.visualizeStock});
+  const SortFieldEvent({
+    required this.field,
+    required this.sort,
+    required this.visualizeStock,
+  });
 
   final String field;
   final Sort sort;
@@ -55,5 +58,29 @@ class HideLayerEvent extends VisualizeStockEvent {
   const HideLayerEvent({required this.layer, required this.visualizeStock});
 
   final String? layer;
+  final Map? visualizeStock;
+}
+
+class FilterBySelectedEvent extends VisualizeStockEvent {
+  const FilterBySelectedEvent({
+    required this.field,
+    required this.filterBy,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final String? filterBy;
+  final Map? visualizeStock;
+}
+
+class FilterValueEnteredEvent extends VisualizeStockEvent {
+  const FilterValueEnteredEvent({
+    required this.field,
+    required this.filterValue,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final String? filterValue;
   final Map? visualizeStock;
 }

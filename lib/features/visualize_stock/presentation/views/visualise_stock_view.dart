@@ -84,232 +84,224 @@ class VisualiseStockView extends StatelessWidget {
         return Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(52, 52, 52, 40),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: CustomContainer(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: kInputFieldFillColor,
-                            borderRadius: kBorderRadius,
-                            boxShadow: kBoxShadowList,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(7.0),
-                                    ),
-                                  ),
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Filter",
-                                    style: kLabelTextStyle,
+              padding: const EdgeInsets.fromLTRB(52, 57, 52, 40),
+              child: CustomContainer(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: kInputFieldFillColor,
+                          borderRadius: kBorderRadius,
+                          boxShadow: kBoxShadowList,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7.0),
                                   ),
                                 ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(7.0),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        _visualizeStockBloc.add(
-                                            ImportButtonClickedEvent(
-                                                visualizeStock:
-                                                    visualizeStock));
-                                      },
-                                      child: Text(
-                                        "Import Excel",
-                                        style: kLabelTextStyle,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(7.0),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        _visualizeStockBloc.add(
-                                            ExportButtonClickedEvent(
-                                                visualizeStock:
-                                                    visualizeStock));
-                                      },
-                                      child: Text(
-                                        "Export Table",
-                                        style: kLabelTextStyle,
-                                      ),
-                                    ),
-                                  ],
+                                onPressed: () {},
+                                child: Text(
+                                  "Filter",
+                                  style: kLabelTextStyle,
                                 ),
-                              ],
-                            ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(7.0),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _visualizeStockBloc.add(
+                                          ImportButtonClickedEvent(
+                                              visualizeStock: visualizeStock));
+                                    },
+                                    child: Text(
+                                      "Import Excel",
+                                      style: kLabelTextStyle,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(7.0),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _visualizeStockBloc.add(
+                                          ExportButtonClickedEvent(
+                                              visualizeStock: visualizeStock));
+                                    },
+                                    child: Text(
+                                      "Export Table",
+                                      style: kLabelTextStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 10.0),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kTertiaryBackgroundColor,
-                              borderRadius: kBorderRadius,
-                              boxShadow: kBoxShadowList,
-                              border: Border.all(width: 1),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: kBorderRadius,
-                              clipBehavior: Clip.hardEdge,
-                              child: TableView(
-                                horizontalDetails:
-                                    const ScrollableDetails.horizontal(
-                                  physics: ClampingScrollPhysics(),
-                                ),
-                                delegate: TableCellBuilderDelegate(
-                                  columnCount: fields.length,
-                                  rowCount: stocks.length + 1,
-                                  pinnedRowCount: 1,
-                                  columnBuilder: (int index) {
-                                    return const TableSpan(
-                                      backgroundDecoration: TableSpanDecoration(
-                                        border: TableSpanBorder(
-                                          leading: BorderSide(
-                                            color: Colors.black54,
-                                          ),
-                                          trailing: BorderSide(
-                                            color: Colors.black54,
-                                          ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: kTertiaryBackgroundColor,
+                            borderRadius: kBorderRadius,
+                            boxShadow: kBoxShadowList,
+                            border: Border.all(width: 1),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: kBorderRadius,
+                            child: TableView(
+                              horizontalDetails:
+                                  const ScrollableDetails.horizontal(
+                                physics: ClampingScrollPhysics(),
+                              ),
+                              delegate: TableCellBuilderDelegate(
+                                columnCount: fields.length,
+                                rowCount: stocks.length + 1,
+                                pinnedRowCount: 1,
+                                columnBuilder: (int index) {
+                                  return const TableSpan(
+                                    backgroundDecoration: TableSpanDecoration(
+                                      border: TableSpanBorder(
+                                        leading: BorderSide(
+                                          color: Colors.black54,
+                                        ),
+                                        trailing: BorderSide(
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                      extent: FixedTableSpanExtent(225),
-                                    );
-                                  },
-                                  rowBuilder: (int index) {
-                                    return const TableSpan(
-                                      backgroundDecoration: TableSpanDecoration(
-                                        border: TableSpanBorder(
-                                          leading: BorderSide(
-                                            color: Colors.black54,
-                                          ),
-                                          trailing: BorderSide(
-                                            color: Colors.black54,
-                                          ),
+                                    ),
+                                    extent: FixedTableSpanExtent(225),
+                                  );
+                                },
+                                rowBuilder: (int index) {
+                                  return const TableSpan(
+                                    backgroundDecoration: TableSpanDecoration(
+                                      border: TableSpanBorder(
+                                        leading: BorderSide(
+                                          color: Colors.black54,
+                                        ),
+                                        trailing: BorderSide(
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                      extent: FixedTableSpanExtent(25),
-                                    );
-                                  },
-                                  cellBuilder: (BuildContext context,
-                                      TableVicinity vicinity) {
-                                    if (vicinity.row == 0) {
-                                      String field =
-                                          visualizeStock["show_fields"]
-                                                  [vicinity.column]
-                                              .toString();
+                                    ),
+                                    extent: FixedTableSpanExtent(25),
+                                  );
+                                },
+                                cellBuilder: (BuildContext context,
+                                    TableVicinity vicinity) {
+                                  if (vicinity.row == 0) {
+                                    String field = visualizeStock["show_fields"]
+                                            [vicinity.column]
+                                        .toString();
 
-                                      Sort sort = visualizeStock["filters"]
-                                          .firstWhere((e) =>
-                                              e["field"] == field)["sort"];
+                                    Sort sort = visualizeStock["filters"]
+                                        .firstWhere(
+                                            (e) => e["field"] == field)["sort"];
 
-                                      return TableViewCell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    field.toTitleCase(),
-                                                    style: GoogleFonts.lato(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                        fontSize: 15.0,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                    return TableViewCell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Center(
+                                                child: SelectableText(
+                                                  field.toTitleCase(),
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: const TextStyle(
+                                                      fontSize: 15.0,
+                                                      fontWeight:
+                                                          FontWeight.w700,
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CustomSortButton(
-                                                    field: field,
-                                                    sort: sort,
-                                                    onPressed: (field, sort) {
-                                                      _visualizeStockBloc
-                                                          .add(SortFieldEvent(
-                                                        field: field,
-                                                        sort: sort,
-                                                        visualizeStock:
-                                                            visualizeStock,
-                                                      ));
-                                                    },
-                                                  ),
-                                                  CustomFilterButton(
-                                                    field: field,
-                                                    onPressed: () {
-                                                      _visualizeStockBloc.add(
-                                                          FieldFilterEvent(
-                                                              field: field,
-                                                              visualizeStock:
-                                                                  visualizeStock));
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                CustomSortButton(
+                                                  field: field,
+                                                  sort: sort,
+                                                  onPressed: (field, sort) {
+                                                    _visualizeStockBloc
+                                                        .add(SortFieldEvent(
+                                                      field: field,
+                                                      sort: sort,
+                                                      visualizeStock:
+                                                          visualizeStock,
+                                                    ));
+                                                  },
+                                                ),
+                                                CustomFilterButton(
+                                                  field: field,
+                                                  onPressed: () {
+                                                    _visualizeStockBloc.add(
+                                                        FieldFilterEvent(
+                                                            field: field,
+                                                            visualizeStock:
+                                                                visualizeStock));
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    } else {
-                                      String text = (stocks[vicinity.row - 1][
-                                                  visualizeStock["show_fields"]
-                                                      [vicinity.column]] ??
-                                              "")
-                                          .toString();
+                                      ),
+                                    );
+                                  } else {
+                                    String text = (stocks[vicinity.row - 1][
+                                                visualizeStock["show_fields"]
+                                                    [vicinity.column]] ??
+                                            "")
+                                        .toString();
 
-                                      if (visualizeStock["show_fields"]
-                                              [vicinity.column] ==
-                                          "date") {
-                                        text = DateFormat('dd-MM-yyyy').format(
-                                            DateTime.parse(text.toUpperCase()));
-                                      }
-
-                                      return TableViewCell(
-                                        child: Center(
-                                          child: SelectableText(
-                                            text,
-                                            style: GoogleFonts.lato(),
-                                          ),
-                                        ),
-                                      );
+                                    if (visualizeStock["show_fields"]
+                                            [vicinity.column] ==
+                                        "date") {
+                                      text = DateFormat('dd-MM-yyyy').format(
+                                          DateTime.parse(text.toUpperCase()));
                                     }
-                                  },
-                                ),
+
+                                    return TableViewCell(
+                                      child: Center(
+                                        child: SelectableText(
+                                          text,
+                                          style: GoogleFonts.lato(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -333,6 +325,20 @@ class VisualiseStockView extends StatelessWidget {
                     _visualizeStockBloc.add(SortFieldEvent(
                       field: field,
                       sort: sort,
+                      visualizeStock: visualizeStock,
+                    ));
+                  },
+                  filterBySelected: (field, filterBy) {
+                    _visualizeStockBloc.add(FilterBySelectedEvent(
+                      field: field,
+                      filterBy: filterBy,
+                      visualizeStock: visualizeStock,
+                    ));
+                  },
+                  filterValueEntered: (field, filterValue) {
+                    _visualizeStockBloc.add(FilterValueEnteredEvent(
+                      field: field,
+                      filterValue: filterValue,
                       visualizeStock: visualizeStock,
                     ));
                   },

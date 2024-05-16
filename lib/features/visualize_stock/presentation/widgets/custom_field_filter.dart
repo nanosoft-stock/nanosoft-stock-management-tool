@@ -11,11 +11,15 @@ class CustomFieldFilter extends StatelessWidget {
     required this.fieldFilter,
     required this.closeOnTap,
     required this.sortOnPressed,
+    required this.filterBySelected,
+    required this.filterValueEntered,
   });
 
-  final Map fieldFilter;
+  final Map<String, dynamic> fieldFilter;
   final Function() closeOnTap;
   final Function(String, Sort) sortOnPressed;
+  final Function(String, String) filterBySelected;
+  final Function(String, String) filterValueEntered;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +72,7 @@ class CustomFieldFilter extends StatelessWidget {
                                 style: kLabelTextStyle,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             ElevatedButton(
@@ -88,15 +92,17 @@ class CustomFieldFilter extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Divider(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Divider(),
+                  ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: ClipRRect(
                         borderRadius: kBorderRadius,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           child: Column(
                             children: [
                               Padding(
@@ -105,8 +111,8 @@ class CustomFieldFilter extends StatelessWidget {
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.table_rows_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.table_rows_outlined),
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     Text(
@@ -124,7 +130,8 @@ class CustomFieldFilter extends StatelessWidget {
                                     ButtonSegment(
                                       value: true,
                                       // icon: Icon(Icons.table_rows_rounded),
-                                      icon: Icon(Icons.playlist_add_check),
+                                      icon:
+                                          const Icon(Icons.playlist_add_check),
                                       label: Text(
                                         "Show",
                                         style: kLabelTextStyle,
@@ -132,7 +139,8 @@ class CustomFieldFilter extends StatelessWidget {
                                     ),
                                     ButtonSegment(
                                       value: false,
-                                      icon: Icon(Icons.playlist_remove_rounded),
+                                      icon: const Icon(
+                                          Icons.playlist_remove_rounded),
                                       label: Text(
                                         "Hide",
                                         style: kLabelTextStyle,
@@ -153,14 +161,14 @@ class CustomFieldFilter extends StatelessWidget {
                                   onSelectionChanged: (value) {},
                                 ),
                               ),
-                              Divider(),
+                              const Divider(),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.swap_vert_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.swap_vert_outlined),
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     Text(
@@ -176,7 +184,8 @@ class CustomFieldFilter extends StatelessWidget {
                                   segments: [
                                     ButtonSegment(
                                       value: Sort.asc,
-                                      icon: Icon(Icons.arrow_downward_rounded),
+                                      icon: const Icon(
+                                          Icons.arrow_downward_rounded),
                                       label: Text(
                                         "Ascending",
                                         style: kLabelTextStyle,
@@ -184,7 +193,8 @@ class CustomFieldFilter extends StatelessWidget {
                                     ),
                                     ButtonSegment(
                                       value: Sort.desc,
-                                      icon: Icon(Icons.arrow_upward_rounded),
+                                      icon: const Icon(
+                                          Icons.arrow_upward_rounded),
                                       label: Text(
                                         "Descending",
                                         style: kLabelTextStyle,
@@ -207,18 +217,21 @@ class CustomFieldFilter extends StatelessWidget {
                                   ),
                                   onSelectionChanged: (value) {
                                     sortOnPressed(
-                                        fieldFilter["field"], value.isNotEmpty ? value.first : Sort.none);
+                                        fieldFilter["field"],
+                                        value.isNotEmpty
+                                            ? value.first
+                                            : Sort.none);
                                   },
                                 ),
                               ),
-                              Divider(),
+                              const Divider(),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.filter_alt_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.filter_alt_outlined),
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     Text(
@@ -245,9 +258,16 @@ class CustomFieldFilter extends StatelessWidget {
                                           horizontal: 10.0,
                                         ),
                                         child: SizedBox(
-                                          child: DropdownButton(
+                                          child: DropdownButton<String>(
                                             autofocus: false,
                                             borderRadius: kBorderRadius,
+                                            menuMaxHeight: 250,
+                                            underline: Container(),
+                                            // style: kLabelTextStyle,
+                                            value:
+                                                fieldFilter["filter_by"] != ""
+                                                    ? fieldFilter["filter_by"]
+                                                    : null,
                                             hint: SizedBox(
                                               width: 129,
                                               child: Text(
@@ -255,59 +275,71 @@ class CustomFieldFilter extends StatelessWidget {
                                                 style: kLabelTextStyle,
                                               ),
                                             ),
-                                            menuMaxHeight: 250,
-                                            icon: Icon(
+                                            icon: const Icon(
                                                 Icons.arrow_drop_down_outlined),
-                                            underline: Container(),
-                                            items: [
-                                              "Equals",
-                                              "Not Equals",
-                                              "Begins With",
-                                              "Not Begins With",
-                                              "Contains",
-                                              "Not Contains",
-                                              "Ends With",
-                                              "Not Ends With",
-                                            ]
-                                                .map(
-                                                  (e) => DropdownMenuItem(
-                                                    value: e,
-                                                    child: Text(
-                                                      e,
-                                                      style: kLabelTextStyle,
-                                                    ),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (value) {},
+                                            items: fieldFilter[
+                                                    "all_filter_by_values"]
+                                                .map((String e) =>
+                                                    DropdownMenuItem(
+                                                      value: e,
+                                                      child: Text(
+                                                        e,
+                                                        style: kLabelTextStyle,
+                                                      ),
+                                                    ))
+                                                .toList()
+                                                .cast<
+                                                    DropdownMenuItem<String>>(),
+                                            onChanged: (value) {
+                                              filterBySelected(
+                                                  fieldFilter["field"],
+                                                  value ?? "");
+                                            },
                                           ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 20.0,
                                     ),
                                     SizedBox(
                                       width: 175,
                                       height: 40,
                                       child: TextFormField(
-                                        controller: TextEditingController(),
+                                        controller: TextEditingController(
+                                            text: fieldFilter["filter_value"]
+                                            // != ""
+                                            // ? fieldFilter["filter_value"]
+                                            // : null,
+                                            ),
+                                        style: kLabelTextStyle,
+                                        textInputAction: TextInputAction.done,
+                                        textAlignVertical:
+                                            TextAlignVertical.top,
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: kTertiaryBackgroundColor,
                                           border: OutlineInputBorder(
-                                              borderRadius: kBorderRadius),
-                                          labelText: "Select Filter",
+                                            borderRadius: kBorderRadius,
+                                          ),
+                                          labelText:
+                                              fieldFilter["filter_by"] != ""
+                                                  ? fieldFilter["filter_by"]
+                                                  : "Select Filter",
                                           labelStyle: kLabelTextStyle,
                                         ),
-                                        style: kLabelTextStyle,
+                                        onFieldSubmitted: (value) {
+                                          filterValueEntered(
+                                              fieldFilter["field"], value);
+                                        },
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              if (false) SizedBox(height: 10.0),
-                              if (false)
+                              if (fieldFilter["filter_field_2"] != null)
+                                const SizedBox(height: 10.0),
+                              if (fieldFilter["filter_field_2"] != null)
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5.0),
@@ -318,9 +350,6 @@ class CustomFieldFilter extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           border: Border.all(),
                                           borderRadius: kBorderRadius,
-                                          // BorderRadius
-                                          //     .circular(
-                                          //         5.0),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -341,8 +370,7 @@ class CustomFieldFilter extends StatelessWidget {
                                                 ),
                                               ),
                                               menuMaxHeight: 250,
-                                              // isDense: true,
-                                              icon: Icon(Icons
+                                              icon: const Icon(Icons
                                                   .arrow_drop_down_outlined),
                                               underline: Container(),
                                               items: [
@@ -370,7 +398,7 @@ class CustomFieldFilter extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 20.0,
                                       ),
                                       SizedBox(
@@ -382,7 +410,8 @@ class CustomFieldFilter extends StatelessWidget {
                                             filled: true,
                                             fillColor: kTertiaryBackgroundColor,
                                             border: OutlineInputBorder(
-                                                borderRadius: kBorderRadius),
+                                              borderRadius: kBorderRadius,
+                                            ),
                                             labelText: "Select Filter",
                                             labelStyle: kLabelTextStyle,
                                           ),
@@ -392,14 +421,14 @@ class CustomFieldFilter extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                              Divider(),
+                              const Divider(),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 5.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.search_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.search_outlined),
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     Text(
@@ -413,7 +442,7 @@ class CustomFieldFilter extends StatelessWidget {
                                 padding: const EdgeInsets.fromLTRB(
                                     3.0, 5.0, 3.0, 3.0),
                                 child: Container(
-                                  height: 500,
+                                  height: 550,
                                   decoration: BoxDecoration(
                                     color: kTertiaryBackgroundColor,
                                     borderRadius: kBorderRadius,

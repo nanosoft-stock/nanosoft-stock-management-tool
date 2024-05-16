@@ -11,6 +11,13 @@ abstract class VisualizeStockRepository {
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks});
 
+  List<Map<String, dynamic>> getInitialFilters(
+      {required List fields, required List stocks});
+
+  Map<String, dynamic> getFilterByValuesByDatatype({required List values});
+
+  List<Map<String, dynamic>> getFilteredStocks({required List filters});
+
   Future<void> importFromExcel();
 
   Future<void> exportToExcel();

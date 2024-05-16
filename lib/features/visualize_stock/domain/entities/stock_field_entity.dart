@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:stock_management_tool/constants/enums.dart';
 
 class StockFieldEntity extends Equatable {
   const StockFieldEntity({

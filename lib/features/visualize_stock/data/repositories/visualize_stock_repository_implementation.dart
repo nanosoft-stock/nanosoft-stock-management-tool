@@ -20,6 +20,25 @@ class VisualizeStockRepositoryImplementation
     implements VisualizeStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
+  List<String> stringFilterBy = [
+    "Equals",
+    "Not Equals",
+    "Begins With",
+    "Not Begins With",
+    "Contains",
+    "Not Contains",
+    "Ends With",
+    "Not Ends With",
+  ];
+
+  List<String> doubleFilterBy = [
+    "Equals",
+    "Not Equals",
+    "Greater Than",
+    "Lesser Than",
+    "Between"
+  ];
+
   @override
   void listenToCloudDataChange({required Function() onChange}) async {
     _objectBox.getStockStream().listen((event) {
@@ -71,6 +90,118 @@ class VisualizeStockRepositoryImplementation
     }
 
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+  }
+
+  @override
+  List<Map<String, dynamic>> getInitialFilters(
+      {required List fields, required List stocks}) {
+    return fields.map((ele) {
+      Map<String, dynamic> data = {};
+
+      data["field"] = ele.field;
+      data["show_column"] = true;
+      data["sort"] = ele.field != "date" ? Sort.none : Sort.desc;
+      data["filter_by"] = "";
+      data["filter_value"] = "";
+      data["search_value"] = "";
+
+      data.addAll(getFilterByValuesByDatatype(
+          values: stocks
+              .map((stock) => stock[ele.field].toString())
+              .toList()
+              .cast<String>()));
+
+      return data;
+    }).toList();
+  }
+
+  @override
+  Map<String, dynamic> getFilterByValuesByDatatype({required List values}) {
+    Map<String, dynamic> data = {};
+
+    if (values.every((element) {
+      if (element == "") return true;
+      return double.tryParse(element) is! double;
+    })) {
+      data = {"datatype": "string", "all_filter_by_values": stringFilterBy};
+    } else {
+      data = {"datatype": "double", "all_filter_by_values": doubleFilterBy};
+    }
+
+    return data;
+
+    // for (var element in values) {
+    //   if (element != "" && double.tryParse(element) is! double) {
+    //     return {"datatype": "string", "all_filter_by_values": stringFilterBy};
+    //   }
+    // }
+    //
+    // return {"datatype": "double", "all_filter_by_values": doubleFilterBy};
+  }
+
+  @override
+  List<Map<String, dynamic>> getFilteredStocks({required List filters}) {
+    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+
+    for (var filter in filters) {
+      print(filter["field"]);
+      stocks = stocks.where((element) {
+        if (filter["datatype"] == "string") {
+          String stockValue = element[filter["field"]].toString().toLowerCase();
+          String filterValue = filter["filter_value"].toString().toLowerCase();
+
+          if (filter["filter_by"] == "Equals") {
+            return stockValue == filterValue;
+          } else if (filter["filter_by"] == "Not Equals") {
+            return stockValue != filterValue;
+          } else if (filter["filter_by"] == "Begins With") {
+            return stockValue.startsWith(filterValue);
+          } else if (filter["filter_by"] == "Not Begins With") {
+            return !stockValue.startsWith(filterValue);
+          } else if (filter["filter_by"] == "Contains") {
+            return stockValue.contains(filterValue);
+          } else if (filter["filter_by"] == "Not Contains") {
+            return !stockValue.contains(filterValue);
+          } else if (filter["filter_by"] == "Ends With") {
+            return stockValue.endsWith(filterValue);
+          } else if (filter["filter_by"] == "Not Ends With") {
+            return !stockValue.endsWith(filterValue);
+          } else {
+            return true;
+          }
+        } else if (filter["datatype"] == "double") {
+          double? stockValue = double.tryParse(element[filter["field"]] ?? "");
+          double? filterValue = double.tryParse(filter["filter_value"]);
+
+          if (stockValue != null && filterValue != null) {
+            if (filter["filter_by"] == "Equals") {
+              return stockValue == filterValue;
+            } else if (filter["filter_by"] == "Not Equals") {
+              return stockValue != filterValue;
+            } else if (filter["filter_by"] == "Greater Than") {
+              return stockValue > filterValue;
+            } else if (filter["filter_by"] == "Lesser Than") {
+              return stockValue < filterValue;
+            } else {
+              return true;
+            }
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      }).toList();
+    }
+
+    for (var filter in filters) {
+      if (filter["sort"] != Sort.none) {
+        stocks = sortStocks(
+            field: filter["field"], sort: filter["sort"], stocks: stocks);
+      }
+    }
+
+    return stocks as List<Map<String, dynamic>>;
   }
 
   @override

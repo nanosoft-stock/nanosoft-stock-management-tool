@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/change_column_visibility_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_by_selected_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_value_entered_visualize_stock_usecase.dart';
@@ -11,6 +12,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/h
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/rearrange_columns_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_visualize_stock_usecase.dart';
 
 part 'visualize_stock_event.dart';
@@ -26,6 +28,9 @@ class VisualizeStockBloc
   final ExportToExcelUseCase? _exportToExcelUseCase;
   final AddVisualizeStockLayerUseCase? _addVisualizeStockLayerUseCase;
   final HideVisualizeStockLayerUseCase? _hideVisualizeStockLayerUseCase;
+  final RearrangeColumnsUseCase? _rearrangeColumnsUseCase;
+
+  final ChangeColumnVisibilityUseCase? _changeColumnVisibilityUseCase;
   final FilterBySelectedVisualizeStockUseCase?
       _filterBySelectedVisualizeStockUseCase;
   final FilterValueEnteredVisualizeStockUseCase?
@@ -39,6 +44,8 @@ class VisualizeStockBloc
     this._exportToExcelUseCase,
     this._addVisualizeStockLayerUseCase,
     this._hideVisualizeStockLayerUseCase,
+    this._rearrangeColumnsUseCase,
+    this._changeColumnVisibilityUseCase,
     this._filterBySelectedVisualizeStockUseCase,
     this._filterValueEnteredVisualizeStockUseCase,
   ) : super(LoadingState()) {
@@ -50,6 +57,8 @@ class VisualizeStockBloc
     on<ExportButtonClickedEvent>(exportButtonClickedEvent);
     on<FieldFilterEvent>(fieldFilterEvent);
     on<HideLayerEvent>(hideLayerEvent);
+    on<RearrangeColumnsEvent>(rearrangeColumnsEvent);
+    on<ColumnVisibilityChangedEvent>(columnVisibilityChangedEvent);
     on<FilterBySelectedEvent>(filterBySelectedEvent);
     on<FilterValueEnteredEvent>(filterValueEnteredEvent);
   }
@@ -59,11 +68,12 @@ class VisualizeStockBloc
     await Future.delayed(const Duration(seconds: 2));
     Map<String, dynamic> visualizeStock =
         await _initialVisualizeStockUseCase!();
-    // await _listenToCloudDataChangeUseCase!(params: {
-    //   "onChange": () {
-    //     add(LoadedEvent());
-    //   }
-    // });
+    await _listenToCloudDataChangeUseCase!(params: {
+      "visualize_stock": visualizeStock,
+      "on_change": (Map visualizeStock) {
+        add(LoadedEvent(visualizeStock: visualizeStock));
+      }
+    });
     emit(ReduceDuplicationActionState());
     emit(LoadedState(visualizeStock: visualizeStock));
   }
@@ -86,7 +96,14 @@ class VisualizeStockBloc
   }
 
   FutureOr<void> parentFilterEvent(
-      ParentFilterEvent event, Emitter<VisualizeStockState> emit) {}
+      ParentFilterEvent event, Emitter<VisualizeStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+        visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
+      "layer": "parent_filter",
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
 
   FutureOr<void> importButtonClickedEvent(
       ImportButtonClickedEvent event, Emitter<VisualizeStockState> emit) async {
@@ -118,6 +135,28 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _hideVisualizeStockLayerUseCase!(params: {
       "layer": event.layer,
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
+
+  FutureOr<void> rearrangeColumnsEvent(
+      RearrangeColumnsEvent event, Emitter<VisualizeStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+        visualizeStock: await _rearrangeColumnsUseCase!(params: {
+      "field_filters": event.fieldFilters,
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
+
+  FutureOr<void> columnVisibilityChangedEvent(
+      ColumnVisibilityChangedEvent event,
+      Emitter<VisualizeStockState> emit) async {
+    emit(ReduceDuplicationActionState());
+    emit(LoadedState(
+        visualizeStock: await _changeColumnVisibilityUseCase!(params: {
+      "field": event.field,
+      "visibility": event.visibility,
       "visualize_stock": event.visualizeStock,
     })));
   }

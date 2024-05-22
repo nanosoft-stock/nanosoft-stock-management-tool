@@ -9,13 +9,20 @@ class CustomParentFilter extends StatelessWidget {
     super.key,
     required this.fieldFilters,
     required this.closeOnTap,
+    required this.onReorder,
+    required this.changeVisibilityOnTap,
   });
 
   final List fieldFilters;
   final Function() closeOnTap;
+  final Function(List) onReorder;
+  final Function(String, bool) changeVisibilityOnTap;
 
   @override
   Widget build(BuildContext context) {
+    bool isOpen = false;
+    List localFieldFilters = [...fieldFilters];
+
     return Container(
       decoration: BoxDecoration(
         color: kSecondaryBackgroundColor,
@@ -76,7 +83,7 @@ class CustomParentFilter extends StatelessWidget {
                               ),
                               onPressed: () {},
                               child: Text(
-                                "Clear",
+                                "Reset",
                                 style: kLabelTextStyle,
                               ),
                             ),
@@ -96,124 +103,183 @@ class CustomParentFilter extends StatelessWidget {
                         borderRadius: kBorderRadius,
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              StatefulBuilder(
-                                builder: (BuildContext context,
-                                    void Function(void Function()) setState) {
-                                  return ReorderableListView(
-                                    shrinkWrap: true,
-                                    physics: const BouncingScrollPhysics(),
-                                    proxyDecorator: (Widget child, int index,
-                                        Animation<double> animation) {
-                                      return child;
-                                    },
-                                    onReorder: (oldIndex, newIndex) {
-                                      setState(() {
-                                        if (oldIndex < newIndex) {
-                                          newIndex -= 1;
-                                        }
-                                        final item =
-                                            fieldFilters.removeAt(oldIndex);
-                                        fieldFilters.insert(newIndex, item);
-                                      });
-                                    },
-                                    children: fieldFilters
-                                        .map((e) => Padding(
-                                              key: UniqueKey(),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 3.0,
-                                                      vertical: 4.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color:
-                                                      kTertiaryBackgroundColor,
-                                                  // index % 2 == 0
-                                                  //     ? kTertiaryBackgroundColor
-                                                  //     : kButtonBackgroundColor,
-                                                  borderRadius: kBorderRadius,
-                                                  boxShadow: kBoxShadowList,
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          e["field"]
-                                                              .toString()
-                                                              .toTitleCase(),
-                                                          style:
-                                                              kLabelTextStyle,
-                                                        ),
+                          child: StatefulBuilder(
+                            builder: (BuildContext context,
+                                void Function(void Function()) setState) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        // color: kButtonBackgroundColor,
+                                        borderRadius: kBorderRadius,
+                                        // boxShadow:
+                                        //     isOpen ? null : kBoxShadowList,
+                                      ),
+                                      child: ExpansionTile(
+                                        title: Text(
+                                          "Columns",
+                                          style: kLabelTextStyle,
+                                        ),
+                                        dense: false,
+                                        initiallyExpanded: isOpen,
+                                        backgroundColor:
+                                            kPrimaryBackgroundColor,
+                                        collapsedBackgroundColor:
+                                            kButtonBackgroundColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: kBorderRadius,
+                                        ),
+                                        collapsedShape: RoundedRectangleBorder(
+                                          borderRadius: kBorderRadius,
+                                        ),
+                                        onExpansionChanged: (value) {
+                                          setState(() {
+                                            isOpen = value;
+                                          });
+                                        },
+                                        children: [
+                                          ReorderableListView(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            proxyDecorator: (Widget child,
+                                                int index,
+                                                Animation<double> animation) {
+                                              return child;
+                                            },
+                                            onReorder: (oldIndex, newIndex) {
+                                              setState(() {
+                                                if (oldIndex < newIndex) {
+                                                  newIndex -= 1;
+                                                }
+                                                final item = localFieldFilters
+                                                    .removeAt(oldIndex);
+                                                localFieldFilters.insert(
+                                                    newIndex, item);
+                                              });
+                                              onReorder(localFieldFilters);
+                                            },
+                                            children: localFieldFilters
+                                                .map(
+                                                  (e) => Padding(
+                                                    key: UniqueKey(),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 3.0,
+                                                        vertical: 4.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            kTertiaryBackgroundColor,
+                                                        // index % 2 == 0
+                                                        //     ? kTertiaryBackgroundColor
+                                                        //     : kButtonBackgroundColor,
+                                                        borderRadius:
+                                                            kBorderRadius,
+                                                        boxShadow:
+                                                            kBoxShadowList,
                                                       ),
-                                                      Padding(
+                                                      child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .only(
-                                                                right: 30.0),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                kPrimaryBackgroundColor,
-                                                            borderRadius:
-                                                                kBorderRadius,
-                                                          ),
-                                                          child:
-                                                              SegmentedButton(
-                                                            segments: const [
-                                                              ButtonSegment(
-                                                                value: true,
-                                                                icon: Icon(Icons
-                                                                    .playlist_add_check),
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 6.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                e["field"]
+                                                                    .toString()
+                                                                    .toTitleCase(),
+                                                                style:
+                                                                    kLabelTextStyle,
                                                               ),
-                                                              ButtonSegment(
-                                                                value: false,
-                                                                icon: Icon(Icons
-                                                                    .playlist_remove_rounded),
-                                                              ),
-                                                            ],
-                                                            showSelectedIcon:
-                                                                false,
-                                                            selected: {
-                                                              e["show_column"]
-                                                            },
-                                                            selectedIcon:
-                                                                const SizedBox
-                                                                    .shrink(),
-                                                            style: ButtonStyle(
-                                                              shape: MaterialStateProperty
-                                                                  .all<
-                                                                      OutlinedBorder>(
-                                                                RoundedRectangleBorder(
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      right:
+                                                                          40.0),
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color:
+                                                                      kPrimaryBackgroundColor,
                                                                   borderRadius:
                                                                       kBorderRadius,
                                                                 ),
+                                                                child:
+                                                                    SegmentedButton(
+                                                                  segments: const [
+                                                                    ButtonSegment(
+                                                                      value:
+                                                                          true,
+                                                                      icon: Icon(
+                                                                          Icons
+                                                                              .playlist_add_check),
+                                                                    ),
+                                                                    ButtonSegment(
+                                                                      value:
+                                                                          false,
+                                                                      icon: Icon(
+                                                                          Icons
+                                                                              .playlist_remove_rounded),
+                                                                    ),
+                                                                  ],
+                                                                  showSelectedIcon:
+                                                                      false,
+                                                                  selected: {
+                                                                    e["show_column"]
+                                                                  },
+                                                                  selectedIcon:
+                                                                      const SizedBox
+                                                                          .shrink(),
+                                                                  style:
+                                                                      ButtonStyle(
+                                                                    shape: MaterialStateProperty
+                                                                        .all<
+                                                                            OutlinedBorder>(
+                                                                      RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            kBorderRadius,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  onSelectionChanged:
+                                                                      (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      e["show_column"] =
+                                                                          value
+                                                                              .first;
+                                                                    });
+                                                                    changeVisibilityOnTap(
+                                                                        e["field"],
+                                                                        value.first);
+                                                                  },
+                                                                ),
                                                               ),
                                                             ),
-                                                            onSelectionChanged:
-                                                                (value) {
-                                                              setState(() {
-                                                                e["show_column"] =
-                                                                    value.first;
-                                                              });
-                                                            },
-                                                          ),
+                                                          ],
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ))
-                                        .toList(),
-                                  );
-                                },
-                              ),
-                            ],
+                                                )
+                                                .toList(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -228,3 +294,153 @@ class CustomParentFilter extends StatelessWidget {
     );
   }
 }
+
+// class ParentFilterColumn extends StatefulWidget {
+//   const ParentFilterColumn({super.key, required this.fieldFilters});
+//
+//   final List fieldFilters;
+//
+//   @override
+//   State<ParentFilterColumn> createState() => _ParentFilterColumnState();
+// }
+//
+// class _ParentFilterColumnState extends State<ParentFilterColumn> {
+//   final ExpansionTileController columnController = ExpansionTileController();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.all(3.0),
+//           child: Container(
+//             decoration: BoxDecoration(
+//               // color: kButtonBackgroundColor,
+//               borderRadius: kBorderRadius,
+//               boxShadow: !columnController.isExpanded ? kBoxShadowList : null,
+//             ),
+//             child: ExpansionTile(
+//               key: UniqueKey(),
+//               title: Text("Columns"),
+//               controller: columnController,
+//               initiallyExpanded: false,
+//               backgroundColor: kPrimaryBackgroundColor,
+//               collapsedBackgroundColor: kButtonBackgroundColor,
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: kBorderRadius,
+//               ),
+//               collapsedShape: RoundedRectangleBorder(
+//                 borderRadius: kBorderRadius,
+//               ),
+//               children: [
+//                 ReorderableListView(
+//                   shrinkWrap: true,
+//                   physics: const BouncingScrollPhysics(),
+//                   proxyDecorator:
+//                       (Widget child, int index, Animation<double> animation) {
+//                     return child;
+//                   },
+//                   onReorder: (oldIndex, newIndex) {
+//                     setState(() {
+//                       if (oldIndex < newIndex) {
+//                         newIndex -= 1;
+//                       }
+//                       final item = widget.fieldFilters.removeAt(oldIndex);
+//                       widget.fieldFilters.insert(newIndex, item);
+//                     });
+//                   },
+//                   children: widget.fieldFilters
+//                       .map((e) => Padding(
+//                             key: UniqueKey(),
+//                             padding: const EdgeInsets.symmetric(
+//                                 horizontal: 3.0, vertical: 4.0),
+//                             child: Container(
+//                               decoration: BoxDecoration(
+//                                 color: kTertiaryBackgroundColor,
+//                                 // index % 2 == 0
+//                                 //     ? kTertiaryBackgroundColor
+//                                 //     : kButtonBackgroundColor,
+//                                 borderRadius: kBorderRadius,
+//                                 boxShadow: kBoxShadowList,
+//                               ),
+//                               child: Padding(
+//                                 padding: const EdgeInsets.symmetric(
+//                                     horizontal: 8.0, vertical: 4.0),
+//                                 child: Row(
+//                                   children: [
+//                                     Expanded(
+//                                       child: Text(
+//                                         e["field"].toString().toTitleCase(),
+//                                         style: kLabelTextStyle,
+//                                       ),
+//                                     ),
+//                                     // Padding(
+//                                     //   padding:
+//                                     //       const EdgeInsets
+//                                     //           .only(
+//                                     //           right: 40.0),
+//                                     //   child: Container(
+//                                     //     decoration:
+//                                     //         BoxDecoration(
+//                                     //       color:
+//                                     //           kPrimaryBackgroundColor,
+//                                     //       borderRadius:
+//                                     //           kBorderRadius,
+//                                     //     ),
+//                                     //     child:
+//                                     //         SegmentedButton(
+//                                     //       segments: const [
+//                                     //         ButtonSegment(
+//                                     //           value: true,
+//                                     //           icon: Icon(Icons
+//                                     //               .playlist_add_check),
+//                                     //         ),
+//                                     //         ButtonSegment(
+//                                     //           value: false,
+//                                     //           icon: Icon(Icons
+//                                     //               .playlist_remove_rounded),
+//                                     //         ),
+//                                     //       ],
+//                                     //       showSelectedIcon:
+//                                     //           false,
+//                                     //       selected: {
+//                                     //         e["show_column"]
+//                                     //       },
+//                                     //       selectedIcon:
+//                                     //           const SizedBox
+//                                     //               .shrink(),
+//                                     //       style: ButtonStyle(
+//                                     //         shape: MaterialStateProperty
+//                                     //             .all<
+//                                     //                 OutlinedBorder>(
+//                                     //           RoundedRectangleBorder(
+//                                     //             borderRadius:
+//                                     //                 kBorderRadius,
+//                                     //           ),
+//                                     //         ),
+//                                     //       ),
+//                                     //       onSelectionChanged:
+//                                     //           (value) {
+//                                     //         setState(() {
+//                                     //           e["show_column"] =
+//                                     //               value.first;
+//                                     //         });
+//                                     //       },
+//                                     //     ),
+//                                     //   ),
+//                                     // ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             ),
+//                           ))
+//                       .toList(),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

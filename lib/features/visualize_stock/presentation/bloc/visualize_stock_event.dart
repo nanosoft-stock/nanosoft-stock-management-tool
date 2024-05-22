@@ -61,6 +61,25 @@ class HideLayerEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
+class RearrangeColumnsEvent extends VisualizeStockEvent {
+  const RearrangeColumnsEvent(
+      {required this.fieldFilters, required this.visualizeStock});
+
+  final List? fieldFilters;
+  final Map? visualizeStock;
+}
+
+class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
+  const ColumnVisibilityChangedEvent(
+      {required this.field,
+      required this.visibility,
+      required this.visualizeStock});
+
+  final String? field;
+  final bool? visibility;
+  final Map? visualizeStock;
+}
+
 class FilterBySelectedEvent extends VisualizeStockEvent {
   const FilterBySelectedEvent({
     required this.field,

@@ -10,6 +10,7 @@ class CustomFieldFilter extends StatelessWidget {
     super.key,
     required this.fieldFilter,
     required this.closeOnTap,
+    required this.changeVisibilityOnTap,
     required this.sortOnPressed,
     required this.filterBySelected,
     required this.filterValueEntered,
@@ -17,6 +18,7 @@ class CustomFieldFilter extends StatelessWidget {
 
   final Map<String, dynamic> fieldFilter;
   final Function() closeOnTap;
+  final Function(String, bool) changeVisibilityOnTap;
   final Function(String, Sort) sortOnPressed;
   final Function(String, String) filterBySelected;
   final Function(String, String) filterValueEntered;
@@ -158,7 +160,10 @@ class CustomFieldFilter extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  onSelectionChanged: (value) {},
+                                  onSelectionChanged: (value) {
+                                    changeVisibilityOnTap(
+                                        fieldFilter["field"], value.first);
+                                  },
                                 ),
                               ),
                               const Divider(),

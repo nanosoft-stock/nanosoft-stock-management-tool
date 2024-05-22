@@ -78,8 +78,10 @@ class VisualiseStockView extends StatelessWidget {
   }
 
   Widget _buildLoadedStateWidget(Map visualizeStock) {
-    List fields = visualizeStock["fields"];
+    List fields = visualizeStock["show_fields"];
     List stocks = visualizeStock["stocks"];
+    List filters = visualizeStock["filters"];
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
@@ -108,7 +110,10 @@ class VisualiseStockView extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(7.0),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  _visualizeStockBloc.add(ParentFilterEvent(
+                                      visualizeStock: visualizeStock));
+                                },
                                 child: Text(
                                   "Filter",
                                   style: kLabelTextStyle,
@@ -213,13 +218,11 @@ class VisualiseStockView extends StatelessWidget {
                                 cellBuilder: (BuildContext context,
                                     TableVicinity vicinity) {
                                   if (vicinity.row == 0) {
-                                    String field = visualizeStock["show_fields"]
-                                            [vicinity.column]
-                                        .toString();
+                                    String field =
+                                        fields[vicinity.column].toString();
 
-                                    Sort sort = visualizeStock["filters"]
-                                        .firstWhere(
-                                            (e) => e["field"] == field)["sort"];
+                                    Sort sort = filters.firstWhere(
+                                        (e) => e["field"] == field)["sort"];
 
                                     return TableViewCell(
                                       child: Padding(
@@ -274,15 +277,12 @@ class VisualiseStockView extends StatelessWidget {
                                       ),
                                     );
                                   } else {
-                                    String text = (stocks[vicinity.row - 1][
-                                                visualizeStock["show_fields"]
-                                                    [vicinity.column]] ??
+                                    String text = (stocks[vicinity.row - 1]
+                                                [fields[vicinity.column]] ??
                                             "")
                                         .toString();
 
-                                    if (visualizeStock["show_fields"]
-                                            [vicinity.column] ==
-                                        "date") {
+                                    if (fields[vicinity.column] == "date") {
                                       text = DateFormat('dd-MM-yyyy').format(
                                           DateTime.parse(text.toUpperCase()));
                                     }
@@ -322,6 +322,12 @@ class VisualiseStockView extends StatelessWidget {
                     _visualizeStockBloc.add(HideLayerEvent(
                         layer: "field_filter", visualizeStock: visualizeStock));
                   },
+                  changeVisibilityOnTap: (field, visibility) {
+                    _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
+                        visibility: visibility,
+                        field: field,
+                        visualizeStock: visualizeStock));
+                  },
                   sortOnPressed: (field, sort) {
                     _visualizeStockBloc.add(SortFieldEvent(
                       field: field,
@@ -345,21 +351,33 @@ class VisualiseStockView extends StatelessWidget {
                   },
                 ),
               ),
-            // if (visualizeStock["layers"].contains("parent_filter"))
-            CustomOverlayEffect(
-              width: constraints.maxWidth / 3,
-              hideOverlay: () {
-                _visualizeStockBloc.add(HideLayerEvent(
-                    layer: "parent_filter", visualizeStock: visualizeStock));
-              },
-              child: CustomParentFilter(
-                fieldFilters: visualizeStock["filters"],
-                closeOnTap: () {
+            if (visualizeStock["layers"].contains("parent_filter"))
+              CustomOverlayEffect(
+                width: constraints.maxWidth / 3,
+                hideOverlay: () {
                   _visualizeStockBloc.add(HideLayerEvent(
                       layer: "parent_filter", visualizeStock: visualizeStock));
                 },
+                child: CustomParentFilter(
+                  fieldFilters: visualizeStock["filters"],
+                  closeOnTap: () {
+                    _visualizeStockBloc.add(HideLayerEvent(
+                        layer: "parent_filter",
+                        visualizeStock: visualizeStock));
+                  },
+                  onReorder: (fieldFilters) {
+                    _visualizeStockBloc.add(RearrangeColumnsEvent(
+                        fieldFilters: fieldFilters,
+                        visualizeStock: visualizeStock));
+                  },
+                  changeVisibilityOnTap: (field, visibility) {
+                    _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
+                        visibility: visibility,
+                        field: field,
+                        visualizeStock: visualizeStock));
+                  },
+                ),
               ),
-            ),
           ],
         );
       },

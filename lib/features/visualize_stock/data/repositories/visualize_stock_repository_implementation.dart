@@ -40,13 +40,16 @@ class VisualizeStockRepositoryImplementation
   ];
 
   @override
-  void listenToCloudDataChange({required Function() onChange}) async {
+  void listenToCloudDataChange(
+      {required Map visualizeStock, required Function(Map) onChange}) async {
     _objectBox.getStockStream().listen((event) {
-      onChange();
+      visualizeStock["stocks"] =
+          getFilteredStocks(filters: visualizeStock["filters"]);
+      onChange(visualizeStock);
     });
-    _objectBox.getInputFieldStream().listen((event) {
-      onChange();
-    });
+    // _objectBox.getInputFieldStream().listen((event) {
+    //   onChange();
+    // });
   }
 
   @override
@@ -144,7 +147,6 @@ class VisualizeStockRepositoryImplementation
     List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
 
     for (var filter in filters) {
-      print(filter["field"]);
       stocks = stocks.where((element) {
         if (filter["datatype"] == "string") {
           String stockValue = element[filter["field"]].toString().toLowerCase();

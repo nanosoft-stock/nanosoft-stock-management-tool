@@ -50,6 +50,7 @@ import 'package:stock_management_tool/features/locate_stock/presentation/bloc/lo
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/change_column_visibility_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_by_selected_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_value_entered_visualize_stock_usecase.dart';
@@ -57,6 +58,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/h
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/import_from_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/rearrange_columns_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/objectbox.dart';
@@ -128,12 +130,16 @@ Future<void> initializeDependencies() async {
       () => AddVisualizeStockLayerUseCase());
   sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
       () => HideVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<RearrangeColumnsUseCase>(
+      () => RearrangeColumnsUseCase());
+  sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
+      () => ChangeColumnVisibilityUseCase());
   sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
       () => FilterBySelectedVisualizeStockUseCase());
   sl.registerLazySingleton<FilterValueEnteredVisualizeStockUseCase>(
       () => FilterValueEnteredVisualizeStockUseCase(sl()));
-  sl.registerFactory<VisualizeStockBloc>(() =>
-      VisualizeStockBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(

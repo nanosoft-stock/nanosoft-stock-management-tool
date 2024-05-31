@@ -2,20 +2,14 @@ part of 'visualize_stock_bloc.dart';
 
 abstract class VisualizeStockState extends Equatable {
   const VisualizeStockState({
-    // this.fields,
-    // this.stocks,
     this.visualizeStock,
   });
 
-  // final List? fields;
-  // final List? stocks;
   final Map? visualizeStock;
 
   @override
   List<Object> get props => [
-        // fields!,
-        // stocks!,
-        visualizeStock!,
+        Random().nextDouble(),
       ];
 }
 
@@ -30,7 +24,5 @@ class LoadedState extends VisualizeStockState {
 class ImportTableActionState extends VisualizeStockActionState {}
 
 class ExportTableActionState extends VisualizeStockActionState {}
-
-class ReduceDuplicationActionState extends VisualizeStockActionState {}
 
 class ErrorState extends VisualizeStockState {}

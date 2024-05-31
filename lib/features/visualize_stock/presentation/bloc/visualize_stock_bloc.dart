@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -74,19 +75,16 @@ class VisualizeStockBloc
         add(LoadedEvent(visualizeStock: visualizeStock));
       }
     });
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(visualizeStock: visualizeStock));
   }
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(visualizeStock: event.visualizeStock));
   }
 
   FutureOr<void> sortFieldEvent(
       SortFieldEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _sortVisualizeStockUseCase!(params: {
       "field": event.field,
@@ -97,7 +95,6 @@ class VisualizeStockBloc
 
   FutureOr<void> parentFilterEvent(
       ParentFilterEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "layer": "parent_filter",
@@ -121,7 +118,6 @@ class VisualizeStockBloc
 
   FutureOr<void> fieldFilterEvent(
       FieldFilterEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "field": event.field,
@@ -131,7 +127,6 @@ class VisualizeStockBloc
 
   FutureOr<void> hideLayerEvent(
       HideLayerEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _hideVisualizeStockLayerUseCase!(params: {
       "layer": event.layer,
@@ -141,7 +136,6 @@ class VisualizeStockBloc
 
   FutureOr<void> rearrangeColumnsEvent(
       RearrangeColumnsEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _rearrangeColumnsUseCase!(params: {
       "field_filters": event.fieldFilters,
@@ -152,7 +146,6 @@ class VisualizeStockBloc
   FutureOr<void> columnVisibilityChangedEvent(
       ColumnVisibilityChangedEvent event,
       Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _changeColumnVisibilityUseCase!(params: {
       "field": event.field,
@@ -163,7 +156,6 @@ class VisualizeStockBloc
 
   FutureOr<void> filterBySelectedEvent(
       FilterBySelectedEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock: await _filterBySelectedVisualizeStockUseCase!(params: {
       "field": event.field,
@@ -174,7 +166,6 @@ class VisualizeStockBloc
 
   FutureOr<void> filterValueEnteredEvent(
       FilterValueEnteredEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         visualizeStock:
             await _filterValueEnteredVisualizeStockUseCase!(params: {

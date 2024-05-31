@@ -11,7 +11,7 @@ abstract class LocateStockState extends Equatable {
 
   @override
   List<Object> get props => [
-        locatedStock!,
+        Random().nextDouble(),
       ];
 }
 
@@ -25,7 +25,5 @@ class LoadedState extends LocateStockState {
     super.locatedStock,
   });
 }
-
-class ReduceDuplicationActionState extends LocateStockActionState {}
 
 class ErrorState extends LocateStockState {}

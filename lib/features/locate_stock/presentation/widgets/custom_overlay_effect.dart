@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class CustomOverlayEffect extends StatelessWidget {
@@ -26,11 +24,8 @@ class CustomOverlayEffect extends StatelessWidget {
           ),
           Positioned.fill(
             child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                child: Center(
-                  child: child,
-                ),
+              child: Center(
+                child: child,
               ),
             ),
           ),

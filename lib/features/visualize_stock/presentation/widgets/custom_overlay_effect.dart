@@ -28,17 +28,14 @@ class CustomOverlayEffect extends StatelessWidget {
           ),
           Positioned.fill(
             child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 57, 0, 40),
-                    child: SizedBox(
-                      width: width,
-                      height: double.infinity,
-                      child: child,
-                    ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 57, 0, 40),
+                  child: SizedBox(
+                    width: width,
+                    height: double.infinity,
+                    child: child,
                   ),
                 ),
               ),

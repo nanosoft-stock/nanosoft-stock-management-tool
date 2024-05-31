@@ -20,6 +20,29 @@ class VisualizeStockRepositoryImplementation
     implements VisualizeStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
+  List fieldsOrder = [
+    "date",
+    "category",
+    "warehouse location",
+    "container id",
+    "item id",
+    "serial number",
+    "sku",
+    "make",
+    "model",
+    "processor",
+    "ram",
+    "storage",
+    "screen resolution",
+    "os",
+    "dispatch info",
+    "container id",
+    "warehouse location",
+    "comments",
+    "staff",
+    "archived",
+  ];
+
   List<String> stringFilterBy = [
     "Equals",
     "Not Equals",
@@ -47,14 +70,22 @@ class VisualizeStockRepositoryImplementation
           getFilteredStocks(filters: visualizeStock["filters"]);
       onChange(visualizeStock);
     });
-    // _objectBox.getInputFieldStream().listen((event) {
-    //   onChange();
-    // });
+    _objectBox.getInputFieldStream().listen((event) {
+      onChange(visualizeStock);
+    });
   }
 
   @override
   List<StockFieldModel> getAllFields() {
     List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
+
+    List newFields = [];
+
+    fieldsOrder.forEach((ele) {
+      newFields.add(fields.firstWhere((e) => e["field"] == ele));
+    });
+
+    fields = newFields;
 
     return fields.map((e) => StockFieldModel.fromJson(e)).toSet().toList();
   }

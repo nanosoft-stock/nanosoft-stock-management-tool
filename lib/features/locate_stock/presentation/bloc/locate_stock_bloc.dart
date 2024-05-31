@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -116,13 +117,11 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         add(LoadedEvent(locatedStock: locatedStock.cast<String, dynamic>()));
       },
     });
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(locatedStock: locatedStock));
   }
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
       locatedStock: event.locatedStock!.cast<String, dynamic>(),
     ));
@@ -130,7 +129,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> addNewInputRowEvent(
       AddNewInputRowEvent event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _addNewInputRowUseCase!(params: {
       "located_stock": event.locatedStock,
@@ -139,7 +137,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> removeInputRowEvent(
       RemoveInputRowEvent event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _removeInputRowUseCase!(params: {
       "index": event.index,
@@ -149,7 +146,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> hideOverlayLayerEvent(
       HideOverlayLayerEvent event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _hideOverlayLayerUseCase!(params: {
       "layer": event.layer,
@@ -159,7 +155,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> searchByFieldFilled(
       SearchByFieldFilled event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         index: event.index,
         locatedStock: await _searchByFieldFilledUseCase!(params: {
@@ -171,7 +166,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> chooseIdsButtonPressed(
       ChooseIdsButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         index: event.index,
         locatedStock: await _chooseIdsUseCase!(params: {
@@ -181,7 +175,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> idEntered(
       IdEntered event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         index: event.index,
         locatedStock: await _idEnteredUseCase!(params: {
@@ -193,7 +186,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> idsChosen(
       IdsChosen event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _idsChosenUseCase!(params: {
       "index": event.index,
@@ -204,7 +196,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> switchTableView(
       SwitchTableView event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _switchTableViewUseCase!(params: {
       "index": event.index,
@@ -215,7 +206,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> switchStockViewMode(
       SwitchStockViewMode event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _switchStockViewModeUseCase!(params: {
       "index": event.index,
@@ -226,7 +216,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> idCheckBoxToggled(
       IdCheckBoxToggled event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _idCheckBoxToggledUseCase!(params: {
       "index": event.index,
@@ -238,7 +227,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> selectAllCheckBoxToggled(
       SelectAllCheckBoxToggled event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _selectAllCheckBoxToggledUseCase!(params: {
       "index": event.index,
@@ -249,7 +237,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> previewMoveButtonPressed(
       PreviewMoveButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _getSelectedItemsUseCase!(params: {
       "located_stock": event.locatedStock,
@@ -258,7 +245,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> containerIdEntered(
       ContainerIdEntered event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _containerIDEnteredUseCase!(params: {
       "text": event.text,
@@ -268,7 +254,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> warehouseLocationIdEntered(
       WarehouseLocationIdEntered event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _warehouseLocationIDEnteredUseCase!(params: {
       "text": event.text,
@@ -278,7 +263,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> moveItemsButtonPressed(
       MoveItemsButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
       locatedStock: await _moveItemsButtonPressedUseCase!(
           params: {"located_stock": event.locatedStock}),
@@ -287,7 +271,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> pendingMovesButtonPressed(
       PendingMovesButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
       locatedStock: await _getAllPendingStateItemsUseCase!(
           params: {"located_stock": event.locatedStock}),
@@ -296,7 +279,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> expandPendingMovesItem(
       ExpandPendingMovesItem event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _expandPendingMovesItemUseCase!(params: {
       "index": event.index,
@@ -307,7 +289,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> completeMoveButtonPressed(
       CompleteMoveButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _completePendingMoveUseCase!(params: {
       "index": event.index,
@@ -317,7 +298,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> cancelMoveButtonPressed(
       CancelMoveButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _cancelPendingMoveUseCase!(params: {
       "index": event.index,
@@ -327,7 +307,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> completedMovesButtonPressed(
       CompletedMovesButtonPressed event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _getAllCompletedStateItemsUseCase!(params: {
       "located_stock": event.locatedStock,
@@ -336,7 +315,6 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> expandCompletedMovesItem(
       ExpandCompletedMovesItem event, Emitter<LocateStockState> emit) async {
-    emit(ReduceDuplicationActionState());
     emit(LoadedState(
         locatedStock: await _expandCompletedMovesItemUseCase!(params: {
       "index": event.index,

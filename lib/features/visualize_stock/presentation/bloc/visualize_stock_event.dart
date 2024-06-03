@@ -80,6 +80,16 @@ class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
+class ClearFieldFilterEvent extends VisualizeStockEvent {
+  const ClearFieldFilterEvent({
+    required this.field,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final Map? visualizeStock;
+}
+
 class FilterBySelectedEvent extends VisualizeStockEvent {
   const FilterBySelectedEvent({
     required this.field,

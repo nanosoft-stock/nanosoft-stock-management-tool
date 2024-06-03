@@ -322,6 +322,10 @@ class VisualiseStockView extends StatelessWidget {
                     _visualizeStockBloc.add(HideLayerEvent(
                         layer: "field_filter", visualizeStock: visualizeStock));
                   },
+                  clearOnPressed: (field) {
+                    _visualizeStockBloc.add(ClearFieldFilterEvent(
+                        field: field, visualizeStock: visualizeStock));
+                  },
                   changeVisibilityOnTap: (field, visibility) {
                     _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
                         visibility: visibility,

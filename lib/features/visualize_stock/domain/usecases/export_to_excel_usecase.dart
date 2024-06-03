@@ -8,6 +8,13 @@ class ExportToExcelUseCase extends UseCase {
 
   @override
   Future call({params}) {
-    return _visualizeStockRepository.exportToExcel();
+    Map<String, dynamic> visualizeStock = params["visualize_stock"];
+
+    List fields = visualizeStock["fields"]
+        .where((e) => visualizeStock["show_fields"].contains(e.field) as bool)
+        .toList();
+
+    return _visualizeStockRepository.exportToExcel(
+        fields: fields, stocks: visualizeStock["stocks"]);
   }
 }

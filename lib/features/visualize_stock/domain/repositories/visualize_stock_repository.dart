@@ -21,5 +21,5 @@ abstract class VisualizeStockRepository {
 
   Future<void> importFromExcel();
 
-  Future<void> exportToExcel();
+  Future<void> exportToExcel({required List fields, required List stocks});
 }

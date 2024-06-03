@@ -10,6 +10,7 @@ class CustomFieldFilter extends StatelessWidget {
     super.key,
     required this.fieldFilter,
     required this.closeOnTap,
+    required this.clearOnPressed,
     required this.changeVisibilityOnTap,
     required this.sortOnPressed,
     required this.filterBySelected,
@@ -18,6 +19,7 @@ class CustomFieldFilter extends StatelessWidget {
 
   final Map<String, dynamic> fieldFilter;
   final Function() closeOnTap;
+  final Function(String) clearOnPressed;
   final Function(String, bool) changeVisibilityOnTap;
   final Function(String, Sort) sortOnPressed;
   final Function(String, String) filterBySelected;
@@ -83,7 +85,9 @@ class CustomFieldFilter extends StatelessWidget {
                                   borderRadius: kBorderRadius,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                clearOnPressed(fieldFilter["field"]);
+                              },
                               child: Text(
                                 "Clear",
                                 style: kLabelTextStyle,

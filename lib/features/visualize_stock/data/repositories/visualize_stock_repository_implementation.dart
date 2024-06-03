@@ -420,18 +420,16 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  Future<void> exportToExcel() async {
+  Future<void> exportToExcel(
+      {required List fields, required List stocks}) async {
     Excel excel = Excel.createExcel();
 
     excel.rename("Sheet1", "Stock");
     Sheet sheetObject = excel["Stock"];
 
-    List fields = getAllFields();
-    List stock = getAllStocks();
-
     int column = 0;
     int row = 0;
-    while (row <= stock.length) {
+    while (row <= stocks.length) {
       column = 0;
       if (row == 0) {
         for (var field in fields) {
@@ -446,7 +444,7 @@ class VisualizeStockRepositoryImplementation
         for (var field in fields) {
           var cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(stock[row - 1][field.field].toString());
+          cell.value = TextCellValue(stocks[row - 1][field.field].toString());
           column++;
         }
       }

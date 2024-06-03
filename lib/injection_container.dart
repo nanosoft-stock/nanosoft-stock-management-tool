@@ -51,6 +51,7 @@ import 'package:stock_management_tool/features/visualize_stock/data/repositories
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/change_column_visibility_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/clear_field_filter_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_by_selected_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_value_entered_visualize_stock_usecase.dart';
@@ -134,12 +135,14 @@ Future<void> initializeDependencies() async {
       () => RearrangeColumnsUseCase());
   sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
       () => ChangeColumnVisibilityUseCase());
+  sl.registerLazySingleton<ClearFieldFilterVisualizeStockUseCase>(
+      () => ClearFieldFilterVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
       () => FilterBySelectedVisualizeStockUseCase());
   sl.registerLazySingleton<FilterValueEnteredVisualizeStockUseCase>(
       () => FilterValueEnteredVisualizeStockUseCase(sl()));
   sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
-      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(

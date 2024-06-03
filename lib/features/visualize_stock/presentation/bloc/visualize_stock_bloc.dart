@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/change_column_visibility_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/clear_field_filter_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/export_to_excel_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_by_selected_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/filter_value_entered_visualize_stock_usecase.dart';
@@ -30,8 +31,9 @@ class VisualizeStockBloc
   final AddVisualizeStockLayerUseCase? _addVisualizeStockLayerUseCase;
   final HideVisualizeStockLayerUseCase? _hideVisualizeStockLayerUseCase;
   final RearrangeColumnsUseCase? _rearrangeColumnsUseCase;
-
   final ChangeColumnVisibilityUseCase? _changeColumnVisibilityUseCase;
+  final ClearFieldFilterVisualizeStockUseCase?
+      _clearFieldFilterVisualizeStockUseCase;
   final FilterBySelectedVisualizeStockUseCase?
       _filterBySelectedVisualizeStockUseCase;
   final FilterValueEnteredVisualizeStockUseCase?
@@ -47,6 +49,7 @@ class VisualizeStockBloc
     this._hideVisualizeStockLayerUseCase,
     this._rearrangeColumnsUseCase,
     this._changeColumnVisibilityUseCase,
+    this._clearFieldFilterVisualizeStockUseCase,
     this._filterBySelectedVisualizeStockUseCase,
     this._filterValueEnteredVisualizeStockUseCase,
   ) : super(LoadingState()) {
@@ -60,6 +63,7 @@ class VisualizeStockBloc
     on<HideLayerEvent>(hideLayerEvent);
     on<RearrangeColumnsEvent>(rearrangeColumnsEvent);
     on<ColumnVisibilityChangedEvent>(columnVisibilityChangedEvent);
+    on<ClearFieldFilterEvent>(clearFieldFilterEvent);
     on<FilterBySelectedEvent>(filterBySelectedEvent);
     on<FilterValueEnteredEvent>(filterValueEnteredEvent);
   }
@@ -105,15 +109,13 @@ class VisualizeStockBloc
   FutureOr<void> importButtonClickedEvent(
       ImportButtonClickedEvent event, Emitter<VisualizeStockState> emit) async {
     await _importFromExcelUseCase!();
-    emit(ImportTableActionState());
-    emit(LoadedState(visualizeStock: event.visualizeStock!));
   }
 
   FutureOr<void> exportButtonClickedEvent(
       ExportButtonClickedEvent event, Emitter<VisualizeStockState> emit) async {
-    await _exportToExcelUseCase!();
-    emit(ExportTableActionState());
-    emit(LoadedState(visualizeStock: event.visualizeStock!));
+    await _exportToExcelUseCase!(params: {
+      "visualize_stock": event.visualizeStock,
+    });
   }
 
   FutureOr<void> fieldFilterEvent(
@@ -150,6 +152,15 @@ class VisualizeStockBloc
         visualizeStock: await _changeColumnVisibilityUseCase!(params: {
       "field": event.field,
       "visibility": event.visibility,
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
+
+  FutureOr<void> clearFieldFilterEvent(
+      ClearFieldFilterEvent event, Emitter<VisualizeStockState> emit) async {
+    emit(LoadedState(
+        visualizeStock: await _clearFieldFilterVisualizeStockUseCase!(params: {
+      "field": event.field,
       "visualize_stock": event.visualizeStock,
     })));
   }

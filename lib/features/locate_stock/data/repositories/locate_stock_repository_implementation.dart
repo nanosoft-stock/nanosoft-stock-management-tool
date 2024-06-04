@@ -535,7 +535,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
           .toList()
           .cast<Map<String, dynamic>>();
       histories.sort((a, b) => b["date"].compareTo(a["date"]));
-      histories = histories.sublist(0, 10);
+      histories =
+          histories.sublist(0, histories.length >= 10 ? 10 : histories.length);
     } else {
       histories = histories.cast<Map<String, dynamic>>();
     }

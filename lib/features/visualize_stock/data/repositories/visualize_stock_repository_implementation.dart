@@ -269,6 +269,7 @@ class VisualizeStockRepositoryImplementation
 
     for (var table in excel.tables.keys) {
       for (var cell in excel.tables[table]!.rows.first) {
+        print(cell!.value!);
         header.add((cell!.value! as TextCellValue).value.toLowerCase());
       }
 
@@ -291,10 +292,10 @@ class VisualizeStockRepositoryImplementation
               value = cellValue.value.toString();
               break;
             case BoolCellValue():
-              value = cellValue.value;
+              value = cellValue.value.toString();
               break;
             case DoubleCellValue():
-              value = cellValue.value;
+              value = cellValue.value.toString();
               break;
             case DateCellValue():
               // print('  date: ${cellValue.year} ${cellValue.month} ${cellValue.day} (${cellValue.asDateTimeLocal()})');
@@ -310,6 +311,7 @@ class VisualizeStockRepositoryImplementation
           }
 
           rowData[header[i]] = value;
+          print(rowData);
         }
 
         await sl.get<Firestore>().createDocument(

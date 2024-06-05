@@ -167,6 +167,10 @@ class ObjectBox {
     stockModelBox!.remove(id);
   }
 
+  void removeStockList(List<int> ids) async {
+    stockModelBox!.removeMany(ids);
+  }
+
   Future<void> removeAllStocks() async {
     await stockModelBox!.removeAllAsync();
   }
@@ -321,6 +325,10 @@ class ObjectBox {
 
   void removeStockLocationHistory(int id) async {
     stockLocationHistoryModelBox!.remove(id);
+  }
+
+  void removeStockLocationHistoryList(List<int> ids) async {
+    stockLocationHistoryModelBox!.removeMany(ids);
   }
 
   Future<void> removeAllStockLocationHistory() async {

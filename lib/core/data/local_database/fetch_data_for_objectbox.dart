@@ -189,12 +189,20 @@ class FetchDataForObjectbox {
           .get<Firestore>()
           .listenToDocumentChanges(path: "stock_data")
           .listen((snapshot) {
+        List addStock = [];
+        List modifyStock = [];
+        List removeStock = [];
+
         for (var element in snapshot.docChanges) {
           if (element.type.name == "added") {
-            _objectBox.addStock(StockObjectBoxModel.fromJson({
+            addStock.add(StockObjectBoxModel.fromJson({
               ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
             }));
+            // _objectBox.addStock(StockObjectBoxModel.fromJson({
+            //   ...element.doc.data() as Map<String, dynamic>,
+            //   "uid": element.doc.id,
+            // }));
           } else if (element.type.name == "modified") {
             Query query = _objectBox.stockModelBox!
                 .query(StockObjectBoxModel_.uid.equals(element.doc.id))
@@ -209,7 +217,9 @@ class FetchDataForObjectbox {
             });
             stock.id = id;
 
-            _objectBox.addStock(stock);
+            modifyStock.add(stock);
+
+            // _objectBox.addStock(stock);
           } else if (element.type.name == "removed") {
             Query query = _objectBox.stockModelBox!
                 .query(StockObjectBoxModel_.uid.equals(element.doc.id))
@@ -217,9 +227,15 @@ class FetchDataForObjectbox {
             StockObjectBoxModel stock = query.findFirst();
             query.close();
 
-            _objectBox.removeStock(stock.id);
+            removeStock.add(stock.id);
+
+            // _objectBox.removeStock(stock.id);
           }
         }
+
+        _objectBox.addStockList(addStock.cast<StockObjectBoxModel>());
+        _objectBox.addStockList(modifyStock.cast<StockObjectBoxModel>());
+        _objectBox.removeStockList(removeStock.cast<int>());
       });
     } else {
       List items = await sl.get<Firestore>().getDocuments(
@@ -416,13 +432,22 @@ class FetchDataForObjectbox {
             path: "stock_location_history",
           )
           .listen((snapshot) {
+        List addHistory = [];
+        List modifyHistory = [];
+        List removeHistory = [];
+
         for (var element in snapshot.docChanges) {
           if (element.type.name == "added") {
-            _objectBox.addStockLocationHistory(
-                StockLocationHistoryObjectBoxModel.fromJson({
+            addHistory.add(StockLocationHistoryObjectBoxModel.fromJson({
               ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
             }));
+
+            // _objectBox.addStockLocationHistory(
+            //     StockLocationHistoryObjectBoxModel.fromJson({
+            //   ...element.doc.data() as Map<String, dynamic>,
+            //   "uid": element.doc.id,
+            // }));
           } else if (element.type.name == "modified") {
             Query query = _objectBox.stockLocationHistoryModelBox!
                 .query(StockLocationHistoryObjectBoxModel_.uid
@@ -438,7 +463,9 @@ class FetchDataForObjectbox {
             });
             history.id = id;
 
-            _objectBox.addStockLocationHistory(history);
+            modifyHistory.add(history);
+
+            // _objectBox.addStockLocationHistory(history);
           } else if (element.type.name == "removed") {
             Query query = _objectBox.stockLocationHistoryModelBox!
                 .query(StockLocationHistoryObjectBoxModel_.uid
@@ -447,9 +474,17 @@ class FetchDataForObjectbox {
             StockLocationHistoryObjectBoxModel history = query.findFirst();
             query.close();
 
-            _objectBox.removeStockLocationHistory(history.id);
+            removeHistory.add(history.id);
+
+            // _objectBox.removeStockLocationHistory(history.id);
           }
         }
+
+        _objectBox.addStockLocationHistoryList(
+            addHistory.cast<StockLocationHistoryObjectBoxModel>());
+        _objectBox.addStockLocationHistoryList(
+            modifyHistory.cast<StockLocationHistoryObjectBoxModel>());
+        _objectBox.removeStockLocationHistoryList(removeHistory.cast<int>());
       });
     } else {
       List items = await sl.get<Firestore>().getDocuments(

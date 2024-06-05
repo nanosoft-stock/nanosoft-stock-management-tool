@@ -368,7 +368,7 @@ class VisualizeStockRepositoryImplementation
 
     await sl
         .get<Firestore>()
-        .batchWrite(path: "stock_location_history", data: stock);
+        .batchWrite(path: "stock_location_history", data: locations);
 
     debugPrint("Import Completed");
   }

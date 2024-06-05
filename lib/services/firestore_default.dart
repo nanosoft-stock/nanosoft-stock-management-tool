@@ -66,9 +66,9 @@ class FirestoreDefault {
 
   Future<void> batchWrite({required String path, required List data}) async {
     int chunkSize = 500;
-    WriteBatch batch = firestore.batch();
 
     for (int i = 0; i < data.length; i = i + chunkSize) {
+      WriteBatch batch = firestore.batch();
       List chunkData = data.sublist(
           i, data.length > i + chunkSize ? i + chunkSize : data.length);
 
@@ -81,7 +81,7 @@ class FirestoreDefault {
         }
       }
 
-      batch.commit();
+      await batch.commit();
     }
   }
 }

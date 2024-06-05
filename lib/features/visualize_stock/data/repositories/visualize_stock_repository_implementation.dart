@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
@@ -35,9 +36,16 @@ class VisualizeStockRepositoryImplementation
     "storage",
     "screen resolution",
     "os",
+    "screen size",
+    "usb c",
+    "hdmi",
+    "display port",
+    "vga",
+    "ethernet",
+    "usb a",
+    "type",
+    "supplier info",
     "dispatch info",
-    "container id",
-    "warehouse location",
     "comments",
     "staff",
     "archived",
@@ -265,11 +273,11 @@ class VisualizeStockRepositoryImplementation
     Map items =
         allLocations.firstWhere((element) => element.keys.contains("items"));
 
+    List stock = [];
     List header = [];
 
     for (var table in excel.tables.keys) {
       for (var cell in excel.tables[table]!.rows.first) {
-        print(cell!.value!);
         header.add((cell!.value! as TextCellValue).value.toLowerCase());
       }
 
@@ -277,7 +285,7 @@ class VisualizeStockRepositoryImplementation
         Map<String, dynamic> rowData = {};
 
         for (int i = 0; i < row.length; i++) {
-          final cellValue = row[i]!.value;
+          final cellValue = row[i]?.value;
 
           Object? value;
 
@@ -311,38 +319,59 @@ class VisualizeStockRepositoryImplementation
           }
 
           rowData[header[i]] = value;
-          print(rowData);
         }
 
-        await sl.get<Firestore>().createDocument(
-              path: "stock_data",
-              data: AddNewStockHelper.toJson(data: rowData),
-            );
-
-        await _addNewLocations(
-          locations: warehouseLocations["warehouse_locations"],
-          newValue: rowData["warehouse location"],
-          uid: warehouseLocations["uid"],
-          updateField: "warehouse_locations",
-        );
-
-        await _addNewLocations(
-          locations: containers["containers"],
-          newValue: rowData["container id"],
-          uid: containers["uid"],
-          updateField: "containers",
-        );
-
-        await _addNewLocations(
-          locations: items["items"],
-          newValue: rowData["item id"],
-          uid: items["uid"],
-          updateField: "items",
-        );
-
-        await _addItemLocationHistory(data: rowData);
+        stock.add(rowData);
       }
     }
+
+    Set uniqueContainers = {};
+
+    for (var st in stock) {
+      await sl.get<Firestore>().createDocument(
+            path: "stock_data",
+            data: AddNewStockHelper.toJson(data: st),
+          );
+
+      uniqueContainers.add(st["container id"]);
+    }
+
+    await _addNewLocations(
+      locations: warehouseLocations["warehouse_locations"],
+      newLocations: stock.map((e) => e["warehouse location"]).toList(),
+      uid: warehouseLocations["uid"],
+      updateField: "warehouse_locations",
+    );
+
+    await _addNewLocations(
+      locations: containers["containers"],
+      newLocations: stock.map((e) => e["container id"]).toList(),
+      uid: containers["uid"],
+      updateField: "containers",
+    );
+
+    await _addNewLocations(
+      locations: items["items"],
+      newLocations: stock.map((e) => e["item id"]).toList(),
+      uid: items["uid"],
+      updateField: "items",
+    );
+
+    for (var ele in uniqueContainers) {
+      Map loc = {
+        "items": stock
+            .where((e) => e["container id"] == ele)
+            .map((e) => e["item id"])
+            .toList(),
+        "container id": ele,
+        "warehouse location": stock
+            .firstWhere((e) => e["container id"] == ele)["warehouse location"],
+      };
+
+      await _addItemLocationHistory(data: loc);
+    }
+
+    debugPrint("Import Completed");
   }
 
   Future<List> _fetchAllLocations() async {
@@ -373,45 +402,40 @@ class VisualizeStockRepositoryImplementation
 
   Future<void> _addNewLocations({
     required List locations,
-    required String? newValue,
+    required List newLocations,
     required String uid,
     required String updateField,
   }) async {
-    if (newValue != null &&
-        newValue.toString().trim() != "" &&
-        !locations.contains(newValue.toString().trim())) {
-      locations.add(newValue.toString().trim().toUpperCase());
+    newLocations =
+        newLocations.map((e) => e.toString().toUpperCase().trim()).toList();
+    locations = (locations.toSet()..addAll(newLocations)).toList();
+    locations.sort((a, b) => a.toString().compareTo(b.toString()));
 
-      locations = locations.toSet().toList();
-
-      locations.sort((a, b) => a.toString().compareTo(b.toString()));
-
-      await sl.get<Firestore>().modifyDocument(
-            path: "all_locations",
-            uid: uid,
-            updateMask: [updateField],
-            data: !kIsLinux
-                ? {
-                    updateField: locations,
-                  }
-                : {
-                    updateField: {
-                      "arrayValue": {
-                        "values":
-                            locations.map((e) => {"stringValue": e}).toList(),
-                      }
+    await sl.get<Firestore>().modifyDocument(
+          path: "all_locations",
+          uid: uid,
+          updateMask: [updateField],
+          data: !kIsLinux
+              ? {
+                  updateField: locations,
+                }
+              : {
+                  updateField: {
+                    "arrayValue": {
+                      "values":
+                          locations.map((e) => {"stringValue": e}).toList(),
                     }
-                  },
-          );
-    }
+                  }
+                },
+        );
   }
 
   Future<void> _addItemLocationHistory({required Map data}) async {
     Map map = {
-      "items": [data["item id"]],
+      "items": data["items"],
       "container_id": data["container id"],
       "warehouse_location_id": data["warehouse location"],
-      "move_type": "initial",
+      "move_type": "imported",
       "state": "completed",
     };
 

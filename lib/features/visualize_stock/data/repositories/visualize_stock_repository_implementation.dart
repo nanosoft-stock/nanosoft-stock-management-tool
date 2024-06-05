@@ -273,8 +273,9 @@ class VisualizeStockRepositoryImplementation
     Map items =
         allLocations.firstWhere((element) => element.keys.contains("items"));
 
-    List stock = [];
     List header = [];
+    List stock = [];
+    Set uniqueContainers = {};
 
     for (var table in excel.tables.keys) {
       for (var cell in excel.tables[table]!.rows.first) {
@@ -321,20 +322,12 @@ class VisualizeStockRepositoryImplementation
           rowData[header[i]] = value;
         }
 
-        stock.add(rowData);
+        stock.add(AddNewStockHelper.toJson(data: rowData));
+        uniqueContainers.add(rowData["container id"]);
       }
     }
 
-    Set uniqueContainers = {};
-
-    for (var st in stock) {
-      await sl.get<Firestore>().createDocument(
-            path: "stock_data",
-            data: AddNewStockHelper.toJson(data: st),
-          );
-
-      uniqueContainers.add(st["container id"]);
-    }
+    await sl.get<Firestore>().batchWrite(path: "stock_data", data: stock);
 
     await _addNewLocations(
       locations: warehouseLocations["warehouse_locations"],
@@ -357,8 +350,10 @@ class VisualizeStockRepositoryImplementation
       updateField: "items",
     );
 
+    List locations = [];
+
     for (var ele in uniqueContainers) {
-      Map loc = {
+      locations.add(AddNewItemLocationHistoryHelper.toJson(data: {
         "items": stock
             .where((e) => e["container id"] == ele)
             .map((e) => e["item id"])
@@ -366,10 +361,14 @@ class VisualizeStockRepositoryImplementation
         "container id": ele,
         "warehouse location": stock
             .firstWhere((e) => e["container id"] == ele)["warehouse location"],
-      };
-
-      await _addItemLocationHistory(data: loc);
+        "move_type": "excel import",
+        "state": "completed",
+      }));
     }
+
+    await sl
+        .get<Firestore>()
+        .batchWrite(path: "stock_location_history", data: stock);
 
     debugPrint("Import Completed");
   }
@@ -430,20 +429,20 @@ class VisualizeStockRepositoryImplementation
         );
   }
 
-  Future<void> _addItemLocationHistory({required Map data}) async {
-    Map map = {
-      "items": data["items"],
-      "container_id": data["container id"],
-      "warehouse_location_id": data["warehouse location"],
-      "move_type": "imported",
-      "state": "completed",
-    };
-
-    await sl.get<Firestore>().createDocument(
-          path: "stock_location_history",
-          data: AddNewItemLocationHistoryHelper.toJson(data: map),
-        );
-  }
+  // Future<void> _addItemLocationHistory({required Map data}) async {
+  //   Map map = {
+  //     "items": data["items"],
+  //     "container_id": data["container id"],
+  //     "warehouse_location_id": data["warehouse location"],
+  //     "move_type": "imported",
+  //     "state": "completed",
+  //   };
+  //
+  //   await sl.get<Firestore>().createDocument(
+  //         path: "stock_location_history",
+  //         data: AddNewItemLocationHistoryHelper.toJson(data: map),
+  //       );
+  // }
 
   @override
   Future<void> exportToExcel(

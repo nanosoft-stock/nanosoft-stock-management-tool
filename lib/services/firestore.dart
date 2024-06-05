@@ -92,4 +92,10 @@ class Firestore {
       await sl.get<FirestoreRestApi>().deleteDocument(path: path, uid: uid);
     }
   }
+
+  Future<void> batchWrite({required String path, required List data}) async {
+    if (!kIsLinux) {
+      await sl.get<FirestoreDefault>().batchWrite(path: path, data: data);
+    } else {}
+  }
 }

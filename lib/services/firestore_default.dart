@@ -63,4 +63,25 @@ class FirestoreDefault {
     DocumentReference docRef = firestore.collection(path).doc(uid);
     await docRef.delete();
   }
+
+  Future<void> batchWrite({required String path, required List data}) async {
+    int chunkSize = 500;
+    WriteBatch batch = firestore.batch();
+
+    for (int i = 0; i < data.length; i = i + chunkSize) {
+      List chunkData = data.sublist(
+          i, data.length > i + chunkSize ? i + chunkSize : data.length);
+
+      for (var e in chunkData) {
+        try {
+          batch.set(
+              firestore.collection(path).doc(), e.cast<String, dynamic>());
+        } catch (e) {
+          print("Error: $e");
+        }
+      }
+
+      batch.commit();
+    }
+  }
 }

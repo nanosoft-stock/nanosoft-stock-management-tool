@@ -241,7 +241,7 @@ class CustomParentFilter extends StatelessWidget {
                                                                           .shrink(),
                                                                   style:
                                                                       ButtonStyle(
-                                                                    shape: MaterialStateProperty
+                                                                    shape: WidgetStateProperty
                                                                         .all<
                                                                             OutlinedBorder>(
                                                                       RoundedRectangleBorder(
@@ -294,9 +294,9 @@ class CustomParentFilter extends StatelessWidget {
                                         dense: false,
                                         initiallyExpanded: isOpen,
                                         backgroundColor:
-                                        kPrimaryBackgroundColor,
+                                            kPrimaryBackgroundColor,
                                         collapsedBackgroundColor:
-                                        kButtonBackgroundColor,
+                                            kButtonBackgroundColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: kBorderRadius,
                                         ),
@@ -312,7 +312,7 @@ class CustomParentFilter extends StatelessWidget {
                                           ReorderableListView(
                                             shrinkWrap: true,
                                             physics:
-                                            const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(),
                                             proxyDecorator: (Widget child,
                                                 int index,
                                                 Animation<double> animation) {
@@ -333,113 +333,113 @@ class CustomParentFilter extends StatelessWidget {
                                             children: localFieldFilters
                                                 .map(
                                                   (e) => Padding(
-                                                key: UniqueKey(),
-                                                padding: const EdgeInsets
-                                                    .symmetric(
-                                                    horizontal: 3.0,
-                                                    vertical: 4.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                    kTertiaryBackgroundColor,
-                                                    // index % 2 == 0
-                                                    //     ? kTertiaryBackgroundColor
-                                                    //     : kButtonBackgroundColor,
-                                                    borderRadius:
-                                                    kBorderRadius,
-                                                    boxShadow:
-                                                    kBoxShadowList,
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets
+                                                    key: UniqueKey(),
+                                                    padding: const EdgeInsets
                                                         .symmetric(
-                                                        horizontal:
-                                                        10.0,
-                                                        vertical: 6.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            e["field"]
-                                                                .toString()
-                                                                .toTitleCase(),
-                                                            style:
-                                                            kLabelTextStyle,
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                              right:
-                                                              40.0),
-                                                          child: Container(
-                                                            decoration:
-                                                            BoxDecoration(
-                                                              color:
-                                                              kPrimaryBackgroundColor,
-                                                              borderRadius:
-                                                              kBorderRadius,
-                                                            ),
-                                                            child:
-                                                            SegmentedButton(
-                                                              segments: const [
-                                                                ButtonSegment(
-                                                                  value:
-                                                                  true,
-                                                                  icon: Icon(
-                                                                      Icons
-                                                                          .playlist_add_check),
-                                                                ),
-                                                                ButtonSegment(
-                                                                  value:
-                                                                  false,
-                                                                  icon: Icon(
-                                                                      Icons
-                                                                          .playlist_remove_rounded),
-                                                                ),
-                                                              ],
-                                                              showSelectedIcon:
-                                                              false,
-                                                              selected: {
-                                                                e["show_column"]
-                                                              },
-                                                              selectedIcon:
-                                                              const SizedBox
-                                                                  .shrink(),
-                                                              style:
-                                                              ButtonStyle(
-                                                                shape: MaterialStateProperty
-                                                                    .all<
-                                                                    OutlinedBorder>(
-                                                                  RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    kBorderRadius,
-                                                                  ),
-                                                                ),
+                                                        horizontal: 3.0,
+                                                        vertical: 4.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            kTertiaryBackgroundColor,
+                                                        // index % 2 == 0
+                                                        //     ? kTertiaryBackgroundColor
+                                                        //     : kButtonBackgroundColor,
+                                                        borderRadius:
+                                                            kBorderRadius,
+                                                        boxShadow:
+                                                            kBoxShadowList,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 6.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                e["field"]
+                                                                    .toString()
+                                                                    .toTitleCase(),
+                                                                style:
+                                                                    kLabelTextStyle,
                                                               ),
-                                                              onSelectionChanged:
-                                                                  (value) {
-                                                                setState(
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      right:
+                                                                          40.0),
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color:
+                                                                      kPrimaryBackgroundColor,
+                                                                  borderRadius:
+                                                                      kBorderRadius,
+                                                                ),
+                                                                child:
+                                                                    SegmentedButton(
+                                                                  segments: const [
+                                                                    ButtonSegment(
+                                                                      value:
+                                                                          true,
+                                                                      icon: Icon(
+                                                                          Icons
+                                                                              .playlist_add_check),
+                                                                    ),
+                                                                    ButtonSegment(
+                                                                      value:
+                                                                          false,
+                                                                      icon: Icon(
+                                                                          Icons
+                                                                              .playlist_remove_rounded),
+                                                                    ),
+                                                                  ],
+                                                                  showSelectedIcon:
+                                                                      false,
+                                                                  selected: {
+                                                                    e["show_column"]
+                                                                  },
+                                                                  selectedIcon:
+                                                                      const SizedBox
+                                                                          .shrink(),
+                                                                  style:
+                                                                      ButtonStyle(
+                                                                    shape: WidgetStateProperty
+                                                                        .all<
+                                                                            OutlinedBorder>(
+                                                                      RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            kBorderRadius,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  onSelectionChanged:
+                                                                      (value) {
+                                                                    setState(
                                                                         () {
                                                                       e["show_column"] =
                                                                           value
                                                                               .first;
                                                                     });
-                                                                changeVisibilityOnTap(
-                                                                    e["field"],
-                                                                    value.first);
-                                                              },
+                                                                    changeVisibilityOnTap(
+                                                                        e["field"],
+                                                                        value.first);
+                                                                  },
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
+                                                          ],
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                            )
+                                                )
                                                 .toList(),
                                           ),
                                         ],

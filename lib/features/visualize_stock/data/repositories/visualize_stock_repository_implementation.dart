@@ -89,9 +89,9 @@ class VisualizeStockRepositoryImplementation
 
     List newFields = [];
 
-    fieldsOrder.forEach((ele) {
+    for (var ele in fieldsOrder) {
       newFields.add(fields.firstWhere((e) => e["field"] == ele));
-    });
+    }
 
     fields = newFields;
 
@@ -110,28 +110,28 @@ class VisualizeStockRepositoryImplementation
   @override
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks}) {
-    compareWithBlank(a, b) {
-      bool isABlank = a == null || a == "";
-      bool isBBlank = b == null || b == "";
-
-      if (sort == Sort.asc) {
-        if (isABlank) return 1;
-        if (isBBlank) return -1;
-      } else if (sort == Sort.desc) {
-        if (isABlank) return -1;
-        if (isBBlank) return 1;
-      }
-
-      return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
-    }
-
     if (sort == Sort.asc) {
-      stocks.sort((a, b) => compareWithBlank(a[field], b[field]));
+      stocks.sort((a, b) => _compareWithBlank(sort, a[field], b[field]));
     } else if (sort == Sort.desc) {
-      stocks.sort((a, b) => compareWithBlank(b[field], a[field]));
+      stocks.sort((a, b) => _compareWithBlank(sort, b[field], a[field]));
     }
 
     return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+  }
+
+  int _compareWithBlank(sort, a, b) {
+    bool isABlank = a == null || a == "";
+    bool isBBlank = b == null || b == "";
+
+    if (sort == Sort.asc) {
+      if (isABlank) return 1;
+      if (isBBlank) return -1;
+    } else if (sort == Sort.desc) {
+      if (isABlank) return -1;
+      if (isBBlank) return 1;
+    }
+
+    return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
   }
 
   @override
@@ -146,6 +146,15 @@ class VisualizeStockRepositoryImplementation
       data["filter_by"] = "";
       data["filter_value"] = "";
       data["search_value"] = "";
+      data["all_selected"] = true;
+      data["all_unique_values"] =
+          getUniqueValues(field: ele.field, stocks: stocks);
+      // stocks
+      //     .map((e) => e[ele.field])
+      //     .toSet()
+      //     .map((e) => {"value": e, "show": true, "selected": true})
+      //     .toList()
+      //   ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
 
       data.addAll(getFilterByValuesByDatatype(
           values: stocks
@@ -155,6 +164,16 @@ class VisualizeStockRepositoryImplementation
 
       return data;
     }).toList();
+  }
+
+  List<Map<String, dynamic>> getUniqueValues(
+      {required String field, required List stocks}) {
+    return stocks
+        .map((e) => e[field])
+        .toSet()
+        .map((e) => {"title": e, "show": true, "selected": true})
+        .toList()
+      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
   }
 
   @override
@@ -187,42 +206,53 @@ class VisualizeStockRepositoryImplementation
 
     for (var filter in filters) {
       stocks = stocks.where((element) {
-        if (filter["datatype"] == "string") {
-          String stockValue = element[filter["field"]].toString().toLowerCase();
-          String filterValue = filter["filter_value"].toString().toLowerCase();
+        if (filter["all_selected"] != true) {
+          String stockValue = element[filter["field"]];
+          return filter["all_unique_values"]
+              .firstWhere((e) => e["title"] == stockValue)["selected"];
+        } else if (filter["filter_by"] != "") {
+          if (filter["datatype"] == "string") {
+            String stockValue =
+                element[filter["field"]].toString().toLowerCase();
+            String filterValue =
+                filter["filter_value"].toString().toLowerCase();
 
-          if (filter["filter_by"] == "Equals") {
-            return stockValue == filterValue;
-          } else if (filter["filter_by"] == "Not Equals") {
-            return stockValue != filterValue;
-          } else if (filter["filter_by"] == "Begins With") {
-            return stockValue.startsWith(filterValue);
-          } else if (filter["filter_by"] == "Not Begins With") {
-            return !stockValue.startsWith(filterValue);
-          } else if (filter["filter_by"] == "Contains") {
-            return stockValue.contains(filterValue);
-          } else if (filter["filter_by"] == "Not Contains") {
-            return !stockValue.contains(filterValue);
-          } else if (filter["filter_by"] == "Ends With") {
-            return stockValue.endsWith(filterValue);
-          } else if (filter["filter_by"] == "Not Ends With") {
-            return !stockValue.endsWith(filterValue);
-          } else {
-            return true;
-          }
-        } else if (filter["datatype"] == "double") {
-          double? stockValue = double.tryParse(element[filter["field"]] ?? "");
-          double? filterValue = double.tryParse(filter["filter_value"]);
-
-          if (stockValue != null && filterValue != null) {
             if (filter["filter_by"] == "Equals") {
               return stockValue == filterValue;
             } else if (filter["filter_by"] == "Not Equals") {
               return stockValue != filterValue;
-            } else if (filter["filter_by"] == "Greater Than") {
-              return stockValue > filterValue;
-            } else if (filter["filter_by"] == "Lesser Than") {
-              return stockValue < filterValue;
+            } else if (filter["filter_by"] == "Begins With") {
+              return stockValue.startsWith(filterValue);
+            } else if (filter["filter_by"] == "Not Begins With") {
+              return !stockValue.startsWith(filterValue);
+            } else if (filter["filter_by"] == "Contains") {
+              return stockValue.contains(filterValue);
+            } else if (filter["filter_by"] == "Not Contains") {
+              return !stockValue.contains(filterValue);
+            } else if (filter["filter_by"] == "Ends With") {
+              return stockValue.endsWith(filterValue);
+            } else if (filter["filter_by"] == "Not Ends With") {
+              return !stockValue.endsWith(filterValue);
+            } else {
+              return true;
+            }
+          } else if (filter["datatype"] == "double") {
+            double? stockValue =
+                double.tryParse(element[filter["field"]] ?? "");
+            double? filterValue = double.tryParse(filter["filter_value"]);
+
+            if (stockValue != null && filterValue != null) {
+              if (filter["filter_by"] == "Equals") {
+                return stockValue == filterValue;
+              } else if (filter["filter_by"] == "Not Equals") {
+                return stockValue != filterValue;
+              } else if (filter["filter_by"] == "Greater Than") {
+                return stockValue > filterValue;
+              } else if (filter["filter_by"] == "Lesser Than") {
+                return stockValue < filterValue;
+              } else {
+                return true;
+              }
             } else {
               return true;
             }

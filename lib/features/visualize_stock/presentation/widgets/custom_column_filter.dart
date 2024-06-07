@@ -2,31 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_checkbox_list_tile.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_icon_button.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
-class CustomFieldFilter extends StatelessWidget {
-  const CustomFieldFilter({
+class CustomColumnFilter extends StatelessWidget {
+  const CustomColumnFilter({
     super.key,
     required this.fieldFilter,
     required this.closeOnTap,
+    required this.filterOnPressed,
     required this.clearOnPressed,
     required this.changeVisibilityOnTap,
     required this.sortOnPressed,
     required this.filterBySelected,
-    required this.filterValueEntered,
+    required this.filterValueChanged,
+    required this.searchValueChanged,
+    required this.checkboxToggled,
   });
 
   final Map<String, dynamic> fieldFilter;
   final Function() closeOnTap;
+  final Function(String) filterOnPressed;
   final Function(String) clearOnPressed;
   final Function(String, bool) changeVisibilityOnTap;
   final Function(String, Sort) sortOnPressed;
   final Function(String, String) filterBySelected;
-  final Function(String, String) filterValueEntered;
+  final Function(String, String) filterValueChanged;
+  final Function(String, String) searchValueChanged;
+  final Function(String, String, bool?) checkboxToggled;
 
   @override
   Widget build(BuildContext context) {
+    List allUniqueValues = fieldFilter["all_unique_values"]
+        .where((e) => e["show"] == true)
+        .toList();
+
     return Container(
       decoration: BoxDecoration(
         color: kSecondaryBackgroundColor,
@@ -70,7 +81,9 @@ class CustomFieldFilter extends StatelessWidget {
                                   borderRadius: kBorderRadius,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                filterOnPressed(fieldFilter["field"]);
+                              },
                               child: Text(
                                 "Filter",
                                 style: kLabelTextStyle,
@@ -157,8 +170,8 @@ class CustomFieldFilter extends StatelessWidget {
                                   selected: {fieldFilter["show_column"]},
                                   selectedIcon: const SizedBox.shrink(),
                                   style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        OutlinedBorder>(
+                                    shape:
+                                        WidgetStateProperty.all<OutlinedBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius: kBorderRadius,
                                       ),
@@ -217,8 +230,8 @@ class CustomFieldFilter extends StatelessWidget {
                                       : {},
                                   selectedIcon: const SizedBox.shrink(),
                                   style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        OutlinedBorder>(
+                                    shape:
+                                        WidgetStateProperty.all<OutlinedBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius: kBorderRadius,
                                       ),
@@ -256,6 +269,43 @@ class CustomFieldFilter extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    // SizedBox(
+                                    //   width: 175,
+                                    //   height: 40,
+                                    //   child: DropdownButtonFormField<String>(
+                                    //     borderRadius: kBorderRadius,
+                                    //     menuMaxHeight: 250,
+                                    //     decoration: InputDecoration(
+                                    //       filled: true,
+                                    //       fillColor: kButtonBackgroundColor,
+                                    //       border: OutlineInputBorder(
+                                    //         borderRadius: kBorderRadius,
+                                    //       ),
+                                    //       labelText: "Select Filter",
+                                    //       labelStyle: kLabelTextStyle,
+                                    //     ),
+                                    //     value: fieldFilter["filter_by"] != ""
+                                    //         ? fieldFilter["filter_by"]
+                                    //         : null,
+                                    //     icon: const Icon(
+                                    //         Icons.arrow_drop_down_outlined),
+                                    //     items: fieldFilter[
+                                    //             "all_filter_by_values"]
+                                    //         .map((String e) => DropdownMenuItem(
+                                    //               value: e,
+                                    //               child: Text(
+                                    //                 e,
+                                    //                 style: kLabelTextStyle,
+                                    //               ),
+                                    //             ))
+                                    //         .toList()
+                                    //         .cast<DropdownMenuItem<String>>(),
+                                    //     onChanged: (value) {
+                                    //       filterBySelected(fieldFilter["field"],
+                                    //           value ?? "");
+                                    //     },
+                                    //   ),
+                                    // ),
                                     Container(
                                       height: 40,
                                       decoration: BoxDecoration(
@@ -268,11 +318,9 @@ class CustomFieldFilter extends StatelessWidget {
                                         ),
                                         child: SizedBox(
                                           child: DropdownButton<String>(
-                                            autofocus: false,
                                             borderRadius: kBorderRadius,
                                             menuMaxHeight: 250,
                                             underline: Container(),
-                                            // style: kLabelTextStyle,
                                             value:
                                                 fieldFilter["filter_by"] != ""
                                                     ? fieldFilter["filter_by"]
@@ -315,12 +363,8 @@ class CustomFieldFilter extends StatelessWidget {
                                       width: 175,
                                       height: 40,
                                       child: TextFormField(
-                                        controller: TextEditingController(
-                                            text: fieldFilter["filter_value"]
-                                            // != ""
-                                            // ? fieldFilter["filter_value"]
-                                            // : null,
-                                            ),
+                                        initialValue:
+                                            fieldFilter["filter_value"],
                                         style: kLabelTextStyle,
                                         textInputAction: TextInputAction.done,
                                         textAlignVertical:
@@ -337,8 +381,8 @@ class CustomFieldFilter extends StatelessWidget {
                                                   : "Select Filter",
                                           labelStyle: kLabelTextStyle,
                                         ),
-                                        onFieldSubmitted: (value) {
-                                          filterValueEntered(
+                                        onChanged: (value) {
+                                          filterValueChanged(
                                               fieldFilter["field"], value);
                                         },
                                       ),
@@ -346,103 +390,128 @@ class CustomFieldFilter extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              if (fieldFilter["filter_field_2"] != null)
-                                const SizedBox(height: 10.0),
-                              if (fieldFilter["filter_field_2"] != null)
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          borderRadius: kBorderRadius,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 7.0,
-                                            vertical: 2.0,
-                                          ),
-                                          // padding: EdgeInsets.zero,
-                                          child: SizedBox(
-                                            // width: 200,
-                                            child: DropdownButton(
-                                              autofocus: false,
-                                              borderRadius: kBorderRadius,
-                                              hint: SizedBox(
-                                                width: 150,
-                                                child: Text(
-                                                  "Select Filter",
-                                                  style: kLabelTextStyle,
-                                                ),
-                                              ),
-                                              menuMaxHeight: 250,
-                                              icon: const Icon(Icons
-                                                  .arrow_drop_down_outlined),
-                                              underline: Container(),
-                                              items: [
-                                                "Equals",
-                                                "Not Equals",
-                                                "Begins With",
-                                                "Not Begins With",
-                                                "Contains",
-                                                "Not Contains",
-                                                "Ends With",
-                                                "Not Ends With",
-                                              ]
-                                                  .map(
-                                                    (e) => DropdownMenuItem(
-                                                      value: e,
-                                                      child: Text(
-                                                        e,
-                                                        style: kLabelTextStyle,
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                              onChanged: (value) {},
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20.0,
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: TextFormField(
-                                          controller: TextEditingController(),
-                                          enabled: false,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: kTertiaryBackgroundColor,
-                                            border: OutlineInputBorder(
-                                              borderRadius: kBorderRadius,
-                                            ),
-                                            labelText: "Select Filter",
-                                            labelStyle: kLabelTextStyle,
-                                          ),
-                                          style: kLabelTextStyle,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+
+                              // if (fieldFilter["filter_field_2"] != null)
+                              //   const SizedBox(height: 10.0),
+                              // if (fieldFilter["filter_field_2"] != null)
+                              //   Padding(
+                              //     padding:
+                              //         const EdgeInsets.symmetric(vertical: 5.0),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         Container(
+                              //           decoration: BoxDecoration(
+                              //             border: Border.all(),
+                              //             borderRadius: kBorderRadius,
+                              //           ),
+                              //           child: Padding(
+                              //             padding: const EdgeInsets.symmetric(
+                              //               horizontal: 7.0,
+                              //               vertical: 2.0,
+                              //             ),
+                              //             // padding: EdgeInsets.zero,
+                              //             child: SizedBox(
+                              //               // width: 200,
+                              //               child: DropdownButton(
+                              //                 autofocus: false,
+                              //                 borderRadius: kBorderRadius,
+                              //                 hint: SizedBox(
+                              //                   width: 150,
+                              //                   child: Text(
+                              //                     "Select Filter",
+                              //                     style: kLabelTextStyle,
+                              //                   ),
+                              //                 ),
+                              //                 menuMaxHeight: 250,
+                              //                 icon: const Icon(Icons
+                              //                     .arrow_drop_down_outlined),
+                              //                 underline: Container(),
+                              //                 items: [
+                              //                   "Equals",
+                              //                   "Not Equals",
+                              //                   "Begins With",
+                              //                   "Not Begins With",
+                              //                   "Contains",
+                              //                   "Not Contains",
+                              //                   "Ends With",
+                              //                   "Not Ends With",
+                              //                 ]
+                              //                     .map(
+                              //                       (e) => DropdownMenuItem(
+                              //                         value: e,
+                              //                         child: Text(
+                              //                           e,
+                              //                           style: kLabelTextStyle,
+                              //                         ),
+                              //                       ),
+                              //                     )
+                              //                     .toList(),
+                              //                 onChanged: (value) {},
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         const SizedBox(
+                              //           width: 20.0,
+                              //         ),
+                              //         SizedBox(
+                              //           width: 200,
+                              //           child: TextFormField(
+                              //             controller: TextEditingController(),
+                              //             enabled: false,
+                              //             decoration: InputDecoration(
+                              //               filled: true,
+                              //               fillColor: kTertiaryBackgroundColor,
+                              //               border: OutlineInputBorder(
+                              //                 borderRadius: kBorderRadius,
+                              //               ),
+                              //               labelText: "Select Filter",
+                              //               labelStyle: kLabelTextStyle,
+                              //             ),
+                              //             style: kLabelTextStyle,
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+
                               const Divider(),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    3.0, 5.0, 3.0, 5.0),
                                 child: Row(
                                   children: [
                                     const Icon(Icons.search_outlined),
                                     const SizedBox(
                                       width: 5,
                                     ),
-                                    Text(
-                                      "Search",
-                                      style: kLabelTextStyle,
+                                    Expanded(
+                                      child: SizedBox(
+                                        // width: 175,
+                                        height: 40,
+                                        child: TextFormField(
+                                          initialValue:
+                                              fieldFilter["search_value"],
+                                          style: kLabelTextStyle,
+                                          textInputAction: TextInputAction.done,
+                                          textAlignVertical:
+                                              TextAlignVertical.top,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: kTertiaryBackgroundColor,
+                                            border: OutlineInputBorder(
+                                              borderRadius: kBorderRadius,
+                                            ),
+                                            labelText: "Search",
+                                            labelStyle: kLabelTextStyle,
+                                          ),
+                                          onChanged: (value) {
+                                            searchValueChanged(
+                                                fieldFilter["field"], value);
+                                          },
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -457,6 +526,72 @@ class CustomFieldFilter extends StatelessWidget {
                                     borderRadius: kBorderRadius,
                                     boxShadow: kBoxShadowList,
                                   ),
+                                  child: allUniqueValues.isNotEmpty
+                                      ? ListView.builder(
+                                          itemCount: allUniqueValues.length + 1,
+                                          shrinkWrap: true,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            if (index == 0) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 50.0),
+                                                child: SizedBox(
+                                                  width: 300,
+                                                  child: CustomCheckboxListTile(
+                                                    title: fieldFilter[
+                                                                "search_value"] ==
+                                                            ""
+                                                        ? "(Select all)"
+                                                        : "(Select all search results)",
+                                                    value: fieldFilter[
+                                                        "all_selected"],
+                                                    tristate: true,
+                                                    onChanged: (value) {
+                                                      checkboxToggled(
+                                                          fieldFilter["field"],
+                                                          "select_all",
+                                                          value ?? false);
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 50.0),
+                                                child: SizedBox(
+                                                  width: 300,
+                                                  child: CustomCheckboxListTile(
+                                                    title: allUniqueValues[
+                                                                    index - 1]
+                                                                ["title"] !=
+                                                            ""
+                                                        ? allUniqueValues[
+                                                            index - 1]["title"]
+                                                        : "(Blanks)",
+                                                    value: allUniqueValues[
+                                                        index - 1]["selected"],
+                                                    onChanged: (value) {
+                                                      checkboxToggled(
+                                                          fieldFilter["field"],
+                                                          allUniqueValues[
+                                                                  index - 1]
+                                                              ["title"],
+                                                          value);
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            "No Match",
+                                            style: kLabelTextStyle,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ],

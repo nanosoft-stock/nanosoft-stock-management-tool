@@ -36,9 +36,9 @@ class IdCheckBoxToggledUseCase extends UseCase {
     if (state == CheckBoxState.all) {
       selectedItemIds.addAll(items);
     } else {
-      items.forEach((element) {
+      for (var element in items) {
         selectedItemIds.remove(element);
-      });
+      }
     }
     locatedStock["selected_item_ids"] = selectedItemIds.toSet().toList();
 

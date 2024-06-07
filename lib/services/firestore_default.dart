@@ -77,7 +77,7 @@ class FirestoreDefault {
           batch.set(
               firestore.collection(path).doc(), e.cast<String, dynamic>());
         } catch (e) {
-          print("Error: $e");
+          return;
         }
       }
 

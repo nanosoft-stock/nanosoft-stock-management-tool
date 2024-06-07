@@ -155,7 +155,7 @@ class LocateStockInputRow extends StatelessWidget {
                                 selectedIcon: const SizedBox.shrink(),
                                 style: ButtonStyle(
                                   shape:
-                                      MaterialStateProperty.all<OutlinedBorder>(
+                                      WidgetStateProperty.all<OutlinedBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: kBorderRadius,
                                     ),

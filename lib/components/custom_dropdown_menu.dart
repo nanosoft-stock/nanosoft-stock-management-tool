@@ -39,7 +39,7 @@ class CustomDropdownMenu extends StatelessWidget {
                 value: e,
                 label: e,
                 style: ButtonStyle(
-                  textStyle: MaterialStateProperty.all<TextStyle>(
+                  textStyle: WidgetStateProperty.all<TextStyle>(
                     kLabelTextStyle,
                   ),
                 ),

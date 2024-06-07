@@ -34,7 +34,7 @@ class CustomSegmentedButton extends StatelessWidget {
       selected: {isLogin},
       selectedIcon: const SizedBox.shrink(),
       style: ButtonStyle(
-        shape: MaterialStateProperty.all<OutlinedBorder>(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: kBorderRadius,
           ),

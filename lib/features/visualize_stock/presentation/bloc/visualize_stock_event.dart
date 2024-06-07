@@ -17,24 +17,6 @@ class LoadedEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
-class SortFieldEvent extends VisualizeStockEvent {
-  const SortFieldEvent({
-    required this.field,
-    required this.sort,
-    required this.visualizeStock,
-  });
-
-  final String field;
-  final Sort sort;
-  final Map? visualizeStock;
-}
-
-class ParentFilterEvent extends VisualizeStockEvent {
-  const ParentFilterEvent({required this.visualizeStock});
-
-  final Map? visualizeStock;
-}
-
 class ImportButtonClickedEvent extends VisualizeStockEvent {
   const ImportButtonClickedEvent({required this.visualizeStock});
 
@@ -47,8 +29,15 @@ class ExportButtonClickedEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
-class FieldFilterEvent extends VisualizeStockEvent {
-  const FieldFilterEvent({required this.field, required this.visualizeStock});
+class ShowTableFilterLayerEvent extends VisualizeStockEvent {
+  const ShowTableFilterLayerEvent({required this.visualizeStock});
+
+  final Map? visualizeStock;
+}
+
+class ShowColumnFilterLayerEvent extends VisualizeStockEvent {
+  const ShowColumnFilterLayerEvent(
+      {required this.field, required this.visualizeStock});
 
   final String? field;
   final Map? visualizeStock;
@@ -80,13 +69,35 @@ class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
-class ClearFieldFilterEvent extends VisualizeStockEvent {
-  const ClearFieldFilterEvent({
+class FilterColumnEvent extends VisualizeStockEvent {
+  const FilterColumnEvent({
     required this.field,
     required this.visualizeStock,
   });
 
   final String? field;
+  final Map? visualizeStock;
+}
+
+class ClearColumnFilterEvent extends VisualizeStockEvent {
+  const ClearColumnFilterEvent({
+    required this.field,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final Map? visualizeStock;
+}
+
+class SortColumnEvent extends VisualizeStockEvent {
+  const SortColumnEvent({
+    required this.field,
+    required this.sort,
+    required this.visualizeStock,
+  });
+
+  final String field;
+  final Sort sort;
   final Map? visualizeStock;
 }
 
@@ -102,8 +113,8 @@ class FilterBySelectedEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
-class FilterValueEnteredEvent extends VisualizeStockEvent {
-  const FilterValueEnteredEvent({
+class FilterValueChangedEvent extends VisualizeStockEvent {
+  const FilterValueChangedEvent({
     required this.field,
     required this.filterValue,
     required this.visualizeStock,
@@ -111,5 +122,31 @@ class FilterValueEnteredEvent extends VisualizeStockEvent {
 
   final String? field;
   final String? filterValue;
+  final Map? visualizeStock;
+}
+
+class SearchValueChangedEvent extends VisualizeStockEvent {
+  const SearchValueChangedEvent({
+    required this.field,
+    required this.searchValue,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final String? searchValue;
+  final Map? visualizeStock;
+}
+
+class CheckBoxToggledEvent extends VisualizeStockEvent {
+  const CheckBoxToggledEvent({
+    required this.field,
+    required this.title,
+    required this.value,
+    required this.visualizeStock,
+  });
+
+  final String? field;
+  final String title;
+  final bool? value;
   final Map? visualizeStock;
 }

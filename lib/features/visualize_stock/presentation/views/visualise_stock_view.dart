@@ -6,7 +6,7 @@ import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_field_filter.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_column_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_filter_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_parent_filter.dart';
@@ -111,8 +111,9 @@ class VisualiseStockView extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _visualizeStockBloc.add(ParentFilterEvent(
-                                      visualizeStock: visualizeStock));
+                                  _visualizeStockBloc.add(
+                                      ShowTableFilterLayerEvent(
+                                          visualizeStock: visualizeStock));
                                 },
                                 child: Text(
                                   "Filter",
@@ -184,13 +185,16 @@ class VisualiseStockView extends StatelessWidget {
                               verticalDetails: const ScrollableDetails.vertical(
                                 physics: BouncingScrollPhysics(),
                               ),
+                              // cacheExtent: 2000,
                               delegate: TableCellBuilderDelegate(
-                                columnCount: fields.length,
+                                columnCount: fields.length + 1,
                                 rowCount: stocks.length + 1,
                                 pinnedRowCount: 1,
+                                pinnedColumnCount: 1,
                                 columnBuilder: (int index) {
-                                  return const TableSpan(
-                                    backgroundDecoration: TableSpanDecoration(
+                                  return TableSpan(
+                                    backgroundDecoration:
+                                        const TableSpanDecoration(
                                       border: TableSpanBorder(
                                         leading: BorderSide(
                                           color: Colors.black54,
@@ -200,7 +204,8 @@ class VisualiseStockView extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    extent: FixedTableSpanExtent(225),
+                                    extent: FixedTableSpanExtent(
+                                        index != 0 ? 225 : 100),
                                   );
                                 },
                                 rowBuilder: (int index) {
@@ -220,9 +225,23 @@ class VisualiseStockView extends StatelessWidget {
                                 },
                                 cellBuilder: (BuildContext context,
                                     TableVicinity vicinity) {
-                                  if (vicinity.row == 0) {
+                                  if (vicinity.row == 0 &&
+                                      vicinity.column == 0) {
+                                    return TableViewCell(
+                                      child: Container(),
+                                    );
+                                  } else if (vicinity.column == 0) {
+                                    return TableViewCell(
+                                      child: Center(
+                                        child: Text(
+                                          vicinity.row.toString(),
+                                          style: GoogleFonts.lato(),
+                                        ),
+                                      ),
+                                    );
+                                  } else if (vicinity.row == 0) {
                                     String field =
-                                        fields[vicinity.column].toString();
+                                        fields[vicinity.column - 1].toString();
 
                                     Sort sort = filters.firstWhere(
                                         (e) => e["field"] == field)["sort"];
@@ -235,7 +254,7 @@ class VisualiseStockView extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               child: Center(
-                                                child: SelectableText(
+                                                child: Text(
                                                   field.toTitleCase(),
                                                   style: GoogleFonts.lato(
                                                     textStyle: const TextStyle(
@@ -255,7 +274,7 @@ class VisualiseStockView extends StatelessWidget {
                                                   sort: sort,
                                                   onPressed: (field, sort) {
                                                     _visualizeStockBloc
-                                                        .add(SortFieldEvent(
+                                                        .add(SortColumnEvent(
                                                       field: field,
                                                       sort: sort,
                                                       visualizeStock:
@@ -267,7 +286,7 @@ class VisualiseStockView extends StatelessWidget {
                                                   field: field,
                                                   onPressed: () {
                                                     _visualizeStockBloc.add(
-                                                        FieldFilterEvent(
+                                                        ShowColumnFilterLayerEvent(
                                                             field: field,
                                                             visualizeStock:
                                                                 visualizeStock));
@@ -281,22 +300,24 @@ class VisualiseStockView extends StatelessWidget {
                                     );
                                   } else {
                                     String text = (stocks[vicinity.row - 1]
-                                                [fields[vicinity.column]] ??
+                                                [fields[vicinity.column - 1]] ??
                                             "")
                                         .toString();
 
-                                    if (fields[vicinity.column] == "date") {
+                                    if (fields[vicinity.column - 1] == "date") {
                                       text = DateFormat('dd-MM-yyyy').format(
                                           DateTime.parse(text.toUpperCase()));
                                     }
 
                                     return TableViewCell(
-                                      child: Center(
-                                        child: SelectableText(
-                                          text,
-                                          style: GoogleFonts.lato(),
-                                        ),
-                                      ),
+                                      child: text != ""
+                                          ? Center(
+                                              child: SelectableText(
+                                                text,
+                                                style: GoogleFonts.lato(),
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(),
                                     );
                                   }
                                 },
@@ -318,15 +339,19 @@ class VisualiseStockView extends StatelessWidget {
                   _visualizeStockBloc.add(HideLayerEvent(
                       layer: "field_filter", visualizeStock: visualizeStock));
                 },
-                child: CustomFieldFilter(
+                child: CustomColumnFilter(
                   fieldFilter: visualizeStock["filters"].firstWhere(
                       (e) => e["field"] == visualizeStock["filter_menu_field"]),
                   closeOnTap: () {
                     _visualizeStockBloc.add(HideLayerEvent(
                         layer: "field_filter", visualizeStock: visualizeStock));
                   },
+                  filterOnPressed: (field) {
+                    _visualizeStockBloc.add(FilterColumnEvent(
+                        field: field, visualizeStock: visualizeStock));
+                  },
                   clearOnPressed: (field) {
-                    _visualizeStockBloc.add(ClearFieldFilterEvent(
+                    _visualizeStockBloc.add(ClearColumnFilterEvent(
                         field: field, visualizeStock: visualizeStock));
                   },
                   changeVisibilityOnTap: (field, visibility) {
@@ -336,7 +361,7 @@ class VisualiseStockView extends StatelessWidget {
                         visualizeStock: visualizeStock));
                   },
                   sortOnPressed: (field, sort) {
-                    _visualizeStockBloc.add(SortFieldEvent(
+                    _visualizeStockBloc.add(SortColumnEvent(
                       field: field,
                       sort: sort,
                       visualizeStock: visualizeStock,
@@ -349,10 +374,25 @@ class VisualiseStockView extends StatelessWidget {
                       visualizeStock: visualizeStock,
                     ));
                   },
-                  filterValueEntered: (field, filterValue) {
-                    _visualizeStockBloc.add(FilterValueEnteredEvent(
+                  filterValueChanged: (field, filterValue) {
+                    _visualizeStockBloc.add(FilterValueChangedEvent(
                       field: field,
                       filterValue: filterValue,
+                      visualizeStock: visualizeStock,
+                    ));
+                  },
+                  searchValueChanged: (field, searchValue) {
+                    _visualizeStockBloc.add(SearchValueChangedEvent(
+                      field: field,
+                      searchValue: searchValue,
+                      visualizeStock: visualizeStock,
+                    ));
+                  },
+                  checkboxToggled: (field, title, value) {
+                    _visualizeStockBloc.add(CheckBoxToggledEvent(
+                      field: field,
+                      title: title,
+                      value: value,
                       visualizeStock: visualizeStock,
                     ));
                   },

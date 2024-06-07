@@ -293,7 +293,7 @@ class FetchDataForObjectbox {
                   _objectBox.getItemIds().map((e) => e.itemId).toList();
               List cloudItems = data["items"];
 
-              localItems.forEach((element) {
+              for (var element in localItems) {
                 if (!cloudItems.contains(element)) {
                   Query query = _objectBox.itemIdBox!
                       .query(ItemIdObjectBoxModel_.itemId.equals(element))
@@ -303,14 +303,14 @@ class FetchDataForObjectbox {
 
                   _objectBox.removeItem(item.id);
                 }
-              });
+              }
 
-              cloudItems.forEach((element) {
+              for (var element in cloudItems) {
                 if (!localItems.contains(element)) {
                   _objectBox.addItemId(
                       ItemIdObjectBoxModel.fromJson({"item_id": element}));
                 }
-              });
+              }
 
               // _objectBox.itemIdBox!.removeAll();
               //
@@ -325,7 +325,7 @@ class FetchDataForObjectbox {
                   .toList();
               List cloudContainers = data["containers"];
 
-              localContainers.forEach((element) {
+              for (var element in localContainers) {
                 if (!cloudContainers.contains(element)) {
                   Query query = _objectBox.containerIdBox!
                       .query(ContainerIdObjectBoxModel_.containerId
@@ -336,14 +336,14 @@ class FetchDataForObjectbox {
 
                   _objectBox.removeContainer(container.id);
                 }
-              });
+              }
 
-              cloudContainers.forEach((element) {
+              for (var element in cloudContainers) {
                 if (!localContainers.contains(element)) {
                   _objectBox.addContainerId(ContainerIdObjectBoxModel.fromJson(
                       {"container_id": element}));
                 }
-              });
+              }
 
               // _objectBox.containerIdBox!.removeAll();
               //
@@ -357,7 +357,7 @@ class FetchDataForObjectbox {
                   _objectBox.getItemIds().map((e) => e.itemId).toList();
               List cloudWarehouseLocations = data["warehouse_locations"];
 
-              localWarehouseLocations.forEach((element) {
+              for (var element in localWarehouseLocations) {
                 if (!cloudWarehouseLocations.contains(element)) {
                   Query query = _objectBox.warehouseLocationIdBox!
                       .query(WarehouseLocationIdObjectBoxModel_
@@ -370,15 +370,15 @@ class FetchDataForObjectbox {
 
                   _objectBox.removeWarehouseLocation(warehouseLocation.id);
                 }
-              });
+              }
 
-              cloudWarehouseLocations.forEach((element) {
+              for (var element in cloudWarehouseLocations) {
                 if (!localWarehouseLocations.contains(element)) {
                   _objectBox.addWarehouseLocationId(
                       WarehouseLocationIdObjectBoxModel.fromJson(
                           {"warehouse_location_id": element}));
                 }
-              });
+              }
 
               //   _objectBox.warehouseLocationIdBox!.removeAll();
               //

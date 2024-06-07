@@ -181,6 +181,9 @@ class VisualiseStockView extends StatelessWidget {
                                   const ScrollableDetails.horizontal(
                                 physics: ClampingScrollPhysics(),
                               ),
+                              verticalDetails: const ScrollableDetails.vertical(
+                                physics: BouncingScrollPhysics(),
+                              ),
                               delegate: TableCellBuilderDelegate(
                                 columnCount: fields.length,
                                 rowCount: stocks.length + 1,

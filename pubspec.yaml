@@ -46,15 +46,15 @@ dependencies:
   file_picker: ^8.0.3
   flutter_bloc: ^8.1.5
   google_fonts: ^6.2.1
-  firebase_auth: ^4.20.0
-  firebase_core: ^2.32.0
+  firebase_auth: ^5.0.0
+  firebase_core: ^3.0.0
   cupertino_icons: ^1.0.8
-  cloud_firestore: ^4.17.5
-  flutter_side_menu: ^0.4.0
+  cloud_firestore: ^5.0.0
+  flutter_side_menu: ^0.5.3
   shared_preferences: ^2.2.3
   objectbox_flutter_libs: ^4.0.1
   multiple_search_selection: ^2.6.4
-  two_dimensional_scrollables: ^0.3.0
+  two_dimensional_scrollables: ^0.3.1
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +65,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  build_runner: ^2.4.10
+  build_runner: ^2.4.11
   flutter_lints: ^4.0.0
   objectbox_generator: ^4.0.1
 

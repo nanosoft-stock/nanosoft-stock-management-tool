@@ -235,7 +235,12 @@ class VisualiseStockView extends StatelessWidget {
                                       child: Center(
                                         child: Text(
                                           vicinity.row.toString(),
-                                          style: GoogleFonts.lato(),
+                                          style: GoogleFonts.lato(
+                                            textStyle: const TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     );
@@ -323,6 +328,18 @@ class VisualiseStockView extends StatelessWidget {
                                 },
                               ),
                             ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10.0,
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            "${stocks.length} x ${fields.length}",
+                            style: kLabelTextStyle,
                           ),
                         ),
                       ),

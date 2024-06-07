@@ -149,12 +149,6 @@ class VisualizeStockRepositoryImplementation
       data["all_selected"] = true;
       data["all_unique_values"] =
           getUniqueValues(field: ele.field, stocks: stocks);
-      // stocks
-      //     .map((e) => e[ele.field])
-      //     .toSet()
-      //     .map((e) => {"value": e, "show": true, "selected": true})
-      //     .toList()
-      //   ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
 
       data.addAll(getFilterByValuesByDatatype(
           values: stocks
@@ -190,14 +184,6 @@ class VisualizeStockRepositoryImplementation
     }
 
     return data;
-
-    // for (var element in values) {
-    //   if (element != "" && double.tryParse(element) is! double) {
-    //     return {"datatype": "string", "all_filter_by_values": stringFilterBy};
-    //   }
-    // }
-    //
-    // return {"datatype": "double", "all_filter_by_values": doubleFilterBy};
   }
 
   @override
@@ -206,7 +192,7 @@ class VisualizeStockRepositoryImplementation
 
     for (var filter in filters) {
       stocks = stocks.where((element) {
-        if (filter["all_selected"] != true) {
+        if (!filter["all_unique_values"].every((e) => e["selected"] == true)) {
           String stockValue = element[filter["field"]];
           return filter["all_unique_values"]
               .firstWhere((e) => e["title"] == stockValue)["selected"];

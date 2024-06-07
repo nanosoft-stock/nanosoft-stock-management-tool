@@ -43,6 +43,14 @@ class ShowColumnFilterLayerEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
+class ShowTableColumnFilterLayerEvent extends VisualizeStockEvent {
+  const ShowTableColumnFilterLayerEvent(
+      {required this.field, required this.visualizeStock});
+
+  final String? field;
+  final Map? visualizeStock;
+}
+
 class HideLayerEvent extends VisualizeStockEvent {
   const HideLayerEvent({required this.layer, required this.visualizeStock});
 

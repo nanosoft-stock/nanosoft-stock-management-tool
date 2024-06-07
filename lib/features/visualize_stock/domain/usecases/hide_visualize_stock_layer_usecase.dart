@@ -10,8 +10,10 @@ class HideVisualizeStockLayerUseCase extends UseCase {
 
     visualizeStock["layers"].remove(layer);
 
-    if (layer == "field_filter") {
+    if (layer != "parent_filter") {
       visualizeStock["filter_menu_field"] = null;
+    } else {
+      visualizeStock["layers"].remove("parent_field_filter");
     }
 
     return visualizeStock;

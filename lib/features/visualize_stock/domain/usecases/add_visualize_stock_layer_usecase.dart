@@ -9,14 +9,21 @@ class AddVisualizeStockLayerUseCase extends UseCase {
     String? layer = params["layer"];
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    if (layer != null) {
-      visualizeStock["layers"].remove("field_filter");
-      visualizeStock["layers"].add(layer);
-    } else {
-      visualizeStock["layers"].remove("parent_filter");
-      visualizeStock["layers"].add("field_filter");
+    visualizeStock["layers"].add(layer);
+    if (layer != "parent_field") {
       visualizeStock["filter_menu_field"] = field;
+    } else {
+      visualizeStock["filter_menu_field"] = null;
     }
+
+    // if (layer != null) {
+    //   visualizeStock["layers"].remove("field_filter");
+    //   visualizeStock["layers"].add(layer);
+    // } else {
+    //   visualizeStock["layers"].remove("parent_filter");
+    //   visualizeStock["layers"].add("field_filter");
+    //   visualizeStock["filter_menu_field"] = field;
+    // }
 
     return visualizeStock;
   }

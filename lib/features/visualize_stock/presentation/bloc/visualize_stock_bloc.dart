@@ -70,6 +70,7 @@ class VisualizeStockBloc
     on<ExportButtonClickedEvent>(exportButtonClickedEvent);
     on<ShowTableFilterLayerEvent>(showTableFilterLayerEvent);
     on<ShowColumnFilterLayerEvent>(showColumnFilterLayerEvent);
+    on<ShowTableColumnFilterLayerEvent>(showTableColumnFilterLayerEvent);
     on<HideLayerEvent>(hideLayerEvent);
     on<RearrangeColumnsEvent>(rearrangeColumnsEvent);
     on<ColumnVisibilityChangedEvent>(columnVisibilityChangedEvent);
@@ -127,6 +128,18 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "field": event.field,
+      "layer": "field_filter",
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
+
+  FutureOr<void> showTableColumnFilterLayerEvent(
+      ShowTableColumnFilterLayerEvent event,
+      Emitter<VisualizeStockState> emit) async {
+    emit(LoadedState(
+        visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
+      "field": event.field,
+      "layer": "parent_field_filter",
       "visualize_stock": event.visualizeStock,
     })));
   }

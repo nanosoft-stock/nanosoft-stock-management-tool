@@ -357,6 +357,7 @@ class VisualiseStockView extends StatelessWidget {
                       layer: "field_filter", visualizeStock: visualizeStock));
                 },
                 child: CustomColumnFilter(
+                  width: (constraints.maxWidth / 3) - 40,
                   fieldFilter: visualizeStock["filters"].firstWhere(
                       (e) => e["field"] == visualizeStock["filter_menu_field"]),
                   closeOnTap: () {
@@ -417,29 +418,112 @@ class VisualiseStockView extends StatelessWidget {
               ),
             if (visualizeStock["layers"].contains("parent_filter"))
               CustomOverlayEffect(
-                width: constraints.maxWidth / 3,
+                width: (visualizeStock["layers"].contains("parent_field_filter")
+                        ? 2
+                        : 1) *
+                    constraints.maxWidth /
+                    3,
                 hideOverlay: () {
                   _visualizeStockBloc.add(HideLayerEvent(
                       layer: "parent_filter", visualizeStock: visualizeStock));
                 },
-                child: CustomParentFilter(
-                  fieldFilters: visualizeStock["filters"],
-                  closeOnTap: () {
-                    _visualizeStockBloc.add(HideLayerEvent(
-                        layer: "parent_filter",
-                        visualizeStock: visualizeStock));
-                  },
-                  onReorder: (fieldFilters) {
-                    _visualizeStockBloc.add(RearrangeColumnsEvent(
-                        fieldFilters: fieldFilters,
-                        visualizeStock: visualizeStock));
-                  },
-                  changeVisibilityOnTap: (field, visibility) {
-                    _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
-                        visibility: visibility,
-                        field: field,
-                        visualizeStock: visualizeStock));
-                  },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (visualizeStock["layers"]
+                            .contains("parent_field_filter") &&
+                        visualizeStock["filter_menu_field"] != null)
+                      CustomColumnFilter(
+                        width: (constraints.maxWidth / 3) - 40,
+                        fieldFilter: visualizeStock["filters"].firstWhere((e) =>
+                            e["field"] == visualizeStock["filter_menu_field"]),
+                        closeOnTap: () {
+                          _visualizeStockBloc.add(HideLayerEvent(
+                              layer: "parent_field_filter",
+                              visualizeStock: visualizeStock));
+                        },
+                        filterOnPressed: (field) {
+                          _visualizeStockBloc.add(FilterColumnEvent(
+                              field: field, visualizeStock: visualizeStock));
+                        },
+                        clearOnPressed: (field) {
+                          _visualizeStockBloc.add(ClearColumnFilterEvent(
+                              field: field, visualizeStock: visualizeStock));
+                        },
+                        changeVisibilityOnTap: (field, visibility) {
+                          _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
+                              visibility: visibility,
+                              field: field,
+                              visualizeStock: visualizeStock));
+                        },
+                        sortOnPressed: (field, sort) {
+                          _visualizeStockBloc.add(SortColumnEvent(
+                            field: field,
+                            sort: sort,
+                            visualizeStock: visualizeStock,
+                          ));
+                        },
+                        filterBySelected: (field, filterBy) {
+                          _visualizeStockBloc.add(FilterBySelectedEvent(
+                            field: field,
+                            filterBy: filterBy,
+                            visualizeStock: visualizeStock,
+                          ));
+                        },
+                        filterValueChanged: (field, filterValue) {
+                          _visualizeStockBloc.add(FilterValueChangedEvent(
+                            field: field,
+                            filterValue: filterValue,
+                            visualizeStock: visualizeStock,
+                          ));
+                        },
+                        searchValueChanged: (field, searchValue) {
+                          _visualizeStockBloc.add(SearchValueChangedEvent(
+                            field: field,
+                            searchValue: searchValue,
+                            visualizeStock: visualizeStock,
+                          ));
+                        },
+                        checkboxToggled: (field, title, value) {
+                          _visualizeStockBloc.add(CheckBoxToggledEvent(
+                            field: field,
+                            title: title,
+                            value: value,
+                            visualizeStock: visualizeStock,
+                          ));
+                        },
+                      ),
+                    if (visualizeStock["layers"]
+                            .contains("parent_field_filter") &&
+                        visualizeStock["filter_menu_field"] != null)
+                      const SizedBox(
+                        width: 40,
+                      ),
+                    CustomParentFilter(
+                      width: (constraints.maxWidth / 3) - 40,
+                      fieldFilters: visualizeStock["filters"],
+                      closeOnTap: () {
+                        _visualizeStockBloc.add(HideLayerEvent(
+                            layer: "parent_filter",
+                            visualizeStock: visualizeStock));
+                      },
+                      fieldFilterOnPressed: (field) {
+                        _visualizeStockBloc.add(ShowTableColumnFilterLayerEvent(
+                            field: field, visualizeStock: visualizeStock));
+                      },
+                      onReorder: (fieldFilters) {
+                        _visualizeStockBloc.add(RearrangeColumnsEvent(
+                            fieldFilters: fieldFilters,
+                            visualizeStock: visualizeStock));
+                      },
+                      changeVisibilityOnTap: (field, visibility) {
+                        _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
+                            visibility: visibility,
+                            field: field,
+                            visualizeStock: visualizeStock));
+                      },
+                    ),
+                  ],
                 ),
               ),
           ],

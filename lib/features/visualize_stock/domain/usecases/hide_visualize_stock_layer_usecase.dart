@@ -9,12 +9,7 @@ class HideVisualizeStockLayerUseCase extends UseCase {
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
     visualizeStock["layers"].remove(layer);
-
-    if (layer != "parent_filter") {
-      visualizeStock["filter_menu_field"] = null;
-    } else {
-      visualizeStock["layers"].remove("parent_field_filter");
-    }
+    visualizeStock["filter_menu_field"] = null;
 
     return visualizeStock;
   }

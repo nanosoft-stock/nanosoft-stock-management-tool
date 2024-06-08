@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/components/custom_container.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 
 class CustomOverlayEffect extends StatelessWidget {
@@ -44,7 +45,18 @@ class CustomOverlayEffect extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: child,
+                      child: CustomContainer(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: kPrimaryBackgroundColor,
+                            borderRadius: kBorderRadius,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: child,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

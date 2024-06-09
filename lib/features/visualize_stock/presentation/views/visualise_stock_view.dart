@@ -9,7 +9,7 @@ import 'package:stock_management_tool/features/visualize_stock/presentation/bloc
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_column_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_filter_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_parent_filter.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -438,7 +438,7 @@ class VisualiseStockView extends StatelessWidget {
                   _visualizeStockBloc.add(HideLayerEvent(
                       layer: "parent_filter", visualizeStock: visualizeStock));
                 },
-                child: CustomParentFilter(
+                child: CustomTableFilter(
                   fieldFilters: visualizeStock["filters"],
                   closeOnTap: () {
                     _visualizeStockBloc.add(HideLayerEvent(

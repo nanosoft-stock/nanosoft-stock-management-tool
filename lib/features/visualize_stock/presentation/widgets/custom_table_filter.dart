@@ -3,8 +3,8 @@ import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_icon_button.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
-class CustomParentFilter extends StatelessWidget {
-  const CustomParentFilter({
+class CustomTableFilter extends StatelessWidget {
+  const CustomTableFilter({
     super.key,
     required this.fieldFilters,
     required this.closeOnTap,

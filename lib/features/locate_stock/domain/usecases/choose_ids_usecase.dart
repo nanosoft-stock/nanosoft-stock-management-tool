@@ -5,9 +5,14 @@ class ChooseIdsUseCase extends UseCase {
 
   @override
   Future call({params}) async {
+    int index = params["index"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    locatedStock["layers"].add("multiple_search_selection_overlay");
+    if (locatedStock["rows"][index]["search_by"] != "Filter") {
+      locatedStock["layers"].add("multiple_search_selection_overlay");
+    } else {
+      locatedStock["layers"].add("parent_filter_overlay");
+    }
 
     return locatedStock;
   }

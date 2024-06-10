@@ -24,17 +24,24 @@ import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.
 import 'package:stock_management_tool/features/locate_stock/data/repositories/locate_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_overlay_layer_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/choose_ids_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/clear_field_filter_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_completed_moves_item_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_pending_moves_item_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/field_filter_selected_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_by_selected_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_by_value_changed_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_checkbox_toggled_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_field_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/hide_overlay_layer_event.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/hide_overlay_layer_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
@@ -42,6 +49,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/loca
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_value_changed_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_stock_view_mode_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
@@ -179,13 +187,29 @@ Future<void> initializeDependencies() async {
       () => AddNewInputRowUseCase());
   sl.registerLazySingleton<RemoveInputRowUseCase>(
       () => RemoveInputRowUseCase());
+  sl.registerLazySingleton<AddOverlayLayerUseCase>(
+      () => AddOverlayLayerUseCase());
   sl.registerLazySingleton<HideOverlayLayerUseCase>(
       () => HideOverlayLayerUseCase());
   sl.registerLazySingleton<SearchByFieldFilledUseCase>(
-      () => SearchByFieldFilledUseCase());
+      () => SearchByFieldFilledUseCase(sl()));
   sl.registerLazySingleton<ChooseIdsUseCase>(() => ChooseIdsUseCase());
   sl.registerLazySingleton<IdEnteredUseCase>(() => IdEnteredUseCase());
   sl.registerLazySingleton<IdsChosenUseCase>(() => IdsChosenUseCase(sl()));
+  sl.registerLazySingleton<FieldFilterSelectedUseCase>(
+      () => FieldFilterSelectedUseCase());
+  sl.registerLazySingleton<FilterFieldLocateStockUseCase>(
+      () => FilterFieldLocateStockUseCase(sl()));
+  sl.registerLazySingleton<ClearFieldFilterLocateStockUseCase>(
+      () => ClearFieldFilterLocateStockUseCase(sl()));
+  sl.registerLazySingleton<FilterBySelectedLocateStockUseCase>(
+      () => FilterBySelectedLocateStockUseCase());
+  sl.registerLazySingleton<FilterByValueChangedLocateStockUseCase>(
+      () => FilterByValueChangedLocateStockUseCase());
+  sl.registerLazySingleton<SearchValueChangedLocateStockUseCase>(
+      () => SearchValueChangedLocateStockUseCase());
+  sl.registerLazySingleton<FilterCheckboxToggledLocateStockUseCase>(
+      () => FilterCheckboxToggledLocateStockUseCase());
   sl.registerLazySingleton<SwitchTableViewUseCase>(
       () => SwitchTableViewUseCase());
   sl.registerLazySingleton<SwitchStockViewModeUseCase>(
@@ -215,6 +239,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ExpandCompletedMovesItemUseCase>(
       () => ExpandCompletedMovesItemUseCase());
   sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
         sl(),
         sl(),
         sl(),

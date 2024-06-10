@@ -24,6 +24,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   //       "show_table": "",
   //       "view_mode": "",
   //       "chosen_ids": [],
+  //       "filters": [],
   //       "items": [
   //         {
   //           "item_id": "",
@@ -51,6 +52,55 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   //     },
   //   ]
   // };
+
+  List fieldsOrder = [
+    "date",
+    "category",
+    "warehouse location",
+    "container id",
+    "item id",
+    "serial number",
+    "sku",
+    "make",
+    "model",
+    "processor",
+    "ram",
+    "storage",
+    "screen resolution",
+    "os",
+    "screen size",
+    "usb c",
+    "hdmi",
+    "display port",
+    "vga",
+    "ethernet",
+    "usb a",
+    "type",
+    "supplier info",
+    "dispatch info",
+    "comments",
+    "staff",
+    "archived",
+  ];
+
+  List<String> stringFilterBy = [
+    "Equals",
+    "Not Equals",
+    "Begins With",
+    "Not Begins With",
+    "Contains",
+    "Not Contains",
+    "Ends With",
+    "Not Ends With",
+  ];
+
+  List<String> doubleFilterBy = [
+    "Equals",
+    "Not Equals",
+    "Greater Than",
+    "Lesser Than",
+    "Between"
+  ];
 
   @override
   void listenToCloudDataChange(
@@ -114,6 +164,151 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         .toList();
 
     return data;
+  }
+
+  @override
+  List<Map<String, dynamic>> getInitialFilters() {
+    List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
+
+    List newFields = [];
+    for (var ele in fieldsOrder) {
+      newFields.add(fields.firstWhere((e) => e["field"] == ele));
+    }
+    fields = newFields;
+
+    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+    stocks.sort((a, b) => b["date"].compareTo(a["date"]));
+
+    return fields.map((ele) {
+      Map<String, dynamic> data = {};
+
+      data["field"] = ele["field"];
+      data["show_column"] = true;
+      data["sort"] = ele["field"] != "date" ? Sort.none : Sort.desc;
+      data["filter_by"] = "";
+      data["filter_value"] = "";
+      data["search_value"] = "";
+      data["all_selected"] = true;
+      data["all_unique_values"] =
+          getUniqueValues(field: ele["field"], stocks: stocks);
+
+      data.addAll(getFilterByValuesByDatatype(
+          values: stocks
+              .map((stock) => stock[ele["field"]].toString())
+              .toList()
+              .cast<String>()));
+
+      return data;
+    }).toList();
+  }
+
+  List<Map<String, dynamic>> getUniqueValues(
+      {required String field, required List stocks}) {
+    return stocks
+        .map((e) => e[field])
+        // .where((e) => e != null)
+        .toSet()
+        .map((e) => {"title": e, "show": true, "selected": true})
+        .toList()
+      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+  }
+
+  Map<String, dynamic> getFilterByValuesByDatatype({required List values}) {
+    Map<String, dynamic> data = {};
+
+    if (values.every((element) {
+      if (element == "") return true;
+      return double.tryParse(element) is! double;
+    })) {
+      data = {"datatype": "string", "all_filter_by_values": stringFilterBy};
+    } else {
+      data = {"datatype": "double", "all_filter_by_values": doubleFilterBy};
+    }
+
+    return data;
+  }
+
+  int _compareWithBlank(sort, a, b) {
+    bool isABlank = a == null || a == "";
+    bool isBBlank = b == null || b == "";
+
+    if (sort == Sort.asc) {
+      if (isABlank) return 1;
+      if (isBBlank) return -1;
+    } else if (sort == Sort.desc) {
+      if (isABlank) return -1;
+      if (isBBlank) return 1;
+    }
+
+    return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
+  }
+
+  @override
+  List<Map<String, dynamic>> getFilteredStocks({required List filters}) {
+    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+
+    for (var filter in filters) {
+      stocks = stocks.where((element) {
+        if (!filter["all_unique_values"].every((e) => e["selected"] == true)) {
+          String stockValue = element[filter["field"]];
+          return filter["all_unique_values"]
+              .firstWhere((e) => e["title"] == stockValue)["selected"];
+        } else if (filter["filter_by"] != "") {
+          if (filter["datatype"] == "string") {
+            String stockValue =
+                (element[filter["field"]] ?? "").toString().toLowerCase();
+            String filterValue =
+                filter["filter_value"].toString().toLowerCase();
+
+            if (filter["filter_by"] == "Equals") {
+              return stockValue == filterValue;
+            } else if (filter["filter_by"] == "Not Equals") {
+              return stockValue != filterValue;
+            } else if (filter["filter_by"] == "Begins With") {
+              return stockValue.startsWith(filterValue);
+            } else if (filter["filter_by"] == "Not Begins With") {
+              return !stockValue.startsWith(filterValue);
+            } else if (filter["filter_by"] == "Contains") {
+              return stockValue.contains(filterValue);
+            } else if (filter["filter_by"] == "Not Contains") {
+              return !stockValue.contains(filterValue);
+            } else if (filter["filter_by"] == "Ends With") {
+              return stockValue.endsWith(filterValue);
+            } else if (filter["filter_by"] == "Not Ends With") {
+              return !stockValue.endsWith(filterValue);
+            } else {
+              return true;
+            }
+          } else if (filter["datatype"] == "double") {
+            double? stockValue =
+                double.tryParse(element[filter["field"]]);
+            double? filterValue = double.tryParse(filter["filter_value"]);
+
+            if (stockValue != null && filterValue != null) {
+              if (filter["filter_by"] == "Equals") {
+                return stockValue == filterValue;
+              } else if (filter["filter_by"] == "Not Equals") {
+                return stockValue != filterValue;
+              } else if (filter["filter_by"] == "Greater Than") {
+                return stockValue > filterValue;
+              } else if (filter["filter_by"] == "Lesser Than") {
+                return stockValue < filterValue;
+              } else {
+                return true;
+              }
+            } else {
+              return true;
+            }
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      }).toList();
+    }
+
+    return stocks as List<Map<String, dynamic>>;
   }
 
   @override

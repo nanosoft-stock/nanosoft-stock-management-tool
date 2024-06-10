@@ -8,6 +8,10 @@ abstract class LocateStockRepository {
 
   Map<String, dynamic> getAllIds();
 
+  List<Map<String, dynamic>> getInitialFilters();
+
+  List<Map<String, dynamic>> getFilteredStocks({required List filters});
+
   Map<String, dynamic> getChosenIdsDetails({
     required String searchBy,
     required List chosenIds,

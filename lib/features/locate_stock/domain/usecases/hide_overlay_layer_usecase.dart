@@ -10,6 +10,11 @@ class HideOverlayLayerUseCase extends UseCase {
 
     locatedStock["layers"].remove(layer);
 
+    if (layer == "field_filter_overlay") {
+      locatedStock["layers"].remove("field_filter_overlay");
+      // locatedStock["rows"][rowIndex]["filter_field"] = null;
+    }
+
     return locatedStock;
   }
 }

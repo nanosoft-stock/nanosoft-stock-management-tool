@@ -5,17 +5,24 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_overlay_layer_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/choose_ids_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/clear_field_filter_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/complete_pending_move_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/container_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_completed_moves_item_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/expand_pending_moves_item_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/field_filter_selected_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_by_selected_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_by_value_changed_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_checkbox_toggled_locate_stock_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/filter_field_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_completed_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_all_pending_state_items_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/get_selected_items_usecase.dart';
-import 'package:stock_management_tool/features/locate_stock/domain/usecases/hide_overlay_layer_event.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/hide_overlay_layer_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/ids_chosen_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/initial_locate_stock_usecase.dart';
@@ -23,6 +30,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/loca
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_value_changed_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_stock_view_mode_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
@@ -36,11 +44,22 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   final LocateStockCloudDataChangeUseCase? _locateStockCloudDataChangeUseCase;
   final AddNewInputRowUseCase? _addNewInputRowUseCase;
   final RemoveInputRowUseCase? _removeInputRowUseCase;
+  final AddOverlayLayerUseCase? _addOverlayLayerUseCase;
   final HideOverlayLayerUseCase? _hideOverlayLayerUseCase;
   final SearchByFieldFilledUseCase? _searchByFieldFilledUseCase;
   final ChooseIdsUseCase? _chooseIdsUseCase;
   final IdEnteredUseCase? _idEnteredUseCase;
   final IdsChosenUseCase? _idsChosenUseCase;
+  final FieldFilterSelectedUseCase? _fieldFilterSelectedUseCase;
+  final FilterFieldLocateStockUseCase? _filterFieldLocateStockUseCase;
+  final ClearFieldFilterLocateStockUseCase? _clearFieldFilterLocateStockUseCase;
+  final FilterBySelectedLocateStockUseCase? _filterBySelectedLocateStockUseCase;
+  final FilterByValueChangedLocateStockUseCase?
+      _filterByValueChangedLocateStockUseCase;
+  final SearchValueChangedLocateStockUseCase?
+      _searchValueChangedLocateStockUseCase;
+  final FilterCheckboxToggledLocateStockUseCase?
+      _filterCheckboxToggledLocateStockUseCase;
   final SwitchTableViewUseCase? _switchTableViewUseCase;
   final SwitchStockViewModeUseCase? _switchStockViewModeUseCase;
   final IdCheckBoxToggledUseCase? _idCheckBoxToggledUseCase;
@@ -61,11 +80,19 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     this._locateStockCloudDataChangeUseCase,
     this._addNewInputRowUseCase,
     this._removeInputRowUseCase,
+    this._addOverlayLayerUseCase,
     this._hideOverlayLayerUseCase,
     this._searchByFieldFilledUseCase,
     this._chooseIdsUseCase,
     this._idEnteredUseCase,
     this._idsChosenUseCase,
+    this._fieldFilterSelectedUseCase,
+    this._filterFieldLocateStockUseCase,
+    this._clearFieldFilterLocateStockUseCase,
+    this._filterBySelectedLocateStockUseCase,
+    this._filterByValueChangedLocateStockUseCase,
+    this._searchValueChangedLocateStockUseCase,
+    this._filterCheckboxToggledLocateStockUseCase,
     this._switchTableViewUseCase,
     this._switchStockViewModeUseCase,
     this._idCheckBoxToggledUseCase,
@@ -85,25 +112,33 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<CloudDataChangeEvent>(cloudDataChangeEvent);
     on<AddNewInputRowEvent>(addNewInputRowEvent);
     on<RemoveInputRowEvent>(removeInputRowEvent);
+    on<AddOverlayLayerEvent>(addOverlayLayerEvent);
     on<HideOverlayLayerEvent>(hideOverlayLayerEvent);
-    on<SearchByFieldFilled>(searchByFieldFilled);
-    on<ChooseIdsButtonPressed>(chooseIdsButtonPressed);
-    on<IdEntered>(idEntered);
-    on<IdsChosen>(idsChosen);
-    on<SwitchTableView>(switchTableView);
-    on<SwitchStockViewMode>(switchStockViewMode);
-    on<IdCheckBoxToggled>(idCheckBoxToggled);
-    on<SelectAllCheckBoxToggled>(selectAllCheckBoxToggled);
-    on<PreviewMoveButtonPressed>(previewMoveButtonPressed);
-    on<ContainerIdEntered>(containerIdEntered);
-    on<WarehouseLocationIdEntered>(warehouseLocationIdEntered);
-    on<MoveItemsButtonPressed>(moveItemsButtonPressed);
-    on<PendingMovesButtonPressed>(pendingMovesButtonPressed);
-    on<ExpandPendingMovesItem>(expandPendingMovesItem);
-    on<CompleteMoveButtonPressed>(completeMoveButtonPressed);
-    on<CancelMoveButtonPressed>(cancelMoveButtonPressed);
-    on<CompletedMovesButtonPressed>(completedMovesButtonPressed);
-    on<ExpandCompletedMovesItem>(expandCompletedMovesItem);
+    on<SearchByFieldFilledEvent>(searchByFieldFilled);
+    on<ChooseIdsButtonPressedEvent>(chooseIdsButtonPressed);
+    on<IdEnteredEvent>(idEntered);
+    on<IdsChosenEvent>(idsChosen);
+    on<FieldFilterSelectedEvent>(fieldFilterSelectedEvent);
+    on<FilterFieldEvent>(filterFieldEvent);
+    on<ClearFieldFilterEvent>(clearFieldFilterEvent);
+    on<FilterBySelectedEvent>(filterBySelectedEvent);
+    on<FilterByValueChangedEvent>(filterByValueChangedEvent);
+    on<SearchValueChangedEvent>(searchValueChangedEvent);
+    on<FilterCheckBoxToggledEvent>(filterCheckBoxToggledEvent);
+    on<SwitchTableViewEvent>(switchTableView);
+    on<SwitchStockViewModeEvent>(switchStockViewMode);
+    on<IdCheckBoxToggledEvent>(idCheckBoxToggled);
+    on<SelectAllCheckBoxToggledEvent>(selectAllCheckBoxToggled);
+    on<PreviewMoveButtonPressedEvent>(previewMoveButtonPressed);
+    on<ContainerIdEnteredEvent>(containerIdEntered);
+    on<WarehouseLocationIdEnteredEvent>(warehouseLocationIdEntered);
+    on<MoveItemsButtonPressedEvent>(moveItemsButtonPressed);
+    on<PendingMovesButtonPressedEvent>(pendingMovesButtonPressed);
+    on<ExpandPendingMovesItemEvent>(expandPendingMovesItem);
+    on<CompleteMoveButtonPressedEvent>(completeMoveButtonPressed);
+    on<CancelMoveButtonPressedEvent>(cancelMoveButtonPressed);
+    on<CompletedMovesButtonPressedEvent>(completedMovesButtonPressed);
+    on<ExpandCompletedMovesItemEvent>(expandCompletedMovesItem);
   }
 
   FutureOr<void> cloudDataChangeEvent(
@@ -144,6 +179,16 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
+  FutureOr<void> addOverlayLayerEvent(
+      AddOverlayLayerEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _addOverlayLayerUseCase!(params: {
+          "layer": event.layer,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
   FutureOr<void> hideOverlayLayerEvent(
       HideOverlayLayerEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
@@ -154,7 +199,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> searchByFieldFilled(
-      SearchByFieldFilled event, Emitter<LocateStockState> emit) async {
+      SearchByFieldFilledEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         index: event.index,
         locatedStock: await _searchByFieldFilledUseCase!(params: {
@@ -165,16 +210,17 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> chooseIdsButtonPressed(
-      ChooseIdsButtonPressed event, Emitter<LocateStockState> emit) async {
+      ChooseIdsButtonPressedEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         index: event.index,
         locatedStock: await _chooseIdsUseCase!(params: {
+          "index": event.index,
           "located_stock": event.locatedStock,
         })));
   }
 
   FutureOr<void> idEntered(
-      IdEntered event, Emitter<LocateStockState> emit) async {
+      IdEnteredEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         index: event.index,
         locatedStock: await _idEnteredUseCase!(params: {
@@ -185,7 +231,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> idsChosen(
-      IdsChosen event, Emitter<LocateStockState> emit) async {
+      IdsChosenEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _idsChosenUseCase!(params: {
       "index": event.index,
@@ -194,8 +240,89 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
+  FutureOr<void> fieldFilterSelectedEvent(
+      FieldFilterSelectedEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _fieldFilterSelectedUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> filterFieldEvent(
+      FilterFieldEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _filterFieldLocateStockUseCase!(params: {
+          "index": event.index,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> clearFieldFilterEvent(
+      ClearFieldFilterEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _clearFieldFilterLocateStockUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> filterBySelectedEvent(
+      FilterBySelectedEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _filterBySelectedLocateStockUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "filter_by": event.filterBy,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> filterByValueChangedEvent(
+      FilterByValueChangedEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _filterByValueChangedLocateStockUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "value": event.value,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> searchValueChangedEvent(
+      SearchValueChangedEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _searchValueChangedLocateStockUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "value": event.value,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
+  FutureOr<void> filterCheckBoxToggledEvent(
+      FilterCheckBoxToggledEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _filterCheckboxToggledLocateStockUseCase!(params: {
+          "index": event.index,
+          "field": event.field,
+          "title": event.title,
+          "value": event.value,
+          "located_stock": event.locatedStock,
+        })));
+  }
+
   FutureOr<void> switchTableView(
-      SwitchTableView event, Emitter<LocateStockState> emit) async {
+      SwitchTableViewEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _switchTableViewUseCase!(params: {
       "index": event.index,
@@ -205,7 +332,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> switchStockViewMode(
-      SwitchStockViewMode event, Emitter<LocateStockState> emit) async {
+      SwitchStockViewModeEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _switchStockViewModeUseCase!(params: {
       "index": event.index,
@@ -215,7 +342,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> idCheckBoxToggled(
-      IdCheckBoxToggled event, Emitter<LocateStockState> emit) async {
+      IdCheckBoxToggledEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _idCheckBoxToggledUseCase!(params: {
       "index": event.index,
@@ -225,8 +352,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
-  FutureOr<void> selectAllCheckBoxToggled(
-      SelectAllCheckBoxToggled event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> selectAllCheckBoxToggled(SelectAllCheckBoxToggledEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _selectAllCheckBoxToggledUseCase!(params: {
       "index": event.index,
@@ -235,8 +362,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
-  FutureOr<void> previewMoveButtonPressed(
-      PreviewMoveButtonPressed event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> previewMoveButtonPressed(PreviewMoveButtonPressedEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _getSelectedItemsUseCase!(params: {
       "located_stock": event.locatedStock,
@@ -244,7 +371,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> containerIdEntered(
-      ContainerIdEntered event, Emitter<LocateStockState> emit) async {
+      ContainerIdEnteredEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _containerIDEnteredUseCase!(params: {
       "text": event.text,
@@ -253,7 +380,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> warehouseLocationIdEntered(
-      WarehouseLocationIdEntered event, Emitter<LocateStockState> emit) async {
+      WarehouseLocationIdEnteredEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _warehouseLocationIDEnteredUseCase!(params: {
       "text": event.text,
@@ -262,15 +390,15 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> moveItemsButtonPressed(
-      MoveItemsButtonPressed event, Emitter<LocateStockState> emit) async {
+      MoveItemsButtonPressedEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
       locatedStock: await _moveItemsButtonPressedUseCase!(
           params: {"located_stock": event.locatedStock}),
     ));
   }
 
-  FutureOr<void> pendingMovesButtonPressed(
-      PendingMovesButtonPressed event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> pendingMovesButtonPressed(PendingMovesButtonPressedEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
       locatedStock: await _getAllPendingStateItemsUseCase!(
           params: {"located_stock": event.locatedStock}),
@@ -278,7 +406,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> expandPendingMovesItem(
-      ExpandPendingMovesItem event, Emitter<LocateStockState> emit) async {
+      ExpandPendingMovesItemEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _expandPendingMovesItemUseCase!(params: {
       "index": event.index,
@@ -287,8 +415,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
-  FutureOr<void> completeMoveButtonPressed(
-      CompleteMoveButtonPressed event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> completeMoveButtonPressed(CompleteMoveButtonPressedEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _completePendingMoveUseCase!(params: {
       "index": event.index,
@@ -296,8 +424,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     })));
   }
 
-  FutureOr<void> cancelMoveButtonPressed(
-      CancelMoveButtonPressed event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> cancelMoveButtonPressed(CancelMoveButtonPressedEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _cancelPendingMoveUseCase!(params: {
       "index": event.index,
@@ -306,15 +434,16 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   }
 
   FutureOr<void> completedMovesButtonPressed(
-      CompletedMovesButtonPressed event, Emitter<LocateStockState> emit) async {
+      CompletedMovesButtonPressedEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _getAllCompletedStateItemsUseCase!(params: {
       "located_stock": event.locatedStock,
     })));
   }
 
-  FutureOr<void> expandCompletedMovesItem(
-      ExpandCompletedMovesItem event, Emitter<LocateStockState> emit) async {
+  FutureOr<void> expandCompletedMovesItem(ExpandCompletedMovesItemEvent event,
+      Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _expandCompletedMovesItemUseCase!(params: {
       "index": event.index,

@@ -1,8 +1,11 @@
 import 'package:stock_management_tool/constants/enums.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 
 class SearchByFieldFilledUseCase extends UseCase {
-  SearchByFieldFilledUseCase();
+  SearchByFieldFilledUseCase(this._locateStockRepository);
+
+  final LocateStockRepository _locateStockRepository;
 
   @override
   Future call({params}) async {
@@ -20,14 +23,21 @@ class SearchByFieldFilledUseCase extends UseCase {
       mode = StockViewMode.container;
     } else if (searchBy == "Warehouse Location Id") {
       mode = StockViewMode.warehouse;
+    } else {
+      mode = StockViewMode.item;
     }
 
     locatedStock["rows"][index]["view_mode"] = mode;
-    if (locatedStock["rows"][index]["chosen_ids"] == null) {
-      locatedStock["rows"][index]["chosen_ids"] = [];
+    if (searchBy != "Filter") {
+      if (locatedStock["rows"][index]["chosen_ids"] == null) {
+        locatedStock["rows"][index]["chosen_ids"] = [];
+      }
+      locatedStock["layers"].add("multiple_search_selection_overlay");
+    } else {
+      locatedStock["rows"][index]["filters"] =
+          _locateStockRepository.getInitialFilters();
+      locatedStock["layers"].add("parent_filter_overlay");
     }
-    locatedStock["layers"].add("multiple_search_selection_overlay");
-
     return locatedStock;
   }
 }

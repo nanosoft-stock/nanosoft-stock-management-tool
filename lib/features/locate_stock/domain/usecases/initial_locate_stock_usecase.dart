@@ -17,6 +17,8 @@ class InitialLocateStockUseCase extends UseCase {
       {
         "search_by": "",
         "show_table": true,
+        "filter_field": null,
+        "filters": null,
       },
     ];
 

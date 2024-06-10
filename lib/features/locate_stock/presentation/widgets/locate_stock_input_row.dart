@@ -25,7 +25,7 @@ class LocateStockInputRow extends StatelessWidget {
     "Item Id",
     "Container Id",
     "Warehouse Location Id",
-    "Custom Search",
+    "Filter",
   ];
 
   final Map rowData;

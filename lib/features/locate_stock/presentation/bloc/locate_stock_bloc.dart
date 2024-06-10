@@ -29,6 +29,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/init
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/locate_stock_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/reset_all_filters_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_value_changed_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
@@ -50,6 +51,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   final ChooseIdsUseCase? _chooseIdsUseCase;
   final IdEnteredUseCase? _idEnteredUseCase;
   final IdsChosenUseCase? _idsChosenUseCase;
+  final ResetAllFiltersLocateStockUseCase? _resetAllFiltersLocateStockUseCase;
   final FieldFilterSelectedUseCase? _fieldFilterSelectedUseCase;
   final FilterFieldLocateStockUseCase? _filterFieldLocateStockUseCase;
   final ClearFieldFilterLocateStockUseCase? _clearFieldFilterLocateStockUseCase;
@@ -86,6 +88,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     this._chooseIdsUseCase,
     this._idEnteredUseCase,
     this._idsChosenUseCase,
+    this._resetAllFiltersLocateStockUseCase,
     this._fieldFilterSelectedUseCase,
     this._filterFieldLocateStockUseCase,
     this._clearFieldFilterLocateStockUseCase,
@@ -118,6 +121,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     on<ChooseIdsButtonPressedEvent>(chooseIdsButtonPressed);
     on<IdEnteredEvent>(idEntered);
     on<IdsChosenEvent>(idsChosen);
+    on<ResetAllFiltersEvent>(resetAllFiltersEvent);
     on<FieldFilterSelectedEvent>(fieldFilterSelectedEvent);
     on<FilterFieldEvent>(filterFieldEvent);
     on<ClearFieldFilterEvent>(clearFieldFilterEvent);
@@ -238,6 +242,16 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       "chosen_ids": event.chosenIds,
       "located_stock": event.locatedStock,
     })));
+  }
+
+  FutureOr<void> resetAllFiltersEvent(
+      ResetAllFiltersEvent event, Emitter<LocateStockState> emit) async {
+    emit(LoadedState(
+        index: event.index,
+        locatedStock: await _resetAllFiltersLocateStockUseCase!(params: {
+          "index": event.index,
+          "located_stock": event.locatedStock,
+        })));
   }
 
   FutureOr<void> fieldFilterSelectedEvent(

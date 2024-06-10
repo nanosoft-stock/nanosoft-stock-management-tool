@@ -17,7 +17,7 @@ class SearchValueChangedVisualizeStockUseCase extends UseCase {
     List allUniqueValues = fieldFilter["all_unique_values"];
 
     for (var e in allUniqueValues) {
-      e["show"] = e["value"].toLowerCase().contains(searchValue) ? true : false;
+      e["show"] = e["title"].toLowerCase().contains(searchValue) ? true : false;
     }
 
     fieldFilter["all_unique_values"] = allUniqueValues;

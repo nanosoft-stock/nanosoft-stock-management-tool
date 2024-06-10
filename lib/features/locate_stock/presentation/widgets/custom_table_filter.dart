@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_icon_button.dart';
+import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_icon_button.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 
 class CustomTableFilter extends StatelessWidget {
@@ -8,11 +8,13 @@ class CustomTableFilter extends StatelessWidget {
     super.key,
     required this.fieldFilters,
     required this.closeOnTap,
+    required this.resetAllFiltersOnPressed,
     required this.fieldFilterOnPressed,
   });
 
   final List fieldFilters;
   final Function() closeOnTap;
+  final Function() resetAllFiltersOnPressed;
   final Function(String) fieldFilterOnPressed;
 
   @override
@@ -32,37 +34,19 @@ class CustomTableFilter extends StatelessWidget {
                 "All Filters",
                 style: kLabelTextStyle,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: kBorderRadius,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Filter",
-                      style: kLabelTextStyle,
-                    ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: kBorderRadius,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: kBorderRadius,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Reset",
-                      style: kLabelTextStyle,
-                    ),
-                  ),
-                ],
+                ),
+                onPressed: () {
+                  resetAllFiltersOnPressed();
+                },
+                child: Text(
+                  "Reset",
+                  style: kLabelTextStyle,
+                ),
               ),
             ],
           ),

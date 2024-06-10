@@ -48,6 +48,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/init
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/locate_stock_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/move_items_button_pressed_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/remove_input_row_usecase.dart';
+import 'package:stock_management_tool/features/locate_stock/domain/usecases/reset_all_filters_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_by_field_filled_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/search_value_changed_locate_stock_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/select_all_checkbox_toggled_usecase.dart';
@@ -70,6 +71,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/i
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/rearrange_columns_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/reset_all_filters_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/search_value_changed_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
@@ -142,6 +144,8 @@ Future<void> initializeDependencies() async {
       () => AddVisualizeStockLayerUseCase());
   sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
       () => HideVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
+      () => ResetAllFiltersVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<RearrangeColumnsUseCase>(
       () => RearrangeColumnsUseCase());
   sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
@@ -159,6 +163,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
       () => CheckboxToggledVisualizeStockUseCase());
   sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
+        sl(),
         sl(),
         sl(),
         sl(),
@@ -196,6 +201,8 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ChooseIdsUseCase>(() => ChooseIdsUseCase());
   sl.registerLazySingleton<IdEnteredUseCase>(() => IdEnteredUseCase());
   sl.registerLazySingleton<IdsChosenUseCase>(() => IdsChosenUseCase(sl()));
+  sl.registerLazySingleton<ResetAllFiltersLocateStockUseCase>(
+      () => ResetAllFiltersLocateStockUseCase(sl()));
   sl.registerLazySingleton<FieldFilterSelectedUseCase>(
       () => FieldFilterSelectedUseCase());
   sl.registerLazySingleton<FilterFieldLocateStockUseCase>(
@@ -239,6 +246,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ExpandCompletedMovesItemUseCase>(
       () => ExpandCompletedMovesItemUseCase());
   sl.registerFactory<LocateStockBloc>(() => LocateStockBloc(
+        sl(),
         sl(),
         sl(),
         sl(),

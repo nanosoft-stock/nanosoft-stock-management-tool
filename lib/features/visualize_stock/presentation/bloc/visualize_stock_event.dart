@@ -66,6 +66,12 @@ class RearrangeColumnsEvent extends VisualizeStockEvent {
   final Map? visualizeStock;
 }
 
+class ResetAllFiltersEvent extends VisualizeStockEvent {
+  const ResetAllFiltersEvent({required this.visualizeStock});
+
+  final Map? visualizeStock;
+}
+
 class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
   const ColumnVisibilityChangedEvent(
       {required this.field,

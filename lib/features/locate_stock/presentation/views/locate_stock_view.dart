@@ -96,25 +96,30 @@ class LocateStockView extends StatelessWidget {
           children: [
             if (locatedStock["layers"].contains("base"))
               Padding(
-                padding: const EdgeInsets.fromLTRB(52, 5, 52, 0),
+                padding: const EdgeInsets.fromLTRB(52, 57, 52, 40),
                 child: SizedBox(
                   height: constraints.maxHeight,
                   child: Column(
                     children: [
-                      Align(
-                        alignment: Alignment.topRight,
+                      CustomContainer(
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainer(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kInputFieldFillColor,
+                              borderRadius: kBorderRadius,
+                              boxShadow: kBoxShadowList,
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: kBorderRadius,
+                                        borderRadius:
+                                            BorderRadius.circular(7.0),
                                       ),
                                     ),
                                     onPressed: () {
@@ -130,7 +135,8 @@ class LocateStockView extends StatelessWidget {
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: kBorderRadius,
+                                        borderRadius:
+                                            BorderRadius.circular(7.0),
                                       ),
                                     ),
                                     onPressed: () {
@@ -146,6 +152,9 @@ class LocateStockView extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: rowCount + 1,
@@ -154,7 +163,8 @@ class LocateStockView extends StatelessWidget {
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                              padding: const EdgeInsets.all(10.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
                               child: index < rowCount
                                   ? LocateStockInputRow(
                                       rowData: locatedStock["rows"][index],
@@ -223,31 +233,51 @@ class LocateStockView extends StatelessWidget {
                   ),
                 ),
               ),
-            if (locatedStock["layers"].contains("base") &&
-                locatedStock["selected_item_ids"] != null &&
-                locatedStock["selected_item_ids"].isNotEmpty)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: CustomContainer(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: CustomElevatedButton(
-                        onPressed: () {
-                          _locateStockBloc.add(PreviewMoveButtonPressedEvent(
-                              locatedStock: locatedStock));
-                        },
-                        child: Text(
-                          "Preview Move",
-                          textAlign: TextAlign.center,
-                          softWrap: false,
-                          style: kButtonTextStyle,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+            if (locatedStock["layers"].contains("pending_moves_overlay"))
+              CustomPendingMovesOverlay(
+                key: UniqueKey(),
+                pendingStateItems: locatedStock["pending_state_items"],
+                hideOverlay: () {
+                  _locateStockBloc.add(HideOverlayLayerEvent(
+                      layer: "pending_moves_overlay",
+                      locatedStock: locatedStock));
+                },
+                onExpand: (index, value) {
+                  _locateStockBloc.add(ExpandPendingMovesItemEvent(
+                    index: index,
+                    isExpanded: value,
+                    locatedStock: locatedStock,
+                  ));
+                },
+                onCompleted: (value) {
+                  _locateStockBloc.add(CompleteMoveButtonPressedEvent(
+                    index: value,
+                    locatedStock: locatedStock,
+                  ));
+                },
+                onRemove: (value) {
+                  _locateStockBloc.add(CancelMoveButtonPressedEvent(
+                    index: value,
+                    locatedStock: locatedStock,
+                  ));
+                },
+              ),
+            if (locatedStock["layers"].contains("completed_moves_overlay"))
+              CustomCompletedMovesOverlay(
+                key: UniqueKey(),
+                completedStateItems: locatedStock["completed_state_items"],
+                hideOverlay: () {
+                  _locateStockBloc.add(HideOverlayLayerEvent(
+                      layer: "completed_moves_overlay",
+                      locatedStock: locatedStock));
+                },
+                onExpand: (index, value) {
+                  _locateStockBloc.add(ExpandCompletedMovesItemEvent(
+                    index: index,
+                    isExpanded: value,
+                    locatedStock: locatedStock,
+                  ));
+                },
               ),
             if (locatedStock["layers"]
                     .contains("multiple_search_selection_overlay") &&
@@ -289,6 +319,10 @@ class LocateStockView extends StatelessWidget {
                     _locateStockBloc.add(HideOverlayLayerEvent(
                         layer: "parent_filter_overlay",
                         locatedStock: locatedStock));
+                  },
+                  resetAllFiltersOnPressed: () {
+                    _locateStockBloc.add(ResetAllFiltersEvent(
+                        index: rowIndex, locatedStock: locatedStock));
                   },
                   fieldFilterOnPressed: (field) {
                     _locateStockBloc.add(FieldFilterSelectedEvent(
@@ -363,6 +397,32 @@ class LocateStockView extends StatelessWidget {
                   },
                 ),
               ),
+            if (locatedStock["layers"].contains("base") &&
+                locatedStock["selected_item_ids"] != null &&
+                locatedStock["selected_item_ids"].isNotEmpty)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: CustomContainer(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: CustomElevatedButton(
+                        onPressed: () {
+                          _locateStockBloc.add(PreviewMoveButtonPressedEvent(
+                              locatedStock: locatedStock));
+                        },
+                        child: Text(
+                          "Preview Move",
+                          textAlign: TextAlign.center,
+                          softWrap: false,
+                          style: kButtonTextStyle,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (locatedStock["layers"].contains("preview_move_overlay"))
               CustomPreviewMoveOverlay(
                 key: UniqueKey(),
@@ -386,52 +446,6 @@ class LocateStockView extends StatelessWidget {
                 },
                 onMoveItemsTap: () {
                   _locateStockBloc.add(MoveItemsButtonPressedEvent(
-                    locatedStock: locatedStock,
-                  ));
-                },
-              ),
-            if (locatedStock["layers"].contains("pending_moves_overlay"))
-              CustomPendingMovesOverlay(
-                key: UniqueKey(),
-                pendingStateItems: locatedStock["pending_state_items"],
-                hideOverlay: () {
-                  _locateStockBloc.add(HideOverlayLayerEvent(
-                      layer: "pending_moves_overlay",
-                      locatedStock: locatedStock));
-                },
-                onExpand: (index, value) {
-                  _locateStockBloc.add(ExpandPendingMovesItemEvent(
-                    index: index,
-                    isExpanded: value,
-                    locatedStock: locatedStock,
-                  ));
-                },
-                onCompleted: (value) {
-                  _locateStockBloc.add(CompleteMoveButtonPressedEvent(
-                    index: value,
-                    locatedStock: locatedStock,
-                  ));
-                },
-                onRemove: (value) {
-                  _locateStockBloc.add(CancelMoveButtonPressedEvent(
-                    index: value,
-                    locatedStock: locatedStock,
-                  ));
-                },
-              ),
-            if (locatedStock["layers"].contains("completed_moves_overlay"))
-              CustomCompletedMovesOverlay(
-                key: UniqueKey(),
-                completedStateItems: locatedStock["completed_state_items"],
-                hideOverlay: () {
-                  _locateStockBloc.add(HideOverlayLayerEvent(
-                      layer: "completed_moves_overlay",
-                      locatedStock: locatedStock));
-                },
-                onExpand: (index, value) {
-                  _locateStockBloc.add(ExpandCompletedMovesItemEvent(
-                    index: index,
-                    isExpanded: value,
                     locatedStock: locatedStock,
                   ));
                 },

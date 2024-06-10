@@ -18,7 +18,7 @@ class ClearColumnFilterVisualizeStockUseCase extends UseCase {
     fieldFilter["filter_value"] = "";
     fieldFilter["search_value"] = "";
     fieldFilter["all_unique_values"]
-        .where((e) => e["show"] == true)
+        // .where((e) => e["show"] == true)
         .forEach((e) {
       e["selected"] = true;
     });

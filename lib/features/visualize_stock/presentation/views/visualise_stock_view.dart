@@ -9,8 +9,8 @@ import 'package:stock_management_tool/features/visualize_stock/presentation/bloc
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_column_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_filter_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
@@ -220,7 +220,7 @@ class VisualiseStockView extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    extent: FixedTableSpanExtent(25),
+                                    extent: FixedTableSpanExtent(30),
                                   );
                                 },
                                 cellBuilder: (BuildContext context,
@@ -444,6 +444,10 @@ class VisualiseStockView extends StatelessWidget {
                     _visualizeStockBloc.add(HideLayerEvent(
                         layer: "parent_filter",
                         visualizeStock: visualizeStock));
+                  },
+                  resetAllFiltersOnPressed: () {
+                    _visualizeStockBloc.add(
+                        ResetAllFiltersEvent(visualizeStock: visualizeStock));
                   },
                   fieldFilterOnPressed: (field) {
                     _visualizeStockBloc.add(HideLayerEvent(

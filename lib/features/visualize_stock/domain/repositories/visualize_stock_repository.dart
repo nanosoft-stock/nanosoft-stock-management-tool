@@ -15,6 +15,9 @@ abstract class VisualizeStockRepository {
   List<Map<String, dynamic>> getInitialFilters(
       {required List fields, required List stocks});
 
+  List<Map<String, dynamic>> getUniqueValues(
+      {required String field, required List stocks});
+
   Map<String, dynamic> getFilterByValuesByDatatype({required List values});
 
   List<Map<String, dynamic>> getFilteredStocks({required List filters});

@@ -8,6 +8,7 @@ class CustomTableFilter extends StatelessWidget {
     super.key,
     required this.fieldFilters,
     required this.closeOnTap,
+    required this.resetAllFiltersOnPressed,
     required this.fieldFilterOnPressed,
     required this.onReorder,
     required this.changeVisibilityOnTap,
@@ -15,6 +16,7 @@ class CustomTableFilter extends StatelessWidget {
 
   final List fieldFilters;
   final Function() closeOnTap;
+  final Function() resetAllFiltersOnPressed;
   final Function(String) fieldFilterOnPressed;
   final Function(List) onReorder;
   final Function(String, bool) changeVisibilityOnTap;
@@ -38,37 +40,19 @@ class CustomTableFilter extends StatelessWidget {
                 "All Filters",
                 style: kLabelTextStyle,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: kBorderRadius,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Filter",
-                      style: kLabelTextStyle,
-                    ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: kBorderRadius,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: kBorderRadius,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Reset",
-                      style: kLabelTextStyle,
-                    ),
-                  ),
-                ],
+                ),
+                onPressed: () {
+                  resetAllFiltersOnPressed();
+                },
+                child: Text(
+                  "Reset",
+                  style: kLabelTextStyle,
+                ),
               ),
             ],
           ),

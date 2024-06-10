@@ -5,9 +5,9 @@ class SearchValueChangedLocateStockUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    String index = params["index"];
+    int index = params["index"];
     String field = params["field"];
-    String searchValue = params["search_value"].toLowerCase();
+    String searchValue = params["value"].toLowerCase();
     Map<String, dynamic> locatedStock = params["located_stock"];
 
     Map<String, dynamic> fieldFilter = locatedStock["rows"][index]["filters"]
@@ -18,7 +18,7 @@ class SearchValueChangedLocateStockUseCase extends UseCase {
     List allUniqueValues = fieldFilter["all_unique_values"];
 
     for (var e in allUniqueValues) {
-      e["show"] = e["value"].toLowerCase().contains(searchValue) ? true : false;
+      e["show"] = e["title"].toLowerCase().contains(searchValue) ? true : false;
     }
 
     fieldFilter["all_unique_values"] = allUniqueValues;

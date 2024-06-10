@@ -280,8 +280,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
               return true;
             }
           } else if (filter["datatype"] == "double") {
-            double? stockValue =
-                double.tryParse(element[filter["field"]]);
+            double? stockValue = double.tryParse(element[filter["field"]]);
             double? filterValue = double.tryParse(filter["filter_value"]);
 
             if (stockValue != null && filterValue != null) {

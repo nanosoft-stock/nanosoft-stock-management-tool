@@ -103,6 +103,16 @@ class IdsChosenEvent extends LocateStockEvent {
   final Map<String, dynamic>? locatedStock;
 }
 
+class ResetAllFiltersEvent extends LocateStockEvent {
+  const ResetAllFiltersEvent({
+    required this.index,
+    required this.locatedStock,
+  });
+
+  final int? index;
+  final Map<String, dynamic>? locatedStock;
+}
+
 class FieldFilterSelectedEvent extends LocateStockEvent {
   const FieldFilterSelectedEvent({
     required this.index,

@@ -17,6 +17,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/i
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/initial_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/listen_to_cloud_data_change_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/rearrange_columns_usecase.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/usecases/reset_all_filters_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/search_value_changed_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 
@@ -32,6 +33,8 @@ class VisualizeStockBloc
   final ExportToExcelUseCase? _exportToExcelUseCase;
   final AddVisualizeStockLayerUseCase? _addVisualizeStockLayerUseCase;
   final HideVisualizeStockLayerUseCase? _hideVisualizeStockLayerUseCase;
+  final ResetAllFiltersVisualizeStockUseCase?
+      _resetAllFiltersVisualizeStockUseCase;
   final RearrangeColumnsUseCase? _rearrangeColumnsUseCase;
   final ChangeColumnVisibilityUseCase? _changeColumnVisibilityUseCase;
   final FilterColumnVisualizeStockUseCase? _filterColumnVisualizeStockUseCase;
@@ -54,6 +57,7 @@ class VisualizeStockBloc
     this._exportToExcelUseCase,
     this._addVisualizeStockLayerUseCase,
     this._hideVisualizeStockLayerUseCase,
+    this._resetAllFiltersVisualizeStockUseCase,
     this._rearrangeColumnsUseCase,
     this._changeColumnVisibilityUseCase,
     this._filterColumnVisualizeStockUseCase,
@@ -72,6 +76,7 @@ class VisualizeStockBloc
     on<ShowColumnFilterLayerEvent>(showColumnFilterLayerEvent);
     on<ShowTableColumnFilterLayerEvent>(showTableColumnFilterLayerEvent);
     on<HideLayerEvent>(hideLayerEvent);
+    on<ResetAllFiltersEvent>(resetAllFiltersEvent);
     on<RearrangeColumnsEvent>(rearrangeColumnsEvent);
     on<ColumnVisibilityChangedEvent>(columnVisibilityChangedEvent);
     on<FilterColumnEvent>(filterColumnEvent);
@@ -149,6 +154,14 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _hideVisualizeStockLayerUseCase!(params: {
       "layer": event.layer,
+      "visualize_stock": event.visualizeStock,
+    })));
+  }
+
+  FutureOr<void> resetAllFiltersEvent(
+      ResetAllFiltersEvent event, Emitter<VisualizeStockState> emit) async {
+    emit(LoadedState(
+        visualizeStock: await _resetAllFiltersVisualizeStockUseCase!(params: {
       "visualize_stock": event.visualizeStock,
     })));
   }

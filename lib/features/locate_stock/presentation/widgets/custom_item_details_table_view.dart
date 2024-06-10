@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stock_management_tool/components/custom_checkbox.dart';
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_checkbox.dart';
 import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
@@ -54,14 +54,14 @@ class CustomItemDetailsTableView extends StatelessWidget {
     if (viewMode == StockViewMode.warehouse) columns = warehouseColumns;
 
     double pad = 15.0;
-    if (constraints.maxWidth > 834) {
-      pad = (constraints.maxWidth - 834) / 2;
+    if (constraints.maxWidth > 834 + 130) {
+      pad = (constraints.maxWidth - 834 + 130) / 2;
     }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(pad, 15.0, pad, 0),
       child: Container(
-        height: (items.length > 5 ? 6 : items.length + 1) * 43.0,
+        height: (items.length > 7 ? 8 : items.length + 1) * 30.5,
         decoration: BoxDecoration(
           color: kTertiaryBackgroundColor,
           borderRadius: kBorderRadius,
@@ -70,21 +70,19 @@ class CustomItemDetailsTableView extends StatelessWidget {
         ),
         clipBehavior: Clip.hardEdge,
         child: TableView(
-          horizontalDetails: ScrollableDetails.horizontal(
-            controller: ScrollController(),
-            physics: const BouncingScrollPhysics(),
+          horizontalDetails: const ScrollableDetails.horizontal(
+            physics: ClampingScrollPhysics(),
           ),
-          verticalDetails: ScrollableDetails.vertical(
-            controller: ScrollController(),
-            physics: const BouncingScrollPhysics(),
+          verticalDetails: const ScrollableDetails.vertical(
+            physics: BouncingScrollPhysics(),
           ),
           delegate: TableCellBuilderDelegate(
             columnCount: columns.length,
             rowCount: items.length + 1,
             pinnedRowCount: 1,
             columnBuilder: (int index) {
-              return const TableSpan(
-                backgroundDecoration: TableSpanDecoration(
+              return TableSpan(
+                backgroundDecoration: const TableSpanDecoration(
                   border: TableSpanBorder(
                     leading: BorderSide(
                       color: Colors.black54,
@@ -94,7 +92,7 @@ class CustomItemDetailsTableView extends StatelessWidget {
                     ),
                   ),
                 ),
-                extent: FixedTableSpanExtent(200),
+                extent: FixedTableSpanExtent(index == 0 ? 70 : 200),
               );
             },
             rowBuilder: (int index) {
@@ -109,7 +107,7 @@ class CustomItemDetailsTableView extends StatelessWidget {
                     ),
                   ),
                 ),
-                extent: FixedTableSpanExtent(43),
+                extent: FixedTableSpanExtent(30),
               );
             },
             cellBuilder: (BuildContext context, TableVicinity vicinity) {

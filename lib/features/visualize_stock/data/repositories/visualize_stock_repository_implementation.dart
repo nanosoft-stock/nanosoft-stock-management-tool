@@ -374,8 +374,8 @@ class VisualizeStockRepositoryImplementation
             .where((e) => e["container id"] == ele)
             .map((e) => e["item id"])
             .toList(),
-        "container id": ele,
-        "warehouse location": stock
+        "container_id": ele,
+        "warehouse_location": stock
             .firstWhere((e) => e["container id"] == ele)["warehouse location"],
         "move_type": "excel import",
         "state": "completed",

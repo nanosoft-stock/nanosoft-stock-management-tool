@@ -39,7 +39,7 @@ abstract class LocateStockRepository {
 
   Future<void> changeMoveStateToComplete({required Map pendingItem});
 
-  Future<void> clearPendingMove({required Map pendingItem});
+  Future<void> cancelPendingMove({required Map pendingItem});
 
   List<Map<String, dynamic>> getAllCompletedStateItems();
 }

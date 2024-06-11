@@ -160,6 +160,7 @@ class VisualizeStockRepositoryImplementation
     }).toList();
   }
 
+  @override
   List<Map<String, dynamic>> getUniqueValues(
       {required String field, required List stocks}) {
     return stocks
@@ -280,17 +281,29 @@ class VisualizeStockRepositoryImplementation
     var bytes = File(filePath!).readAsBytesSync();
     Excel excel = Excel.decodeBytes(bytes);
 
-    List allLocations = await _fetchAllLocations();
+    Map warehouseLocations = {};
+    _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
+      warehouseLocations[e.warehouseLocationId] = null;
+    });
 
-    Map warehouseLocations = allLocations
-        .firstWhere((element) => element.keys.contains("warehouse_locations"));
-    Map containers = allLocations
-        .firstWhere((element) => element.keys.contains("containers"));
-    Map items =
-        allLocations.firstWhere((element) => element.keys.contains("items"));
+    Map containers = {};
+    _objectBox.containerIdBox!.getAll().forEach((e) {
+      containers[e.containerId] = {
+        "warehouse_location_id": e.warehouseLocationId
+      };
+    });
+
+    Map items = {};
+    _objectBox.itemIdBox!.getAll().forEach((e) {
+      items[e.itemId] = {
+        "container_id": e.containerId,
+        "doc_ref": e.docRef
+      };
+    });
 
     List header = [];
-    List stock = [];
+    List newStocks = [];
+    List existingStocks = [];
     Set uniqueContainers = {};
 
     for (var table in excel.tables.keys) {
@@ -338,127 +351,163 @@ class VisualizeStockRepositoryImplementation
           rowData[header[i]] = value;
         }
 
-        stock.add(AddNewStockHelper.toJson(data: rowData));
-        uniqueContainers.add(rowData["container id"]);
+        if (!items.containsKey(rowData["item id"])) {
+          if (containers[rowData["container id"]]["warehouse_location_id"] ==
+                  rowData["warehouse location"] ||
+              (containers[rowData["container id"]]["warehouse_location_id"] ??
+                      "") ==
+                  "") {
+            containers[rowData["container id"]] = {
+              "warehouse_location_id": rowData["warehouse location"]
+            };
+            newStocks.add(AddNewStockHelper.toJson(data: rowData));
+            uniqueContainers.add(rowData["container id"]);
+          } else {
+            // Call Error
+
+            return;
+          }
+        } else {
+          rowData["container id"] = items[rowData["item id"]]["container_id"];
+          rowData["warehouse location"] = containers[rowData["container id"]]
+                  ["warehouse_location_id"] ??
+              "";
+          existingStocks.add({
+            "doc_ref": items[rowData["item id"]]["doc_ref"],
+            ...AddNewStockHelper.toJson(data: rowData),
+          });
+        }
       }
     }
 
-    await sl.get<Firestore>().batchWrite(path: "stock_data", data: stock);
+    if (newStocks.isNotEmpty) {
+      Map<String, dynamic> docRefs = await sl.get<Firestore>().batchWrite(
+          path: "stock_data", data: newStocks, isToBeUpdated: false);
+      if (docRefs.isNotEmpty) {
+        docRefs.forEach((k, v) {
+          items[k] = v;
+        });
+      }
+    }
+
+    if (existingStocks.isNotEmpty) {
+      await sl.get<Firestore>().batchWrite(
+          path: "stock_data", data: existingStocks, isToBeUpdated: true);
+    }
 
     await _addNewLocations(
-      locations: warehouseLocations["warehouse_locations"],
-      newLocations: stock.map((e) => e["warehouse location"]).toList(),
-      uid: warehouseLocations["uid"],
-      updateField: "warehouse_locations",
+      locations: warehouseLocations,
+      newLocations: newStocks
+          .map((e) =>
+              (e["warehouse location"] ?? "").toString().toUpperCase().trim())
+          .toList(),
+      uid: warehouseLocationIdUid,
+      updateField: "warehouse_location_id",
     );
 
     await _addNewLocations(
-      locations: containers["containers"],
-      newLocations: stock.map((e) => e["container id"]).toList(),
-      uid: containers["uid"],
-      updateField: "containers",
+      locations: containers,
+      newLocations: newStocks
+          .map((e) => (e["container id"] ?? "").toString().toUpperCase().trim())
+          .toList(),
+      uid: containerIdUid,
+      updateField: "container_id",
     );
 
     await _addNewLocations(
-      locations: items["items"],
-      newLocations: stock.map((e) => e["item id"]).toList(),
-      uid: items["uid"],
-      updateField: "items",
+      locations: items,
+      newLocations: newStocks
+          .map((e) => (e["item id"] ?? "").toString().toUpperCase().trim())
+          .toList(),
+      uid: itemIdUid,
+      updateField: "item_id",
     );
 
     List locations = [];
 
     for (var ele in uniqueContainers) {
       locations.add(AddNewItemLocationHistoryHelper.toJson(data: {
-        "items": stock
+        "items": newStocks
             .where((e) => e["container id"] == ele)
             .map((e) => e["item id"])
             .toList(),
         "container_id": ele,
-        "warehouse_location": stock
+        "warehouse_location": newStocks
             .firstWhere((e) => e["container id"] == ele)["warehouse location"],
         "move_type": "excel import",
         "state": "completed",
       }));
     }
 
-    await sl
-        .get<Firestore>()
-        .batchWrite(path: "stock_location_history", data: locations);
+    await sl.get<Firestore>().batchWrite(
+        path: "stock_location_history", data: locations, isToBeUpdated: false);
 
     debugPrint("Import Completed");
   }
 
-  Future<List> _fetchAllLocations() async {
-    List allLocations = await sl
-        .get<Firestore>()
-        .getDocuments(path: "all_locations", includeUid: true);
-
-    if (kIsLinux) {
-      allLocations = allLocations.map((element) {
-        Map map = {};
-
-        for (var key in element.keys) {
-          if (key == "uid") {
-            map["uid"] = element["uid"]["stringValue"];
-          } else {
-            map[key] = element[key]["arrayValue"]["values"]
-                .map((ele) => ele["stringValue"])
-                .toList();
-          }
-        }
-
-        return map;
-      }).toList();
-    }
-
-    return allLocations;
-  }
-
   Future<void> _addNewLocations({
-    required List locations,
+    required Map locations,
     required List newLocations,
     required String uid,
     required String updateField,
   }) async {
-    newLocations =
-        newLocations.map((e) => e.toString().toUpperCase().trim()).toList();
-    locations = (locations.toSet()..addAll(newLocations)).toList();
-    locations.sort((a, b) => a.toString().compareTo(b.toString()));
+    Map data = {};
+
+    List tempLocations =
+        (locations.keys.toSet()..addAll(newLocations)).toList();
+
+    for (String e in tempLocations) {
+      if (updateField == "warehouse_location_id") {
+        data[e] = null;
+      } else if (updateField == "container_id") {
+        data[e] = {
+          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? ""
+        };
+      } else if (updateField == "item_id") {
+        data[e] = {
+          "container_id": locations[e]["container_id"] ?? "",
+          "doc_ref": locations[e]["doc_ref"] ?? ""
+        };
+      }
+    }
 
     await sl.get<Firestore>().modifyDocument(
-          path: "all_locations",
+          path: "unique_values",
           uid: uid,
           updateMask: [updateField],
           data: !kIsLinux
               ? {
-                  updateField: locations,
+                  updateField: data,
                 }
               : {
                   updateField: {
-                    "arrayValue": {
-                      "values":
-                          locations.map((e) => {"stringValue": e}).toList(),
+                    "mapValue": {
+                      "fields": {
+                        data.map(
+                          (k, v) => MapEntry(
+                            k,
+                            v != null
+                                ? {
+                                    "mapValue": {
+                                      "fields": v.map(
+                                        (k1, v1) => MapEntry(
+                                          k1,
+                                          {
+                                            "stringValue": v1,
+                                          },
+                                        ),
+                                      ),
+                                    },
+                                  }
+                                : null,
+                          ),
+                        )
+                      }
                     }
                   }
                 },
         );
   }
-
-  // Future<void> _addItemLocationHistory({required Map data}) async {
-  //   Map map = {
-  //     "items": data["items"],
-  //     "container_id": data["container id"],
-  //     "warehouse_location_id": data["warehouse location"],
-  //     "move_type": "imported",
-  //     "state": "completed",
-  //   };
-  //
-  //   await sl.get<Firestore>().createDocument(
-  //         path: "stock_location_history",
-  //         data: AddNewItemLocationHistoryHelper.toJson(data: map),
-  //       );
-  // }
 
   @override
   Future<void> exportToExcel(

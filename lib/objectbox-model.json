@@ -435,7 +435,7 @@
     },
     {
       "id": "11:1221214447477733281",
-      "lastPropertyId": "2:5958765478249987092",
+      "lastPropertyId": "4:133396943923725028",
       "name": "ContainerIdObjectBoxModel",
       "properties": [
         {
@@ -448,13 +448,18 @@
           "id": "2:5958765478249987092",
           "name": "containerId",
           "type": 9
+        },
+        {
+          "id": "4:133396943923725028",
+          "name": "warehouseLocationId",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "12:6442862417131488460",
-      "lastPropertyId": "2:3891850740529716294",
+      "lastPropertyId": "4:9097169230263661130",
       "name": "ItemIdObjectBoxModel",
       "properties": [
         {
@@ -466,6 +471,16 @@
         {
           "id": "2:3891850740529716294",
           "name": "itemId",
+          "type": 9
+        },
+        {
+          "id": "3:867217177621121490",
+          "name": "containerId",
+          "type": 9
+        },
+        {
+          "id": "4:9097169230263661130",
+          "name": "docRef",
           "type": 9
         }
       ],
@@ -581,7 +596,8 @@
     231179492036876718,
     7716995902251311121,
     5633997830570794166,
-    4784750344366697416
+    4784750344366697416,
+    3826584008350673828
   ],
   "retiredRelationUids": [],
   "version": 1

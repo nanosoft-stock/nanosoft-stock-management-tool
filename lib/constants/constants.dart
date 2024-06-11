@@ -3,6 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 bool kIsLinux = false;
 String userName = "";
+String itemIdUid = "";
+String containerIdUid = "";
+String warehouseLocationIdUid = "";
 
 Color kPrimaryBackgroundColor = const Color(0xFFE0DCDF); // Colors.black12;
 Color kSecondaryBackgroundColor = Colors.white38;

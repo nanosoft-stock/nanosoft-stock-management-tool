@@ -12,7 +12,7 @@ class CancelPendingMoveUseCase extends UseCase {
     Map<String, dynamic> locatedStock = params["located_stock"];
     List pendingStateItems = locatedStock["pending_state_items"];
 
-    await _locateStockRepository.clearPendingMove(
+    await _locateStockRepository.cancelPendingMove(
         pendingItem: pendingStateItems[index]);
 
     pendingStateItems =

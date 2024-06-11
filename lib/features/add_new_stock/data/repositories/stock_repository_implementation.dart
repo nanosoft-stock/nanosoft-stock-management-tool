@@ -69,107 +69,121 @@ class StockRepositoryImplementation implements StockRepository {
   Future addNewStock({required List<dynamic> fields}) async {
     Map data = {};
 
+    Map warehouseLocations = {};
+    _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
+      warehouseLocations[e.warehouseLocationId] = null;
+    });
+
+    Map containers = {};
+    _objectBox.containerIdBox!.getAll().forEach((e) {
+      containers[e.containerId] = {
+        "warehouse_location_id": e.warehouseLocationId
+      };
+    });
+
+    Map items = {};
+    _objectBox.itemIdBox!.getAll().forEach((e) {
+      items[e.itemId] = {
+        "container_id": e.containerId,
+        "doc_ref": e.docRef
+      };
+    });
+
     for (var element in fields) {
-      data[element.field] = element.textValue;
+      if (element.field == "warehouse location") {
+        String container =
+            fields.firstWhere((e) => e.field == "container id").textValue;
+        print(container);
+        if (container != "" &&
+            containers[container] != null &&
+            containers[container]["warehouse_location_id"] != "") {
+          data[element.field] = containers[container]["warehouse_location_id"];
+        } else if (container != "") {
+          data[element.field] = element.textValue;
+          containers[container] = {"warehouse_location_id": element.textValue};
+          if (element.textValue != "") {
+            warehouseLocations[element.textValue] = null;
+          }
+        } else {
+          return;
+        }
+      } else {
+        data[element.field] = element.textValue;
+      }
     }
 
-    await sl.get<Firestore>().createDocument(
+    String docRef = await sl.get<Firestore>().createDocument(
           path: "stock_data",
           data: AddNewStockHelper.toJson(data: data),
         );
 
-    List allLocations = await _fetchAllLocations();
-
-    Map warehouseLocations = allLocations
-        .firstWhere((element) => element.keys.contains("warehouse_locations"));
-    Map containers = allLocations
-        .firstWhere((element) => element.keys.contains("containers"));
-    Map items =
-        allLocations.firstWhere((element) => element.keys.contains("items"));
+    items[data["item id"]] = {
+      "container_id": data["container id"],
+      "doc_ref": docRef
+    };
 
     await _addNewLocations(
-      locations: warehouseLocations["warehouse_locations"],
-      newValue: data["warehouse location"],
-      uid: warehouseLocations["uid"],
-      updateField: "warehouse_locations",
+      locations: warehouseLocations,
+      uid: warehouseLocationIdUid,
+      updateField: "warehouse_location_id",
     );
 
     await _addNewLocations(
-      locations: containers["containers"],
-      newValue: data["container id"],
-      uid: containers["uid"],
-      updateField: "containers",
+      locations: containers,
+      uid: containerIdUid,
+      updateField: "container_id",
     );
 
     await _addNewLocations(
-      locations: items["items"],
-      newValue: data["item id"],
-      uid: items["uid"],
-      updateField: "items",
+      locations: items,
+      uid: itemIdUid,
+      updateField: "item_id",
     );
 
     await _addItemLocationHistory(data: data);
   }
 
-  Future<List> _fetchAllLocations() async {
-    List allLocations = await sl
-        .get<Firestore>()
-        .getDocuments(path: "all_locations", includeUid: true);
-
-    if (kIsLinux) {
-      allLocations = allLocations.map((element) {
-        Map map = {};
-
-        for (var key in element.keys) {
-          if (key == "uid") {
-            map["uid"] = element["uid"]["stringValue"];
-          } else {
-            map[key] = element[key]["arrayValue"]["values"]
-                .map((ele) => ele["stringValue"])
-                .toList();
-          }
-        }
-
-        return map;
-      }).toList();
-    }
-
-    return allLocations;
-  }
-
   Future<void> _addNewLocations({
-    required List locations,
-    required String? newValue,
+    required Map locations,
     required String uid,
     required String updateField,
   }) async {
-    if (newValue != null &&
-        newValue.toString().trim() != "" &&
-        !locations.contains(newValue.toString().trim())) {
-      locations.add(newValue.toString().trim().toUpperCase());
-
-      locations = locations.toSet().toList();
-
-      locations.sort((a, b) => a.toString().compareTo(b.toString()));
-
-      await sl.get<Firestore>().modifyDocument(
-            path: "all_locations",
-            uid: uid,
-            updateMask: [updateField],
-            data: !kIsLinux
-                ? {
-                    updateField: locations,
-                  }
-                : {
-                    updateField: {
-                      "arrayValue": {
-                        "values":
-                            locations.map((e) => {"stringValue": e}).toList(),
+    await sl.get<Firestore>().modifyDocument(
+          path: "unique_values",
+          uid: uid,
+          updateMask: [updateField],
+          data: !kIsLinux
+              ? {
+                  updateField: locations,
+                }
+              : {
+                  updateField: {
+                    "mapValue": {
+                      "fields": {
+                        locations.map(
+                          (k, v) => MapEntry(
+                            k,
+                            v != null
+                                ? {
+                                    "mapValue": {
+                                      "fields": v.map(
+                                        (k1, v1) => MapEntry(
+                                          k1,
+                                          {
+                                            "stringValue": v1,
+                                          },
+                                        ),
+                                      ),
+                                    },
+                                  }
+                                : null,
+                          ),
+                        )
                       }
                     }
-                  },
-          );
-    }
+                  }
+                },
+        );
   }
 
   Future<void> _addItemLocationHistory({required Map data}) async {

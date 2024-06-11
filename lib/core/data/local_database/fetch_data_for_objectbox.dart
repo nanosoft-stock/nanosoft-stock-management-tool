@@ -257,138 +257,333 @@ class FetchDataForObjectbox {
     }
   }
 
+  // Future<void> fetchLocations() async {
+  //   if (!kIsLinux) {
+  //     sl
+  //         .get<Firestore>()
+  //         .listenToDocumentChanges(path: "all_locations")
+  //         .listen((snapshot) {
+  //       for (var element in snapshot.docChanges) {
+  //         if (element.type.name == "added") {
+  //           Map data = element.doc.data() as Map<String, dynamic>;
+  //
+  //           if (data.containsKey("items")) {
+  //             _objectBox.addItemIdList(data["items"]
+  //                 .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
+  //                 .toList()
+  //                 .cast<ItemIdObjectBoxModel>());
+  //           } else if (data.containsKey("containers")) {
+  //             _objectBox.addContainerIdList(data["containers"]
+  //                 .map((e) =>
+  //                     ContainerIdObjectBoxModel.fromJson({"container_id": e}))
+  //                 .toList()
+  //                 .cast<ContainerIdObjectBoxModel>());
+  //           } else if (data.containsKey("warehouse_locations")) {
+  //             _objectBox.addWarehouseLocationIdList(data["warehouse_locations"]
+  //                 .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
+  //                     {"warehouse_location_id": e}))
+  //                 .toList()
+  //                 .cast<WarehouseLocationIdObjectBoxModel>());
+  //           }
+  //         } else if (element.type.name == "modified") {
+  //           Map data = element.doc.data() as Map<String, dynamic>;
+  //
+  //           if (data.containsKey("items")) {
+  //             List localItems =
+  //                 _objectBox.getItemIds().map((e) => e.itemId).toList();
+  //             List cloudItems = data["items"];
+  //
+  //             for (var element in localItems) {
+  //               if (!cloudItems.contains(element)) {
+  //                 Query query = _objectBox.itemIdBox!
+  //                     .query(ItemIdObjectBoxModel_.itemId.equals(element))
+  //                     .build();
+  //                 ItemIdObjectBoxModel item = query.findFirst();
+  //                 query.close();
+  //
+  //                 _objectBox.removeItem(item.id);
+  //               }
+  //             }
+  //
+  //             for (var element in cloudItems) {
+  //               if (!localItems.contains(element)) {
+  //                 _objectBox.addItemId(
+  //                     ItemIdObjectBoxModel.fromJson({"item_id": element}));
+  //               }
+  //             }
+  //
+  //             // _objectBox.itemIdBox!.removeAll();
+  //             //
+  //             // _objectBox.addItemIdList(data["items"]
+  //             //     .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
+  //             //     .toList()
+  //             //     .cast<ItemIdObjectBoxModel>());
+  //           } else if (data.containsKey("containers")) {
+  //             List localContainers = _objectBox
+  //                 .getContainerIds()
+  //                 .map((e) => e.containerId)
+  //                 .toList();
+  //             List cloudContainers = data["containers"];
+  //
+  //             for (var element in localContainers) {
+  //               if (!cloudContainers.contains(element)) {
+  //                 Query query = _objectBox.containerIdBox!
+  //                     .query(ContainerIdObjectBoxModel_.containerId
+  //                         .equals(element))
+  //                     .build();
+  //                 ContainerIdObjectBoxModel container = query.findFirst();
+  //                 query.close();
+  //
+  //                 _objectBox.removeContainer(container.id);
+  //               }
+  //             }
+  //
+  //             for (var element in cloudContainers) {
+  //               if (!localContainers.contains(element)) {
+  //                 _objectBox.addContainerId(ContainerIdObjectBoxModel.fromJson(
+  //                     {"container_id": element}));
+  //               }
+  //             }
+  //
+  //             // _objectBox.containerIdBox!.removeAll();
+  //             //
+  //             // _objectBox.addContainerIdList(data["containers"]
+  //             //     .map((e) =>
+  //             //         ContainerIdObjectBoxModel.fromJson({"container_id": e}))
+  //             //     .toList()
+  //             //     .cast<ContainerIdObjectBoxModel>());
+  //           } else if (data.containsKey("warehouse_locations")) {
+  //             List localWarehouseLocations =
+  //                 _objectBox.getItemIds().map((e) => e.itemId).toList();
+  //             List cloudWarehouseLocations = data["warehouse_locations"];
+  //
+  //             for (var element in localWarehouseLocations) {
+  //               if (!cloudWarehouseLocations.contains(element)) {
+  //                 Query query = _objectBox.warehouseLocationIdBox!
+  //                     .query(WarehouseLocationIdObjectBoxModel_
+  //                         .warehouseLocationId
+  //                         .equals(element))
+  //                     .build();
+  //                 WarehouseLocationIdObjectBoxModel warehouseLocation =
+  //                     query.findFirst();
+  //                 query.close();
+  //
+  //                 _objectBox.removeWarehouseLocation(warehouseLocation.id);
+  //               }
+  //             }
+  //
+  //             for (var element in cloudWarehouseLocations) {
+  //               if (!localWarehouseLocations.contains(element)) {
+  //                 _objectBox.addWarehouseLocationId(
+  //                     WarehouseLocationIdObjectBoxModel.fromJson(
+  //                         {"warehouse_location_id": element}));
+  //               }
+  //             }
+  //
+  //             //   _objectBox.warehouseLocationIdBox!.removeAll();
+  //             //
+  //             //   _objectBox.addWarehouseLocationIdList(data["warehouse_locations"]
+  //             //       .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
+  //             //           {"warehouse_location_id": e}))
+  //             //       .toList()
+  //             //       .cast<WarehouseLocationIdObjectBoxModel>());
+  //           }
+  //         } else if (element.type.name == "removed") {}
+  //       }
+  //     });
+  //   } else {
+  //     List items =
+  //         await sl.get<Firestore>().getDocuments(path: "all_locations");
+  //
+  //     items = items
+  //         .map((element) => element
+  //             .map((field, value) => MapEntry(field, value.values.first))
+  //             .cast<String, dynamic>())
+  //         .toList();
+  //
+  //     for (var element in items) {
+  //       if (element.containsKey("items")) {
+  //         _objectBox.addItemIdList(element["items"]
+  //             .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
+  //             .toList()
+  //             .cast<ItemIdObjectBoxModel>());
+  //       } else if (element.containsKey("containers")) {
+  //         _objectBox.addContainerIdList(element["containers"]
+  //             .map((e) =>
+  //                 ContainerIdObjectBoxModel.fromJson({"container_id": e}))
+  //             .toList()
+  //             .cast<ContainerIdObjectBoxModel>());
+  //       } else if (element.containsKey("warehouse_locations")) {
+  //         _objectBox.addWarehouseLocationIdList(element["warehouse_locations"]
+  //             .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
+  //                 {"warehouse_location_id": e}))
+  //             .toList()
+  //             .cast<WarehouseLocationIdObjectBoxModel>());
+  //       }
+  //     }
+  //   }
+  // }
+
   Future<void> fetchLocations() async {
     if (!kIsLinux) {
       sl
           .get<Firestore>()
-          .listenToDocumentChanges(path: "all_locations")
+          .listenToDocumentChanges(path: "unique_values")
           .listen((snapshot) {
         for (var element in snapshot.docChanges) {
-          if (element.type.name == "added") {
-            Map data = element.doc.data() as Map<String, dynamic>;
+          if (element.type.name == "added" || element.type.name == "modified") {
+            Map<String, dynamic> data =
+                element.doc.data() as Map<String, dynamic>;
 
-            if (data.containsKey("items")) {
-              _objectBox.addItemIdList(data["items"]
-                  .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
-                  .toList()
-                  .cast<ItemIdObjectBoxModel>());
-            } else if (data.containsKey("containers")) {
-              _objectBox.addContainerIdList(data["containers"]
-                  .map((e) =>
-                      ContainerIdObjectBoxModel.fromJson({"container_id": e}))
-                  .toList()
-                  .cast<ContainerIdObjectBoxModel>());
-            } else if (data.containsKey("warehouse_locations")) {
-              _objectBox.addWarehouseLocationIdList(data["warehouse_locations"]
-                  .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
-                      {"warehouse_location_id": e}))
-                  .toList()
-                  .cast<WarehouseLocationIdObjectBoxModel>());
+            if (data.containsKey("item_id")) {
+              itemIdUid = element.doc.id;
+              _objectBox.itemIdBox?.removeAll();
+              List items = [];
+
+              data["item_id"]?.forEach((k, v) {
+                items.add(ItemIdObjectBoxModel.fromJson({
+                  "item_id": k,
+                  "container_id": v["container_id"],
+                  "doc_ref": v["doc_ref"],
+                }));
+              });
+
+              _objectBox.addItemIdList(items.cast<ItemIdObjectBoxModel>());
+            } else if (data.containsKey("container_id")) {
+              containerIdUid = element.doc.id;
+              _objectBox.containerIdBox?.removeAll();
+              List containers = [];
+
+              data["container_id"]?.forEach((k, v) {
+                containers.add(ContainerIdObjectBoxModel.fromJson({
+                  "container_id": k,
+                  "warehouse_location_id": v["warehouse_location_id"],
+                }));
+              });
+
+              _objectBox.addContainerIdList(
+                  containers.cast<ContainerIdObjectBoxModel>());
+            } else if (data.containsKey("warehouse_location_id")) {
+              warehouseLocationIdUid = element.doc.id;
+              _objectBox.warehouseLocationIdBox?.removeAll();
+              List warehouseLocations = [];
+
+              data["warehouse_location_id"]?.forEach((k, _) {
+                warehouseLocations
+                    .add(WarehouseLocationIdObjectBoxModel.fromJson({
+                  "warehouse_location_id": k,
+                }));
+              });
+              _objectBox.addWarehouseLocationIdList(
+                  warehouseLocations.cast<WarehouseLocationIdObjectBoxModel>());
             }
-          } else if (element.type.name == "modified") {
-            Map data = element.doc.data() as Map<String, dynamic>;
-
-            if (data.containsKey("items")) {
-              List localItems =
-                  _objectBox.getItemIds().map((e) => e.itemId).toList();
-              List cloudItems = data["items"];
-
-              for (var element in localItems) {
-                if (!cloudItems.contains(element)) {
-                  Query query = _objectBox.itemIdBox!
-                      .query(ItemIdObjectBoxModel_.itemId.equals(element))
-                      .build();
-                  ItemIdObjectBoxModel item = query.findFirst();
-                  query.close();
-
-                  _objectBox.removeItem(item.id);
-                }
-              }
-
-              for (var element in cloudItems) {
-                if (!localItems.contains(element)) {
-                  _objectBox.addItemId(
-                      ItemIdObjectBoxModel.fromJson({"item_id": element}));
-                }
-              }
-
-              // _objectBox.itemIdBox!.removeAll();
-              //
-              // _objectBox.addItemIdList(data["items"]
-              //     .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
-              //     .toList()
-              //     .cast<ItemIdObjectBoxModel>());
-            } else if (data.containsKey("containers")) {
-              List localContainers = _objectBox
-                  .getContainerIds()
-                  .map((e) => e.containerId)
-                  .toList();
-              List cloudContainers = data["containers"];
-
-              for (var element in localContainers) {
-                if (!cloudContainers.contains(element)) {
-                  Query query = _objectBox.containerIdBox!
-                      .query(ContainerIdObjectBoxModel_.containerId
-                          .equals(element))
-                      .build();
-                  ContainerIdObjectBoxModel container = query.findFirst();
-                  query.close();
-
-                  _objectBox.removeContainer(container.id);
-                }
-              }
-
-              for (var element in cloudContainers) {
-                if (!localContainers.contains(element)) {
-                  _objectBox.addContainerId(ContainerIdObjectBoxModel.fromJson(
-                      {"container_id": element}));
-                }
-              }
-
-              // _objectBox.containerIdBox!.removeAll();
-              //
-              // _objectBox.addContainerIdList(data["containers"]
-              //     .map((e) =>
-              //         ContainerIdObjectBoxModel.fromJson({"container_id": e}))
-              //     .toList()
-              //     .cast<ContainerIdObjectBoxModel>());
-            } else if (data.containsKey("warehouse_locations")) {
-              List localWarehouseLocations =
-                  _objectBox.getItemIds().map((e) => e.itemId).toList();
-              List cloudWarehouseLocations = data["warehouse_locations"];
-
-              for (var element in localWarehouseLocations) {
-                if (!cloudWarehouseLocations.contains(element)) {
-                  Query query = _objectBox.warehouseLocationIdBox!
-                      .query(WarehouseLocationIdObjectBoxModel_
-                          .warehouseLocationId
-                          .equals(element))
-                      .build();
-                  WarehouseLocationIdObjectBoxModel warehouseLocation =
-                      query.findFirst();
-                  query.close();
-
-                  _objectBox.removeWarehouseLocation(warehouseLocation.id);
-                }
-              }
-
-              for (var element in cloudWarehouseLocations) {
-                if (!localWarehouseLocations.contains(element)) {
-                  _objectBox.addWarehouseLocationId(
-                      WarehouseLocationIdObjectBoxModel.fromJson(
-                          {"warehouse_location_id": element}));
-                }
-              }
-
-              //   _objectBox.warehouseLocationIdBox!.removeAll();
-              //
-              //   _objectBox.addWarehouseLocationIdList(data["warehouse_locations"]
-              //       .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
-              //           {"warehouse_location_id": e}))
-              //       .toList()
-              //       .cast<WarehouseLocationIdObjectBoxModel>());
-            }
-          } else if (element.type.name == "removed") {}
+          }
+          // else if (element.type.name == "modified") {
+          //   Map<String, dynamic> data =
+          //   element.doc.data() as Map<String, dynamic>;
+          //
+          //   if (data.containsKey("item_id")) {
+          //     List localItems =
+          //         _objectBox.getItemIds().map((e) => e.toJson()).toList();
+          //     List cloudItems = data["item_id"];
+          //
+          //     for (var element in localItems) {
+          //       if (!cloudItems.contains(element)) {
+          //         Query query = _objectBox.itemIdBox!
+          //             .query(ItemIdObjectBoxModel_.itemId.equals(element))
+          //             .build();
+          //         ItemIdObjectBoxModel item = query.findFirst();
+          //         query.close();
+          //
+          //         _objectBox.removeItem(item.id);
+          //       }
+          //     }
+          //
+          //     for (var element in cloudItems) {
+          //       if (!localItems.contains(element)) {
+          //         _objectBox.addItemId(
+          //             ItemIdObjectBoxModel.fromJson({"item_id": element}));
+          //       }
+          //     }
+          //
+          //     // _objectBox.itemIdBox!.removeAll();
+          //     //
+          //     // _objectBox.addItemIdList(data["items"]
+          //     //     .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
+          //     //     .toList()
+          //     //     .cast<ItemIdObjectBoxModel>());
+          //   } else if (data.containsKey("containers")) {
+          //     List localContainers = _objectBox
+          //         .getContainerIds()
+          //         .map((e) => e.containerId)
+          //         .toList();
+          //     List cloudContainers = data["containers"];
+          //
+          //     for (var element in localContainers) {
+          //       if (!cloudContainers.contains(element)) {
+          //         Query query = _objectBox.containerIdBox!
+          //             .query(ContainerIdObjectBoxModel_.containerId
+          //                 .equals(element))
+          //             .build();
+          //         ContainerIdObjectBoxModel container = query.findFirst();
+          //         query.close();
+          //
+          //         _objectBox.removeContainer(container.id);
+          //       }
+          //     }
+          //
+          //     for (var element in cloudContainers) {
+          //       if (!localContainers.contains(element)) {
+          //         _objectBox.addContainerId(ContainerIdObjectBoxModel.fromJson(
+          //             {"container_id": element}));
+          //       }
+          //     }
+          //
+          //     // _objectBox.containerIdBox!.removeAll();
+          //     //
+          //     // _objectBox.addContainerIdList(data["containers"]
+          //     //     .map((e) =>
+          //     //         ContainerIdObjectBoxModel.fromJson({"container_id": e}))
+          //     //     .toList()
+          //     //     .cast<ContainerIdObjectBoxModel>());
+          //   } else if (data.containsKey("warehouse_locations")) {
+          //     List localWarehouseLocations =
+          //         _objectBox.getItemIds().map((e) => e.itemId).toList();
+          //     List cloudWarehouseLocations = data["warehouse_locations"];
+          //
+          //     for (var element in localWarehouseLocations) {
+          //       if (!cloudWarehouseLocations.contains(element)) {
+          //         Query query = _objectBox.warehouseLocationIdBox!
+          //             .query(WarehouseLocationIdObjectBoxModel_
+          //                 .warehouseLocationId
+          //                 .equals(element))
+          //             .build();
+          //         WarehouseLocationIdObjectBoxModel warehouseLocation =
+          //             query.findFirst();
+          //         query.close();
+          //
+          //         _objectBox.removeWarehouseLocation(warehouseLocation.id);
+          //       }
+          //     }
+          //
+          //     for (var element in cloudWarehouseLocations) {
+          //       if (!localWarehouseLocations.contains(element)) {
+          //         _objectBox.addWarehouseLocationId(
+          //             WarehouseLocationIdObjectBoxModel.fromJson(
+          //                 {"warehouse_location_id": element}));
+          //       }
+          //     }
+          //
+          //     //   _objectBox.warehouseLocationIdBox!.removeAll();
+          //     //
+          //     //   _objectBox.addWarehouseLocationIdList(data["warehouse_locations"]
+          //     //       .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
+          //     //           {"warehouse_location_id": e}))
+          //     //       .toList()
+          //     //       .cast<WarehouseLocationIdObjectBoxModel>());
+          //   }
+          // }
+          else if (element.type.name == "removed") {}
         }
       });
     } else {

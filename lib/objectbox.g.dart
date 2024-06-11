@@ -459,7 +459,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(11, 1221214447477733281),
       name: 'ContainerIdObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(2, 5958765478249987092),
+      lastPropertyId: const obx_int.IdUid(4, 133396943923725028),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -471,6 +471,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 5958765478249987092),
             name: 'containerId',
             type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 133396943923725028),
+            name: 'warehouseLocationId',
+            type: 9,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -478,7 +483,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(12, 6442862417131488460),
       name: 'ItemIdObjectBoxModel',
-      lastPropertyId: const obx_int.IdUid(2, 3891850740529716294),
+      lastPropertyId: const obx_int.IdUid(4, 9097169230263661130),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -489,6 +494,16 @@ final _entities = <obx_int.ModelEntity>[
         obx_int.ModelProperty(
             id: const obx_int.IdUid(2, 3891850740529716294),
             name: 'itemId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 867217177621121490),
+            name: 'containerId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 9097169230263661130),
+            name: 'docRef',
             type: 9,
             flags: 0)
       ],
@@ -638,7 +653,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         231179492036876718,
         7716995902251311121,
         5633997830570794166,
-        4784750344366697416
+        4784750344366697416,
+        3826584008350673828
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -1244,9 +1260,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
               final containerIdOffset = object.containerId == null
                   ? null
                   : fbb.writeString(object.containerId!);
-              fbb.startTable(3);
+              final warehouseLocationIdOffset =
+                  object.warehouseLocationId == null
+                      ? null
+                      : fbb.writeString(object.warehouseLocationId!);
+              fbb.startTable(5);
               fbb.addInt64(0, object.id);
               fbb.addOffset(1, containerIdOffset);
+              fbb.addOffset(3, warehouseLocationIdOffset);
               fbb.finish(fbb.endTable());
               return object.id;
             },
@@ -1258,8 +1279,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
               final containerIdParam =
                   const fb.StringReader(asciiOptimization: true)
                       .vTableGetNullable(buffer, rootOffset, 6);
+              final warehouseLocationIdParam =
+                  const fb.StringReader(asciiOptimization: true)
+                      .vTableGetNullable(buffer, rootOffset, 10);
               final object = ContainerIdObjectBoxModel(
-                  id: idParam, containerId: containerIdParam);
+                  id: idParam,
+                  containerId: containerIdParam,
+                  warehouseLocationId: warehouseLocationIdParam);
 
               return object;
             }),
@@ -1274,9 +1300,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
         objectToFB: (ItemIdObjectBoxModel object, fb.Builder fbb) {
           final itemIdOffset =
               object.itemId == null ? null : fbb.writeString(object.itemId!);
-          fbb.startTable(3);
+          final containerIdOffset = object.containerId == null
+              ? null
+              : fbb.writeString(object.containerId!);
+          final docRefOffset =
+              object.docRef == null ? null : fbb.writeString(object.docRef!);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, itemIdOffset);
+          fbb.addOffset(2, containerIdOffset);
+          fbb.addOffset(3, docRefOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1287,7 +1320,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final itemIdParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
-          final object = ItemIdObjectBoxModel(id: idParam, itemId: itemIdParam);
+          final containerIdParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 8);
+          final docRefParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final object = ItemIdObjectBoxModel(
+              id: idParam,
+              itemId: itemIdParam,
+              containerId: containerIdParam,
+              docRef: docRefParam);
 
           return object;
         }),
@@ -1670,6 +1712,11 @@ class ContainerIdObjectBoxModel_ {
   /// See [ContainerIdObjectBoxModel.containerId].
   static final containerId = obx.QueryStringProperty<ContainerIdObjectBoxModel>(
       _entities[5].properties[1]);
+
+  /// See [ContainerIdObjectBoxModel.warehouseLocationId].
+  static final warehouseLocationId =
+      obx.QueryStringProperty<ContainerIdObjectBoxModel>(
+          _entities[5].properties[2]);
 }
 
 /// [ItemIdObjectBoxModel] entity fields to define ObjectBox queries.
@@ -1681,6 +1728,14 @@ class ItemIdObjectBoxModel_ {
   /// See [ItemIdObjectBoxModel.itemId].
   static final itemId =
       obx.QueryStringProperty<ItemIdObjectBoxModel>(_entities[6].properties[1]);
+
+  /// See [ItemIdObjectBoxModel.containerId].
+  static final containerId =
+      obx.QueryStringProperty<ItemIdObjectBoxModel>(_entities[6].properties[2]);
+
+  /// See [ItemIdObjectBoxModel.docRef].
+  static final docRef =
+      obx.QueryStringProperty<ItemIdObjectBoxModel>(_entities[6].properties[3]);
 }
 
 /// [WarehouseLocationIdObjectBoxModel] entity fields to define ObjectBox queries.

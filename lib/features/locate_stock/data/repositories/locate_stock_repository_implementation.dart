@@ -1,5 +1,7 @@
 import 'package:stock_management_tool/constants/constants.dart';
 import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/item_id_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 import 'package:stock_management_tool/helper/add_new_item_location_history_helper.dart';
@@ -109,8 +111,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Item Id"] =
             snapshot.map((e) => e.itemId).toList();
+        onChange(locatedStock);
       }
-      onChange(locatedStock);
     });
 
     _objectBox
@@ -119,8 +121,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Container Id"] =
             snapshot.map((e) => e.containerId).toList();
+        onChange(locatedStock);
       }
-      onChange(locatedStock);
     });
 
     _objectBox
@@ -129,8 +131,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Warehouse Location Id"] =
             snapshot.map((e) => e.warehouseLocationId).toList();
+        onChange(locatedStock);
       }
-      onChange(locatedStock);
     });
 
     _objectBox.getStockStream(triggerImmediately: false).listen((snapshot) {
@@ -155,13 +157,18 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   Map<String, dynamic> getAllIds() {
     Map<String, dynamic> data = {};
 
-    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId).toList();
-    data["Container Id"] =
-        _objectBox.getContainerIds().map((e) => e.containerId).toList();
+    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId).toList()
+      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+    data["Container Id"] = _objectBox
+        .getContainerIds()
+        .map((e) => e.containerId)
+        .toList()
+      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
     data["Warehouse Location Id"] = _objectBox
         .getWarehouseLocationIds()
         .map((e) => e.warehouseLocationId)
-        .toList();
+        .toList()
+      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
 
     return data;
   }
@@ -206,7 +213,6 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       {required String field, required List stocks}) {
     return stocks
         .map((e) => e[field])
-        // .where((e) => e != null)
         .toSet()
         .map((e) => {"title": e, "show": true, "selected": true})
         .toList()
@@ -491,16 +497,16 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   @override
   List getContainerIds({required String warehouseLocationId}) {
     Set dataSet = {};
-    Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
-        .query(
-            StockObjectBoxModel_.warehouseLocation.equals(warehouseLocationId))
+    Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
+        .query(ContainerIdObjectBoxModel_.warehouseLocationId
+            .equals(warehouseLocationId))
         .build();
 
-    List<StockObjectBoxModel>? stocks = query.find();
+    List<ContainerIdObjectBoxModel>? containers = query.find();
 
     query.close();
 
-    for (var element in stocks) {
+    for (var element in containers) {
       dataSet.add(element.containerId);
     }
 
@@ -509,15 +515,15 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   String getWarehouseLocationId({required String containerId}) {
-    Query<StockObjectBoxModel> query = _objectBox.stockModelBox!
-        .query(StockObjectBoxModel_.containerId.equals(containerId))
+    Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
+        .query(ContainerIdObjectBoxModel_.containerId.equals(containerId))
         .build();
 
-    StockObjectBoxModel? stock = query.findFirst();
+    ContainerIdObjectBoxModel? container = query.findFirst();
 
     query.close();
 
-    return stock?.warehouseLocation ?? "";
+    return container?.warehouseLocationId ?? "";
   }
 
   @override
@@ -570,6 +576,23 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Future<void> changeMoveStateToComplete({required Map pendingItem}) async {
+    Map warehouseLocations = {};
+    _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
+      warehouseLocations[e.warehouseLocationId] = null;
+    });
+
+    Map containers = {};
+    _objectBox.containerIdBox!.getAll().forEach((e) {
+      containers[e.containerId] = {
+        "warehouse_location_id": e.warehouseLocationId
+      };
+    });
+
+    Map items = {};
+    _objectBox.itemIdBox!.getAll().forEach((e) {
+      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
+    });
+
     await sl.get<Firestore>().modifyDocument(
           path: "stock_location_history",
           uid: pendingItem["uid"],
@@ -586,13 +609,16 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         );
 
     for (var element in pendingItem["items"]) {
-      Query query = _objectBox.stockModelBox!
-          .query(StockObjectBoxModel_.itemId.equals(element))
+      Query query = _objectBox.itemIdBox!
+          .query(ItemIdObjectBoxModel_.itemId.equals(element))
           .build();
-      StockObjectBoxModel stock = query.findFirst();
+
+      ItemIdObjectBoxModel item = query.findFirst();
+
+      query.close();
       await sl.get<Firestore>().modifyDocument(
           path: "stock_data",
-          uid: stock.uid!,
+          uid: item.docRef!,
           data: !kIsLinux
               ? {
                   "container id": pendingItem["container_id"],
@@ -606,110 +632,116 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
                     "stringValue": pendingItem["warehouse_location_id"],
                   },
                 });
+
+      items[item.itemId] = {
+        "container_id": pendingItem["container_id"],
+        "doc_ref": item.docRef,
+      };
     }
 
-    List allLocations = await _fetchAllLocations();
+    containers[pendingItem["container_id"]] = {
+      "warehouse_location_id": pendingItem["warehouse_location_id"],
+    };
 
-    Map warehouseLocations = allLocations
-        .firstWhere((element) => element.keys.contains("warehouse_locations"));
-    Map containers = allLocations
-        .firstWhere((element) => element.keys.contains("containers"));
+    warehouseLocations[pendingItem["warehouse_location_id"]] = null;
 
-    await _addNewLocations(
-      locations: warehouseLocations["warehouse_locations"],
-      newValue: pendingItem["warehouse_location_id"],
-      uid: warehouseLocations["uid"],
-      updateField: "warehouse_locations",
+    await _addNewLocation(
+      locations: warehouseLocations,
+      uid: warehouseLocationIdUid,
+      updateField: "warehouse_location_id",
     );
 
-    await _addNewLocations(
-      locations: containers["containers"],
-      newValue: pendingItem["container_id"],
-      uid: containers["uid"],
-      updateField: "containers",
+    await _addNewLocation(
+      locations: containers,
+      uid: containerIdUid,
+      updateField: "container_id",
+    );
+
+    await _addNewLocation(
+      locations: items,
+      uid: itemIdUid,
+      updateField: "item_id",
     );
   }
 
   @override
-  Future<void> clearPendingMove({required Map pendingItem}) async {
-    await sl.get<Firestore>().deleteDocument(
-        path: "stock_location_history", uid: pendingItem["uid"]);
+  Future<void> cancelPendingMove({required Map pendingItem}) async {
+    await sl.get<Firestore>().modifyDocument(
+          path: "stock_location_history",
+          uid: pendingItem["uid"],
+          updateMask: ["state"],
+          data: !kIsLinux
+              ? {
+                  "state": "canceled",
+                }
+              : {
+                  "state": {
+                    "stringValue": "canceled",
+                  },
+                },
+        );
   }
 
-  Future<List> _fetchAllLocations() async {
-    List allLocations = await sl
-        .get<Firestore>()
-        .getDocuments(path: "all_locations", includeUid: true);
-
-    if (kIsLinux) {
-      allLocations = allLocations.map((element) {
-        Map map = {};
-
-        for (var key in element.keys) {
-          if (key == "uid") {
-            map["uid"] = element["uid"]["stringValue"];
-          } else {
-            map[key] = element[key]["arrayValue"]["values"]
-                .map((ele) => ele["stringValue"])
-                .toList();
-          }
-        }
-
-        return map;
-      }).toList();
-    }
-
-    return allLocations;
-  }
-
-  Future<void> _addNewLocations({
-    required List locations,
-    required String? newValue,
+  Future<void> _addNewLocation({
+    required Map locations,
     required String uid,
     required String updateField,
   }) async {
-    if (updateField == "containers") {
-      List stockedContainers = _objectBox.getStocks();
-      if (stockedContainers.isNotEmpty) {
-        stockedContainers =
-            stockedContainers.map((e) => e.containerId).toSet().toList();
-      }
+    Map data = {};
 
-      if (stockedContainers.length == locations.length &&
-          stockedContainers.every((element) => locations.contains(element))) {
-        return;
-      } else {
-        locations = stockedContainers;
-        locations.remove(newValue);
+    List tempLocations = locations.keys.toSet().toList();
+
+    for (String e in tempLocations) {
+      if (updateField == "warehouse_location_id") {
+        data[e] = null;
+      } else if (updateField == "container_id") {
+        data[e] = {
+          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? ""
+        };
+      } else if (updateField == "item_id") {
+        data[e] = {
+          "container_id": locations[e]["container_id"] ?? "",
+          "doc_ref": locations[e]["doc_ref"] ?? ""
+        };
       }
     }
 
-    if (newValue != null &&
-        newValue.toString().trim() != "" &&
-        !locations.contains(newValue.toString().trim())) {
-      locations.add(newValue.toString().trim().toUpperCase());
-
-      locations = locations.toSet().toList();
-      locations.sort((a, b) => a.toString().compareTo(b.toString()));
-
-      await sl.get<Firestore>().modifyDocument(
-            path: "all_locations",
-            uid: uid,
-            updateMask: [updateField],
-            data: !kIsLinux
-                ? {
-                    updateField: locations,
-                  }
-                : {
-                    updateField: {
-                      "arrayValue": {
-                        "values":
-                            locations.map((e) => {"stringValue": e}).toList(),
+    await sl.get<Firestore>().modifyDocument(
+          path: "unique_values",
+          uid: uid,
+          updateMask: [updateField],
+          data: !kIsLinux
+              ? {
+                  updateField: data,
+                }
+              : {
+                  updateField: {
+                    "mapValue": {
+                      "fields": {
+                        data.map(
+                          (k, v) => MapEntry(
+                            k,
+                            v != null
+                                ? {
+                                    "mapValue": {
+                                      "fields": v.map(
+                                        (k1, v1) => MapEntry(
+                                          k1,
+                                          {
+                                            "stringValue": v1,
+                                          },
+                                        ),
+                                      ),
+                                    },
+                                  }
+                                : null,
+                          ),
+                        )
                       }
                     }
-                  },
-          );
-    }
+                  }
+                },
+        );
   }
 
   @override
@@ -739,48 +771,15 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
 // Future<void> _addAllLocations() async {
-//   warehouseLocations = warehouseLocations.map((e) => {"stringValue": e.toUpperCase()}).toList();
+//   Map loc = {};
+//   warehouseLocations.forEach((e) {
+//     loc[e] = null;
+//   });
 //
-//   await sl.get<Firestore>().createDocument(
-//     path: !kIsLinux ? "all_locations" : "",
-//     data: {
-//       "warehouse_locations": {
-//         "arrayValue": {
-//           "values": [warehouseLocations],
-//         }
-//       }
-//     },
-//   );
-//
-//   containers = containers.map((e) => {"stringValue": e.toUpperCase()}).toList();
-//
-//   await sl.get<Firestore>().createDocument(
-//     path: "all_locations",
-//     data: {
-//       "containers": {
-//         "arrayValue": {
-//           "values": [containers],
-//         }
-//       }
-//     },
-//   );
-//
-//   items = items.map((e) => {"stringValue": e.toUpperCase()}).toList();
-//
-//   await sl.get<Firestore>().createDocument(
-//     path: "all_locations",
-//     data: {
-//       "items": {
-//         "arrayValue": {
-//           "values": [items],
-//         }
-//       }
-//     },
-//   );
+//   await sl.get<Firestore>().modifyDocument(
+//       path: "unique_values", uid: warehouseLocationIdUid, data: {"warehouse_location_id": loc});
 // }
 //
-// List items = ["901290", "901291", "901292", "901293", "901294", "901295"];
-// List containers = ["BOX 4290", "BOX 4291", "BOX 4292", "BOX 4293", "BOX 4294", "BOX 4295"];
 // List warehouseLocations = [
 //   "A01R01L1A",
 //   "A01R01L1B",
@@ -1015,6 +1014,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 //   "MBENCH06",
 //   "MDESK01",
 //   "MDESK02",
+//   "MISSING",
 //   "MS01L1",
 //   "MS01L2",
 //   "MS01L3",

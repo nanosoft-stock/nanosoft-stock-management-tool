@@ -5,17 +5,19 @@ import 'package:stock_management_tool/services/firestore_default.dart';
 import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 class Firestore {
-  Future<void> createDocument({required String path, required Map data}) async {
+  Future<String> createDocument(
+      {required String path, required Map data}) async {
     if (!kIsLinux) {
-      await sl.get<FirestoreDefault>().createDocument(
+      return await sl.get<FirestoreDefault>().createDocument(
             path: path,
             data: data,
           );
     } else {
-      await sl.get<FirestoreRestApi>().createDocument(
-            path: path,
-            data: data,
-          );
+      return (await sl.get<FirestoreRestApi>().createDocument(
+                path: path,
+                data: data,
+              ))
+          .data as String;
     }
   }
 
@@ -93,9 +95,16 @@ class Firestore {
     }
   }
 
-  Future<void> batchWrite({required String path, required List data}) async {
+  Future<Map<String, dynamic>> batchWrite(
+      {required String path,
+      required List data,
+      required bool isToBeUpdated}) async {
     if (!kIsLinux) {
-      await sl.get<FirestoreDefault>().batchWrite(path: path, data: data);
-    } else {}
+      return await sl
+          .get<FirestoreDefault>()
+          .batchWrite(path: path, data: data, isToBeUpdated: isToBeUpdated);
+    } else {
+      return {};
+    }
   }
 }

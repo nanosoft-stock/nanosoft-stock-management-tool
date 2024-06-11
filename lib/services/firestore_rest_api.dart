@@ -27,7 +27,7 @@ class FirestoreRestApi {
 
       if (response.statusCode == 200) {
         var jsonData = response.data;
-        var data = jsonData['fields'];
+        var data = jsonData["name"].toString().split("/").last;
 
         return DataSuccess(data);
       }

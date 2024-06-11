@@ -3,9 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreDefault {
   final firestore = FirebaseFirestore.instance;
 
-  Future<void> createDocument({required String path, required Map data}) async {
+  Future<String> createDocument(
+      {required String path, required Map data}) async {
     CollectionReference collectionRef = firestore.collection(path);
-    await collectionRef.add(data.cast<String, dynamic>());
+
+    return (await collectionRef.add(data.cast<String, dynamic>())).id;
   }
 
   Future<List> getDocuments(
@@ -64,8 +66,13 @@ class FirestoreDefault {
     await docRef.delete();
   }
 
-  Future<void> batchWrite({required String path, required List data}) async {
+  Future<Map<String, dynamic>> batchWrite(
+      {required String path,
+      required List data,
+      required bool isToBeUpdated}) async {
     int chunkSize = 500;
+
+    Map<String, dynamic> docRefData = {};
 
     for (int i = 0; i < data.length; i = i + chunkSize) {
       WriteBatch batch = firestore.batch();
@@ -74,14 +81,25 @@ class FirestoreDefault {
 
       for (var e in chunkData) {
         try {
-          batch.set(
-              firestore.collection(path).doc(), e.cast<String, dynamic>());
+          if (!isToBeUpdated) {
+            var docRef = firestore.collection(path).doc();
+            docRefData[e["item id"]] = {
+              "container_id": e["container id"],
+              "doc_ref": docRef.id,
+            };
+
+            batch.set(docRef, e.cast<String, dynamic>());
+          } else {
+            batch.update(firestore.collection(path).doc(e["doc_ref"]),
+                (e..remove("doc_ref")).cast<String, dynamic>());
+          }
         } catch (e) {
-          return;
+          return {};
         }
       }
 
       await batch.commit();
     }
+    return docRefData;
   }
 }

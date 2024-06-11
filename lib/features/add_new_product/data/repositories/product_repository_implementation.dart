@@ -1,10 +1,10 @@
+import 'package:stock_management_tool/core/helper/add_new_product_helper.dart';
+import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_product/data/models/product_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
-import 'package:stock_management_tool/helper/add_new_product_helper.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/services/firestore.dart';
 
 class ProductRepositoryImplementation implements ProductRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();

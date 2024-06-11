@@ -6,7 +6,6 @@ import 'package:stock_management_tool/features/auth/domain/usecases/sign_in_user
 import 'package:stock_management_tool/features/auth/domain/usecases/sign_up_user_usecase.dart';
 
 part 'auth_event.dart';
-
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {

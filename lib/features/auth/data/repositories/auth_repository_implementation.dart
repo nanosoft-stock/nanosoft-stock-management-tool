@@ -1,6 +1,6 @@
+import 'package:stock_management_tool/core/services/auth.dart';
 import 'package:stock_management_tool/features/auth/domain/repositories/auth_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
-import 'package:stock_management_tool/services/auth.dart';
 
 class AuthRepositoryImplementation implements AuthRepository {
   @override

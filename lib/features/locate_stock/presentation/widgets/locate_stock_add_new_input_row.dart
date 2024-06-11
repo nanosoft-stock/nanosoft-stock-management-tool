@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/components/custom_container.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 
 class LocateStockAddNewInputRow extends StatelessWidget {
   const LocateStockAddNewInputRow({

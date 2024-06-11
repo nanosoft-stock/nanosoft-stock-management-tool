@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
-import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/components/custom_container.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_and_view_model.dart';
 import 'package:stock_management_tool/features/home/presentation/widgets/custom_side_menu.dart';

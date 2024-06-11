@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiple_search_selection/createable/create_options.dart';
 import 'package:multiple_search_selection/multiple_search_selection.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 
 class CustomMultipleSearchSelection extends StatelessWidget {
   const CustomMultipleSearchSelection({

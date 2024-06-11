@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_elevated_button.dart';
+import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 
 class CustomSubmitButton extends StatelessWidget {
   const CustomSubmitButton({

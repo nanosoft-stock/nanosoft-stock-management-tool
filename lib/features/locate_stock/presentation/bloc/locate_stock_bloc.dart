@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_new_input_row_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/add_overlay_layer_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/cancel_pending_move_usecase.dart';

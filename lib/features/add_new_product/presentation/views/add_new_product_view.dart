@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/components/custom_snack_bar.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/components/custom_container.dart';
+import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
+import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/widgets/custom_input_field.dart';
 import 'package:stock_management_tool/injection_container.dart';

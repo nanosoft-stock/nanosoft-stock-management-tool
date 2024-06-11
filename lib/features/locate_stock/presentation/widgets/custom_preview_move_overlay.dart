@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/components/custom_dropdown_input_field.dart';
-import 'package:stock_management_tool/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/components/custom_container.dart';
+import 'package:stock_management_tool/core/components/custom_dropdown_input_field.dart';
+import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_overlay_effect.dart';
 
 class CustomPreviewMoveOverlay extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stock_management_tool/constants/constants.dart';
-import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/constants/enums.dart';
+import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_checkbox.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class CustomItemDetailsTableView extends StatelessWidget {

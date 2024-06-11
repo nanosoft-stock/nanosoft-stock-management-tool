@@ -7,7 +7,6 @@ import 'package:stock_management_tool/features/add_new_product/domain/usecases/g
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
 
 part 'add_new_product_event.dart';
-
 part 'add_new_product_state.dart';
 
 class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {

@@ -2,20 +2,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/data/local_database/fetch_data_for_objectbox.dart';
+import 'package:stock_management_tool/core/services/auth_default.dart';
+import 'package:stock_management_tool/core/services/auth_rest_api.dart';
+import 'package:stock_management_tool/core/services/firebase_options.dart';
+import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/views/home_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/helper/firebase_options.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/services/auth_default.dart';
-import 'package:stock_management_tool/services/auth_rest_api.dart';
-import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

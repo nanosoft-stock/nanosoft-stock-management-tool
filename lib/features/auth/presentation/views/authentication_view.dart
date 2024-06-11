@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stock_management_tool/components/custom_container.dart';
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/components/custom_container.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/login_view.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/sign_up_view.dart';

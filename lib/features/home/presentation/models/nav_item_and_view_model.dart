@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/features/add_new_category/presentation/views/add_new_category_view.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/views/add_new_product_view.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/views/add_new_stock_view.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_model.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_view.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/views/locate_stock_view.dart';
+import 'package:stock_management_tool/features/modify_category/presentation/views/modify_category_view.dart';
+import 'package:stock_management_tool/features/modify_product/presentation/views/modify_product_view.dart';
+import 'package:stock_management_tool/features/modify_stock/presentation/views/modify_stock_view.dart';
+import 'package:stock_management_tool/features/print_id/presentation/views/print_id_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/views/visualise_stock_view.dart';
-import 'package:stock_management_tool/screens/archive_product_screen.dart';
-import 'package:stock_management_tool/screens/archive_stock_screen.dart';
-import 'package:stock_management_tool/screens/modify_product_screen.dart';
-import 'package:stock_management_tool/screens/modify_stock_screen.dart';
 
 class NavItemAndViewModel {
   static final Map allNavItemAndView = {
@@ -25,6 +26,13 @@ class NavItemAndViewModel {
         icon: Icons.add_box_outlined,
       ),
       view: AddNewProductView(),
+    ),
+    "Add New Category": NavItemAndView(
+      navItem: NavItemModel(
+        title: 'Add New Category',
+        icon: Icons.add_box_outlined,
+      ),
+      view: const AddNewCategoryView(),
     ),
     "Visualise Stock": NavItemAndView(
       navItem: NavItemModel(
@@ -46,28 +54,28 @@ class NavItemAndViewModel {
         title: 'Modify Stock',
         icon: Icons.edit_note_outlined,
       ),
-      view: const ModifyStockScreen(),
+      view: const ModifyStockView(),
     ),
     "Modify Product": NavItemAndView(
       navItem: NavItemModel(
         title: 'Modify Product',
         icon: Icons.edit_note_outlined,
       ),
-      view: const ModifyProductScreen(),
+      view: const ModifyProductView(),
     ),
-    "Archive Stock": NavItemAndView(
+    "Modify Category": NavItemAndView(
       navItem: NavItemModel(
-        title: 'Archive Stock',
-        icon: Icons.archive_outlined,
+        title: 'Modify Category',
+        icon: Icons.edit_note_outlined,
       ),
-      view: const ArchiveStockScreen(),
+      view: const ModifyCategoryView(),
     ),
-    "Archive Product": NavItemAndView(
+    "Print Id": NavItemAndView(
       navItem: NavItemModel(
-        title: 'Archive Product',
-        icon: Icons.archive_outlined,
+        title: 'Print Id',
+        icon: Icons.local_printshop_outlined,
       ),
-      view: const ArchiveProductScreen(),
+      view: const PrintIdView(),
     ),
   };
 

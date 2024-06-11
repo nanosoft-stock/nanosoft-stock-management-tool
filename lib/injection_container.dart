@@ -1,4 +1,10 @@
 import 'package:get_it/get_it.dart';
+import 'package:stock_management_tool/core/services/auth.dart';
+import 'package:stock_management_tool/core/services/auth_default.dart';
+import 'package:stock_management_tool/core/services/auth_rest_api.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/core/services/firestore_default.dart';
+import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/features/add_new_product/data/repositories/product_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/add_new_product_usecase.dart';
@@ -76,12 +82,6 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/s
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/services/auth.dart';
-import 'package:stock_management_tool/services/auth_default.dart';
-import 'package:stock_management_tool/services/auth_rest_api.dart';
-import 'package:stock_management_tool/services/firestore.dart';
-import 'package:stock_management_tool/services/firestore_default.dart';
-import 'package:stock_management_tool/services/firestore_rest_api.dart';
 
 final sl = GetIt.instance;
 

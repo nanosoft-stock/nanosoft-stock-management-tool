@@ -1,12 +1,12 @@
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
+import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
+import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
-import 'package:stock_management_tool/helper/add_new_item_location_history_helper.dart';
-import 'package:stock_management_tool/helper/add_new_stock_helper.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/services/firestore.dart';
 
 class StockRepositoryImplementation implements StockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
@@ -83,10 +83,7 @@ class StockRepositoryImplementation implements StockRepository {
 
     Map items = {};
     _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = {
-        "container_id": e.containerId,
-        "doc_ref": e.docRef
-      };
+      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
     });
 
     for (var element in fields) {

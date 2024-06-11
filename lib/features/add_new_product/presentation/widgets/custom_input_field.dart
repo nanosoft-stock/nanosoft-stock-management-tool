@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/components/custom_dropdown_input_field.dart';
-import 'package:stock_management_tool/components/custom_text_input_field.dart';
-import 'package:stock_management_tool/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/components/custom_dropdown_input_field.dart';
+import 'package:stock_management_tool/core/components/custom_text_input_field.dart';
+import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField(

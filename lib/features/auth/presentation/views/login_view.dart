@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:stock_management_tool/features/auth/presentation/widgets/custom_text_form_field.dart';
 import 'package:stock_management_tool/features/auth/presentation/widgets/custom_submit_button.dart';
+import 'package:stock_management_tool/features/auth/presentation/widgets/custom_text_form_field.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({super.key, required this.bloc});

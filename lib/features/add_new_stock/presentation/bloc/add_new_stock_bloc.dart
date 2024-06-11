@@ -8,7 +8,6 @@ import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
 
 part 'add_new_stock_event.dart';
-
 part 'add_new_stock_state.dart';
 
 class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {

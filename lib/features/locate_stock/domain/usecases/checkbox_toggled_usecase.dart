@@ -1,4 +1,4 @@
-import 'package:stock_management_tool/constants/enums.dart';
+import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
 

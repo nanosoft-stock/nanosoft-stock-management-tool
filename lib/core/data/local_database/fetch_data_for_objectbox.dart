@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:stock_management_tool/constants/constants.dart';
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/data/local_database/models/category_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
@@ -9,10 +9,10 @@ import 'package:stock_management_tool/core/data/local_database/models/product_ob
 import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/objectbox.g.dart';
-import 'package:stock_management_tool/services/firestore.dart';
 
 class FetchDataForObjectbox {
   FetchDataForObjectbox(this._objectBox);

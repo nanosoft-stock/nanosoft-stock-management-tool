@@ -222,7 +222,7 @@
     },
     {
       "id": "9:7878301964298954903",
-      "lastPropertyId": "12:6265414374706244787",
+      "lastPropertyId": "13:3283296695983698789",
       "name": "StockLocationHistoryObjectBoxModel",
       "properties": [
         {
@@ -269,6 +269,11 @@
         {
           "id": "12:6265414374706244787",
           "name": "state",
+          "type": 9
+        },
+        {
+          "id": "13:3283296695983698789",
+          "name": "groupId",
           "type": 9
         }
       ],

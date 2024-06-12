@@ -10,8 +10,7 @@ class FilterByValueChangedLocateStockUseCase extends UseCase {
     String value = params["value"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    locatedStock["rows"][index]["filters"]
-        .firstWhere((e) => e["field"] == field)["filter_value"] = value;
+    locatedStock["rows"][index]["filters"][field]["filter_value"] = value;
 
     return locatedStock;
   }

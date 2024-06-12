@@ -44,7 +44,6 @@ class LocateStockView extends StatelessWidget {
   }
 
   void _blocListener(BuildContext context, LocateStockState state) {
-    debugPrint("listen: LocateStock ${state.runtimeType}");
     switch (state.runtimeType) {
       default:
         return;
@@ -52,7 +51,6 @@ class LocateStockView extends StatelessWidget {
   }
 
   Widget _blocBuilder(BuildContext context, LocateStockState state) {
-    debugPrint("build : LocateStock ${state.runtimeType}");
     switch (state.runtimeType) {
       case const (LoadingState):
         _locateStockBloc.add(const CloudDataChangeEvent());
@@ -127,7 +125,10 @@ class LocateStockView extends StatelessWidget {
                                           PendingMovesButtonPressedEvent(
                                               locatedStock: locatedStock));
                                     },
-                                    child: const Text("Pending Moves"),
+                                    child: Text(
+                                      "Pending Moves",
+                                      style: kLabelTextStyle,
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -144,7 +145,10 @@ class LocateStockView extends StatelessWidget {
                                           CompletedMovesButtonPressedEvent(
                                               locatedStock: locatedStock));
                                     },
-                                    child: const Text("Completed Moves"),
+                                    child: Text(
+                                      "Completed Moves",
+                                      style: kLabelTextStyle,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -235,16 +239,16 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("pending_moves_overlay"))
               CustomPendingMovesOverlay(
-                key: UniqueKey(),
                 pendingStateItems: locatedStock["pending_state_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(
                       layer: "pending_moves_overlay",
                       locatedStock: locatedStock));
                 },
-                onExpand: (index, value) {
+                onExpand: (index, i, value) {
                   _locateStockBloc.add(ExpandPendingMovesItemEvent(
                     index: index,
+                    i: i,
                     isExpanded: value,
                     locatedStock: locatedStock,
                   ));
@@ -264,16 +268,16 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("completed_moves_overlay"))
               CustomCompletedMovesOverlay(
-                key: UniqueKey(),
                 completedStateItems: locatedStock["completed_state_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(
                       layer: "completed_moves_overlay",
                       locatedStock: locatedStock));
                 },
-                onExpand: (index, value) {
+                onExpand: (index, i, value) {
                   _locateStockBloc.add(ExpandCompletedMovesItemEvent(
                     index: index,
+                    i: i,
                     isExpanded: value,
                     locatedStock: locatedStock,
                   ));
@@ -314,7 +318,8 @@ class LocateStockView extends StatelessWidget {
                       locatedStock: locatedStock));
                 },
                 child: CustomTableFilter(
-                  fieldFilters: locatedStock["rows"][rowIndex]["filters"],
+                  fieldFilters:
+                      locatedStock["rows"][rowIndex]["filters"].keys.toList(),
                   closeOnTap: () {
                     _locateStockBloc.add(HideOverlayLayerEvent(
                         layer: "parent_filter_overlay",
@@ -344,9 +349,7 @@ class LocateStockView extends StatelessWidget {
                 },
                 child: CustomFieldFilter(
                   fieldFilter: locatedStock["rows"][rowIndex]["filters"]
-                      .firstWhere((e) =>
-                          e["field"] ==
-                          locatedStock["rows"][rowIndex]["filter_field"]),
+                      [locatedStock["rows"][rowIndex]["filter_field"]],
                   backOnTap: () {
                     _locateStockBloc.add(HideOverlayLayerEvent(
                         layer: "field_filter_overlay",
@@ -360,37 +363,37 @@ class LocateStockView extends StatelessWidget {
                     _locateStockBloc.add(FilterFieldEvent(
                         index: rowIndex, locatedStock: locatedStock));
                   },
-                  clearOnPressed: (field) {
+                  clearOnPressed: () {
                     _locateStockBloc.add(ClearFieldFilterEvent(
                         index: rowIndex,
-                        field: field,
+                        field: locatedStock["rows"][rowIndex]["filter_field"],
                         locatedStock: locatedStock));
                   },
-                  filterBySelected: (field, filterBy) {
+                  filterBySelected: (filterBy) {
                     _locateStockBloc.add(FilterBySelectedEvent(
                         index: rowIndex,
-                        field: field,
+                        field: locatedStock["rows"][rowIndex]["filter_field"],
                         filterBy: filterBy,
                         locatedStock: locatedStock));
                   },
-                  filterValueChanged: (field, value) {
+                  filterValueChanged: (value) {
                     _locateStockBloc.add(FilterByValueChangedEvent(
                         index: rowIndex,
-                        field: field,
+                        field: locatedStock["rows"][rowIndex]["filter_field"],
                         value: value,
                         locatedStock: locatedStock));
                   },
-                  searchValueChanged: (field, value) {
+                  searchValueChanged: (value) {
                     _locateStockBloc.add(SearchValueChangedEvent(
                         index: rowIndex,
-                        field: field,
+                        field: locatedStock["rows"][rowIndex]["filter_field"],
                         value: value,
                         locatedStock: locatedStock));
                   },
-                  checkboxToggled: (field, title, value) {
+                  checkboxToggled: (title, value) {
                     _locateStockBloc.add(FilterCheckBoxToggledEvent(
                         index: rowIndex,
-                        field: field,
+                        field: locatedStock["rows"][rowIndex]["filter_field"],
                         title: title,
                         value: value,
                         locatedStock: locatedStock));

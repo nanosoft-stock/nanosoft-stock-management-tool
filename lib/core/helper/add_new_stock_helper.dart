@@ -37,7 +37,7 @@ class AddNewStockHelper {
         } else {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
-                data[e["field"]],
+                data[e["field"]] ?? "",
           };
         }
       }
@@ -51,7 +51,7 @@ class AddNewStockHelper {
         } else if (e["field"] == "archived") {
           convertedData[e["field"]] = false;
         } else {
-          convertedData[e["field"]] = data[e["field"]];
+          convertedData[e["field"]] = data[e["field"]] ?? "";
         }
       }
     }

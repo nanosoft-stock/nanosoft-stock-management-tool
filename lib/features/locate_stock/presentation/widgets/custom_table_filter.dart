@@ -84,16 +84,17 @@ class CustomTableFilter extends StatelessWidget {
                               horizontal: 10.0, vertical: 6.0),
                           child: Row(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  fieldFilterOnPressed(
-                                      fieldFilters[index]["field"]);
-                                },
-                                child: Text(
-                                  fieldFilters[index]["field"]
-                                      .toString()
-                                      .toTitleCase(),
-                                  style: kLabelTextStyle,
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    fieldFilterOnPressed(fieldFilters[index]);
+                                  },
+                                  child: Text(
+                                    fieldFilters[index]
+                                        .toString()
+                                        .toTitleCase(),
+                                    style: kLabelTextStyle,
+                                  ),
                                 ),
                               ),
                             ],

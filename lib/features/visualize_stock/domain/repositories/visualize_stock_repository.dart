@@ -12,15 +12,17 @@ abstract class VisualizeStockRepository {
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks});
 
-  List<Map<String, dynamic>> getInitialFilters(
+  int compareWithBlank(sort, a, b);
+
+  Map<String, dynamic> getInitialFilters(
       {required List fields, required List stocks});
 
-  List<Map<String, dynamic>> getUniqueValues(
+  Map<String, dynamic> getUniqueValues(
       {required String field, required List stocks});
 
   Map<String, dynamic> getFilterByValuesByDatatype({required List values});
 
-  List<Map<String, dynamic>> getFilteredStocks({required List filters});
+  List<Map<String, dynamic>> getFilteredStocks({required Map filters});
 
   Future<void> importFromExcel();
 

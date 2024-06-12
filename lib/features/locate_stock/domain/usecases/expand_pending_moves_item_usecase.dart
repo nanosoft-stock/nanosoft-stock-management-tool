@@ -6,10 +6,14 @@ class ExpandPendingMovesItemUseCase extends UseCase {
   @override
   Future call({params}) async {
     int index = params["index"];
+    int i = params["i"];
     bool isExpanded = params["is_expanded"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    locatedStock["pending_state_items"][index]["is_expanded"] = isExpanded;
+    List keys = locatedStock["pending_state_items"].keys.toList();
+
+    locatedStock["pending_state_items"][keys[index]][i]["is_expanded"] =
+        isExpanded;
 
     return locatedStock;
   }

@@ -34,6 +34,15 @@ TextStyle kButtonTextStyle = GoogleFonts.poppins(
   ),
 );
 
+TextStyle kTableHeaderTextStyle = GoogleFonts.lato(
+  textStyle: const TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.w700,
+  ),
+);
+
+TextStyle kTableValueTextStyle = GoogleFonts.lato();
+
 BorderRadius kBorderRadius = BorderRadius.circular(10.0);
 List<BoxShadow> kBoxShadowList = [
   BoxShadow(

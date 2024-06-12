@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
@@ -9,6 +10,7 @@ import 'package:stock_management_tool/features/locate_stock/domain/repositories/
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/objectbox.g.dart';
+import 'package:uuid/uuid.dart';
 
 class LocateStockRepositoryImplementation implements LocateStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
@@ -151,6 +153,17 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       });
       onChange(locatedStock);
     });
+
+    _objectBox
+        .getStockLocationHistoryStream(triggerImmediately: false)
+        .listen((snapshot) {
+      if (snapshot.isNotEmpty) {
+        locatedStock["pending_state_items"] = getAllPendingStateItems(
+            locatedStock["pending_state_items"] ?? <String, dynamic>{});
+        locatedStock["completed_state_items"] = getAllCompletedStateItems();
+        onChange(locatedStock);
+      }
+    });
   }
 
   @override
@@ -158,66 +171,133 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     Map<String, dynamic> data = {};
 
     data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId).toList()
-      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
     data["Container Id"] = _objectBox
         .getContainerIds()
         .map((e) => e.containerId)
         .toList()
-      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
     data["Warehouse Location Id"] = _objectBox
         .getWarehouseLocationIds()
         .map((e) => e.warehouseLocationId)
         .toList()
-      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
 
     return data;
   }
 
+  List<Map<String, dynamic>> getAllStocks() {
+    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+
+    stocks.sort((a, b) => b["date"].compareTo(a["date"]));
+
+    for (var e in stocks) {
+      e["date"] = DateFormat('dd-MM-yyyy')
+          .format(DateTime.parse(e["date"].toString().toUpperCase()));
+    }
+
+    return stocks.cast<Map<String, dynamic>>();
+  }
+
   @override
-  List<Map<String, dynamic>> getInitialFilters() {
+  int compareWithBlank(sort, a, b) {
+    bool isABlank = a == null || a == "";
+    bool isBBlank = b == null || b == "";
+
+    if (sort == Sort.asc) {
+      if (isABlank) return 1;
+      if (isBBlank) return -1;
+    } else if (sort == Sort.desc) {
+      if (isABlank) return -1;
+      if (isBBlank) return 1;
+    }
+
+    return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
+  }
+
+  @override
+  Map<String, dynamic> getInitialFilters() {
     List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
 
     List newFields = [];
     for (var ele in fieldsOrder) {
       newFields.add(fields.firstWhere((e) => e["field"] == ele));
     }
+
     fields = newFields;
 
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
-    stocks.sort((a, b) => b["date"].compareTo(a["date"]));
+    List stocks = getAllStocks();
 
-    return fields.map((ele) {
-      Map<String, dynamic> data = {};
+    Map<String, dynamic> filters = {};
 
-      data["field"] = ele["field"];
-      data["show_column"] = true;
-      data["sort"] = ele["field"] != "date" ? Sort.none : Sort.desc;
-      data["filter_by"] = "";
-      data["filter_value"] = "";
-      data["search_value"] = "";
-      data["all_selected"] = true;
-      data["all_unique_values"] =
-          getUniqueValues(field: ele["field"], stocks: stocks);
+    for (var ele in fields) {
+      filters[ele["field"]] = {
+        "field": ele["field"],
+        // "show_column": true,
+        // "sort": ele["field"] != "date" ? Sort.none : Sort.desc,
+        "filter_by": "",
+        "filter_value": "",
+        "search_value": "",
+        "all_selected": true,
+        ...getUniqueValues(field: ele["field"], stocks: stocks),
+        ...getFilterByValuesByDatatype(
+            values: stocks
+                .map((stock) => stock[ele["field"]].toString())
+                .toList()
+                .cast<String>()),
+      };
+    }
 
-      data.addAll(getFilterByValuesByDatatype(
-          values: stocks
-              .map((stock) => stock[ele["field"]].toString())
-              .toList()
-              .cast<String>()));
+    return filters;
 
-      return data;
-    }).toList();
+    // return fields.map((ele) {
+    //   Map<String, dynamic> data = {};
+    //
+    //   data["field"] = ele["field"];
+    //   data["show_column"] = true;
+    //   data["sort"] = ele["field"] != "date" ? Sort.none : Sort.desc;
+    //   data["filter_by"] = "";
+    //   data["filter_value"] = "";
+    //   data["search_value"] = "";
+    //   data["all_selected"] = true;
+    //   data["all_unique_values"] =
+    //       getUniqueValues(field: ele["field"], stocks: stocks);
+    //
+    //   data.addAll(getFilterByValuesByDatatype(
+    //       values: stocks
+    //           .map((stock) => stock[ele["field"]].toString())
+    //           .toList()
+    //           .cast<String>()));
+    //
+    //   return data;
+    // }).toList();
   }
 
-  List<Map<String, dynamic>> getUniqueValues(
+  Map<String, dynamic> getUniqueValues(
       {required String field, required List stocks}) {
-    return stocks
-        .map((e) => e[field])
-        .toSet()
-        .map((e) => {"title": e, "show": true, "selected": true})
-        .toList()
-      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+    List uniqueValues = stocks.map((e) => e[field]).toSet().toList()
+      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
+
+    Map details = {};
+    for (var e in uniqueValues) {
+      details[e] = {"title": e, "show": true, "selected": true};
+    }
+
+    return {
+      "unique_values": uniqueValues,
+      "unique_values_details": details,
+    };
   }
+
+  // List<Map<String, dynamic>> getUniqueValues(
+  //     {required String field, required List stocks}) {
+  //   return stocks
+  //       .map((e) => e[field])
+  //       .toSet()
+  //       .map((e) => {"title": e, "show": true, "selected": true})
+  //       .toList()
+  //     ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+  // }
 
   Map<String, dynamic> getFilterByValuesByDatatype({required List values}) {
     Map<String, dynamic> data = {};
@@ -234,35 +314,20 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     return data;
   }
 
-  int _compareWithBlank(sort, a, b) {
-    bool isABlank = a == null || a == "";
-    bool isBBlank = b == null || b == "";
-
-    if (sort == Sort.asc) {
-      if (isABlank) return 1;
-      if (isBBlank) return -1;
-    } else if (sort == Sort.desc) {
-      if (isABlank) return -1;
-      if (isBBlank) return 1;
-    }
-
-    return a.toString().toLowerCase().compareTo(b.toString().toLowerCase());
-  }
-
   @override
-  List<Map<String, dynamic>> getFilteredStocks({required List filters}) {
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+  List<Map<String, dynamic>> getFilteredStocks({required Map filters}) {
+    List stocks = getAllStocks();
 
-    for (var filter in filters) {
+    filters.forEach((field, filter) {
       stocks = stocks.where((element) {
-        if (!filter["all_unique_values"].every((e) => e["selected"] == true)) {
-          String stockValue = element[filter["field"]];
-          return filter["all_unique_values"]
-              .firstWhere((e) => e["title"] == stockValue)["selected"];
+        if (!filter["unique_values_details"]
+            .values
+            .every((e) => e["selected"] == true)) {
+          String stockValue = element[field];
+          return filter["unique_values_details"][stockValue]["selected"];
         } else if (filter["filter_by"] != "") {
           if (filter["datatype"] == "string") {
-            String stockValue =
-                (element[filter["field"]] ?? "").toString().toLowerCase();
+            String stockValue = element[field].toString().toLowerCase();
             String filterValue =
                 filter["filter_value"].toString().toLowerCase();
 
@@ -286,7 +351,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
               return true;
             }
           } else if (filter["datatype"] == "double") {
-            double? stockValue = double.tryParse(element[filter["field"]]);
+            double? stockValue = double.tryParse(element[field] ?? "");
             double? filterValue = double.tryParse(filter["filter_value"]);
 
             if (stockValue != null && filterValue != null) {
@@ -311,7 +376,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
           return true;
         }
       }).toList();
-    }
+    });
 
     return stocks as List<Map<String, dynamic>>;
   }
@@ -530,21 +595,47 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   Future<void> moveItemsToPendingState({required Map selectedItems}) async {
     List items = selectedItems["items"].map((e) => e["item_id"]).toList();
 
-    Map data = {
-      "items": items,
-      "container_id": selectedItems["container_text"],
-      "warehouse_location_id": selectedItems["warehouse_location_text"],
-      "move_type": "container",
-      "state": "pending",
-    };
-    await sl.get<Firestore>().createDocument(
-          path: "stock_location_history",
-          data: AddNewItemLocationHistoryHelper.toJson(data: data),
-        );
+    String groupId = const Uuid().v1();
+
+    if (selectedItems["container_text"] != "") {
+      Map data = {
+        "group_id": groupId,
+        "items": items,
+        "container_id": selectedItems["container_text"],
+        "warehouse_location_id": selectedItems["warehouse_location_text"],
+        "move_type": "container",
+        "state": "pending",
+      };
+      await sl.get<Firestore>().createDocument(
+            path: "stock_location_history",
+            data: AddNewItemLocationHistoryHelper.toJson(data: data),
+          );
+    } else {
+      List uniqueContainers =
+          selectedItems["items"].map((e) => e["container_id"]).toSet().toList();
+      for (var element in uniqueContainers) {
+        Map data = {
+          "group_id": groupId,
+          "items": selectedItems["items"]
+              .where((e) => e["container_id"] == element)
+              .map((e) => e["item_id"])
+              .toList(),
+          "container_id": element,
+          "warehouse_location_id": selectedItems["warehouse_location_text"],
+          "move_type": "container",
+          "state": "pending",
+        };
+        await sl.get<Firestore>().createDocument(
+              path: "stock_location_history",
+              data: AddNewItemLocationHistoryHelper.toJson(data: data),
+            );
+      }
+    }
   }
 
   @override
-  List<Map<String, dynamic>> getAllPendingStateItems(List pendingStateItems) {
+  Map<String, dynamic> getAllPendingStateItems(
+      Map<String, dynamic> pendingStateItems) {
     List histories = [];
 
     Query query = _objectBox.stockLocationHistoryModelBox!
@@ -553,29 +644,39 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     histories = query.find();
     query.close();
 
+    histories.sort((a, b) => b.date.compareTo(a.date));
+
+    List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
+
+    Map data = {};
+
     if (histories.isNotEmpty) {
-      histories = histories
-          .map((e) => {
-                ...e.toJson(),
-                "is_expanded": pendingStateItems.isNotEmpty
-                    ? (pendingStateItems.firstWhere(
-                            (element) => element["uid"] == e.uid,
-                            orElse: () => null)?["is_expanded"] ??
-                        false)
-                    : false,
-              }.cast<String, dynamic>())
-          .toList()
-          .cast<Map<String, dynamic>>();
-      histories.sort((a, b) => b["date"].compareTo(a["date"]));
+      for (var element in uniqueGroupIds) {
+        data[element] = histories
+            .where((e) => e.groupId == element)
+            .map((e) => {
+                  ...e.toJson()..remove("group_id"),
+                  "is_expanded": pendingStateItems.isNotEmpty &&
+                          pendingStateItems[element] != null
+                      ? (pendingStateItems[element].firstWhere(
+                              (ele) => ele["uid"] == e.uid,
+                              orElse: () =>
+                                  <String, dynamic>{})["is_expanded"] ??
+                          false)
+                      : false,
+                }.cast<String, dynamic>())
+            .toList()
+            .cast<Map<String, dynamic>>();
+      }
     } else {
-      histories = histories.cast<Map<String, dynamic>>();
+      data = {};
     }
 
-    return histories as List<Map<String, dynamic>>;
+    return data.cast<String, dynamic>();
   }
 
   @override
-  Future<void> changeMoveStateToComplete({required Map pendingItem}) async {
+  Future<void> changeMoveStateToComplete({required List pendingItems}) async {
     Map warehouseLocations = {};
     _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
       warehouseLocations[e.warehouseLocationId] = null;
@@ -593,57 +694,61 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
     });
 
-    await sl.get<Firestore>().modifyDocument(
-          path: "stock_location_history",
-          uid: pendingItem["uid"],
-          updateMask: ["state"],
-          data: !kIsLinux
-              ? {
-                  "state": "completed",
-                }
-              : {
-                  "state": {
-                    "stringValue": "completed",
-                  },
-                },
-        );
-
-    for (var element in pendingItem["items"]) {
-      Query query = _objectBox.itemIdBox!
-          .query(ItemIdObjectBoxModel_.itemId.equals(element))
-          .build();
-
-      ItemIdObjectBoxModel item = query.findFirst();
-
-      query.close();
+    for (var e in pendingItems) {
       await sl.get<Firestore>().modifyDocument(
-          path: "stock_data",
-          uid: item.docRef!,
-          data: !kIsLinux
-              ? {
-                  "container id": pendingItem["container_id"],
-                  "warehouse location": pendingItem["warehouse_location_id"],
-                }
-              : {
-                  "container id": {
-                    "stringValue": pendingItem["container_id"],
+            path: "stock_location_history",
+            uid: e["uid"],
+            updateMask: ["state"],
+            data: !kIsLinux
+                ? {
+                    "state": "completed",
+                  }
+                : {
+                    "state": {
+                      "stringValue": "completed",
+                    },
                   },
-                  "warehouse location": {
-                    "stringValue": pendingItem["warehouse_location_id"],
-                  },
-                });
-
-      items[item.itemId] = {
-        "container_id": pendingItem["container_id"],
-        "doc_ref": item.docRef,
-      };
+          );
     }
 
-    containers[pendingItem["container_id"]] = {
-      "warehouse_location_id": pendingItem["warehouse_location_id"],
-    };
+    for (var element in pendingItems) {
+      for (var e in element["items"]) {
+        Query query = _objectBox.itemIdBox!
+            .query(ItemIdObjectBoxModel_.itemId.equals(e))
+            .build();
 
-    warehouseLocations[pendingItem["warehouse_location_id"]] = null;
+        ItemIdObjectBoxModel item = query.findFirst();
+
+        query.close();
+        await sl.get<Firestore>().modifyDocument(
+            path: "stock_data",
+            uid: item.docRef!,
+            data: !kIsLinux
+                ? {
+                    "container id": element["container_id"],
+                    "warehouse location": element["warehouse_location_id"],
+                  }
+                : {
+                    "container id": {
+                      "stringValue": element["container_id"],
+                    },
+                    "warehouse location": {
+                      "stringValue": element["warehouse_location_id"],
+                    },
+                  });
+
+        items[item.itemId] = {
+          "container_id": element["container_id"],
+          "doc_ref": item.docRef,
+        };
+      }
+
+      containers[element["container_id"]] = {
+        "warehouse_location_id": element["warehouse_location_id"],
+      };
+
+      warehouseLocations[element["warehouse_location_id"]] = null;
+    }
 
     await _addNewLocation(
       locations: warehouseLocations,
@@ -665,21 +770,23 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   @override
-  Future<void> cancelPendingMove({required Map pendingItem}) async {
-    await sl.get<Firestore>().modifyDocument(
-          path: "stock_location_history",
-          uid: pendingItem["uid"],
-          updateMask: ["state"],
-          data: !kIsLinux
-              ? {
-                  "state": "canceled",
-                }
-              : {
-                  "state": {
-                    "stringValue": "canceled",
+  Future<void> cancelPendingMove({required List pendingItems}) async {
+    for (var e in pendingItems) {
+      await sl.get<Firestore>().modifyDocument(
+            path: "stock_location_history",
+            uid: e["uid"],
+            updateMask: ["state"],
+            data: !kIsLinux
+                ? {
+                    "state": "canceled",
+                  }
+                : {
+                    "state": {
+                      "stringValue": "canceled",
+                    },
                   },
-                },
-        );
+          );
+    }
   }
 
   Future<void> _addNewLocation({
@@ -745,7 +852,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   @override
-  List<Map<String, dynamic>> getAllCompletedStateItems() {
+  Map<String, dynamic> getAllCompletedStateItems() {
     List histories = [];
 
     Query query = _objectBox.stockLocationHistoryModelBox!
@@ -754,20 +861,43 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     histories = query.find();
     query.close();
 
+    histories.sort((a, b) => b.date.compareTo(a.date));
+
+    List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
+
+    Map data = {};
+
     if (histories.isNotEmpty) {
-      histories = histories
-          .map((e) =>
-              {...e.toJson(), "is_expanded": false}.cast<String, dynamic>())
-          .toList()
-          .cast<Map<String, dynamic>>();
-      histories.sort((a, b) => b["date"].compareTo(a["date"]));
-      histories =
-          histories.sublist(0, histories.length >= 10 ? 10 : histories.length);
+      for (var element in uniqueGroupIds) {
+        data[element] = histories
+            .where((e) => e.groupId == element)
+            .map((e) => {
+                  ...e.toJson()..remove("group_id"),
+                  "is_expanded": false,
+                }.cast<String, dynamic>())
+            .toList()
+            .cast<Map<String, dynamic>>();
+      }
     } else {
-      histories = histories.cast<Map<String, dynamic>>();
+      data = {};
     }
 
-    return histories as List<Map<String, dynamic>>;
+    return data.cast<String, dynamic>();
+
+    // if (histories.isNotEmpty) {
+    //   histories = histories
+    //       .map((e) =>
+    //           {...e.toJson(), "is_expanded": false}.cast<String, dynamic>())
+    //       .toList()
+    //       .cast<Map<String, dynamic>>();
+    //   histories.sort((a, b) => b["date"].compareTo(a["date"]));
+    //   histories =
+    //       histories.sublist(0, histories.length >= 10 ? 10 : histories.length);
+    // } else {
+    //   histories = histories.cast<Map<String, dynamic>>();
+    // }
+    //
+    // return histories as List<Map<String, dynamic>>;
   }
 
 // Future<void> _addAllLocations() async {

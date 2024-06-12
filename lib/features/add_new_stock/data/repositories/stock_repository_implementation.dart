@@ -7,6 +7,7 @@ import 'package:stock_management_tool/features/add_new_stock/data/models/stock_i
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
+import 'package:uuid/uuid.dart';
 
 class StockRepositoryImplementation implements StockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
@@ -90,7 +91,6 @@ class StockRepositoryImplementation implements StockRepository {
       if (element.field == "warehouse location") {
         String container =
             fields.firstWhere((e) => e.field == "container id").textValue;
-        print(container);
         if (container != "" &&
             containers[container] != null &&
             containers[container]["warehouse_location_id"] != "") {
@@ -185,6 +185,7 @@ class StockRepositoryImplementation implements StockRepository {
 
   Future<void> _addItemLocationHistory({required Map data}) async {
     Map map = {
+      "group_id": const Uuid().v1(),
       "items": [data["item id"]],
       "container_id": data["container id"],
       "warehouse_location_id": data["warehouse location"],

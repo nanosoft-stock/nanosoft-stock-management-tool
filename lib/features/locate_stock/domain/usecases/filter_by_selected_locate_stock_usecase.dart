@@ -10,8 +10,7 @@ class FilterBySelectedLocateStockUseCase extends UseCase {
     String filterBy = params["filter_by"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    locatedStock["rows"][index]["filters"]
-        .firstWhere((e) => e["field"] == field)["filter_by"] = filterBy;
+    locatedStock["rows"][index]["filters"][field]["filter_by"] = filterBy;
 
     return locatedStock;
   }

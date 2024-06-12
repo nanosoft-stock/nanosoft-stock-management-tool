@@ -424,6 +424,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _expandPendingMovesItemUseCase!(params: {
       "index": event.index,
+      "i": event.i,
       "is_expanded": event.isExpanded,
       "located_stock": event.locatedStock
     })));
@@ -461,6 +462,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _expandCompletedMovesItemUseCase!(params: {
       "index": event.index,
+      "i": event.i,
       "is_expanded": event.isExpanded,
       "located_stock": event.locatedStock
     })));

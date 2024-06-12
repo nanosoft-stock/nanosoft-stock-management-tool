@@ -11,27 +11,29 @@ class FilterCheckboxToggledLocateStockUseCase extends UseCase {
     bool? value = params["value"];
     Map<String, dynamic> locatedStock = params["located_stock"];
 
-    Map<String, dynamic> fieldFilter = locatedStock["rows"][index]["filters"]
-        .firstWhere((e) => e["field"] == field);
+    Map<String, dynamic> fieldFilter =
+        locatedStock["rows"][index]["filters"][field];
 
     if (title == "select_all") {
-      fieldFilter["all_unique_values"]
+      fieldFilter["unique_values_details"]
+          .values
           .where((e) => e["show"] == true)
           .forEach((e) {
         e["selected"] = value;
       });
     } else {
-      fieldFilter["all_unique_values"]
-          .firstWhere((e) => e["title"] == title)["selected"] = value;
+      fieldFilter["unique_values_details"][title]["selected"] = value;
     }
 
     bool? allSelected;
 
-    if (fieldFilter["all_unique_values"]
+    if (fieldFilter["unique_values_details"]
+        .values
         .where((e) => e["show"] == true)
         .every((e) => e["selected"] == true)) {
       allSelected = true;
-    } else if (fieldFilter["all_unique_values"]
+    } else if (fieldFilter["unique_values_details"]
+        .values
         .where((e) => e["show"] == true)
         .any((e) => e["selected"] == true)) {
       allSelected = null;

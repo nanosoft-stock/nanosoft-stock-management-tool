@@ -9,8 +9,7 @@ class FilterBySelectedVisualizeStockUseCase extends UseCase {
     String filterBy = params["filter_by"];
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["filters"]
-        .firstWhere((e) => e["field"] == field)["filter_by"] = filterBy;
+    visualizeStock["filters"][field]["filter_by"] = filterBy;
 
     return visualizeStock;
   }

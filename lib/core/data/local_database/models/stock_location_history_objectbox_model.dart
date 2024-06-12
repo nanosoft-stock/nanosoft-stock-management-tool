@@ -7,6 +7,7 @@ class StockLocationHistoryObjectBoxModel {
     this.id = 0,
     this.uid,
     required this.date,
+    this.groupId,
     this.items,
     this.containerId,
     this.warehouseLocationId,
@@ -23,6 +24,7 @@ class StockLocationHistoryObjectBoxModel {
   @Property(type: PropertyType.date)
   DateTime date;
 
+  String? groupId;
   List<String>? items;
   String? containerId;
   String? warehouseLocationId;
@@ -36,6 +38,7 @@ class StockLocationHistoryObjectBoxModel {
       date: json["date"].runtimeType == Timestamp
           ? json["date"].toDate()
           : DateTime.parse(json["date"]),
+      groupId: json["group_id"],
       items: json["items"].cast<String>(),
       containerId: json["container_id"],
       warehouseLocationId: json["warehouse_location_id"],
@@ -49,6 +52,7 @@ class StockLocationHistoryObjectBoxModel {
     return {
       "uid": uid,
       "date": date,
+      "group_id": groupId,
       "items": items,
       "container_id": containerId,
       "warehouse_location_id": warehouseLocationId,
@@ -60,6 +64,6 @@ class StockLocationHistoryObjectBoxModel {
 
   @override
   String toString() {
-    return "StockLocationHistory(date: $date, uid: $uid, items: $items, containerId: $containerId, warehouseLocationId: $warehouseLocationId, moveType: $moveType, state: $state, staff: $state)";
+    return "StockLocationHistory(uid: $uid, date: $date, group_id: $groupId, items: $items, containerId: $containerId, warehouseLocationId: $warehouseLocationId, moveType: $moveType, state: $state, staff: $state)";
   }
 }

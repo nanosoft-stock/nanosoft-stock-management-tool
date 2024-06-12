@@ -20,17 +20,15 @@ class CustomFieldFilter extends StatelessWidget {
   final Map<String, dynamic> fieldFilter;
   final Function() backOnTap;
   final Function() filterOnPressed;
-  final Function(String) clearOnPressed;
-  final Function(String, String) filterBySelected;
-  final Function(String, String) filterValueChanged;
-  final Function(String, String) searchValueChanged;
-  final Function(String, String, bool?) checkboxToggled;
+  final Function() clearOnPressed;
+  final Function(String) filterBySelected;
+  final Function(String) filterValueChanged;
+  final Function(String) searchValueChanged;
+  final Function(String, bool?) checkboxToggled;
 
   @override
   Widget build(BuildContext context) {
-    List allUniqueValues = fieldFilter["all_unique_values"]
-        .where((e) => e["show"] == true)
-        .toList();
+    List allUniqueValues = fieldFilter["unique_values"];
 
     return Column(
       children: [
@@ -58,9 +56,7 @@ class CustomFieldFilter extends StatelessWidget {
                         borderRadius: kBorderRadius,
                       ),
                     ),
-                    onPressed: () {
-                      filterOnPressed();
-                    },
+                    onPressed: filterOnPressed,
                     child: Text(
                       "Filter",
                       style: kLabelTextStyle,
@@ -75,9 +71,7 @@ class CustomFieldFilter extends StatelessWidget {
                         borderRadius: kBorderRadius,
                       ),
                     ),
-                    onPressed: () {
-                      clearOnPressed(fieldFilter["field"]);
-                    },
+                    onPressed: clearOnPressed,
                     child: Text(
                       "Clear",
                       style: kLabelTextStyle,
@@ -119,43 +113,6 @@ class CustomFieldFilter extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // SizedBox(
-                        //   width: 175,
-                        //   height: 40,
-                        //   child: DropdownButtonFormField<String>(
-                        //     borderRadius: kBorderRadius,
-                        //     menuMaxHeight: 250,
-                        //     decoration: InputDecoration(
-                        //       filled: true,
-                        //       fillColor: kButtonBackgroundColor,
-                        //       border: OutlineInputBorder(
-                        //         borderRadius: kBorderRadius,
-                        //       ),
-                        //       labelText: "Select Filter",
-                        //       labelStyle: kLabelTextStyle,
-                        //     ),
-                        //     value: fieldFilter["filter_by"] != ""
-                        //         ? fieldFilter["filter_by"]
-                        //         : null,
-                        //     icon: const Icon(
-                        //         Icons.arrow_drop_down_outlined),
-                        //     items: fieldFilter[
-                        //             "all_filter_by_values"]
-                        //         .map((String e) => DropdownMenuItem(
-                        //               value: e,
-                        //               child: Text(
-                        //                 e,
-                        //                 style: kLabelTextStyle,
-                        //               ),
-                        //             ))
-                        //         .toList()
-                        //         .cast<DropdownMenuItem<String>>(),
-                        //     onChanged: (value) {
-                        //       filterBySelected(fieldFilter["field"],
-                        //           value ?? "");
-                        //     },
-                        //   ),
-                        // ),
                         Container(
                           height: 40,
                           decoration: BoxDecoration(
@@ -194,8 +151,7 @@ class CustomFieldFilter extends StatelessWidget {
                                     .toList()
                                     .cast<DropdownMenuItem<String>>(),
                                 onChanged: (value) {
-                                  filterBySelected(
-                                      fieldFilter["field"], value ?? "");
+                                  filterBySelected(value ?? "");
                                 },
                               ),
                             ),
@@ -223,9 +179,7 @@ class CustomFieldFilter extends StatelessWidget {
                                   : "Select Filter",
                               labelStyle: kLabelTextStyle,
                             ),
-                            onChanged: (value) {
-                              filterValueChanged(fieldFilter["field"], value);
-                            },
+                            onChanged: filterValueChanged,
                           ),
                         ),
                       ],
@@ -344,9 +298,7 @@ class CustomFieldFilter extends StatelessWidget {
                                 labelText: "Search",
                                 labelStyle: kLabelTextStyle,
                               ),
-                              onChanged: (value) {
-                                searchValueChanged(fieldFilter["field"], value);
-                              },
+                              onChanged: searchValueChanged,
                             ),
                           ),
                         ),
@@ -362,12 +314,17 @@ class CustomFieldFilter extends StatelessWidget {
                           borderRadius: kBorderRadius,
                           boxShadow: kBoxShadowList,
                         ),
-                        child: allUniqueValues.isNotEmpty &&
-                                fieldFilter["field"] != "date"
+                        child: allUniqueValues.isNotEmpty
+                            // &&
+                            //     fieldFilter["field"] != "date"
                             ? ListView.builder(
                                 itemCount: allUniqueValues.length + 1,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
+                                  String title = index != 0
+                                      ? allUniqueValues[index - 1]
+                                      : "";
+
                                   if (index == 0) {
                                     return Padding(
                                       padding:
@@ -383,9 +340,7 @@ class CustomFieldFilter extends StatelessWidget {
                                           tristate: true,
                                           onChanged: (value) {
                                             checkboxToggled(
-                                                fieldFilter["field"],
-                                                "select_all",
-                                                value ?? false);
+                                                "select_all", value ?? false);
                                           },
                                         ),
                                       ),
@@ -397,20 +352,13 @@ class CustomFieldFilter extends StatelessWidget {
                                       child: SizedBox(
                                         width: 300,
                                         child: CustomCheckboxListTile(
-                                          title: allUniqueValues[index - 1]
-                                                      ["title"] !=
-                                                  ""
-                                              ? allUniqueValues[index - 1]
-                                                  ["title"]
-                                              : "(Blanks)",
-                                          value: allUniqueValues[index - 1]
-                                              ["selected"],
+                                          title:
+                                              title != "" ? title : "(Blanks)",
+                                          value: fieldFilter[
+                                                  "unique_values_details"]
+                                              [title]["selected"],
                                           onChanged: (value) {
-                                            checkboxToggled(
-                                                fieldFilter["field"],
-                                                allUniqueValues[index - 1]
-                                                    ["title"],
-                                                value);
+                                            checkboxToggled(title, value);
                                           },
                                         ),
                                       ),

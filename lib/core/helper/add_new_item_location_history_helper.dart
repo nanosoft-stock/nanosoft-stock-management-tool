@@ -9,6 +9,7 @@ class AddNewItemLocationHistoryHelper {
 
     List fields = [
       "date",
+      "group_id",
       "items",
       "move_type",
       "container_id",
@@ -25,7 +26,7 @@ class AddNewItemLocationHistoryHelper {
         } else if (field == "staff") {
           convertedData[field] = userName;
         } else {
-          convertedData[field] = data[field];
+          convertedData[field] = data[field] ?? "";
         }
       }
     } else {
@@ -48,7 +49,7 @@ class AddNewItemLocationHistoryHelper {
         } else {
           convertedData[field] = {
             DatatypeConverterHelper.convert(datatype: "string"):
-                field != "staff" ? data[field] : userName,
+                field != "staff" ? data[field] ?? "" : userName,
           };
         }
       }

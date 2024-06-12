@@ -13,8 +13,8 @@ class SortColumnVisualizeStockUseCase extends UseCase {
     Sort sort = params["sort"];
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["filters"].forEach((e) {
-      e["sort"] = Sort.none;
+    visualizeStock["filters"].forEach((k, v) {
+      v["sort"] = Sort.none;
     });
 
     if (sort == Sort.none) {
@@ -22,8 +22,7 @@ class SortColumnVisualizeStockUseCase extends UseCase {
       sort = Sort.desc;
     }
 
-    visualizeStock["filters"].firstWhere((e) => e["field"] == field)["sort"] =
-        sort;
+    visualizeStock["filters"][field]["sort"] = sort;
 
     visualizeStock["stocks"] = _visualizeStockRepository.sortStocks(
         field: field, sort: sort, stocks: visualizeStock["stocks"]);

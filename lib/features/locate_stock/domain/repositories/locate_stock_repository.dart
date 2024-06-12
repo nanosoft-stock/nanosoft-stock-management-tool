@@ -8,9 +8,11 @@ abstract class LocateStockRepository {
 
   Map<String, dynamic> getAllIds();
 
-  List<Map<String, dynamic>> getInitialFilters();
+  int compareWithBlank(sort, a, b);
 
-  List<Map<String, dynamic>> getFilteredStocks({required List filters});
+  Map<String, dynamic> getInitialFilters();
+
+  List<Map<String, dynamic>> getFilteredStocks({required Map filters});
 
   Map<String, dynamic> getChosenIdsDetails({
     required String searchBy,
@@ -35,11 +37,12 @@ abstract class LocateStockRepository {
 
   Future<void> moveItemsToPendingState({required Map selectedItems});
 
-  List<Map<String, dynamic>> getAllPendingStateItems(List pendingStateItems);
+  Map<String, dynamic> getAllPendingStateItems(
+      Map<String, dynamic> pendingStateItems);
 
-  Future<void> changeMoveStateToComplete({required Map pendingItem});
+  Future<void> changeMoveStateToComplete({required List pendingItems});
 
-  Future<void> cancelPendingMove({required Map pendingItem});
+  Future<void> cancelPendingMove({required List pendingItems});
 
-  List<Map<String, dynamic>> getAllCompletedStateItems();
+  Map<String, dynamic> getAllCompletedStateItems();
 }

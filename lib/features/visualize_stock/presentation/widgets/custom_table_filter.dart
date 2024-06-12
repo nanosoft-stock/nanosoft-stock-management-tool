@@ -6,7 +6,7 @@ import 'package:stock_management_tool/features/visualize_stock/presentation/widg
 class CustomTableFilter extends StatelessWidget {
   const CustomTableFilter({
     super.key,
-    required this.fieldFilters,
+    required this.fields,
     required this.closeOnTap,
     required this.resetAllFiltersOnPressed,
     required this.fieldFilterOnPressed,
@@ -14,7 +14,7 @@ class CustomTableFilter extends StatelessWidget {
     required this.changeVisibilityOnTap,
   });
 
-  final List fieldFilters;
+  final List fields;
   final Function() closeOnTap;
   final Function() resetAllFiltersOnPressed;
   final Function(String) fieldFilterOnPressed;
@@ -23,7 +23,7 @@ class CustomTableFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List localFieldFilters = [...fieldFilters];
+    List localFieldFilters = List.from(fields);
 
     return Column(
       children: [
@@ -91,7 +91,7 @@ class CustomTableFilter extends StatelessWidget {
                       children: localFieldFilters
                           .map(
                             (e) => Padding(
-                              key: Key(e["field"]),
+                              key: Key(e.field),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 3.0, vertical: 4.0),
                               child: Container(
@@ -108,85 +108,17 @@ class CustomTableFilter extends StatelessWidget {
                                       horizontal: 10.0, vertical: 6.0),
                                   child: Row(
                                     children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          fieldFilterOnPressed(e["field"]);
-                                        },
-                                        child: Text(
-                                          e["field"].toString().toTitleCase(),
-                                          style: kLabelTextStyle,
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fieldFilterOnPressed(e.field);
+                                          },
+                                          child: Text(
+                                            e.field.toString().toTitleCase(),
+                                            style: kLabelTextStyle,
+                                          ),
                                         ),
                                       ),
-                                      // Padding(
-                                      //   padding:
-                                      //       const EdgeInsets
-                                      //           .only(
-                                      //           right:
-                                      //               40.0),
-                                      //   child: Container(
-                                      //     decoration:
-                                      //         BoxDecoration(
-                                      //       color:
-                                      //           kPrimaryBackgroundColor,
-                                      //       borderRadius:
-                                      //           kBorderRadius,
-                                      //     ),
-                                      //     child:
-                                      //         SegmentedButton(
-                                      //       segments: const [
-                                      //         ButtonSegment(
-                                      //           value:
-                                      //               true,
-                                      //           icon: Icon(
-                                      //               Icons
-                                      //                   .playlist_add_check),
-                                      //         ),
-                                      //         ButtonSegment(
-                                      //           value:
-                                      //               false,
-                                      //           icon: Icon(
-                                      //               Icons
-                                      //                   .playlist_remove_rounded),
-                                      //         ),
-                                      //       ],
-                                      //       showSelectedIcon:
-                                      //           false,
-                                      //       selected: {
-                                      //         e["show_column"]
-                                      //       },
-                                      //       selectedIcon:
-                                      //           const SizedBox
-                                      //               .shrink(),
-                                      //       style:
-                                      //           ButtonStyle(
-                                      //         shape: WidgetStateProperty
-                                      //             .all<
-                                      //                 OutlinedBorder>(
-                                      //           RoundedRectangleBorder(
-                                      //             borderRadius:
-                                      //                 kBorderRadius,
-                                      //           ),
-                                      //         ),
-                                      //       ),
-                                      //       onSelectionChanged:
-                                      //           (value) {
-                                      //         setState(
-                                      //             () {
-                                      //           e["show_column"] =
-                                      //               value
-                                      //                   .first;
-                                      //         });
-                                      //         changeVisibilityOnTap(
-                                      //             e["field"],
-                                      //             value.first);
-                                      //       },
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // CustomFilterButton(
-                                      //   field: e["field"],
-                                      //   onPressed: () {},
-                                      // ),
                                     ],
                                   ),
                                 ),

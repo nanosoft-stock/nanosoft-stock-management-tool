@@ -159,7 +159,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<FilterValueChangedVisualizeStockUseCase>(
       () => FilterValueChangedVisualizeStockUseCase());
   sl.registerLazySingleton<SearchValueChangedVisualizeStockUseCase>(
-      () => SearchValueChangedVisualizeStockUseCase());
+      () => SearchValueChangedVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
       () => CheckboxToggledVisualizeStockUseCase());
   sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
@@ -214,7 +214,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<FilterByValueChangedLocateStockUseCase>(
       () => FilterByValueChangedLocateStockUseCase());
   sl.registerLazySingleton<SearchValueChangedLocateStockUseCase>(
-      () => SearchValueChangedLocateStockUseCase());
+      () => SearchValueChangedLocateStockUseCase(sl()));
   sl.registerLazySingleton<FilterCheckboxToggledLocateStockUseCase>(
       () => FilterCheckboxToggledLocateStockUseCase());
   sl.registerLazySingleton<SwitchTableViewUseCase>(

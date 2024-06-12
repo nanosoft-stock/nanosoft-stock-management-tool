@@ -32,8 +32,6 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _blocBuilder(BuildContext context, HomeState state) {
-    debugPrint("build: ${state.runtimeType}");
-
     switch (state.runtimeType) {
       case const (ErrorState):
         return _buildErrorStateWidget();

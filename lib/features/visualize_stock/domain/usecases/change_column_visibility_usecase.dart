@@ -9,13 +9,13 @@ class ChangeColumnVisibilityUseCase extends UseCase {
     bool visibility = params["visibility"];
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["filters"]
-        .firstWhere((e) => e["field"] == field)["show_column"] = visibility;
+    visualizeStock["filters"][field]["show_column"] = visibility;
 
     List showFields = [];
-    for (var field in visualizeStock["filters"]) {
-      if (field["show_column"]) {
-        showFields.add(field["field"]);
+
+    for (var e in visualizeStock["fields"]) {
+      if (visualizeStock["filters"][e.field]["show_column"] == true) {
+        showFields.add(e.field);
       }
     }
 

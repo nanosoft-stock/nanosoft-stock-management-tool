@@ -7,15 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
-import 'package:stock_management_tool/features/visualize_stock/data/models/stock_field_model.dart';
-import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/features/visualize_stock/data/models/stock_field_model.dart';
+import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
+import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class VisualizeStockRepositoryImplementation
     implements VisualizeStockRepository {
@@ -104,22 +105,30 @@ class VisualizeStockRepositoryImplementation
 
     stocks.sort((a, b) => b["date"].compareTo(a["date"]));
 
-    return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+    stocks = stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+
+    for (var e in stocks) {
+      e["date"] = DateFormat('dd-MM-yyyy')
+          .format(DateTime.parse(e["date"].toString().toUpperCase()));
+    }
+
+    return stocks.cast<Map<String, dynamic>>();
   }
 
   @override
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks}) {
     if (sort == Sort.asc) {
-      stocks.sort((a, b) => _compareWithBlank(sort, a[field], b[field]));
+      stocks.sort((a, b) => compareWithBlank(sort, a[field], b[field]));
     } else if (sort == Sort.desc) {
-      stocks.sort((a, b) => _compareWithBlank(sort, b[field], a[field]));
+      stocks.sort((a, b) => compareWithBlank(sort, b[field], a[field]));
     }
 
-    return stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+    return stocks as List<Map<String, dynamic>>;
   }
 
-  int _compareWithBlank(sort, a, b) {
+  @override
+  int compareWithBlank(sort, a, b) {
     bool isABlank = a == null || a == "";
     bool isBBlank = b == null || b == "";
 
@@ -135,40 +144,74 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  List<Map<String, dynamic>> getInitialFilters(
+  Map<String, dynamic> getInitialFilters(
       {required List fields, required List stocks}) {
-    return fields.map((ele) {
-      Map<String, dynamic> data = {};
+    Map<String, dynamic> filters = {};
 
-      data["field"] = ele.field;
-      data["show_column"] = true;
-      data["sort"] = ele.field != "date" ? Sort.none : Sort.desc;
-      data["filter_by"] = "";
-      data["filter_value"] = "";
-      data["search_value"] = "";
-      data["all_selected"] = true;
-      data["all_unique_values"] =
-          getUniqueValues(field: ele.field, stocks: stocks);
+    for (var ele in fields) {
+      filters[ele.field] = {
+        "field": ele.field,
+        "show_column": true,
+        "sort": ele.field != "date" ? Sort.none : Sort.desc,
+        "filter_by": "",
+        "filter_value": "",
+        "search_value": "",
+        "all_selected": true,
+        ...getUniqueValues(field: ele.field, stocks: stocks),
+        ...getFilterByValuesByDatatype(
+            values: stocks
+                .map((stock) => stock[ele.field].toString())
+                .toList()
+                .cast<String>()),
+      };
+    }
 
-      data.addAll(getFilterByValuesByDatatype(
-          values: stocks
-              .map((stock) => stock[ele.field].toString())
-              .toList()
-              .cast<String>()));
-
-      return data;
-    }).toList();
+    return filters;
+    // return fields.map((ele) {
+    //   Map<String, dynamic> data = {};
+    //
+    //   data["field"] = ele.field;
+    //   data["show_column"] = true;
+    //   data["sort"] = ele.field != "date" ? Sort.none : Sort.desc;
+    //   data["filter_by"] = "";
+    //   data["filter_value"] = "";
+    //   data["search_value"] = "";
+    //   data["all_selected"] = true;
+    //   data["all_unique_values"] =
+    //       getUniqueValues(field: ele.field, stocks: stocks);
+    //
+    //   data.addAll(getFilterByValuesByDatatype(
+    //       values: stocks
+    //           .map((stock) => stock[ele.field].toString())
+    //           .toList()
+    //           .cast<String>()));
+    //
+    //   return data;
+    // }).toList();
   }
 
   @override
-  List<Map<String, dynamic>> getUniqueValues(
+  Map<String, dynamic> getUniqueValues(
       {required String field, required List stocks}) {
-    return stocks
-        .map((e) => e[field])
-        .toSet()
-        .map((e) => {"title": e, "show": true, "selected": true})
-        .toList()
-      ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
+    List uniqueValues = stocks.map((e) => e[field]).toSet().toList()
+      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
+
+    Map details = {};
+    for (var e in uniqueValues) {
+      details[e] = {"title": e, "show": true, "selected": true};
+    }
+
+    return {
+      "unique_values": uniqueValues,
+      "unique_values_details": details,
+    };
+
+    // return stocks
+    //     .map((e) => e[field])
+    //     .toSet()
+    //     .map((e) => {"title": e, "show": true, "selected": true})
+    //     .toList()
+    //   ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
   }
 
   @override
@@ -188,19 +231,19 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  List<Map<String, dynamic>> getFilteredStocks({required List filters}) {
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+  List<Map<String, dynamic>> getFilteredStocks({required Map filters}) {
+    List stocks = getAllStocks();
 
-    for (var filter in filters) {
+    filters.forEach((field, filter) {
       stocks = stocks.where((element) {
-        if (!filter["all_unique_values"].every((e) => e["selected"] == true)) {
-          String stockValue = element[filter["field"]];
-          return filter["all_unique_values"]
-              .firstWhere((e) => e["title"] == stockValue)["selected"];
+        if (!filter["unique_values_details"]
+            .values
+            .every((e) => e["selected"] == true)) {
+          String stockValue = element[field];
+          return filter["unique_values_details"][stockValue]["selected"];
         } else if (filter["filter_by"] != "") {
           if (filter["datatype"] == "string") {
-            String stockValue =
-                element[filter["field"]].toString().toLowerCase();
+            String stockValue = element[field].toString().toLowerCase();
             String filterValue =
                 filter["filter_value"].toString().toLowerCase();
 
@@ -224,8 +267,7 @@ class VisualizeStockRepositoryImplementation
               return true;
             }
           } else if (filter["datatype"] == "double") {
-            double? stockValue =
-                double.tryParse(element[filter["field"]] ?? "");
+            double? stockValue = double.tryParse(element[field] ?? "");
             double? filterValue = double.tryParse(filter["filter_value"]);
 
             if (stockValue != null && filterValue != null) {
@@ -250,14 +292,13 @@ class VisualizeStockRepositoryImplementation
           return true;
         }
       }).toList();
-    }
+    });
 
-    for (var filter in filters) {
+    filters.forEach((field, filter) {
       if (filter["sort"] != Sort.none) {
-        stocks = sortStocks(
-            field: filter["field"], sort: filter["sort"], stocks: stocks);
+        stocks = sortStocks(field: field, sort: filter["sort"], stocks: stocks);
       }
-    }
+    });
 
     return stocks as List<Map<String, dynamic>>;
   }
@@ -295,10 +336,7 @@ class VisualizeStockRepositoryImplementation
 
     Map items = {};
     _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = {
-        "container_id": e.containerId,
-        "doc_ref": e.docRef
-      };
+      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
     });
 
     List header = [];
@@ -336,13 +374,10 @@ class VisualizeStockRepositoryImplementation
               value = cellValue.value.toString();
               break;
             case DateCellValue():
-              // print('  date: ${cellValue.year} ${cellValue.month} ${cellValue.day} (${cellValue.asDateTimeLocal()})');
               break;
             case TimeCellValue():
-              // print('  time: ${cellValue.hour} ${cellValue.minute} ... (${cellValue.asDuration()})');
               break;
             case DateTimeCellValue():
-              // print('  date with time: ${cellValue.year} ${cellValue.month} ${cellValue.day} ${cellValue.hour} ... (${cellValue.asDateTimeLocal()})');
               break;
             default:
               break;
@@ -351,34 +386,35 @@ class VisualizeStockRepositoryImplementation
           rowData[header[i]] = value;
         }
 
-        if (!items.containsKey(rowData["item id"])) {
-          if (containers[rowData["container id"]]["warehouse_location_id"] ==
-                  rowData["warehouse location"] ||
-              (containers[rowData["container id"]]["warehouse_location_id"] ??
-                      "") ==
-                  "") {
-            containers[rowData["container id"]] = {
-              "warehouse_location_id": rowData["warehouse location"]
-            };
-            newStocks.add(AddNewStockHelper.toJson(data: rowData));
-            uniqueContainers.add(rowData["container id"]);
-          } else {
-            // Call Error
+        String? i = rowData["item id"];
+        String? c = rowData["container id"];
 
-            return;
+        if (!items.containsKey(i)) {
+          if (containers[c] != null) {
+            rowData["warehouse location"] =
+                containers[c]["warehouse_location_id"] ?? "";
+          } else {
+            containers[c] = {"warehouse_location_id": ""};
+            rowData["warehouse location"] = "";
           }
+
+          newStocks.add(AddNewStockHelper.toJson(data: rowData));
+          uniqueContainers.add(c);
         } else {
-          rowData["container id"] = items[rowData["item id"]]["container_id"];
-          rowData["warehouse location"] = containers[rowData["container id"]]
-                  ["warehouse_location_id"] ??
-              "";
+          rowData["container id"] = items[i]["container_id"];
+          c = rowData["container id"];
+          rowData["warehouse location"] =
+              containers[c]["warehouse_location_id"] ?? "";
+
           existingStocks.add({
-            "doc_ref": items[rowData["item id"]]["doc_ref"],
+            "doc_ref": items[i]["doc_ref"],
             ...AddNewStockHelper.toJson(data: rowData),
           });
         }
       }
     }
+
+    debugPrint("Data read successful");
 
     if (newStocks.isNotEmpty) {
       Map<String, dynamic> docRefs = await sl.get<Firestore>().batchWrite(
@@ -390,50 +426,44 @@ class VisualizeStockRepositoryImplementation
       }
     }
 
+    debugPrint("Batch write successful");
+
     if (existingStocks.isNotEmpty) {
       await sl.get<Firestore>().batchWrite(
           path: "stock_data", data: existingStocks, isToBeUpdated: true);
     }
 
-    await _addNewLocations(
-      locations: warehouseLocations,
-      newLocations: newStocks
-          .map((e) =>
-              (e["warehouse location"] ?? "").toString().toUpperCase().trim())
-          .toList(),
-      uid: warehouseLocationIdUid,
-      updateField: "warehouse_location_id",
-    );
+    debugPrint("Batch modify successful");
 
     await _addNewLocations(
       locations: containers,
-      newLocations: newStocks
-          .map((e) => (e["container id"] ?? "").toString().toUpperCase().trim())
-          .toList(),
       uid: containerIdUid,
       updateField: "container_id",
     );
 
     await _addNewLocations(
       locations: items,
-      newLocations: newStocks
-          .map((e) => (e["item id"] ?? "").toString().toUpperCase().trim())
-          .toList(),
       uid: itemIdUid,
       updateField: "item_id",
     );
 
+    debugPrint("Add New locations successful");
+
     List locations = [];
+
+    String groupId = const Uuid().v1();
 
     for (var ele in uniqueContainers) {
       locations.add(AddNewItemLocationHistoryHelper.toJson(data: {
+        "group_id": groupId,
         "items": newStocks
             .where((e) => e["container id"] == ele)
             .map((e) => e["item id"])
             .toList(),
         "container_id": ele,
-        "warehouse_location": newStocks
-            .firstWhere((e) => e["container id"] == ele)["warehouse location"],
+        "warehouse_location_id": containers[ele] != null
+            ? containers[ele]["warehouse_location_id"] ?? ""
+            : "",
         "move_type": "excel import",
         "state": "completed",
       }));
@@ -442,19 +472,19 @@ class VisualizeStockRepositoryImplementation
     await sl.get<Firestore>().batchWrite(
         path: "stock_location_history", data: locations, isToBeUpdated: false);
 
-    debugPrint("Import Completed");
+    debugPrint("Add Stock Location History successful");
+
+    debugPrint("Import successful");
   }
 
   Future<void> _addNewLocations({
     required Map locations,
-    required List newLocations,
     required String uid,
     required String updateField,
   }) async {
     Map data = {};
 
-    List tempLocations =
-        (locations.keys.toSet()..addAll(newLocations)).toList();
+    List tempLocations = locations.keys.toSet().toList();
 
     for (String e in tempLocations) {
       if (updateField == "warehouse_location_id") {

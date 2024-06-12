@@ -9,8 +9,7 @@ class FilterValueChangedVisualizeStockUseCase extends UseCase {
     String filterValue = params["filter_value"];
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["filters"]
-        .firstWhere((e) => e["field"] == field)["filter_value"] = filterValue;
+    visualizeStock["filters"][field]["filter_value"] = filterValue;
 
     return visualizeStock;
   }

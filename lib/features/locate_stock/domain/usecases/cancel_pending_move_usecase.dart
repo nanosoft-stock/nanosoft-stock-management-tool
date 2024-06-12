@@ -10,10 +10,13 @@ class CancelPendingMoveUseCase extends UseCase {
   Future call({params}) async {
     int index = params["index"];
     Map<String, dynamic> locatedStock = params["located_stock"];
-    List pendingStateItems = locatedStock["pending_state_items"];
+    Map<String, dynamic> pendingStateItems =
+        locatedStock["pending_state_items"];
+
+    List keys = locatedStock["pending_state_items"].keys.toList();
 
     await _locateStockRepository.cancelPendingMove(
-        pendingItem: pendingStateItems[index]);
+        pendingItems: pendingStateItems[keys[index]]);
 
     pendingStateItems =
         _locateStockRepository.getAllPendingStateItems(pendingStateItems);

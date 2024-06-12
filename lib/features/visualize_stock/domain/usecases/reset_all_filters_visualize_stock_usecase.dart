@@ -1,3 +1,4 @@
+import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 
@@ -12,13 +13,14 @@ class ResetAllFiltersVisualizeStockUseCase extends UseCase {
 
     visualizeStock["stocks"] = _visualizeStockRepository.getAllStocks();
 
-    visualizeStock["filters"].forEach((e) {
-      e["filter_by"] = "";
-      e["filter_value"] = "";
-      e["search_value"] = "";
-      e["all_selected"] = true;
-      e["all_unique_values"] = _visualizeStockRepository.getUniqueValues(
-          field: e["field"], stocks: visualizeStock["stocks"]);
+    visualizeStock["filters"].forEach((k, v) {
+      v["sort"] = k != "date" ? Sort.none : Sort.desc;
+      v["filter_by"] = "";
+      v["filter_value"] = "";
+      v["search_value"] = "";
+      v["all_selected"] = true;
+      v.addAll(_visualizeStockRepository.getUniqueValues(
+          field: v["field"], stocks: visualizeStock["stocks"]));
     });
 
     return visualizeStock;

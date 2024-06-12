@@ -300,11 +300,13 @@ class PendingMovesButtonPressedEvent extends LocateStockEvent {
 class ExpandPendingMovesItemEvent extends LocateStockEvent {
   const ExpandPendingMovesItemEvent({
     required this.index,
+    required this.i,
     required this.isExpanded,
     required this.locatedStock,
   });
 
   final int? index;
+  final int? i;
   final bool? isExpanded;
   final Map<String, dynamic>? locatedStock;
 }
@@ -340,11 +342,13 @@ class CompletedMovesButtonPressedEvent extends LocateStockEvent {
 class ExpandCompletedMovesItemEvent extends LocateStockEvent {
   const ExpandCompletedMovesItemEvent({
     required this.index,
+    required this.i,
     required this.isExpanded,
     required this.locatedStock,
   });
 
   final int? index;
+  final int? i;
   final bool? isExpanded;
   final Map<String, dynamic>? locatedStock;
 }

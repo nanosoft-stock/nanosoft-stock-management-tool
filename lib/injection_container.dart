@@ -62,6 +62,13 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/swit
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/warehouse_location_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
+import 'package:stock_management_tool/features/print_id/data/repositories/print_id_repository_implementation.dart';
+import 'package:stock_management_tool/features/print_id/domain/repositories/print_id_repository.dart';
+import 'package:stock_management_tool/features/print_id/domain/usecases/initial_usecase.dart';
+import 'package:stock_management_tool/features/print_id/domain/usecases/print_count_entered_usecase.dart';
+import 'package:stock_management_tool/features/print_id/domain/usecases/print_id_selected_usecase.dart';
+import 'package:stock_management_tool/features/print_id/domain/usecases/print_pressed_usecase.dart';
+import 'package:stock_management_tool/features/print_id/presentation/bloc/print_id_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/repositories/visualize_stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/add_visualize_stock_layer_usecase.dart';
@@ -279,6 +286,19 @@ Future<void> initializeDependencies() async {
         sl(),
         sl(),
       ));
+
+  // Print Id
+  sl.registerLazySingleton<PrintIdRepository>(
+      () => PrintIdRepositoryImplementation());
+  sl.registerLazySingleton<InitialPrintIdUseCase>(
+      () => InitialPrintIdUseCase());
+  sl.registerLazySingleton<PrintIdSelectedUseCase>(
+      () => PrintIdSelectedUseCase());
+  sl.registerLazySingleton<PrintCountEnteredUseCase>(
+      () => PrintCountEnteredUseCase());
+  sl.registerLazySingleton<PrintPressedUseCase>(
+      () => PrintPressedUseCase(sl()));
+  sl.registerFactory<PrintIdBloc>(() => PrintIdBloc(sl(), sl(), sl(), sl()));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

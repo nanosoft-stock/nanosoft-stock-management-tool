@@ -77,14 +77,12 @@ class StockRepositoryImplementation implements StockRepository {
 
     Map containers = {};
     _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId] = {
-        "warehouse_location_id": e.warehouseLocationId
-      };
+      containers[e.containerId] = e.toJson()..remove("container_id");
     });
 
     Map items = {};
     _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
+      items[e.itemId] = e.toJson()..remove("item_id");
     });
 
     for (var element in fields) {
@@ -97,7 +95,10 @@ class StockRepositoryImplementation implements StockRepository {
           data[element.field] = containers[container]["warehouse_location_id"];
         } else if (container != "") {
           data[element.field] = element.textValue;
-          containers[container] = {"warehouse_location_id": element.textValue};
+          containers[container] = {
+            "status": "added",
+            "warehouse_location_id": element.textValue,
+          };
           if (element.textValue != "") {
             warehouseLocations[element.textValue] = null;
           }
@@ -116,22 +117,23 @@ class StockRepositoryImplementation implements StockRepository {
 
     items[data["item id"]] = {
       "container_id": data["container id"],
-      "doc_ref": docRef
+      "doc_ref": docRef,
+      "status": "added",
     };
 
-    await _addNewLocations(
+    await _addNewLocation(
       locations: warehouseLocations,
       uid: warehouseLocationIdUid,
       updateField: "warehouse_location_id",
     );
 
-    await _addNewLocations(
+    await _addNewLocation(
       locations: containers,
       uid: containerIdUid,
       updateField: "container_id",
     );
 
-    await _addNewLocations(
+    await _addNewLocation(
       locations: items,
       uid: itemIdUid,
       updateField: "item_id",
@@ -140,24 +142,45 @@ class StockRepositoryImplementation implements StockRepository {
     await _addItemLocationHistory(data: data);
   }
 
-  Future<void> _addNewLocations({
+  Future<void> _addNewLocation({
     required Map locations,
     required String uid,
     required String updateField,
   }) async {
+    Map data = {};
+
+    List tempLocations = locations.keys.toSet().toList();
+
+    for (String e in tempLocations) {
+      if (updateField == "warehouse_location_id") {
+        data[e] = null;
+      } else if (updateField == "container_id") {
+        data[e] = {
+          "status": locations[e]["status"] ?? "",
+          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? "",
+        };
+      } else if (updateField == "item_id") {
+        data[e] = {
+          "container_id": locations[e]["container_id"] ?? "",
+          "doc_ref": locations[e]["doc_ref"] ?? "",
+          "status": locations[e]["status"] ?? "",
+        };
+      }
+    }
+
     await sl.get<Firestore>().modifyDocument(
           path: "unique_values",
           uid: uid,
           updateMask: [updateField],
           data: !kIsLinux
               ? {
-                  updateField: locations,
+                  updateField: data,
                 }
               : {
                   updateField: {
                     "mapValue": {
                       "fields": {
-                        locations.map(
+                        data.map(
                           (k, v) => MapEntry(
                             k,
                             v != null

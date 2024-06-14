@@ -75,7 +75,7 @@ class NavItemAndViewModel {
         title: 'Print Id',
         icon: Icons.local_printshop_outlined,
       ),
-      view: const PrintIdView(),
+      view: PrintIdView(),
     ),
   };
 

@@ -167,27 +167,6 @@ class VisualizeStockRepositoryImplementation
     }
 
     return filters;
-    // return fields.map((ele) {
-    //   Map<String, dynamic> data = {};
-    //
-    //   data["field"] = ele.field;
-    //   data["show_column"] = true;
-    //   data["sort"] = ele.field != "date" ? Sort.none : Sort.desc;
-    //   data["filter_by"] = "";
-    //   data["filter_value"] = "";
-    //   data["search_value"] = "";
-    //   data["all_selected"] = true;
-    //   data["all_unique_values"] =
-    //       getUniqueValues(field: ele.field, stocks: stocks);
-    //
-    //   data.addAll(getFilterByValuesByDatatype(
-    //       values: stocks
-    //           .map((stock) => stock[ele.field].toString())
-    //           .toList()
-    //           .cast<String>()));
-    //
-    //   return data;
-    // }).toList();
   }
 
   @override
@@ -205,13 +184,6 @@ class VisualizeStockRepositoryImplementation
       "unique_values": uniqueValues,
       "unique_values_details": details,
     };
-
-    // return stocks
-    //     .map((e) => e[field])
-    //     .toSet()
-    //     .map((e) => {"title": e, "show": true, "selected": true})
-    //     .toList()
-    //   ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
   }
 
   @override
@@ -329,14 +301,12 @@ class VisualizeStockRepositoryImplementation
 
     Map containers = {};
     _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId] = {
-        "warehouse_location_id": e.warehouseLocationId
-      };
+      containers[e.containerId] = e.toJson()..remove("container_id");
     });
 
     Map items = {};
     _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
+      items[e.itemId] = e.toJson()..remove("item_id");
     });
 
     List header = [];
@@ -394,7 +364,7 @@ class VisualizeStockRepositoryImplementation
             rowData["warehouse location"] =
                 containers[c]["warehouse_location_id"] ?? "";
           } else {
-            containers[c] = {"warehouse_location_id": ""};
+            containers[c] = {"warehouse_location_id": "", "status": "added"};
             rowData["warehouse location"] = "";
           }
 
@@ -422,6 +392,7 @@ class VisualizeStockRepositoryImplementation
       if (docRefs.isNotEmpty) {
         docRefs.forEach((k, v) {
           items[k] = v;
+          items[k]["status"] = "added";
         });
       }
     }
@@ -491,12 +462,14 @@ class VisualizeStockRepositoryImplementation
         data[e] = null;
       } else if (updateField == "container_id") {
         data[e] = {
-          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? ""
+          "status": locations[e]["status"] ?? "",
+          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? "",
         };
       } else if (updateField == "item_id") {
         data[e] = {
           "container_id": locations[e]["container_id"] ?? "",
-          "doc_ref": locations[e]["doc_ref"] ?? ""
+          "doc_ref": locations[e]["doc_ref"] ?? "",
+          "status": locations[e]["status"] ?? "",
         };
       }
     }

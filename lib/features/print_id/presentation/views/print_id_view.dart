@@ -19,6 +19,7 @@ class PrintIdView extends StatelessWidget {
 
   Widget _buildBody() {
     return BlocConsumer<PrintIdBloc, PrintIdState>(
+      bloc: _printIdBloc,
       listenWhen: (prev, next) => next is PrintIdActionState,
       buildWhen: (prev, next) => next is! PrintIdActionState,
       listener: (BuildContext context, PrintIdState state) {
@@ -42,7 +43,7 @@ class PrintIdView extends StatelessWidget {
         return _buildErrorStateWidget();
 
       case const (LoadedState):
-        Map printIdData = state.printIdData!;
+        Map<String, dynamic> printIdData = state.printIdData!;
         return _buildLoadedStateWidget(printIdData);
 
       default:
@@ -65,7 +66,7 @@ class PrintIdView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(Map printableIdData) {
+  Widget _buildLoadedStateWidget(Map<String, dynamic> printIdData) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Padding(
@@ -83,10 +84,14 @@ class PrintIdView extends StatelessWidget {
                         child: CustomDropdownInputField(
                           text: "Print Id",
                           controller: TextEditingController(
-                              text: printableIdData["print_id"]),
-                          items: printableIdData["printable_ids"],
+                              text: printIdData["printable_id"]),
+                          items: printIdData["printable_ids"],
                           requestFocusOnTap: false,
-                          onSelected: (value) {},
+                          onSelected: (value) {
+                            _printIdBloc.add(PrintIdSelectedEvent(
+                                printableId: value,
+                                printIdData: printIdData));
+                          },
                         ),
                       ),
                       Padding(
@@ -94,8 +99,11 @@ class PrintIdView extends StatelessWidget {
                         child: CustomTextInputField(
                           text: "Count",
                           controller: TextEditingController(
-                              text: printableIdData["count"]),
-                          onSelected: (value) {},
+                              text: printIdData["print_count"]),
+                          onSelected: (value) {
+                            _printIdBloc.add(PrintCountChangedEvent(
+                                printCount: value, printIdData: printIdData));
+                          },
                         ),
                       ),
                       Padding(
@@ -103,7 +111,10 @@ class PrintIdView extends StatelessWidget {
                         child: SizedBox(
                           width: 322.5,
                           child: CustomElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _printIdBloc.add(PrintPressedEvent(
+                                  printIdData: printIdData));
+                            },
                             text: "Print",
                           ),
                         ),

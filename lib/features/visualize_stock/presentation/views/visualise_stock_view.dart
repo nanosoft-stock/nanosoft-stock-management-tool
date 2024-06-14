@@ -28,10 +28,10 @@ class VisualiseStockView extends StatelessWidget {
       bloc: _visualizeStockBloc,
       listenWhen: (prev, next) => next is VisualizeStockActionState,
       buildWhen: (prev, next) => next is! VisualizeStockActionState,
-      listener: (context, state) {
+      listener: (BuildContext context, VisualizeStockState state) {
         _blocListener(context, state);
       },
-      builder: (context, state) {
+      builder: (BuildContext context, VisualizeStockState state) {
         return _blocBuilder(context, state);
       },
     );

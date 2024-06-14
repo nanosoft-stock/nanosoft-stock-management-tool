@@ -233,8 +233,6 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     for (var ele in fields) {
       filters[ele["field"]] = {
         "field": ele["field"],
-        // "show_column": true,
-        // "sort": ele["field"] != "date" ? Sort.none : Sort.desc,
         "filter_by": "",
         "filter_value": "",
         "search_value": "",
@@ -249,28 +247,6 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     }
 
     return filters;
-
-    // return fields.map((ele) {
-    //   Map<String, dynamic> data = {};
-    //
-    //   data["field"] = ele["field"];
-    //   data["show_column"] = true;
-    //   data["sort"] = ele["field"] != "date" ? Sort.none : Sort.desc;
-    //   data["filter_by"] = "";
-    //   data["filter_value"] = "";
-    //   data["search_value"] = "";
-    //   data["all_selected"] = true;
-    //   data["all_unique_values"] =
-    //       getUniqueValues(field: ele["field"], stocks: stocks);
-    //
-    //   data.addAll(getFilterByValuesByDatatype(
-    //       values: stocks
-    //           .map((stock) => stock[ele["field"]].toString())
-    //           .toList()
-    //           .cast<String>()));
-    //
-    //   return data;
-    // }).toList();
   }
 
   Map<String, dynamic> getUniqueValues(
@@ -288,16 +264,6 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       "unique_values_details": details,
     };
   }
-
-  // List<Map<String, dynamic>> getUniqueValues(
-  //     {required String field, required List stocks}) {
-  //   return stocks
-  //       .map((e) => e[field])
-  //       .toSet()
-  //       .map((e) => {"title": e, "show": true, "selected": true})
-  //       .toList()
-  //     ..sort((a, b) => _compareWithBlank(Sort.asc, a, b));
-  // }
 
   Map<String, dynamic> getFilterByValuesByDatatype({required List values}) {
     Map<String, dynamic> data = {};
@@ -684,14 +650,12 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
     Map containers = {};
     _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId] = {
-        "warehouse_location_id": e.warehouseLocationId
-      };
+      containers[e.containerId] = e.toJson()..remove("container_id");
     });
 
     Map items = {};
     _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = {"container_id": e.containerId, "doc_ref": e.docRef};
+      items[e.itemId] = e.toJson()..remove("item_id");
     });
 
     for (var e in pendingItems) {
@@ -737,15 +701,11 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
                     },
                   });
 
-        items[item.itemId] = {
-          "container_id": element["container_id"],
-          "doc_ref": item.docRef,
-        };
+        items[item.itemId]["container_id"] = element["container_id"];
       }
 
-      containers[element["container_id"]] = {
-        "warehouse_location_id": element["warehouse_location_id"],
-      };
+      containers[element["container_id"]]["warehouse_location_id"] =
+          element["warehouse_location_id"];
 
       warehouseLocations[element["warehouse_location_id"]] = null;
     }
@@ -803,12 +763,14 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         data[e] = null;
       } else if (updateField == "container_id") {
         data[e] = {
-          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? ""
+          "status": locations[e]["status"] ?? "",
+          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? "",
         };
       } else if (updateField == "item_id") {
         data[e] = {
           "container_id": locations[e]["container_id"] ?? "",
-          "doc_ref": locations[e]["doc_ref"] ?? ""
+          "doc_ref": locations[e]["doc_ref"] ?? "",
+          "status": locations[e]["status"] ?? "",
         };
       }
     }
@@ -883,22 +845,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     }
 
     return data.cast<String, dynamic>();
-
-    // if (histories.isNotEmpty) {
-    //   histories = histories
-    //       .map((e) =>
-    //           {...e.toJson(), "is_expanded": false}.cast<String, dynamic>())
-    //       .toList()
-    //       .cast<Map<String, dynamic>>();
-    //   histories.sort((a, b) => b["date"].compareTo(a["date"]));
-    //   histories =
-    //       histories.sublist(0, histories.length >= 10 ? 10 : histories.length);
-    // } else {
-    //   histories = histories.cast<Map<String, dynamic>>();
-    // }
-    //
-    // return histories as List<Map<String, dynamic>>;
   }
+}
 
 // Future<void> _addAllLocations() async {
 //   Map loc = {};
@@ -907,7 +855,9 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 //   });
 //
 //   await sl.get<Firestore>().modifyDocument(
-//       path: "unique_values", uid: warehouseLocationIdUid, data: {"warehouse_location_id": loc});
+//       path: "unique_values",
+//       uid: warehouseLocationIdUid,
+//       data: {"warehouse_location_id": loc});
 // }
 //
 // List warehouseLocations = [
@@ -1320,4 +1270,3 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 //   "WH2 HOLD",
 //   "WH2 STAGED"
 // ];
-}

@@ -7,6 +7,7 @@ class ItemIdObjectBoxModel {
     required this.itemId,
     required this.containerId,
     required this.docRef,
+    required this.status,
   });
 
   @Id()
@@ -15,12 +16,14 @@ class ItemIdObjectBoxModel {
   String? itemId;
   String? containerId;
   String? docRef;
+  String? status;
 
   factory ItemIdObjectBoxModel.fromJson(Map json) {
     return ItemIdObjectBoxModel(
       itemId: json["item_id"],
       containerId: json["container_id"],
       docRef: json["doc_ref"],
+      status: json["status"],
     );
   }
 
@@ -29,11 +32,12 @@ class ItemIdObjectBoxModel {
       "item_id": itemId,
       "container_id": containerId,
       "doc_ref": docRef,
+      "status": status,
     };
   }
 
   @override
   String toString() {
-    return "ItemIdObjectBoxModel(id:$id, item_id:$itemId, container_id:$containerId, doc_ref:$docRef)";
+    return "ItemIdObjectBoxModel(id:$id, item_id:$itemId, container_id:$containerId, doc_ref:$docRef, status: $status)";
   }
 }

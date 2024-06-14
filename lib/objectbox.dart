@@ -338,7 +338,7 @@ class ObjectBox {
   // Database
   Future<void> clearDatabase() async {
     final file = File(store.directoryPath);
-    file.delete(recursive: true);
     store.close();
+    file.delete(recursive: true);
   }
 }

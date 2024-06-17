@@ -1,7 +1,6 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
@@ -13,57 +12,90 @@ class StockRepositoryImplementation implements StockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
-  Future<List<StockInputFieldModel>> getInitialInputFields() async {
+  List<Map<String, dynamic>> getInitialInputFields() {
     return [
       {
-        "uid": "",
         "field": "category",
         "datatype": "string",
-        "lockable": true,
-        "isWithSKU": true,
-        "isTitleCase": true,
-        "isBg": false,
+        "in_sku": true,
+        "is_background": false,
+        "is_lockable": true,
+        "items": _objectBox.getCategories().map((e) => e.category!).toList()
+          ..sort((a, b) => a.compareTo(b)),
+        "name_case": "title",
+        "value_case": "none",
         "order": 2,
-        "items": _objectBox
-            .getCategories()
-            .map((e) => e.category!.toTitleCase())
-            .toList()
       },
-    ].map((e) => StockInputFieldModel.fromJson(e)).toList();
+    ].map((e) => StockInputFieldModel.fromJson(e).toJson()).toList();
   }
 
   @override
-  Future<List<StockInputFieldModel>> getCategoryBasedInputFields(
-      {required String category}) async {
+  List<Map<String, dynamic>> getCategoryBasedInputFields(
+      {required String category}) {
     List fields = _objectBox
         .getInputFields()
         .where((element) =>
-            !element.isBg! &&
-            element.category == category.toLowerCase() &&
-            element.field != "category")
+            !element.isBackground! &&
+            element.category?.toLowerCase() == category.toLowerCase())
         .map((e) {
-      if (e.field == 'sku') {
+      if (e.field == "category") {
+        return {
+          ...e.toJson(),
+          "items": _objectBox.getCategories().map((e) => e.category!).toList()
+            ..sort((a, b) => a.compareTo(b)),
+          "text_value": category,
+        };
+      } else if (e.field == 'sku') {
         e.items = _objectBox
-            .getProducts()
-            .where((element) => element.category == category.toLowerCase())
-            .map((e) => e.sku!)
-            .toList();
+                .getCategories()
+                .firstWhere((element) =>
+                    element.category?.toLowerCase() == category.toLowerCase())
+                .skus
+                ?.map((e) => e.keys.first)
+                .toList() ??
+            [];
+      } else if (e.field == "container id") {
+        e.items = _objectBox
+            .getContainerIds()
+            .map((e) => e.containerId!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
+      } else if (e.field == "warehouse location id") {
+        e.items = _objectBox
+            .getWarehouseLocationIds()
+            .map((e) => e.warehouseLocationId!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
       }
       return e.toJson();
     }).toList();
 
-    return fields.map((e) => StockInputFieldModel.fromJson(e)).toList();
+    return fields
+        .map((e) => StockInputFieldModel.fromJson(e).toJson())
+        .toList();
   }
 
   @override
-  Future<Map> getProductDescription(
-      {required String category, required String sku}) async {
+  Map<String, dynamic> getProductDescription(
+      {required String category, required String sku}) {
     return _objectBox
-        .getProducts()
-        .where((element) =>
-            element.category == category.toLowerCase() && element.sku == sku)
-        .map((e) => e.toJson())
-        .toList()[0];
+                .getCategories()
+                .firstWhere((element) =>
+                    element.category?.toLowerCase() == category.toLowerCase())
+                .skus
+                ?.firstWhere((e) => e.containsKey(sku))[sku]
+            as Map<String, dynamic>? ??
+        {};
+  }
+
+  @override
+  String getWarehouseLocationId({required String containerId}) {
+    return _objectBox
+            .getContainerIds()
+            .firstWhere(
+                (element) => element.containerId == containerId.toUpperCase())
+            .warehouseLocationId ??
+        "";
   }
 
   @override

@@ -13,7 +13,7 @@ class AddNewProductHelper {
       List fields = objectbox
           .getInputFields()
           .where((element) =>
-              element.isWithSKU! && element.category == category.toLowerCase())
+              element.inSku! && element.category == category.toLowerCase())
           .map((e) => e.toJson())
           .toList();
 

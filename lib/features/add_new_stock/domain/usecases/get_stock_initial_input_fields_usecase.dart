@@ -7,7 +7,7 @@ class GetStockInitialInputFieldsUseCase extends UseCase {
   final StockRepository _stockRepository;
 
   @override
-  Future call({params}) {
+  Future call({params}) async {
     return _stockRepository.getInitialInputFields();
   }
 }

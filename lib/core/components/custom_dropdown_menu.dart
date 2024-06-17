@@ -5,14 +5,18 @@ class CustomDropdownMenu extends StatelessWidget {
   const CustomDropdownMenu({
     super.key,
     required this.controller,
-    required this.items,
+    this.isDisabled = false,
+    this.debugLabel = "",
     this.requestFocusOnTap = true,
+    required this.items,
     required this.onSelected,
   });
 
   final TextEditingController controller;
-  final List items;
+  final bool isDisabled;
+  final String debugLabel;
   final bool requestFocusOnTap;
+  final List items;
   final void Function(String) onSelected;
 
   @override
@@ -20,7 +24,9 @@ class CustomDropdownMenu extends StatelessWidget {
     return Material(
       borderRadius: kBorderRadius,
       child: DropdownMenu(
-        controller: controller,
+        enabled: !isDisabled,
+        initialSelection: controller.text,
+        // controller: controller,
         width: 200,
         menuHeight: 200,
         textStyle: kLabelTextStyle,
@@ -32,6 +38,7 @@ class CustomDropdownMenu extends StatelessWidget {
           ),
           fillColor: kInputFieldFillColor,
         ),
+        focusNode: FocusNode(debugLabel: debugLabel),
         requestFocusOnTap: requestFocusOnTap,
         dropdownMenuEntries: items
             .map(

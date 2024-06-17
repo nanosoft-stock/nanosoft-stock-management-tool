@@ -10,25 +10,69 @@ abstract class AddNewStockEvent extends Equatable {
 class LoadedEvent extends AddNewStockEvent {}
 
 class CategorySelectedEvent extends AddNewStockEvent {
-  const CategorySelectedEvent({required this.fields});
+  const CategorySelectedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
 
+  final String field;
+  final String value;
   final List? fields;
 }
 
 class SkuSelectedEvent extends AddNewStockEvent {
-  const SkuSelectedEvent({required this.fields});
+  const SkuSelectedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
 
+  final String field;
+  final String value;
+  final List? fields;
+}
+
+class ValueTypedEvent extends AddNewStockEvent {
+  const ValueTypedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
+
+  final String field;
+  final String value;
+  final List? fields;
+}
+
+class ValueSelectedEvent extends AddNewStockEvent {
+  const ValueSelectedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
+
+  final String field;
+  final String value;
   final List? fields;
 }
 
 class CheckBoxTapEvent extends AddNewStockEvent {
-  const CheckBoxTapEvent({required this.fields});
+  const CheckBoxTapEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
 
+  final String field;
+  final bool value;
   final List? fields;
 }
 
 class AddNewStockButtonClickedEvent extends AddNewStockEvent {
-  const AddNewStockButtonClickedEvent({required this.fields});
+  const AddNewStockButtonClickedEvent({
+    required this.fields,
+  });
 
   final List? fields;
 }

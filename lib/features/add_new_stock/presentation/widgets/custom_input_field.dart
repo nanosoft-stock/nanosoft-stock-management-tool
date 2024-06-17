@@ -1,49 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/core/components/custom_dropdown_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_text_and_checkbox_input_field.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField({
     super.key,
-    required this.fields,
-    required this.index,
+    required this.field,
+    this.requestFocusOnTap = true,
     required this.onSelected,
     required this.onChecked,
   });
 
-  final int index;
-  final List fields;
-  final void Function(String) onSelected;
-  final void Function() onChecked;
+  final Map<String, dynamic> field;
+  final bool requestFocusOnTap;
+  final void Function(String, String) onSelected;
+  final void Function(String, bool) onChecked;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(7.5),
-      child: fields[index].isWithSKU
+      child: field["items"] != null
           ? CustomDropdownAndCheckboxInputField(
-              text: fields[index].isTitleCase
-                  ? fields[index].field.toString().toTitleCase()
-                  : fields[index].field.toString().toUpperCase(),
-              controller: TextEditingController(text: fields[index].textValue),
-              items: fields[index].items,
-              lockable: fields[index].lockable,
-              alignLockable: !fields[index].lockable,
-              locked: fields[index].locked,
-              onSelected: onSelected,
-              onChecked: onChecked,
+              text: CaseHelper.convert(field["name_case"], field["field"]),
+              controller: TextEditingController(text: field["text_value"]),
+              items: field["items"],
+              isLockable: field["is_lockable"],
+              alignLockable: !field["is_lockable"],
+              isDisabled: field["is_disabled"],
+              requestFocusOnTap: requestFocusOnTap,
+              onSelected: (value) {
+                onSelected(field["field"], value);
+              },
+              onChecked: () {
+                onChecked(field["field"], !field["is_disabled"]);
+              },
             )
           : CustomTextAndCheckboxInputField(
-              text: fields[index].isTitleCase
-                  ? fields[index].field.toString().toTitleCase()
-                  : fields[index].field.toString().toUpperCase(),
-              controller: TextEditingController(text: fields[index].textValue),
-              lockable: fields[index].lockable,
-              alignLockable: !fields[index].lockable,
-              locked: fields[index].locked,
-              onSelected: onSelected,
-              onChecked: onChecked,
+              text: CaseHelper.convert(field["name_case"], field["field"]),
+              controller: TextEditingController(text: field["text_value"]),
+              isLockable: field["is_lockable"],
+              alignLockable: !field["is_lockable"],
+              isDisabled: field["is_disabled"],
+              onSelected: (value) {
+                onSelected(field["field"], value);
+              },
+              onChecked: () {
+                onChecked(field["field"], !field["is_disabled"]);
+              },
             ),
     );
   }

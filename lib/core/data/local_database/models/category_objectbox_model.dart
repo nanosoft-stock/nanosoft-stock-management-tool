@@ -4,22 +4,32 @@ import 'package:objectbox/objectbox.dart';
 class CategoryObjectBoxModel {
   CategoryObjectBoxModel({
     this.id = 0,
-    this.uid,
     this.category,
-    this.updateTime,
+    this.skus,
   });
 
   @Id()
   int id;
 
-  String? uid;
   String? category;
+  List<Map<String, dynamic>>? skus;
 
-  @Property(type: PropertyType.date)
-  DateTime? updateTime;
+  factory CategoryObjectBoxModel.fromJson(Map json) {
+    return CategoryObjectBoxModel(
+      category: json["category"],
+      skus: json["skus"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "category": category,
+      "skus": skus,
+    };
+  }
 
   @override
   String toString() {
-    return "CategoryModel(id: $id, uid: $uid, category: $category, updateTime, $updateTime)";
+    return "CategoryModel(id: $id, category: $category, skus: $skus)";
   }
 }

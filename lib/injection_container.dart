@@ -14,9 +14,9 @@ import 'package:stock_management_tool/features/add_new_product/presentation/bloc
 import 'package:stock_management_tool/features/add_new_stock/data/repositories/stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/add_new_stock_usecase.dart';
-import 'package:stock_management_tool/features/add_new_stock/domain/usecases/autofill_fields_with_selected_sku_usecase.dart';
-import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_category_based_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_stock/domain/usecases/checkbox_toggled_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_stock/domain/usecases/value_changed_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
 import 'package:stock_management_tool/features/auth/domain/repositories/auth_repository.dart';
@@ -114,10 +114,10 @@ Future<void> initializeDependencies() async {
       () => StockRepositoryImplementation());
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
       () => GetStockInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<GetStockCategoryBasedInputFieldsUseCase>(
-      () => GetStockCategoryBasedInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<AutofillFieldsWithSelectedSkuUseCase>(
-      () => AutofillFieldsWithSelectedSkuUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedUseCase>(
+      () => ValueChangedUseCase(sl()));
+  sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
+      () => CheckboxToggledAddNewStockUseCase());
   sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
   sl.registerFactory<AddNewStockBloc>(
       () => AddNewStockBloc(sl(), sl(), sl(), sl()));

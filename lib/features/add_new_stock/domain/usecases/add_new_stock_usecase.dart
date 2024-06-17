@@ -19,7 +19,7 @@ class AddNewStockUseCase extends UseCase {
         }
       }
     } else {
-      fields = await _stockRepository.getInitialInputFields();
+      fields = _stockRepository.getInitialInputFields();
     }
 
     return fields;

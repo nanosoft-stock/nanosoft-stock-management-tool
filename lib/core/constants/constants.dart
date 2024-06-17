@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 bool kIsLinux = false;
 String userName = "";
+String categoryIdUid = "";
 String itemIdUid = "";
 String containerIdUid = "";
 String warehouseLocationIdUid = "";

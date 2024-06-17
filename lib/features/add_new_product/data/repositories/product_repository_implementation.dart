@@ -1,5 +1,4 @@
 import 'package:stock_management_tool/core/helper/add_new_product_helper.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_product/data/models/product_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
@@ -13,22 +12,19 @@ class ProductRepositoryImplementation implements ProductRepository {
   Future<List<ProductInputFieldModel>> getInitialInputFields() async {
     return [
       {
-        "uid": "",
         "field": "category",
         "datatype": "string",
-        "isWithSKU": true,
-        "isTitleCase": true,
-        "items": _objectBox
-            .getCategories()
-            .map((e) => e.category!.toTitleCase())
-            .toList(),
+        "items": _objectBox.getCategories().map((e) => e.category).toList(),
+        "name_case": "title",
+        "value_case": "none",
+        "order": 2,
       },
       {
-        "uid": "",
         "field": "sku",
         "datatype": "string",
-        "isWithSKU": true,
-        "isTitleCase": false,
+        "name_case": "title",
+        "value_case": "none",
+        "order": 2,
       },
     ].map((e) => ProductInputFieldModel.fromJson(e)).toList();
   }
@@ -39,8 +35,8 @@ class ProductRepositoryImplementation implements ProductRepository {
     List fields = _objectBox
         .getInputFields()
         .where((element) =>
-            element.isWithSKU! &&
-            element.category == category.toLowerCase() &&
+            element.inSku! &&
+            element.category?.toLowerCase() == category.toLowerCase() &&
             !["category", "sku"].contains(element.field))
         .map((e) => e.toJson())
         .toList();
@@ -55,18 +51,18 @@ class ProductRepositoryImplementation implements ProductRepository {
       data[element.field] = element.textValue;
     }
 
-    String ref = _objectBox
-        .getCategories()
-        .where((element) => element.category == data["category"].toLowerCase())
-        .first
-        .uid!;
-
-    await sl.get<Firestore>().createDocument(
-          path: "category_list/$ref/product_list",
-          data: AddNewProductHelper.toJson(
-            category: fields[0].textValue.toLowerCase(),
-            data: data,
-          ),
-        );
+    // String ref = _objectBox
+    //     .getCategories()
+    //     .where((element) => element.category == data["category"].toLowerCase())
+    //     .first
+    //     .uid!;
+    //
+    // await sl.get<Firestore>().createDocument(
+    //       path: "category_list/$ref/product_list",
+    //       data: AddNewProductHelper.toJson(
+    //         category: fields[0].textValue.toLowerCase(),
+    //         data: data,
+    //       ),
+    //     );
   }
 }

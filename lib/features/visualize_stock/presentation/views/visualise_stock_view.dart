@@ -136,7 +136,7 @@ class VisualiseStockView extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 10,
+                                    width: 10.0,
                                   ),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(

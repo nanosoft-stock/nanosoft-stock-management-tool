@@ -2,8 +2,8 @@ import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 
-class ValueChangedUseCase extends UseCase {
-  ValueChangedUseCase(this._stockRepository);
+class ValueChangedAddNewStockUseCase extends UseCase {
+  ValueChangedAddNewStockUseCase(this._stockRepository);
 
   final StockRepository _stockRepository;
 
@@ -30,16 +30,20 @@ class ValueChangedUseCase extends UseCase {
         Map productDesc = _stockRepository.getProductDescription(
             category: fields[0]["text_value"], sku: value);
 
+        List f = productDesc["fields"];
+        List v = productDesc["values"];
+
         List affectedFields = fields
             .where((element) =>
-                element["in_sku"] && element["field"] != "category")
+                element["in_sku"] &&
+                !["category", "sku"].contains(element["field"]))
             .toList();
 
         for (var element in affectedFields) {
+          String val = v[f.indexWhere((e) => e == element["field"])];
           fields.firstWhere(
                   (e) => e["field"] == element["field"])["text_value"] =
-              CaseHelper.convert(
-                  element["value_case"], productDesc[element["field"]]);
+              CaseHelper.convert(element["value_case"], val);
         }
       }
     } else if (field == "container id") {

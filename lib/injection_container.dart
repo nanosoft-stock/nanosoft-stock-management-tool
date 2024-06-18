@@ -8,15 +8,15 @@ import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/features/add_new_product/data/repositories/product_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/add_new_product_usecase.dart';
-import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_category_based_input_fields_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_product/domain/usecases/value_changed_add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/repositories/stock_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/checkbox_toggled_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
-import 'package:stock_management_tool/features/add_new_stock/domain/usecases/value_changed_usecase.dart';
+import 'package:stock_management_tool/features/add_new_stock/domain/usecases/value_changed_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
 import 'package:stock_management_tool/features/auth/domain/repositories/auth_repository.dart';
@@ -114,8 +114,8 @@ Future<void> initializeDependencies() async {
       () => StockRepositoryImplementation());
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
       () => GetStockInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<ValueChangedUseCase>(
-      () => ValueChangedUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedAddNewStockUseCase>(
+      () => ValueChangedAddNewStockUseCase(sl()));
   sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
       () => CheckboxToggledAddNewStockUseCase());
   sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
@@ -127,8 +127,8 @@ Future<void> initializeDependencies() async {
       () => ProductRepositoryImplementation());
   sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
       () => GetProductInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<GetProductCategoryBasedInputFieldsUseCase>(
-      () => GetProductCategoryBasedInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
+      () => ValueChangedAddNewProductUseCase(sl()));
   sl.registerLazySingleton<AddNewProductUseCase>(
       () => AddNewProductUseCase(sl()));
   sl.registerFactory<AddNewProductBloc>(

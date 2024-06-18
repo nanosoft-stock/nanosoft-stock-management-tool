@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/core/components/custom_checkbox.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 
-class CustomTextAndCheckboxInputField extends StatelessWidget {
-  const CustomTextAndCheckboxInputField({
+class CustomTextInputField extends StatelessWidget {
+  const CustomTextInputField({
     super.key,
     required this.text,
     required this.initialValue,
-    this.isLockable = false,
-    this.alignLockable = false,
-    this.isDisabled = false,
     required this.validator,
     required this.onSelected,
-    required this.onChecked,
   });
 
   final String text;
   final String initialValue;
-  final bool isLockable;
-  final bool alignLockable;
-  final bool isDisabled;
   final String? Function(String?) validator;
   final void Function(String) onSelected;
-  final void Function() onChecked;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +46,6 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                 boxShadow: kBoxShadowList,
               ),
               child: TextFormField(
-                enabled: !isDisabled,
                 controller: TextEditingController(text: initialValue),
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
@@ -74,24 +64,6 @@ class CustomTextAndCheckboxInputField extends StatelessWidget {
                 style: kLabelTextStyle,
               ),
             ),
-            if (isLockable)
-              const SizedBox(
-                width: 10.0,
-              ),
-            if (isLockable)
-              CustomCheckbox(
-                locked: isDisabled,
-                onChecked: onChecked,
-              ),
-            if (alignLockable)
-              const SizedBox(
-                width: 10.0,
-              ),
-            if (alignLockable)
-              const SizedBox(
-                width: 43.0,
-                height: 43.0,
-              ),
           ],
         ),
       ),

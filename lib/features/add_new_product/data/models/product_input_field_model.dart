@@ -19,7 +19,7 @@ class ProductInputFieldModel extends ProductInputFieldEntity {
       nameCase: json["name_case"],
       valueCase: json["value_case"],
       order: json["order"],
-      textValue: "",
+      textValue: json["text_value"] ?? "",
     );
   }
 
@@ -41,5 +41,17 @@ class ProductInputFieldModel extends ProductInputFieldEntity {
       order: order ?? this.order,
       textValue: textValue ?? this.textValue,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "field": field,
+      "datatype": datatype,
+      "items": items,
+      "name_case": nameCase,
+      "value_case": valueCase,
+      "order": order,
+      "text_value": textValue,
+    };
   }
 }

@@ -4,27 +4,31 @@ import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewProductHelper {
-  static Map toJson({required String category, required Map data}) {
+  static Map toJson({required Map data}) {
+    final objectbox = sl.get<ObjectBox>();
+
     Map convertedData = {};
+    String category = data["category"];
 
-    if (kIsLinux) {
-      final objectbox = sl.get<ObjectBox>();
+    List fields = objectbox
+        .getInputFields()
+        .where((element) =>
+            element.category!.toLowerCase() == category.toLowerCase())
+        .where((ele) => ele.inSku == true)
+        .map((e) => e.toJson())
+        .toList();
 
-      List fields = objectbox
-          .getInputFields()
-          .where((element) =>
-              element.inSku! && element.category == category.toLowerCase())
-          .map((e) => e.toJson())
-          .toList();
-
+    if (!kIsLinux) {
+      for (var e in fields) {
+        convertedData[e["field"]] = data[e["field"]] ?? "";
+      }
+    } else {
       for (var e in fields) {
         convertedData[e["field"]] = {
           DatatypeConverterHelper.convert(datatype: e["datatype"]):
-              data[e["field"]],
+              data[e["field"]] ?? "",
         };
       }
-    } else {
-      convertedData = data;
     }
 
     return convertedData;

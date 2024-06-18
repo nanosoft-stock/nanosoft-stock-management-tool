@@ -5,6 +5,7 @@ import 'package:stock_management_tool/core/data/local_database/models/category_o
 import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/item_id_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/product_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
@@ -27,6 +28,8 @@ class FetchDataForObjectbox {
     await fetchCategoriesAndLocations();
 
     await fetchFields();
+
+    await fetchProducts();
 
     await fetchStocks();
 
@@ -52,11 +55,6 @@ class FetchDataForObjectbox {
               data["category"]?.forEach((k, v) {
                 categories.add(CategoryObjectBoxModel.fromJson({
                   "category": k,
-                  "skus": v["sku"]
-                      .entries
-                      .map((e) => {e.key: e.value})
-                      .toList()
-                      .cast<Map<String, dynamic>>(),
                 }));
               });
 
@@ -148,23 +146,52 @@ class FetchDataForObjectbox {
           .get<Firestore>()
           .listenToDocumentChanges(path: "category_fields")
           .listen((snapshot) {
-        List fields = [];
+        List addFields = [];
+        List modifyFields = [];
+        List removeFields = [];
 
         for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
           if (element.type.name == "added") {
-            fields.add(InputFieldsObjectBoxModel.fromJson({
+            addFields.add(InputFieldsObjectBoxModel.fromJson({
               "uid": element.doc.id,
-              ...element.doc.data() as Map<String, dynamic>,
+              ...data,
             }));
           } else if (element.type.name == "modified") {
-          } else if (element.type.name == "removed") {}
+            Query query = _objectBox.inputFieldsBox!
+                .query(InputFieldsObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            InputFieldsObjectBoxModel field = query.findFirst();
+            query.close();
+
+            int id = field.id;
+            field = InputFieldsObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              ...data,
+            });
+            field.id = id;
+
+            modifyFields.add(field);
+          } else if (element.type.name == "removed") {
+            Query query = _objectBox.inputFieldsBox!
+                .query(InputFieldsObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            InputFieldsObjectBoxModel field = query.findFirst();
+            query.close();
+
+            removeFields.add(field.id);
+          }
         }
 
-        fields.sort((a, b) => a.order.compareTo(b.order));
+        addFields.sort((a, b) => a.order.compareTo(b.order));
 
-        _objectBox.addInputFieldList(
-          fields.cast<InputFieldsObjectBoxModel>(),
-        );
+        _objectBox
+            .addInputFieldList(addFields.cast<InputFieldsObjectBoxModel>());
+        _objectBox
+            .addInputFieldList(modifyFields.cast<InputFieldsObjectBoxModel>());
+        _objectBox.removeInputFieldsList(removeFields.cast<int>());
       });
     } else {
       List items = await sl
@@ -192,6 +219,106 @@ class FetchDataForObjectbox {
 
       _objectBox.addInputFieldList(
         items.map((e) => InputFieldsObjectBoxModel.fromJson(e)).toList(),
+      );
+    }
+  }
+
+  Future<void> fetchProducts() async {
+    if (!kIsLinux) {
+      sl
+          .get<Firestore>()
+          .listenToDocumentChanges(path: "skus")
+          .listen((snapshot) {
+        List addProducts = [];
+        List modifyProducts = [];
+        List removeProducts = [];
+
+        for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
+          String category = data["category"];
+          String sku = data["sku"];
+
+          if (element.type.name == "added") {
+            data
+              ..remove("category")
+              ..remove("sku");
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            addProducts.add(ProductObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "category": category,
+              "sku": sku,
+              "fields": fields,
+              "values": values,
+            }));
+          } else if (element.type.name == "modified") {
+            Query query = _objectBox.productModelBox!
+                .query(ProductObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            ProductObjectBoxModel product = query.findFirst();
+            query.close();
+
+            data
+              ..remove("category")
+              ..remove("sku");
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            int id = product.id;
+            product = ProductObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "category": category,
+              "sku": sku,
+              "fields": fields,
+              "values": values,
+            });
+            product.id = id;
+
+            modifyProducts.add(product);
+          } else if (element.type.name == "removed") {
+            Query query = _objectBox.productModelBox!
+                .query(ProductObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            ProductObjectBoxModel product = query.findFirst();
+            query.close();
+
+            removeProducts.add(product.id);
+          }
+        }
+
+        _objectBox.addProductList(addProducts.cast<ProductObjectBoxModel>());
+        _objectBox.addProductList(modifyProducts.cast<ProductObjectBoxModel>());
+        _objectBox.removeProductsList(removeProducts.cast<int>());
+      });
+    } else {
+      List items = await sl
+          .get<Firestore>()
+          .getDocuments(path: "skus", includeUid: true);
+
+      if (kIsLinux) {
+        items = items
+            .map((element) => element
+                .map((field, value) => MapEntry(field, value.values.first))
+                .cast<String, dynamic>())
+            .toList();
+
+        for (var element in items) {
+          if (element["items"] != null) {
+            element["items"] = element["items"]["values"]
+                .map((e) => e["stringValue"])
+                .toList();
+          }
+        }
+      }
+
+      items.sort((a, b) => int.parse(a["order"].toString())
+          .compareTo(int.parse(b["order"].toString())));
+
+      _objectBox.addProductList(
+        items.map((e) => ProductObjectBoxModel.fromJson(e)).toList(),
       );
     }
   }

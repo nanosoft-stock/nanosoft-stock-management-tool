@@ -7,15 +7,15 @@ import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewStockHelper {
   static Map toJson({required Map data}) {
-    Map convertedData = {};
-
     final objectbox = sl.get<ObjectBox>();
 
+    Map convertedData = {};
     String category = data["category"];
 
     List fields = objectbox
         .getInputFields()
-        .where((element) => element.category == category)
+        .where((element) =>
+            element.category!.toLowerCase() == category.toLowerCase())
         .map((e) => e.toJson())
         .toList();
 

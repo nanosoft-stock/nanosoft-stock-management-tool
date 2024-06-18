@@ -174,7 +174,7 @@ class AddNewStockView extends StatelessWidget {
           width: 390.5,
           child: CustomElevatedButton(
             text: "Add New Stock",
-            onPressed: () async {
+            onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
                 _addNewStockBloc
                     .add(AddNewStockButtonClickedEvent(fields: fields));

@@ -9,30 +9,6 @@ abstract class AddNewStockEvent extends Equatable {
 
 class LoadedEvent extends AddNewStockEvent {}
 
-class CategorySelectedEvent extends AddNewStockEvent {
-  const CategorySelectedEvent({
-    required this.field,
-    required this.value,
-    required this.fields,
-  });
-
-  final String field;
-  final String value;
-  final List? fields;
-}
-
-class SkuSelectedEvent extends AddNewStockEvent {
-  const SkuSelectedEvent({
-    required this.field,
-    required this.value,
-    required this.fields,
-  });
-
-  final String field;
-  final String value;
-  final List? fields;
-}
-
 class ValueTypedEvent extends AddNewStockEvent {
   const ValueTypedEvent({
     required this.field,

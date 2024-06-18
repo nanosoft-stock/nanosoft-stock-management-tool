@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
-import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_autocomplete_text_field.dart';
-import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_text_and_checkbox_input_field.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_autocomplete_text_input_field_and_checkbox.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_text_input_field_and_checkbox.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField({
     super.key,
     required this.field,
-    this.requestFocusOnTap = true,
     required this.onSelected,
     required this.onChecked,
   });
 
   final Map<String, dynamic> field;
-  final bool requestFocusOnTap;
   final void Function(String, String) onSelected;
   final void Function(String, bool) onChecked;
 
@@ -22,7 +20,7 @@ class CustomInputField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(7.5),
       child: field["items"] != null
-          ? CustomAutocompleteTextField(
+          ? CustomAutocompleteTextInputFieldAndCheckbox(
               text: CaseHelper.convert(field["name_case"], field["field"]),
               initialValue: field["text_value"],
               items: field["items"],
@@ -50,7 +48,7 @@ class CustomInputField extends StatelessWidget {
                 onChecked(field["field"], !field["is_disabled"]);
               },
             )
-          : CustomTextAndCheckboxInputField(
+          : CustomTextInputFieldAndCheckbox(
               text: CaseHelper.convert(field["name_case"], field["field"]),
               initialValue: field["text_value"],
               isLockable: field["is_lockable"],

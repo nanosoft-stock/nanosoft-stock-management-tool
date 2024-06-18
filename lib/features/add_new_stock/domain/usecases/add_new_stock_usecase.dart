@@ -8,7 +8,7 @@ class AddNewStockUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    List fields = params;
+    List fields = params["fields"];
 
     await _stockRepository.addNewStock(fields: params);
 

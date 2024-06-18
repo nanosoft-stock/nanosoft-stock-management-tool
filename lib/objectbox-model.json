@@ -390,9 +390,48 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "14:1053905160877366072",
+      "lastPropertyId": "6:3444039455935023531",
+      "name": "ProductObjectBoxModel",
+      "properties": [
+        {
+          "id": "1:8314304793987279081",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6223664786166229450",
+          "name": "uid",
+          "type": 9
+        },
+        {
+          "id": "3:3460663666369253889",
+          "name": "category",
+          "type": 9
+        },
+        {
+          "id": "4:7915587844625991974",
+          "name": "sku",
+          "type": 9
+        },
+        {
+          "id": "5:780212064423857148",
+          "name": "fields",
+          "type": 30
+        },
+        {
+          "id": "6:3444039455935023531",
+          "name": "values",
+          "type": 30
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "13:5966558177066967921",
+  "lastEntityId": "14:1053905160877366072",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

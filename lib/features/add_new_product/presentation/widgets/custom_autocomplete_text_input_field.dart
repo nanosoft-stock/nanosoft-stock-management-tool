@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/core/components/custom_checkbox.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 
-class CustomAutocompleteTextField extends StatelessWidget {
-  const CustomAutocompleteTextField({
+class CustomAutocompleteTextInputField extends StatelessWidget {
+  const CustomAutocompleteTextInputField({
     super.key,
     required this.text,
     required this.initialValue,
     required this.items,
-    this.isLockable = false,
-    this.alignLockable = false,
-    this.isDisabled = false,
     required this.validator,
     required this.onSelected,
-    required this.onChecked,
   });
 
   final String text;
   final String initialValue;
   final List<String> items;
-  final bool isLockable;
-  final bool alignLockable;
-  final bool isDisabled;
   final String? Function(String?) validator;
   final void Function(String) onSelected;
-  final void Function() onChecked;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +105,6 @@ class CustomAutocompleteTextField extends StatelessWidget {
                   controller.text = initialValue;
 
                   return TextFormField(
-                    enabled: !isDisabled,
                     controller: controller,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
@@ -146,24 +136,6 @@ class CustomAutocompleteTextField extends StatelessWidget {
                 },
               ),
             ),
-            if (isLockable)
-              const SizedBox(
-                width: 10.0,
-              ),
-            if (isLockable)
-              CustomCheckbox(
-                locked: isDisabled,
-                onChecked: onChecked,
-              ),
-            if (alignLockable)
-              const SizedBox(
-                width: 10.0,
-              ),
-            if (alignLockable)
-              const SizedBox(
-                width: 43.0,
-                height: 43.0,
-              ),
           ],
         ),
       ),

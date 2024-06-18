@@ -18,7 +18,7 @@ class ObjectBox {
 
   Box<CategoryObjectBoxModel>? categoryModelBox;
   Box<InputFieldsObjectBoxModel>? inputFieldsBox;
-  // Box<ProductObjectBoxModel>? productModelBox;
+  Box<ProductObjectBoxModel>? productModelBox;
   Box<StockObjectBoxModel>? stockModelBox;
   Box<ItemIdObjectBoxModel>? itemIdBox;
   Box<ContainerIdObjectBoxModel>? containerIdBox;
@@ -30,7 +30,7 @@ class ObjectBox {
 
     categoryModelBox = Box<CategoryObjectBoxModel>(store);
     inputFieldsBox = Box<InputFieldsObjectBoxModel>(store);
-    // productModelBox = Box<ProductObjectBoxModel>(store);
+    productModelBox = Box<ProductObjectBoxModel>(store);
     stockModelBox = Box<StockObjectBoxModel>(store);
     itemIdBox = Box<ItemIdObjectBoxModel>(store);
     containerIdBox = Box<ContainerIdObjectBoxModel>(store);
@@ -97,42 +97,50 @@ class ObjectBox {
         .map((event) => event.find());
   }
 
+  void removeInputFieldsList(List<int> ids) async {
+    inputFieldsBox!.removeMany(ids);
+  }
+
   Future<void> removeAllInputFields() async {
     await inputFieldsBox!.removeAllAsync();
   }
 
-  // // Products
-  // void addProduct(ProductObjectBoxModel product) {
-  //   productModelBox!.put(product);
-  // }
-  //
-  // Future<void> addProductAsync(ProductObjectBoxModel product) async {
-  //   await productModelBox!.putAsync(product);
-  // }
-  //
-  // List<int> addProductList(List<ProductObjectBoxModel> products) {
-  //   return productModelBox!.putMany(products);
-  // }
-  //
-  // List<ProductObjectBoxModel> getProducts() {
-  //   return productModelBox!.getAll();
-  // }
-  //
-  // Future<List<ProductObjectBoxModel>> getProductsAsync() async {
-  //   return await productModelBox!.getAllAsync();
-  // }
-  //
-  // Stream<List<ProductObjectBoxModel>> getProductStream(
-  //     {bool triggerImmediately = false}) {
-  //   final builder = productModelBox!.query();
-  //   return builder
-  //       .watch(triggerImmediately: triggerImmediately)
-  //       .map((event) => event.find());
-  // }
-  //
-  // Future<void> removeAllProducts() async {
-  //   await productModelBox!.removeAllAsync();
-  // }
+  // Products
+  void addProduct(ProductObjectBoxModel product) {
+    productModelBox!.put(product);
+  }
+
+  Future<void> addProductAsync(ProductObjectBoxModel product) async {
+    await productModelBox!.putAsync(product);
+  }
+
+  List<int> addProductList(List<ProductObjectBoxModel> products) {
+    return productModelBox!.putMany(products);
+  }
+
+  List<ProductObjectBoxModel> getProducts() {
+    return productModelBox!.getAll();
+  }
+
+  Future<List<ProductObjectBoxModel>> getProductsAsync() async {
+    return await productModelBox!.getAllAsync();
+  }
+
+  Stream<List<ProductObjectBoxModel>> getProductStream(
+      {bool triggerImmediately = false}) {
+    final builder = productModelBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeProductsList(List<int> ids) async {
+    productModelBox!.removeMany(ids);
+  }
+
+  Future<void> removeAllProducts() async {
+    await productModelBox!.removeAllAsync();
+  }
 
   // Stock
   void addStock(StockObjectBoxModel stock) {

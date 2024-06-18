@@ -48,13 +48,12 @@ class StockRepositoryImplementation implements StockRepository {
         };
       } else if (e.field == 'sku') {
         e.items = _objectBox
-                .getCategories()
-                .firstWhere((element) =>
-                    element.category?.toLowerCase() == category.toLowerCase())
-                .skus
-                ?.map((e) => e.keys.first)
-                .toList() ??
-            [];
+            .getProducts()
+            .where((element) =>
+                element.category?.toLowerCase() == category.toLowerCase())
+            .map((e) => e.sku!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
       } else if (e.field == "container id") {
         e.items = _objectBox
             .getContainerIds()
@@ -80,13 +79,10 @@ class StockRepositoryImplementation implements StockRepository {
   Map<String, dynamic> getProductDescription(
       {required String category, required String sku}) {
     return _objectBox
-                .getCategories()
-                .firstWhere((element) =>
-                    element.category?.toLowerCase() == category.toLowerCase())
-                .skus
-                ?.firstWhere((e) => e.containsKey(sku))[sku]
-            as Map<String, dynamic>? ??
-        {};
+        .getProducts()
+        .firstWhere(
+            (element) => element.sku?.toUpperCase() == sku.toUpperCase())
+        .toJson();
   }
 
   @override

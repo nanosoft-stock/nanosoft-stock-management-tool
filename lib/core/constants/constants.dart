@@ -14,6 +14,7 @@ Color kTertiaryBackgroundColor = Colors.white;
 Color kCheckboxCheckedColor = const Color(0xFF9A3DF1);
 Color kCursorColor = const Color(0xFF333333);
 Color kInputFieldFillColor = const Color(0xEEE8DEF8);
+Color kDropdownMenuFillColor = const Color(0xFFF3EDF7);
 Color kButtonTextColor = const Color(0xFF6750A4);
 Color kButtonBackgroundColor = const Color(0xFFE8DEF8);
 Color kPassBackgroundColor = const Color(0xFFCCFFDD);

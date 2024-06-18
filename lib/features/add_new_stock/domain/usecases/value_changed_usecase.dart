@@ -21,6 +21,9 @@ class ValueChangedUseCase extends UseCase {
     if (field == "category") {
       if (fieldMap["items"].contains(value)) {
         fields = _stockRepository.getCategoryBasedInputFields(category: value);
+      } else {
+        fields = _stockRepository.getInitialInputFields();
+        fields[0]["text_value"] = value;
       }
     } else if (field == "sku") {
       if (fieldMap["items"].contains(value)) {
@@ -40,9 +43,13 @@ class ValueChangedUseCase extends UseCase {
         }
       }
     } else if (field == "container id") {
-      fields.firstWhere(
-              (e) => e["field"] == "warehouse location id")["text_value"] =
-          _stockRepository.getWarehouseLocationId(containerId: value);
+      if (fieldMap["items"].contains(value)) {
+        String warehouseLocationId =
+            _stockRepository.getWarehouseLocationId(containerId: value);
+        fields.firstWhere(
+                (e) => e["field"] == "warehouse location id")["text_value"] =
+            warehouseLocationId;
+      }
     }
 
     return fields;

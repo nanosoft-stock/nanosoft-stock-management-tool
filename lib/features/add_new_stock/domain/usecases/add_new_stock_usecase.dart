@@ -12,10 +12,10 @@ class AddNewStockUseCase extends UseCase {
 
     await _stockRepository.addNewStock(fields: params);
 
-    if (fields[0].field == "category" && fields[0].locked == true) {
+    if (fields[0]["field"] == "category" && fields[0]["is_disabled"] == true) {
       for (int i = 0; i < fields.length; i++) {
-        if (!fields[i].locked) {
-          fields[i] = fields[i].copyWith(textValue: "");
+        if (!fields[i]["is_disabled"]) {
+          fields[i]["text_value"] = "";
         }
       }
     } else {

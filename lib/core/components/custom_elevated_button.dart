@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -17,6 +18,15 @@ class CustomElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ElevatedButton(
+        focusNode: FocusNode(onKeyEvent: (FocusNode node, KeyEvent event) {
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.enter) {
+            FocusScope.of(context).nextFocus();
+            onPressed();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        }),
         style: ElevatedButton.styleFrom(
           elevation: 3,
           backgroundColor: kButtonBackgroundColor,

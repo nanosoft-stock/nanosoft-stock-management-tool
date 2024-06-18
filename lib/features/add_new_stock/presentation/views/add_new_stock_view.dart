@@ -12,6 +12,7 @@ class AddNewStockView extends StatelessWidget {
   AddNewStockView({super.key});
 
   final AddNewStockBloc _addNewStockBloc = sl.get<AddNewStockBloc>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class AddNewStockView extends StatelessWidget {
 
       case const (LoadedState):
         List fields = state.fields!;
-        return _buildLoadedStateWidget(context, fields, constraints, pad);
+        return _buildLoadedStateWidget(fields, constraints, pad);
 
       default:
         return Container();
@@ -82,7 +83,10 @@ class AddNewStockView extends StatelessWidget {
 
   Widget _buildLoadingStateWidget() {
     return const Center(
-      child: CircularProgressIndicator(),
+      child: SizedBox(
+        width: 100,
+        child: LinearProgressIndicator(),
+      ),
     );
   }
 
@@ -92,22 +96,27 @@ class AddNewStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(BuildContext context, List fields,
-      BoxConstraints constraints, double pad) {
+  Widget _buildLoadedStateWidget(
+      List fields, BoxConstraints constraints, double pad) {
     return constraints.maxWidth > 525
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    width: constraints.maxWidth - 104,
-                    child: _buildInputFieldsContainer(context, fields),
-                  ),
+            child: FocusScope(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        width: constraints.maxWidth - 104,
+                        child: _buildInputFieldsContainer(fields),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    _buildAddNewStockButtonContainer(fields),
+                  ],
                 ),
-                const SizedBox(height: 20.0),
-                _buildAddNewStockButtonContainer(fields),
-              ],
+              ),
             ),
           )
         : SizedBox(
@@ -116,39 +125,38 @@ class AddNewStockView extends StatelessWidget {
           );
   }
 
-  Widget _buildInputFieldsContainer(BuildContext context, List fields) {
+  Widget _buildInputFieldsContainer(List fields) {
     return CustomContainer(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: FocusScope(
-            child: Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.start,
-              runAlignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              verticalDirection: VerticalDirection.down,
-              children: [
-                for (int index = 0; index < fields.length; index++)
-                  CustomInputField(
-                    field: fields[index],
-                    onSelected: (field, value) {
-                      if (fields[index]["items"] != null) {
-                        _addNewStockBloc.add(ValueSelectedEvent(
-                            field: field, value: value, fields: fields));
-                      } else {
-                        _addNewStockBloc.add(ValueTypedEvent(
-                            field: field, value: value, fields: fields));
-                      }
-                    },
-                    onChecked: (field, value) {
-                      _addNewStockBloc.add(CheckBoxTapEvent(
+          child: Wrap(
+            direction: Axis.horizontal,
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            verticalDirection: VerticalDirection.down,
+            children: [
+              for (int index = 0; index < fields.length; index++)
+                CustomInputField(
+                  field: fields[index],
+                  onSelected: (field, value) {
+                    if (["category", "sku", "container id"]
+                        .contains(fields[index]["field"])) {
+                      _addNewStockBloc.add(ValueSelectedEvent(
                           field: field, value: value, fields: fields));
-                    },
-                  ),
-              ],
-            ),
+                    } else {
+                      _addNewStockBloc.add(ValueTypedEvent(
+                          field: field, value: value, fields: fields));
+                    }
+                  },
+                  onChecked: (field, value) {
+                    _addNewStockBloc.add(CheckBoxTapEvent(
+                        field: field, value: value, fields: fields));
+                  },
+                ),
+            ],
           ),
         ),
       ),
@@ -167,8 +175,10 @@ class AddNewStockView extends StatelessWidget {
           child: CustomElevatedButton(
             text: "Add New Stock",
             onPressed: () async {
-              _addNewStockBloc
-                  .add(AddNewStockButtonClickedEvent(fields: fields));
+              if (_formKey.currentState?.validate() ?? false) {
+                _addNewStockBloc
+                    .add(AddNewStockButtonClickedEvent(fields: fields));
+              }
             },
           ),
         ),
@@ -176,42 +186,3 @@ class AddNewStockView extends StatelessWidget {
     );
   }
 }
-
-// GridView.builder(
-//   shrinkWrap: true,
-//   itemCount: fields.length,
-//   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//     crossAxisCount: n > 0 ? n : 1,
-//     mainAxisSpacing: 0,
-//     crossAxisSpacing: 0,
-//     mainAxisExtent: 95,
-//   ),
-//   itemBuilder: (context, index) {
-//     return CustomInputField(
-//       index: index,
-//       fields: fields,
-//       onSelected: (value) {
-//         if (fields[index].field == "category" &&
-//             fields[index].textValue != value) {
-//           fields[index] =
-//               fields[index].copyWith(textValue: value);
-//           _addNewStockBloc
-//               .add(CategorySelectedEvent(fields: fields));
-//         } else {
-//           fields[index] =
-//               fields[index].copyWith(textValue: value);
-//           if (fields[index].field == 'sku' &&
-//               fields[index].items.contains(value)) {
-//             _addNewStockBloc
-//                 .add(SkuSelectedEvent(fields: fields));
-//           }
-//         }
-//       },
-//       onChecked: () {
-//         fields[index] =
-//             fields[index].copyWith(locked: !fields[index].locked);
-//         _addNewStockBloc.add(CheckBoxTapEvent(fields: fields));
-//       },
-//     );
-//   },
-// ),

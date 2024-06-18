@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/core/components/custom_dropdown_and_checkbox_input_field.dart';
-import 'package:stock_management_tool/core/components/custom_text_and_checkbox_input_field.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_autocomplete_text_field.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_text_and_checkbox_input_field.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField({
@@ -22,14 +22,27 @@ class CustomInputField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(7.5),
       child: field["items"] != null
-          ? CustomDropdownAndCheckboxInputField(
+          ? CustomAutocompleteTextField(
               text: CaseHelper.convert(field["name_case"], field["field"]),
-              controller: TextEditingController(text: field["text_value"]),
+              initialValue: field["text_value"],
               items: field["items"],
               isLockable: field["is_lockable"],
               alignLockable: !field["is_lockable"],
               isDisabled: field["is_disabled"],
-              requestFocusOnTap: requestFocusOnTap,
+              validator: (value) {
+                if (field["field"] == "category") {
+                  if (value == null || value.trim() == "") {
+                    return "Category can't be empty";
+                  } else if (!field["items"].contains(value)) {
+                    return "Category not recognised";
+                  }
+                } else if (field["field"] == "item id") {
+                  if (value == null || value.trim() == "") {
+                    return "Item Id can't be empty";
+                  }
+                }
+                return null;
+              },
               onSelected: (value) {
                 onSelected(field["field"], value);
               },
@@ -39,10 +52,24 @@ class CustomInputField extends StatelessWidget {
             )
           : CustomTextAndCheckboxInputField(
               text: CaseHelper.convert(field["name_case"], field["field"]),
-              controller: TextEditingController(text: field["text_value"]),
+              initialValue: field["text_value"],
               isLockable: field["is_lockable"],
               alignLockable: !field["is_lockable"],
               isDisabled: field["is_disabled"],
+              validator: (value) {
+                if (field["field"] == "category") {
+                  if (value == null || value.trim() == "") {
+                    return "Category can't be empty";
+                  } else if (!field["items"].contains(value)) {
+                    return "Category not recognised";
+                  }
+                } else if (field["field"] == "item id") {
+                  if (value == null || value.trim() == "") {
+                    return "Item Id can't be empty";
+                  }
+                }
+                return null;
+              },
               onSelected: (value) {
                 onSelected(field["field"], value);
               },

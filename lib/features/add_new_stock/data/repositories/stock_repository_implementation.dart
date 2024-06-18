@@ -1,6 +1,7 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
@@ -118,27 +119,31 @@ class StockRepositoryImplementation implements StockRepository {
     });
 
     for (var element in fields) {
-      if (element.field == "warehouse location") {
-        String container =
-            fields.firstWhere((e) => e.field == "container id").textValue;
+      element["text_value"] =
+          CaseHelper.convert(element["value_case"], element["text_value"]);
+
+      if (element["field"] == "warehouse location id") {
+        String container = fields
+            .firstWhere((e) => e["field"] == "container id")["text_value"];
         if (container != "" &&
             containers[container] != null &&
             containers[container]["warehouse_location_id"] != "") {
-          data[element.field] = containers[container]["warehouse_location_id"];
+          data[element["field"]] =
+              containers[container]["warehouse_location_id"];
         } else if (container != "") {
-          data[element.field] = element.textValue;
+          data[element["field"]] = element["text_value"];
           containers[container] = {
             "status": "added",
-            "warehouse_location_id": element.textValue,
+            "warehouse_location_id": element["text_value"],
           };
-          if (element.textValue != "") {
-            warehouseLocations[element.textValue] = null;
+          if (element["text_value"] != "") {
+            warehouseLocations[element["text_value"]] = null;
           }
         } else {
           return;
         }
       } else {
-        data[element.field] = element.textValue;
+        data[element["field"]] = element["text_value"];
       }
     }
 
@@ -243,7 +248,7 @@ class StockRepositoryImplementation implements StockRepository {
       "group_id": const Uuid().v1(),
       "items": [data["item id"]],
       "container_id": data["container id"],
-      "warehouse_location_id": data["warehouse location"],
+      "warehouse_location_id": data["warehouse location id"],
       "move_type": "initial",
       "state": "completed",
     };

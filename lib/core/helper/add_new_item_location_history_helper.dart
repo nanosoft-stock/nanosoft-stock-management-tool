@@ -15,7 +15,7 @@ class AddNewItemLocationHistoryHelper {
       "container_id",
       "warehouse_location_id",
       "state",
-      "staff",
+      "user",
     ];
 
     if (!kIsLinux) {
@@ -23,7 +23,7 @@ class AddNewItemLocationHistoryHelper {
         if (field == "date") {
           convertedData[field] =
               Timestamp.now(); // FieldValue.serverTimestamp();
-        } else if (field == "staff") {
+        } else if (field == "user") {
           convertedData[field] = userName;
         } else {
           convertedData[field] = data[field] ?? "";
@@ -49,7 +49,7 @@ class AddNewItemLocationHistoryHelper {
         } else {
           convertedData[field] = {
             DatatypeConverterHelper.convert(datatype: "string"):
-                field != "staff" ? data[field] ?? "" : userName,
+                field != "user" ? data[field] ?? "" : userName,
           };
         }
       }

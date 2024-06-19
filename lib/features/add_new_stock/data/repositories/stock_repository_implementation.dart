@@ -70,6 +70,8 @@ class StockRepositoryImplementation implements StockRepository {
       return e.toJson();
     }).toList();
 
+    fields.sort((a, b) => a["order"].compareTo(b["order"]));
+
     return fields
         .map((e) => StockInputFieldModel.fromJson(e).toJson())
         .toList();

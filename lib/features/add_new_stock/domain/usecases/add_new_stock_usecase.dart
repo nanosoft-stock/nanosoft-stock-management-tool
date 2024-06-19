@@ -10,7 +10,7 @@ class AddNewStockUseCase extends UseCase {
   Future call({params}) async {
     List fields = params["fields"];
 
-    await _stockRepository.addNewStock(fields: params);
+    await _stockRepository.addNewStock(fields: fields);
 
     if (fields[0]["field"] == "category" && fields[0]["is_disabled"] == true) {
       for (int i = 0; i < fields.length; i++) {

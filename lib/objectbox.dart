@@ -346,7 +346,12 @@ class ObjectBox {
   // Database
   Future<void> clearDatabase() async {
     final file = File(store.directoryPath);
-    store.close();
-    file.delete(recursive: true);
+    if (Platform.isWindows) {
+      store.close();
+      file.delete(recursive: true);
+    } else {
+      file.delete(recursive: true);
+      store.close();
+    }
   }
 }

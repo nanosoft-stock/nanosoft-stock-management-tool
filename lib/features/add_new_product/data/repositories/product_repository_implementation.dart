@@ -56,6 +56,8 @@ class ProductRepositoryImplementation implements ProductRepository {
       return e.toJson();
     }).toList();
 
+    fields.sort((a, b) => a["order"].compareTo(b["order"]));
+
     return fields
         .map((e) => ProductInputFieldModel.fromJson(e).toJson())
         .toList();

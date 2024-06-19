@@ -59,37 +59,6 @@ class ClearColumnFilterVisualizeStockUseCase extends UseCase {
       fieldFilter["all_selected"] = allSelected;
     });
 
-    // for (var filter in visualizeStock["filters"]) {
-    //   List uniqueValues = visualizeStock["stocks"]
-    //       .map((e) => e[filter["field"]])
-    //       .toSet()
-    //       .toList();
-    //
-    //   filter["all_unique_values"].forEach((e) {
-    //     if (uniqueValues.contains(e["title"])) {
-    //       e["show"] = true;
-    //     } else {
-    //       e["show"] = false;
-    //     }
-    //   });
-    //
-    //   bool? allSelected;
-    //
-    //   if (filter["all_unique_values"]
-    //       .where((e) => e["show"] == true)
-    //       .every((e) => e["selected"] == true)) {
-    //     allSelected = true;
-    //   } else if (filter["all_unique_values"]
-    //       .where((e) => e["show"] == true)
-    //       .any((e) => e["selected"] == true)) {
-    //     allSelected = null;
-    //   } else {
-    //     allSelected = false;
-    //   }
-    //
-    //   filter["all_selected"] = allSelected;
-    // }
-
     return visualizeStock;
   }
 }

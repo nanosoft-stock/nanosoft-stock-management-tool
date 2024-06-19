@@ -98,7 +98,7 @@ class CustomCompletedMovesOverlay extends StatelessWidget {
                                                     style: kLabelTextStyle,
                                                   ),
                                                   Text(
-                                                    "Staff: ",
+                                                    "User: ",
                                                     style: kLabelTextStyle,
                                                   ),
                                                 ],
@@ -126,7 +126,7 @@ class CustomCompletedMovesOverlay extends StatelessWidget {
                                                   Text(
                                                     completedStateItems[
                                                                 keys[index]][0]
-                                                            ["staff"]
+                                                            ["user"]
                                                         .toString()
                                                         .toTitleCase(),
                                                     style: kLabelTextStyle,

@@ -444,7 +444,7 @@ class CustomColumnFilter extends StatelessWidget {
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   String title = index != 0
-                                      ? allUniqueValues[index - 1]
+                                      ? allUniqueValues[index - 1] ?? ""
                                       : "";
 
                                   if (index == 0) {

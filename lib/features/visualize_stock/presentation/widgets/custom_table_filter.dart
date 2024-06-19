@@ -90,8 +90,8 @@ class CustomTableFilter extends StatelessWidget {
                       },
                       children: localFieldFilters
                           .map(
-                            (e) => Padding(
-                              key: Key(e.field),
+                            (field) => Padding(
+                              key: Key(field),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 3.0, vertical: 4.0),
                               child: Container(
@@ -111,10 +111,10 @@ class CustomTableFilter extends StatelessWidget {
                                       Expanded(
                                         child: GestureDetector(
                                           onTap: () {
-                                            fieldFilterOnPressed(e.field);
+                                            fieldFilterOnPressed(field);
                                           },
                                           child: Text(
-                                            e.field.toString().toTitleCase(),
+                                            field.toString().toTitleCase(),
                                             style: kLabelTextStyle,
                                           ),
                                         ),

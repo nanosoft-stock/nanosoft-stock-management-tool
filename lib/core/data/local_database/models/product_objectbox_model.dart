@@ -31,12 +31,18 @@ class ProductObjectBoxModel {
   }
 
   Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    for (int i = 0; i < fields!.length; i++) {
+      json[fields![i]] = values?[i] ?? "";
+    }
+
     return {
       "uid": uid,
       "category": category,
       "sku": sku,
       "fields": fields,
       "values": values,
+      ...json
     };
   }
 

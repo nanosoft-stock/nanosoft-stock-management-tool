@@ -59,7 +59,7 @@ class CustomAutocompleteTextInputFieldAndCheckbox extends StatelessWidget {
               child: Autocomplete<String>(
                 optionsBuilder: (TextEditingValue value) {
                   if (value.text == "") {
-                    return const Iterable.empty();
+                    return items;
                   }
                   return items.where((e) =>
                       e.toLowerCase().contains(value.text.toLowerCase()));

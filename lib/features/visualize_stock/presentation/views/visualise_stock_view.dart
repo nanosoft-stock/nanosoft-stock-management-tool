@@ -200,7 +200,7 @@ class VisualiseStockView extends StatelessWidget {
                                       ),
                                     ),
                                     extent: FixedTableSpanExtent(
-                                        index != 0 ? 225 : 100),
+                                        index != 0 ? 250 : 100),
                                   );
                                 },
                                 rowBuilder: (int index) {
@@ -438,8 +438,7 @@ class VisualiseStockView extends StatelessWidget {
                   },
                   onReorder: (fieldFilters) {
                     _visualizeStockBloc.add(RearrangeColumnsEvent(
-                        fieldFilters: fieldFilters,
-                        visualizeStock: visualizeStock));
+                        fields: fieldFilters, visualizeStock: visualizeStock));
                   },
                   changeVisibilityOnTap: (field, visibility) {
                     _visualizeStockBloc.add(ColumnVisibilityChangedEvent(

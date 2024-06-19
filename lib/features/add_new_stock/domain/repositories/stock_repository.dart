@@ -1,5 +1,3 @@
-import 'package:stock_management_tool/features/add_new_stock/domain/entities/stock_input_field_entity.dart';
-
 abstract class StockRepository {
   List<Map<String, dynamic>> getInitialInputFields();
 

@@ -26,13 +26,9 @@ class FetchDataForObjectbox {
     }
 
     await fetchCategoriesAndLocations();
-
     await fetchFields();
-
     await fetchProducts();
-
     await fetchStocks();
-
     await fetchStockHistory();
   }
 
@@ -107,37 +103,7 @@ class FetchDataForObjectbox {
           } else if (element.type.name == "removed") {}
         }
       });
-    } else {
-      List items =
-          await sl.get<Firestore>().getDocuments(path: "all_locations");
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      for (var element in items) {
-        if (element.containsKey("items")) {
-          _objectBox.addItemIdList(element["items"]
-              .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
-              .toList()
-              .cast<ItemIdObjectBoxModel>());
-        } else if (element.containsKey("containers")) {
-          _objectBox.addContainerIdList(element["containers"]
-              .map((e) =>
-                  ContainerIdObjectBoxModel.fromJson({"container_id": e}))
-              .toList()
-              .cast<ContainerIdObjectBoxModel>());
-        } else if (element.containsKey("warehouse_locations")) {
-          _objectBox.addWarehouseLocationIdList(element["warehouse_locations"]
-              .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
-                  {"warehouse_location_id": e}))
-              .toList()
-              .cast<WarehouseLocationIdObjectBoxModel>());
-        }
-      }
-    }
+    } else {}
   }
 
   Future<void> fetchFields() async {
@@ -185,42 +151,13 @@ class FetchDataForObjectbox {
           }
         }
 
-        addFields.sort((a, b) => a.order.compareTo(b.order));
-
         _objectBox
             .addInputFieldList(addFields.cast<InputFieldsObjectBoxModel>());
         _objectBox
             .addInputFieldList(modifyFields.cast<InputFieldsObjectBoxModel>());
         _objectBox.removeInputFieldsList(removeFields.cast<int>());
       });
-    } else {
-      List items = await sl
-          .get<Firestore>()
-          .getDocuments(path: "category_fields", includeUid: true);
-
-      if (kIsLinux) {
-        items = items
-            .map((element) => element
-                .map((field, value) => MapEntry(field, value.values.first))
-                .cast<String, dynamic>())
-            .toList();
-
-        for (var element in items) {
-          if (element["items"] != null) {
-            element["items"] = element["items"]["values"]
-                .map((e) => e["stringValue"])
-                .toList();
-          }
-        }
-      }
-
-      items.sort((a, b) => int.parse(a["order"].toString())
-          .compareTo(int.parse(b["order"].toString())));
-
-      _objectBox.addInputFieldList(
-        items.map((e) => InputFieldsObjectBoxModel.fromJson(e)).toList(),
-      );
-    }
+    } else {}
   }
 
   Future<void> fetchProducts() async {
@@ -293,34 +230,7 @@ class FetchDataForObjectbox {
         _objectBox.addProductList(modifyProducts.cast<ProductObjectBoxModel>());
         _objectBox.removeProductsList(removeProducts.cast<int>());
       });
-    } else {
-      List items = await sl
-          .get<Firestore>()
-          .getDocuments(path: "skus", includeUid: true);
-
-      if (kIsLinux) {
-        items = items
-            .map((element) => element
-                .map((field, value) => MapEntry(field, value.values.first))
-                .cast<String, dynamic>())
-            .toList();
-
-        for (var element in items) {
-          if (element["items"] != null) {
-            element["items"] = element["items"]["values"]
-                .map((e) => e["stringValue"])
-                .toList();
-          }
-        }
-      }
-
-      items.sort((a, b) => int.parse(a["order"].toString())
-          .compareTo(int.parse(b["order"].toString())));
-
-      _objectBox.addProductList(
-        items.map((e) => ProductObjectBoxModel.fromJson(e)).toList(),
-      );
-    }
+    } else {}
   }
 
   Future<void> fetchStocks() async {
@@ -334,10 +244,35 @@ class FetchDataForObjectbox {
         List removeStock = [];
 
         for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
+          var date = data["date"];
+          String category = data["category"];
+          String itemId = data["item id"];
+          String containerId = data["container id"];
+          String warehouseLocationId = data["warehouse location id"];
+
           if (element.type.name == "added") {
+            data
+              ..remove("date")
+              ..remove("category")
+              ..remove("item id")
+              ..remove("container id")
+              ..remove("warehouse location id");
+
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
             addStock.add(StockObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              "date": date,
+              "category": category,
+              "item id": itemId,
+              "container id": containerId,
+              "warehouse location id": warehouseLocationId,
+              "fields": fields,
+              "values": values,
             }));
           } else if (element.type.name == "modified") {
             Query query = _objectBox.stockModelBox!
@@ -347,10 +282,28 @@ class FetchDataForObjectbox {
             query.close();
 
             int id = stock.id;
+
+            data
+              ..remove("date")
+              ..remove("category")
+              ..remove("item id")
+              ..remove("container id")
+              ..remove("warehouse location id");
+
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
             stock = StockObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              "date": date,
+              "category": category,
+              "item id": itemId,
+              "container id": containerId,
+              "warehouse location id": warehouseLocationId,
+              "fields": fields,
+              "values": values,
             });
+
             stock.id = id;
 
             modifyStock.add(stock);
@@ -369,24 +322,7 @@ class FetchDataForObjectbox {
         _objectBox.addStockList(modifyStock.cast<StockObjectBoxModel>());
         _objectBox.removeStockList(removeStock.cast<int>());
       });
-    } else {
-      List items = await sl.get<Firestore>().getDocuments(
-            path: "stock_data",
-            includeUid: true,
-          );
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      items.sort((a, b) => a["date"].compareTo(b["date"]));
-
-      _objectBox.addStockList(
-        items.map((e) => StockObjectBoxModel.fromJson(e)).toList(),
-      );
-    }
+    } else {}
   }
 
   Future<void> fetchStockHistory() async {
@@ -404,8 +340,8 @@ class FetchDataForObjectbox {
         for (var element in snapshot.docChanges) {
           if (element.type.name == "added") {
             addHistory.add(StockLocationHistoryObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              ...element.doc.data() as Map<String, dynamic>,
             }));
           } else if (element.type.name == "modified") {
             Query query = _objectBox.stockLocationHistoryModelBox!
@@ -417,8 +353,8 @@ class FetchDataForObjectbox {
 
             int id = history.id;
             history = StockLocationHistoryObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              ...element.doc.data() as Map<String, dynamic>,
             });
             history.id = id;
 
@@ -441,25 +377,6 @@ class FetchDataForObjectbox {
             modifyHistory.cast<StockLocationHistoryObjectBoxModel>());
         _objectBox.removeStockLocationHistoryList(removeHistory.cast<int>());
       });
-    } else {
-      List items = await sl.get<Firestore>().getDocuments(
-            path: "stock_location_history",
-            includeUid: true,
-          );
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      items.sort((a, b) => a["date"].compareTo(b["date"]));
-
-      _objectBox.addStockLocationHistoryList(
-        items
-            .map((e) => StockLocationHistoryObjectBoxModel.fromJson(e))
-            .toList(),
-      );
-    }
+    } else {}
   }
 }

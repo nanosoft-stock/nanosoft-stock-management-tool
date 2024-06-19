@@ -13,7 +13,7 @@ class StockLocationHistoryObjectBoxModel {
     this.warehouseLocationId,
     this.moveType,
     this.state,
-    this.staff,
+    this.user,
   });
 
   @Id()
@@ -30,7 +30,7 @@ class StockLocationHistoryObjectBoxModel {
   String? warehouseLocationId;
   String? moveType;
   String? state;
-  String? staff;
+  String? user;
 
   factory StockLocationHistoryObjectBoxModel.fromJson(Map json) {
     return StockLocationHistoryObjectBoxModel(
@@ -44,7 +44,7 @@ class StockLocationHistoryObjectBoxModel {
       warehouseLocationId: json["warehouse_location_id"],
       moveType: json["move_type"],
       state: json["state"],
-      staff: json["staff"],
+      user: json["user"],
     );
   }
 
@@ -58,12 +58,12 @@ class StockLocationHistoryObjectBoxModel {
       "warehouse_location_id": warehouseLocationId,
       "move_type": moveType,
       "state": state,
-      "staff": staff,
+      "user": user,
     };
   }
 
   @override
   String toString() {
-    return "StockLocationHistory(uid: $uid, date: $date, group_id: $groupId, items: $items, containerId: $containerId, warehouseLocationId: $warehouseLocationId, moveType: $moveType, state: $state, staff: $state)";
+    return "StockLocationHistory(uid: $uid, date: $date, group_id: $groupId, items: $items, containerId: $containerId, warehouseLocationId: $warehouseLocationId, moveType: $moveType, state: $state, user: $user)";
   }
 }

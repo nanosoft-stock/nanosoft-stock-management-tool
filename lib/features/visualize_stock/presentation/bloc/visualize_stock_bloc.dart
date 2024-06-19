@@ -21,8 +21,7 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/r
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/search_value_changed_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 
-part 'visualize_stock_event.dart';
-part 'visualize_stock_state.dart';
+part 'visualize_stock_event.dart';part 'visualize_stock_state.dart';
 
 class VisualizeStockBloc
     extends Bloc<VisualizeStockEvent, VisualizeStockState> {
@@ -170,7 +169,7 @@ class VisualizeStockBloc
       RearrangeColumnsEvent event, Emitter<VisualizeStockState> emit) async {
     emit(LoadedState(
         visualizeStock: await _rearrangeColumnsUseCase!(params: {
-      "field_filters": event.fieldFilters,
+      "fields": event.fields,
       "visualize_stock": event.visualizeStock,
     })));
   }

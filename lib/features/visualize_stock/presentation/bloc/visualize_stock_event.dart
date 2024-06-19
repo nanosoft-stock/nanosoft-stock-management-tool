@@ -60,9 +60,9 @@ class HideLayerEvent extends VisualizeStockEvent {
 
 class RearrangeColumnsEvent extends VisualizeStockEvent {
   const RearrangeColumnsEvent(
-      {required this.fieldFilters, required this.visualizeStock});
+      {required this.fields, required this.visualizeStock});
 
-  final List? fieldFilters;
+  final List? fields;
   final Map? visualizeStock;
 }
 

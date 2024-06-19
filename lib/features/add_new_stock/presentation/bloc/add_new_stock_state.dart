@@ -6,7 +6,9 @@ abstract class AddNewStockState extends Equatable {
   final List? fields;
 
   @override
-  List<Object> get props => [fields!];
+  List<Object> get props => [
+        Random().nextDouble(),
+      ];
 }
 
 abstract class AddNewStockActionState extends AddNewStockState {}

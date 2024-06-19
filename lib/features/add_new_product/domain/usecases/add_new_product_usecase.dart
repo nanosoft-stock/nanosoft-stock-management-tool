@@ -8,6 +8,11 @@ class AddNewProductUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    await _productRepository.addNewProduct(fields: params);
+    List fields = params["fields"];
+
+    await _productRepository.addNewProduct(fields: fields);
+    fields = _productRepository.getInitialInputFields();
+
+    return fields;
   }
 }

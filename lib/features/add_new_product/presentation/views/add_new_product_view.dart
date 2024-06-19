@@ -12,6 +12,7 @@ class AddNewProductView extends StatelessWidget {
   AddNewProductView({super.key});
 
   final AddNewProductBloc _addNewProductBloc = sl.get<AddNewProductBloc>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +22,8 @@ class AddNewProductView extends StatelessWidget {
   Widget _buildBody() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      int n = ((constraints.maxWidth - 135) / 338).floor();
       double pad = ((constraints.maxWidth - 135) % 338) / 2;
+
       return BlocConsumer<AddNewProductBloc, AddNewProductState>(
         bloc: _addNewProductBloc,
         listenWhen: (prev, next) => next is AddNewProductActionState,
@@ -31,7 +32,7 @@ class AddNewProductView extends StatelessWidget {
           _blocListener(context, state, constraints, pad);
         },
         builder: (BuildContext context, AddNewProductState state) {
-          return _blocBuilder(context, state, constraints, n, pad);
+          return _blocBuilder(context, state, constraints, pad);
         },
       );
     });
@@ -61,7 +62,7 @@ class AddNewProductView extends StatelessWidget {
   }
 
   Widget _blocBuilder(BuildContext context, AddNewProductState state,
-      BoxConstraints constraints, int n, double pad) {
+      BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewProductBloc.add(LoadedEvent());
@@ -72,7 +73,7 @@ class AddNewProductView extends StatelessWidget {
 
       case const (LoadedState):
         List fields = state.fields!;
-        return _buildLoadedStateWidget(fields, constraints, n, pad);
+        return _buildLoadedStateWidget(fields, constraints, pad);
 
       default:
         return Container();
@@ -81,7 +82,10 @@ class AddNewProductView extends StatelessWidget {
 
   Widget _buildLoadingStateWidget() {
     return const Center(
-      child: CircularProgressIndicator(),
+      child: SizedBox(
+        width: 100,
+        child: LinearProgressIndicator(),
+      ),
     );
   }
 
@@ -92,16 +96,26 @@ class AddNewProductView extends StatelessWidget {
   }
 
   Widget _buildLoadedStateWidget(
-      List fields, BoxConstraints constraints, int n, double pad) {
+      List fields, BoxConstraints constraints, double pad) {
     return constraints.maxWidth > 475
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-            child: Column(
-              children: [
-                _buildInputFieldsContainer(fields, n),
-                const SizedBox(height: 20.0),
-                _buildAddNewProductButtonContainer(fields),
-              ],
+            child: FocusScope(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        width: constraints.maxWidth - 104,
+                        child: _buildInputFieldsContainer(fields),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    _buildAddNewProductButtonContainer(fields),
+                  ],
+                ),
+              ),
             ),
           )
         : SizedBox(
@@ -110,36 +124,33 @@ class AddNewProductView extends StatelessWidget {
           );
   }
 
-  Widget _buildInputFieldsContainer(List fields, int n) {
-    return Expanded(
-      child: CustomContainer(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            itemCount: fields.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: n > 0 ? n : 1,
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              mainAxisExtent: 95,
-            ),
-            itemBuilder: (context, index) {
-              return CustomInputField(
-                fields: fields,
-                index: index,
-                onSelected: (value) {
-                  if (fields[index].field == "category" &&
-                      fields[index].textValue != value) {
-                    fields[index] = fields[index].copyWith(textValue: value);
-                    _addNewProductBloc
-                        .add(CategorySelectedEvent(fields: fields));
-                  } else {
-                    fields[index] = fields[index].copyWith(textValue: value);
-                  }
-                },
-              );
-            },
+  Widget _buildInputFieldsContainer(List fields) {
+    return CustomContainer(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Wrap(
+            direction: Axis.horizontal,
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            verticalDirection: VerticalDirection.down,
+            children: [
+              for (int index = 0; index < fields.length; index++)
+                CustomInputField(
+                  field: fields[index],
+                  onSelected: (field, value) {
+                    if (["category"].contains(fields[index]["field"])) {
+                      _addNewProductBloc.add(ValueSelectedEvent(
+                          field: field, value: value, fields: fields));
+                    } else {
+                      _addNewProductBloc.add(ValueTypedEvent(
+                          field: field, value: value, fields: fields));
+                    }
+                  },
+                ),
+            ],
           ),
         ),
       ),
@@ -157,9 +168,11 @@ class AddNewProductView extends StatelessWidget {
           width: 338,
           child: CustomElevatedButton(
             text: "Add New Product",
-            onPressed: () async {
-              _addNewProductBloc
-                  .add(AddNewProductButtonClickedEvent(fields: fields));
+            onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+                _addNewProductBloc
+                    .add(AddNewProductButtonClickedEvent(fields: fields));
+              }
             },
           ),
         ),

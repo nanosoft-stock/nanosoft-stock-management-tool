@@ -12,10 +12,9 @@ class ChangeColumnVisibilityUseCase extends UseCase {
     visualizeStock["filters"][field]["show_column"] = visibility;
 
     List showFields = [];
-
-    for (var e in visualizeStock["fields"]) {
-      if (visualizeStock["filters"][e.field]["show_column"] == true) {
-        showFields.add(e.field);
+    for (var field in visualizeStock["fields"]) {
+      if (visualizeStock["filters"][field]["show_column"] == true) {
+        showFields.add(field);
       }
     }
 

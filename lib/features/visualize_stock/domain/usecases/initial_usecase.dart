@@ -14,8 +14,7 @@ class InitialVisualizeStockUseCase extends UseCase {
     visualizeStock["filter_menu_field"] = null;
     visualizeStock["fields"] = _visualizeStockRepository.getAllFields();
     visualizeStock["stocks"] = _visualizeStockRepository.getAllStocks();
-    visualizeStock["show_fields"] =
-        visualizeStock["fields"].map((e) => e.field).toList();
+    visualizeStock["show_fields"] = [...visualizeStock["fields"]];
     visualizeStock["filters"] = _visualizeStockRepository.getInitialFilters(
         fields: visualizeStock["fields"], stocks: visualizeStock["stocks"]);
 

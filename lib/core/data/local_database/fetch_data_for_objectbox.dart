@@ -25,215 +25,14 @@ class FetchDataForObjectbox {
       await _objectBox.create();
     }
 
-    await fetchCategories();
-  }
-
-  Future<void> fetchCategories() async {
-    List categories = (await sl
-            .get<Firestore>()
-            .getDocuments(path: "category_list", includeUid: true))
-        .toList();
-
-    if (kIsLinux) {
-      categories = categories
-          .map((element) => element.map((k, v) => MapEntry(k, v.values.first)))
-          .toList();
-    }
-
-    for (var element in categories) {
-      _objectBox.addCategory(CategoryObjectBoxModel(
-          category: element["category"], uid: element["uid"]));
-      await fetchFields(element["category"], element["uid"]);
-      await fetchProducts(element["category"], element["uid"]);
-    }
-
+    await fetchCategoriesAndLocations();
+    await fetchFields();
+    await fetchProducts();
     await fetchStocks();
-
-    await fetchLocations();
-
     await fetchStockHistory();
   }
 
-  Future<void> fetchFields(String category, String uid) async {
-    if (!kIsLinux) {
-      sl
-          .get<Firestore>()
-          .listenToDocumentChanges(path: "category_list/$uid/fields")
-          .listen((snapshot) {
-        List<Map<String, dynamic>> items = [];
-
-        for (var element in snapshot.docChanges) {
-          if (element.type.name == "added") {
-            items.add({
-              ...element.doc.data() as Map<String, dynamic>,
-              "uid": element.doc.id,
-            });
-          } else if (element.type.name == "modified") {
-          } else if (element.type.name == "removed") {}
-        }
-
-        items.sort((a, b) => int.parse(a["order"].toString())
-            .compareTo(int.parse(b["order"].toString())));
-
-        _objectBox.addInputFieldList(
-          items
-              .map((e) => InputFieldsObjectBoxModel.fromJson(
-                  {...e, "category": category}))
-              .toList(),
-        );
-      });
-    } else {
-      List items = await sl
-          .get<Firestore>()
-          .getDocuments(path: "category_list/$uid/fields", includeUid: true);
-
-      if (kIsLinux) {
-        items = items
-            .map((element) => element
-                .map((field, value) => MapEntry(field, value.values.first))
-                .cast<String, dynamic>())
-            .toList();
-
-        for (var element in items) {
-          if (element["items"] != null) {
-            element["items"] = element["items"]["values"]
-                .map((e) => e["stringValue"])
-                .toList();
-          }
-        }
-      }
-
-      items.sort((a, b) => int.parse(a["order"].toString())
-          .compareTo(int.parse(b["order"].toString())));
-
-      _objectBox.addInputFieldList(
-        items
-            .map((e) => InputFieldsObjectBoxModel.fromJson(
-                {...e, "category": category}))
-            .toList(),
-      );
-    }
-  }
-
-  Future<void> fetchProducts(String category, String uid) async {
-    if (!kIsLinux) {
-      sl
-          .get<Firestore>()
-          .listenToDocumentChanges(path: "category_list/$uid/product_list")
-          .listen((snapshot) {
-        List<Map<String, dynamic>> items = [];
-
-        for (var element in snapshot.docChanges) {
-          if (element.type.name == "added") {
-            items.add({
-              ...element.doc.data() as Map<String, dynamic>,
-              "uid": element.doc.id,
-            });
-          } else if (element.type.name == "modified") {
-          } else if (element.type.name == "removed") {}
-        }
-
-        _objectBox.addProductList(
-          items
-              .map((e) =>
-                  ProductObjectBoxModel.fromJson({...e, "category": category}))
-              .toList(),
-        );
-      });
-    } else {
-      List items = await sl.get<Firestore>().getDocuments(
-            path: "category_list/$uid/product_list",
-            includeUid: true,
-          );
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      _objectBox.addProductList(items
-          .map((e) =>
-              ProductObjectBoxModel.fromJson({...e, "category": category}))
-          .toList());
-    }
-  }
-
-  Future<void> fetchStocks() async {
-    if (!kIsLinux) {
-      sl
-          .get<Firestore>()
-          .listenToDocumentChanges(path: "stock_data")
-          .listen((snapshot) {
-        List addStock = [];
-        List modifyStock = [];
-        List removeStock = [];
-
-        for (var element in snapshot.docChanges) {
-          if (element.type.name == "added") {
-            addStock.add(StockObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
-              "uid": element.doc.id,
-            }));
-            // _objectBox.addStock(StockObjectBoxModel.fromJson({
-            //   ...element.doc.data() as Map<String, dynamic>,
-            //   "uid": element.doc.id,
-            // }));
-          } else if (element.type.name == "modified") {
-            Query query = _objectBox.stockModelBox!
-                .query(StockObjectBoxModel_.uid.equals(element.doc.id))
-                .build();
-            StockObjectBoxModel stock = query.findFirst();
-            query.close();
-
-            int id = stock.id;
-            stock = StockObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
-              "uid": element.doc.id,
-            });
-            stock.id = id;
-
-            modifyStock.add(stock);
-
-            // _objectBox.addStock(stock);
-          } else if (element.type.name == "removed") {
-            Query query = _objectBox.stockModelBox!
-                .query(StockObjectBoxModel_.uid.equals(element.doc.id))
-                .build();
-            StockObjectBoxModel stock = query.findFirst();
-            query.close();
-
-            removeStock.add(stock.id);
-
-            // _objectBox.removeStock(stock.id);
-          }
-        }
-
-        _objectBox.addStockList(addStock.cast<StockObjectBoxModel>());
-        _objectBox.addStockList(modifyStock.cast<StockObjectBoxModel>());
-        _objectBox.removeStockList(removeStock.cast<int>());
-      });
-    } else {
-      List items = await sl.get<Firestore>().getDocuments(
-            path: "stock_data",
-            includeUid: true,
-          );
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      items.sort((a, b) => a["date"].compareTo(b["date"]));
-
-      _objectBox.addStockList(
-        items.map((e) => StockObjectBoxModel.fromJson(e)).toList(),
-      );
-    }
-  }
-
-  Future<void> fetchLocations() async {
+  Future<void> fetchCategoriesAndLocations() async {
     if (!kIsLinux) {
       sl
           .get<Firestore>()
@@ -244,7 +43,20 @@ class FetchDataForObjectbox {
             Map<String, dynamic> data =
                 element.doc.data() as Map<String, dynamic>;
 
-            if (data.containsKey("item_id")) {
+            if (data.containsKey("category")) {
+              categoryIdUid = element.doc.id;
+              _objectBox.categoryModelBox?.removeAll();
+              List categories = [];
+
+              data["category"]?.forEach((k, v) {
+                categories.add(CategoryObjectBoxModel.fromJson({
+                  "category": k,
+                }));
+              });
+
+              _objectBox
+                  .addCategoryList(categories.cast<CategoryObjectBoxModel>());
+            } else if (data.containsKey("item_id")) {
               itemIdUid = element.doc.id;
               _objectBox.itemIdBox?.removeAll();
               List items = [];
@@ -291,37 +103,226 @@ class FetchDataForObjectbox {
           } else if (element.type.name == "removed") {}
         }
       });
-    } else {
-      List items =
-          await sl.get<Firestore>().getDocuments(path: "all_locations");
+    } else {}
+  }
 
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
+  Future<void> fetchFields() async {
+    if (!kIsLinux) {
+      sl
+          .get<Firestore>()
+          .listenToDocumentChanges(path: "category_fields")
+          .listen((snapshot) {
+        List addFields = [];
+        List modifyFields = [];
+        List removeFields = [];
 
-      for (var element in items) {
-        if (element.containsKey("items")) {
-          _objectBox.addItemIdList(element["items"]
-              .map((e) => ItemIdObjectBoxModel.fromJson({"item_id": e}))
-              .toList()
-              .cast<ItemIdObjectBoxModel>());
-        } else if (element.containsKey("containers")) {
-          _objectBox.addContainerIdList(element["containers"]
-              .map((e) =>
-                  ContainerIdObjectBoxModel.fromJson({"container_id": e}))
-              .toList()
-              .cast<ContainerIdObjectBoxModel>());
-        } else if (element.containsKey("warehouse_locations")) {
-          _objectBox.addWarehouseLocationIdList(element["warehouse_locations"]
-              .map((e) => WarehouseLocationIdObjectBoxModel.fromJson(
-                  {"warehouse_location_id": e}))
-              .toList()
-              .cast<WarehouseLocationIdObjectBoxModel>());
+        for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
+          if (element.type.name == "added") {
+            addFields.add(InputFieldsObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              ...data,
+            }));
+          } else if (element.type.name == "modified") {
+            Query query = _objectBox.inputFieldsBox!
+                .query(InputFieldsObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            InputFieldsObjectBoxModel field = query.findFirst();
+            query.close();
+
+            int id = field.id;
+            field = InputFieldsObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              ...data,
+            });
+            field.id = id;
+
+            modifyFields.add(field);
+          } else if (element.type.name == "removed") {
+            Query query = _objectBox.inputFieldsBox!
+                .query(InputFieldsObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            InputFieldsObjectBoxModel field = query.findFirst();
+            query.close();
+
+            removeFields.add(field.id);
+          }
         }
-      }
-    }
+
+        _objectBox
+            .addInputFieldList(addFields.cast<InputFieldsObjectBoxModel>());
+        _objectBox
+            .addInputFieldList(modifyFields.cast<InputFieldsObjectBoxModel>());
+        _objectBox.removeInputFieldsList(removeFields.cast<int>());
+      });
+    } else {}
+  }
+
+  Future<void> fetchProducts() async {
+    if (!kIsLinux) {
+      sl
+          .get<Firestore>()
+          .listenToDocumentChanges(path: "skus")
+          .listen((snapshot) {
+        List addProducts = [];
+        List modifyProducts = [];
+        List removeProducts = [];
+
+        for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
+          String category = data["category"];
+          String sku = data["sku"];
+
+          if (element.type.name == "added") {
+            data
+              ..remove("category")
+              ..remove("sku");
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            addProducts.add(ProductObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "category": category,
+              "sku": sku,
+              "fields": fields,
+              "values": values,
+            }));
+          } else if (element.type.name == "modified") {
+            Query query = _objectBox.productModelBox!
+                .query(ProductObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            ProductObjectBoxModel product = query.findFirst();
+            query.close();
+
+            data
+              ..remove("category")
+              ..remove("sku");
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            int id = product.id;
+            product = ProductObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "category": category,
+              "sku": sku,
+              "fields": fields,
+              "values": values,
+            });
+            product.id = id;
+
+            modifyProducts.add(product);
+          } else if (element.type.name == "removed") {
+            Query query = _objectBox.productModelBox!
+                .query(ProductObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            ProductObjectBoxModel product = query.findFirst();
+            query.close();
+
+            removeProducts.add(product.id);
+          }
+        }
+
+        _objectBox.addProductList(addProducts.cast<ProductObjectBoxModel>());
+        _objectBox.addProductList(modifyProducts.cast<ProductObjectBoxModel>());
+        _objectBox.removeProductsList(removeProducts.cast<int>());
+      });
+    } else {}
+  }
+
+  Future<void> fetchStocks() async {
+    if (!kIsLinux) {
+      sl
+          .get<Firestore>()
+          .listenToDocumentChanges(path: "stock_data")
+          .listen((snapshot) {
+        List addStock = [];
+        List modifyStock = [];
+        List removeStock = [];
+
+        for (var element in snapshot.docChanges) {
+          Map<String, dynamic> data =
+              element.doc.data() as Map<String, dynamic>;
+
+          var date = data["date"];
+          String category = data["category"];
+          String itemId = data["item id"];
+          String containerId = data["container id"];
+          String warehouseLocationId = data["warehouse location id"];
+
+          if (element.type.name == "added") {
+            data
+              ..remove("date")
+              ..remove("category")
+              ..remove("item id")
+              ..remove("container id")
+              ..remove("warehouse location id");
+
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            addStock.add(StockObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "date": date,
+              "category": category,
+              "item id": itemId,
+              "container id": containerId,
+              "warehouse location id": warehouseLocationId,
+              "fields": fields,
+              "values": values,
+            }));
+          } else if (element.type.name == "modified") {
+            Query query = _objectBox.stockModelBox!
+                .query(StockObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            StockObjectBoxModel stock = query.findFirst();
+            query.close();
+
+            int id = stock.id;
+
+            data
+              ..remove("date")
+              ..remove("category")
+              ..remove("item id")
+              ..remove("container id")
+              ..remove("warehouse location id");
+
+            List fields = data.keys.toList();
+            List values = data.values.toList().cast<String>();
+
+            stock = StockObjectBoxModel.fromJson({
+              "uid": element.doc.id,
+              "date": date,
+              "category": category,
+              "item id": itemId,
+              "container id": containerId,
+              "warehouse location id": warehouseLocationId,
+              "fields": fields,
+              "values": values,
+            });
+
+            stock.id = id;
+
+            modifyStock.add(stock);
+          } else if (element.type.name == "removed") {
+            Query query = _objectBox.stockModelBox!
+                .query(StockObjectBoxModel_.uid.equals(element.doc.id))
+                .build();
+            StockObjectBoxModel stock = query.findFirst();
+            query.close();
+
+            removeStock.add(stock.id);
+          }
+        }
+
+        _objectBox.addStockList(addStock.cast<StockObjectBoxModel>());
+        _objectBox.addStockList(modifyStock.cast<StockObjectBoxModel>());
+        _objectBox.removeStockList(removeStock.cast<int>());
+      });
+    } else {}
   }
 
   Future<void> fetchStockHistory() async {
@@ -339,15 +340,9 @@ class FetchDataForObjectbox {
         for (var element in snapshot.docChanges) {
           if (element.type.name == "added") {
             addHistory.add(StockLocationHistoryObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              ...element.doc.data() as Map<String, dynamic>,
             }));
-
-            // _objectBox.addStockLocationHistory(
-            //     StockLocationHistoryObjectBoxModel.fromJson({
-            //   ...element.doc.data() as Map<String, dynamic>,
-            //   "uid": element.doc.id,
-            // }));
           } else if (element.type.name == "modified") {
             Query query = _objectBox.stockLocationHistoryModelBox!
                 .query(StockLocationHistoryObjectBoxModel_.uid
@@ -358,14 +353,12 @@ class FetchDataForObjectbox {
 
             int id = history.id;
             history = StockLocationHistoryObjectBoxModel.fromJson({
-              ...element.doc.data() as Map<String, dynamic>,
               "uid": element.doc.id,
+              ...element.doc.data() as Map<String, dynamic>,
             });
             history.id = id;
 
             modifyHistory.add(history);
-
-            // _objectBox.addStockLocationHistory(history);
           } else if (element.type.name == "removed") {
             Query query = _objectBox.stockLocationHistoryModelBox!
                 .query(StockLocationHistoryObjectBoxModel_.uid
@@ -375,8 +368,6 @@ class FetchDataForObjectbox {
             query.close();
 
             removeHistory.add(history.id);
-
-            // _objectBox.removeStockLocationHistory(history.id);
           }
         }
 
@@ -386,25 +377,6 @@ class FetchDataForObjectbox {
             modifyHistory.cast<StockLocationHistoryObjectBoxModel>());
         _objectBox.removeStockLocationHistoryList(removeHistory.cast<int>());
       });
-    } else {
-      List items = await sl.get<Firestore>().getDocuments(
-            path: "stock_location_history",
-            includeUid: true,
-          );
-
-      items = items
-          .map((element) => element
-              .map((field, value) => MapEntry(field, value.values.first))
-              .cast<String, dynamic>())
-          .toList();
-
-      items.sort((a, b) => a["date"].compareTo(b["date"]));
-
-      _objectBox.addStockLocationHistoryList(
-        items
-            .map((e) => StockLocationHistoryObjectBoxModel.fromJson(e))
-            .toList(),
-      );
-    }
+    } else {}
   }
 }

@@ -103,7 +103,7 @@ class CustomPendingMovesOverlay extends StatelessWidget {
                                                     style: kLabelTextStyle,
                                                   ),
                                                   Text(
-                                                    "Staff: ",
+                                                    "User: ",
                                                     style: kLabelTextStyle,
                                                   ),
                                                 ],
@@ -130,7 +130,7 @@ class CustomPendingMovesOverlay extends StatelessWidget {
                                                   Text(
                                                     pendingStateItems[
                                                                 keys[index]][0]
-                                                            ["staff"]
+                                                            ["user"]
                                                         .toString()
                                                         .toTitleCase(),
                                                     style: kLabelTextStyle,

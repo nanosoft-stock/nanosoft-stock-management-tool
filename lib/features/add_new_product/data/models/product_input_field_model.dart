@@ -2,44 +2,56 @@ import 'package:stock_management_tool/features/add_new_product/domain/entities/p
 
 class ProductInputFieldModel extends ProductInputFieldEntity {
   const ProductInputFieldModel({
-    required super.uid,
     required super.field,
     required super.datatype,
-    required super.isWithSKU,
-    required super.isTitleCase,
     required super.items,
+    required super.nameCase,
+    required super.valueCase,
+    required super.order,
     required super.textValue,
   });
 
-  factory ProductInputFieldModel.fromJson(Map<String, dynamic> map) {
+  factory ProductInputFieldModel.fromJson(Map<String, dynamic> json) {
     return ProductInputFieldModel(
-      uid: map['uid'],
-      field: map['field'],
-      datatype: map['datatype'],
-      isWithSKU: map['isWithSKU'],
-      isTitleCase: map['isTitleCase'],
-      items: map['items'] ?? [],
-      textValue: "",
+      field: json["field"],
+      datatype: json["datatype"],
+      items: (json["items"] ?? []).cast<String>(),
+      nameCase: json["name_case"],
+      valueCase: json["value_case"],
+      order: json["order"],
+      textValue: json["text_value"] ?? "",
     );
   }
 
   ProductInputFieldModel copyWith({
-    String? uid,
     String? field,
     String? datatype,
-    bool? isWithSKU,
-    bool? isTitleCase,
-    List<dynamic>? items,
+    List<String>? items,
+    String? nameCase,
+    String? valueCase,
+    int? order,
     String? textValue,
   }) {
     return ProductInputFieldModel(
-      uid: uid ?? this.uid,
       field: field ?? this.field,
       datatype: datatype ?? this.datatype,
-      isWithSKU: isWithSKU ?? this.isWithSKU,
-      isTitleCase: isTitleCase ?? this.isTitleCase,
-      items: items?.toList() ?? this.items,
+      items: items ?? this.items,
+      nameCase: nameCase ?? this.nameCase,
+      valueCase: valueCase ?? this.valueCase,
+      order: order ?? this.order,
       textValue: textValue ?? this.textValue,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "field": field,
+      "datatype": datatype,
+      "items": items,
+      "name_case": nameCase,
+      "value_case": valueCase,
+      "order": order,
+      "text_value": textValue,
+    };
   }
 }

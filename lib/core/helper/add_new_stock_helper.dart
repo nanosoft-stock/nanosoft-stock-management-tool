@@ -7,26 +7,39 @@ import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewStockHelper {
   static Map toJson({required Map data}) {
-    Map convertedData = {};
-
     final objectbox = sl.get<ObjectBox>();
 
-    String category = data["category"].toString().toLowerCase();
+    Map convertedData = {};
+    String category = data["category"];
 
     List fields = objectbox
         .getInputFields()
-        .where((element) => element.category == category)
+        .where((element) =>
+            element.category!.toLowerCase() == category.toLowerCase())
         .map((e) => e.toJson())
         .toList();
 
-    if (kIsLinux) {
+    if (!kIsLinux) {
+      for (var e in fields) {
+        if (e["field"] == "date") {
+          convertedData[e["field"]] =
+              Timestamp.now(); // FieldValue.serverTimestamp();
+        } else if (e["field"] == "user") {
+          convertedData[e["field"]] = userName;
+        } else if (e["field"] == "archived") {
+          convertedData[e["field"]] = false;
+        } else {
+          convertedData[e["field"]] = data[e["field"]] ?? "";
+        }
+      }
+    } else {
       for (var e in fields) {
         if (e["field"] == "date") {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
                 "${DateFormat('yyyy-MM-ddTHH:mm:ss.SSSSSSS').format(DateTime.now())}Z",
           };
-        } else if (e["field"] == "staff") {
+        } else if (e["field"] == "user") {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]): userName,
           };
@@ -39,19 +52,6 @@ class AddNewStockHelper {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
                 data[e["field"]] ?? "",
           };
-        }
-      }
-    } else {
-      for (var e in fields) {
-        if (e["field"] == "date") {
-          convertedData[e["field"]] =
-              Timestamp.now(); // FieldValue.serverTimestamp();
-        } else if (e["field"] == "staff") {
-          convertedData[e["field"]] = userName;
-        } else if (e["field"] == "archived") {
-          convertedData[e["field"]] = false;
-        } else {
-          convertedData[e["field"]] = data[e["field"]] ?? "";
         }
       }
     }

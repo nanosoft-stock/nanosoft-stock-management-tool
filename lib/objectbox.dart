@@ -97,6 +97,10 @@ class ObjectBox {
         .map((event) => event.find());
   }
 
+  void removeInputFieldsList(List<int> ids) async {
+    inputFieldsBox!.removeMany(ids);
+  }
+
   Future<void> removeAllInputFields() async {
     await inputFieldsBox!.removeAllAsync();
   }
@@ -128,6 +132,10 @@ class ObjectBox {
     return builder
         .watch(triggerImmediately: triggerImmediately)
         .map((event) => event.find());
+  }
+
+  void removeProductsList(List<int> ids) async {
+    productModelBox!.removeMany(ids);
   }
 
   Future<void> removeAllProducts() async {

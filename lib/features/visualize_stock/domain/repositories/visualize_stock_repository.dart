@@ -1,11 +1,10 @@
 import 'package:stock_management_tool/core/constants/enums.dart';
-import 'package:stock_management_tool/features/visualize_stock/domain/entities/stock_field_entity.dart';
 
 abstract class VisualizeStockRepository {
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange});
 
-  List<StockFieldEntity> getAllFields();
+  List<String> getAllFields();
 
   List<Map<String, dynamic>> getAllStocks();
 

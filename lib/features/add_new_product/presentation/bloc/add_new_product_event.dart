@@ -9,9 +9,27 @@ abstract class AddNewProductEvent extends Equatable {
 
 class LoadedEvent extends AddNewProductEvent {}
 
-class CategorySelectedEvent extends AddNewProductEvent {
-  const CategorySelectedEvent({required this.fields});
+class ValueTypedEvent extends AddNewProductEvent {
+  const ValueTypedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
 
+  final String field;
+  final String value;
+  final List? fields;
+}
+
+class ValueSelectedEvent extends AddNewProductEvent {
+  const ValueSelectedEvent({
+    required this.field,
+    required this.value,
+    required this.fields,
+  });
+
+  final String field;
+  final String value;
   final List? fields;
 }
 

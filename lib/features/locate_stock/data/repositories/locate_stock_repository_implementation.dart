@@ -103,7 +103,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     "Not Equals",
     "Greater Than",
     "Lesser Than",
-    "Between"
+    // "Between"
   ];
 
   @override
@@ -217,30 +217,27 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Map<String, dynamic> getInitialFilters() {
-    List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
+    List fields = _objectBox.getInputFields().map((e) => e.field).toList();
 
-    List newFields = [];
-    for (var ele in fieldsOrder) {
-      newFields.add(fields.firstWhere((e) => e["field"] == ele));
-    }
-
+    List newFields = [...fieldsOrder];
+    newFields.removeWhere((e) => !fields.contains(e));
     fields = newFields;
 
     List stocks = getAllStocks();
 
     Map<String, dynamic> filters = {};
 
-    for (var ele in fields) {
-      filters[ele["field"]] = {
-        "field": ele["field"],
+    for (var field in fields) {
+      filters[field] = {
+        "field": field,
         "filter_by": "",
         "filter_value": "",
         "search_value": "",
         "all_selected": true,
-        ...getUniqueValues(field: ele["field"], stocks: stocks),
+        ...getUniqueValues(field: field, stocks: stocks),
         ...getFilterByValuesByDatatype(
             values: stocks
-                .map((stock) => stock[ele["field"]].toString())
+                .map((stock) => stock[field].toString())
                 .toList()
                 .cast<String>()),
       };
@@ -373,7 +370,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         query.close();
       } else if (searchBy == "Warehouse Location Id") {
         Query query = _objectBox.stockModelBox!
-            .query(StockObjectBoxModel_.warehouseLocation.equals(id))
+            .query(StockObjectBoxModel_.warehouseLocationId.equals(id))
             .build();
         stocks = query.find() as List<StockObjectBoxModel>;
         query.close();
@@ -383,7 +380,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
           .map((e) => {
                 "item_id": e.itemId,
                 "container_id": e.containerId,
-                "warehouse_location_id": e.warehouseLocation,
+                "warehouse_location_id": e.warehouseLocationId,
                 "state": selectedItemIds.contains(e.itemId)
                     ? CheckBoxState.all
                     : CheckBoxState.empty,
@@ -519,7 +516,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       details.add({
         "item_id": id,
         "container_id": stock.containerId,
-        "warehouse_location_id": stock.warehouseLocation,
+        "warehouse_location_id": stock.warehouseLocationId,
       });
     }
     return details;
@@ -690,13 +687,13 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
             data: !kIsLinux
                 ? {
                     "container id": element["container_id"],
-                    "warehouse location": element["warehouse_location_id"],
+                    "warehouse location id": element["warehouse_location_id"],
                   }
                 : {
                     "container id": {
                       "stringValue": element["container_id"],
                     },
-                    "warehouse location": {
+                    "warehouse location id": {
                       "stringValue": element["warehouse_location_id"],
                     },
                   });

@@ -6,17 +6,15 @@ class InputFieldsObjectBoxModel {
     this.id = 0,
     required this.uid,
     required this.field,
-    required this.datatype,
     required this.category,
-    required this.isWithSKU,
-    required this.isTitleCase,
-    required this.isBg,
-    required this.lockable,
+    required this.datatype,
+    required this.inSku,
+    required this.isBackground,
+    required this.isLockable,
+    required this.items,
+    required this.nameCase,
+    required this.valueCase,
     required this.order,
-    this.items,
-    this.textValue,
-    this.locked,
-    this.updateTime,
   });
 
   @Id()
@@ -24,35 +22,29 @@ class InputFieldsObjectBoxModel {
 
   String? uid;
   String? field;
-  String? datatype;
   String? category;
-  bool? isWithSKU;
-  bool? isTitleCase;
-  bool? isBg;
-  bool? lockable;
-  int? order;
+  String? datatype;
+  bool? inSku;
+  bool? isBackground;
+  bool? isLockable;
   List<String>? items;
-  String? textValue;
-  bool? locked;
-
-  @Property(type: PropertyType.date)
-  DateTime? updateTime;
+  String? nameCase;
+  String? valueCase;
+  int? order;
 
   factory InputFieldsObjectBoxModel.fromJson(Map json) {
     return InputFieldsObjectBoxModel(
       uid: json["uid"],
       field: json["field"],
-      datatype: json["datatype"],
       category: json["category"],
-      isWithSKU: json["isWithSKU"],
-      isTitleCase: json["isTitleCase"],
-      isBg: json["isBg"],
-      lockable: json["lockable"],
+      datatype: json["datatype"],
+      inSku: json["in_sku"],
+      isBackground: json["is_background"],
+      isLockable: json["is_lockable"],
+      items: json["items"]?.cast<String>(),
+      nameCase: json["name_case"],
+      valueCase: json["value_case"],
       order: int.parse(json["order"].toString()),
-      items: json["items"] != null ? List<String>.from(json["items"]) : null,
-      updateTime: json["updateTime"],
-      textValue: json["textValue"] ?? "",
-      locked: json["locked"] ?? false,
     );
   }
 
@@ -60,21 +52,20 @@ class InputFieldsObjectBoxModel {
     return {
       "uid": uid,
       "field": field,
-      "datatype": datatype,
       "category": category,
-      "isWithSKU": isWithSKU,
-      "isTitleCase": isTitleCase,
-      "isBg": isBg,
-      "lockable": lockable,
-      "order": order,
+      "datatype": datatype,
+      "in_sku": inSku,
+      "is_background": isBackground,
+      "is_lockable": isLockable,
       "items": items,
-      "textValue": textValue,
-      "locked": locked,
+      "name_case": nameCase,
+      "value_case": valueCase,
+      "order": order,
     };
   }
 
   @override
   String toString() {
-    return "InputFieldsModel(id:$id, uid: $uid, field:$field, datatype:$datatype, category:$category, isWithSKU:$isWithSKU, isTitleCase:$isTitleCase, isBg:$isBg, lockable:$lockable, order:$order, items:$items, textValue:$textValue, locked:$locked, updateTime:$updateTime)";
+    return "InputFieldsModel(id:$id, uid: $uid, field:$field, datatype:$datatype, category:$category, in_sku:$inSku, is_background:$isBackground, is_lockable:$isLockable, items, $items, name_case:$nameCase, value_case: $valueCase, order:$order)";
   }
 }

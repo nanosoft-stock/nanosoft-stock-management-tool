@@ -9,9 +9,7 @@ import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
-import 'package:stock_management_tool/features/visualize_stock/data/models/stock_field_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
 import 'package:stock_management_tool/injection_container.dart';
@@ -25,7 +23,7 @@ class VisualizeStockRepositoryImplementation
   List fieldsOrder = [
     "date",
     "category",
-    "warehouse location",
+    "warehouse location id",
     "container id",
     "item id",
     "serial number",
@@ -68,44 +66,41 @@ class VisualizeStockRepositoryImplementation
     "Not Equals",
     "Greater Than",
     "Lesser Than",
-    "Between"
+    // "Between"
   ];
 
   @override
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange}) async {
+    _objectBox.getInputFieldStream().listen((event) {
+      onChange(visualizeStock);
+    });
     _objectBox.getStockStream().listen((event) {
       visualizeStock["stocks"] =
           getFilteredStocks(filters: visualizeStock["filters"]);
       onChange(visualizeStock);
     });
-    _objectBox.getInputFieldStream().listen((event) {
-      onChange(visualizeStock);
-    });
   }
 
   @override
-  List<StockFieldModel> getAllFields() {
-    List fields = _objectBox.getInputFields().map((e) => e.toJson()).toList();
+  List<String> getAllFields() {
+    List fields = _objectBox.getInputFields().map((e) => e.field).toList();
 
-    List newFields = [];
+    List newFields = [...fieldsOrder];
+    newFields.removeWhere((e) => !fields.contains(e));
 
-    for (var ele in fieldsOrder) {
-      newFields.add(fields.firstWhere((e) => e["field"] == ele));
-    }
-
-    fields = newFields;
-
-    return fields.map((e) => StockFieldModel.fromJson(e)).toSet().toList();
+    return newFields.cast<String>();
   }
 
   @override
   List<Map<String, dynamic>> getAllStocks() {
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+    List stocks = _objectBox.getStocks();
 
-    stocks.sort((a, b) => b["date"].compareTo(a["date"]));
+    stocks.sort((a, b) => b.date.compareTo(a.date));
 
-    stocks = stocks.map((e) => StockModel.fromJson(e).toJson()).toList();
+    stocks = stocks
+        .map((e) => StockModel.fromJson(e.toPartialJson()).toJson())
+        .toList();
 
     for (var e in stocks) {
       e["date"] = DateFormat('dd-MM-yyyy')
@@ -148,19 +143,19 @@ class VisualizeStockRepositoryImplementation
       {required List fields, required List stocks}) {
     Map<String, dynamic> filters = {};
 
-    for (var ele in fields) {
-      filters[ele.field] = {
-        "field": ele.field,
+    for (var field in fields) {
+      filters[field] = {
+        "field": field,
         "show_column": true,
-        "sort": ele.field != "date" ? Sort.none : Sort.desc,
+        "sort": field != "date" ? Sort.none : Sort.desc,
         "filter_by": "",
         "filter_value": "",
         "search_value": "",
         "all_selected": true,
-        ...getUniqueValues(field: ele.field, stocks: stocks),
+        ...getUniqueValues(field: field, stocks: stocks),
         ...getFilterByValuesByDatatype(
             values: stocks
-                .map((stock) => stock[ele.field].toString())
+                .map((stock) => stock[field].toString())
                 .toList()
                 .cast<String>()),
       };
@@ -332,7 +327,7 @@ class VisualizeStockRepositoryImplementation
               value = null;
               break;
             case TextCellValue():
-              value = cellValue.value;
+              value = cellValue.value.toString();
               break;
             case IntCellValue():
               value = cellValue.value.toString();
@@ -361,11 +356,11 @@ class VisualizeStockRepositoryImplementation
 
         if (!items.containsKey(i)) {
           if (containers[c] != null) {
-            rowData["warehouse location"] =
+            rowData["warehouse location id"] =
                 containers[c]["warehouse_location_id"] ?? "";
           } else {
             containers[c] = {"warehouse_location_id": "", "status": "added"};
-            rowData["warehouse location"] = "";
+            rowData["warehouse location id"] = "";
           }
 
           newStocks.add(AddNewStockHelper.toJson(data: rowData));
@@ -373,7 +368,7 @@ class VisualizeStockRepositoryImplementation
         } else {
           rowData["container id"] = items[i]["container_id"];
           c = rowData["container id"];
-          rowData["warehouse location"] =
+          rowData["warehouse location id"] =
               containers[c]["warehouse_location_id"] ?? "";
 
           existingStocks.add({
@@ -528,16 +523,14 @@ class VisualizeStockRepositoryImplementation
         for (var field in fields) {
           var cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(field.isTitleCase
-              ? field.field.toString().toTitleCase()
-              : field.field.toUpperCase());
+          cell.value = TextCellValue(field.toTitleCase());
           column++;
         }
       } else {
         for (var field in fields) {
           var cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(stocks[row - 1][field.field].toString());
+          cell.value = TextCellValue(stocks[row - 1][field].toString());
           column++;
         }
       }

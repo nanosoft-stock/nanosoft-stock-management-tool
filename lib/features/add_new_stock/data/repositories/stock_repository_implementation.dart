@@ -1,7 +1,7 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
@@ -13,57 +13,88 @@ class StockRepositoryImplementation implements StockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
-  Future<List<StockInputFieldModel>> getInitialInputFields() async {
+  List<Map<String, dynamic>> getInitialInputFields() {
     return [
       {
-        "uid": "",
         "field": "category",
         "datatype": "string",
-        "lockable": true,
-        "isWithSKU": true,
-        "isTitleCase": true,
-        "isBg": false,
+        "in_sku": true,
+        "is_background": false,
+        "is_lockable": true,
+        "items": _objectBox.getCategories().map((e) => e.category!).toList()
+          ..sort((a, b) => a.compareTo(b)),
+        "name_case": "title",
+        "value_case": "none",
         "order": 2,
-        "items": _objectBox
-            .getCategories()
-            .map((e) => e.category!.toTitleCase())
-            .toList()
       },
-    ].map((e) => StockInputFieldModel.fromJson(e)).toList();
+    ].map((e) => StockInputFieldModel.fromJson(e).toJson()).toList();
   }
 
   @override
-  Future<List<StockInputFieldModel>> getCategoryBasedInputFields(
-      {required String category}) async {
+  List<Map<String, dynamic>> getCategoryBasedInputFields(
+      {required String category}) {
     List fields = _objectBox
         .getInputFields()
         .where((element) =>
-            !element.isBg! &&
-            element.category == category.toLowerCase() &&
-            element.field != "category")
+            !element.isBackground! &&
+            element.category?.toLowerCase() == category.toLowerCase())
         .map((e) {
-      if (e.field == 'sku') {
+      if (e.field == "category") {
+        return {
+          ...e.toJson(),
+          "items": _objectBox.getCategories().map((e) => e.category!).toList()
+            ..sort((a, b) => a.compareTo(b)),
+          "text_value": category,
+        };
+      } else if (e.field == 'sku') {
         e.items = _objectBox
             .getProducts()
-            .where((element) => element.category == category.toLowerCase())
+            .where((element) =>
+                element.category?.toLowerCase() == category.toLowerCase())
             .map((e) => e.sku!)
-            .toList();
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
+      } else if (e.field == "container id") {
+        e.items = _objectBox
+            .getContainerIds()
+            .map((e) => e.containerId!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
+      } else if (e.field == "warehouse location id") {
+        e.items = _objectBox
+            .getWarehouseLocationIds()
+            .map((e) => e.warehouseLocationId!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
       }
       return e.toJson();
     }).toList();
 
-    return fields.map((e) => StockInputFieldModel.fromJson(e)).toList();
+    fields.sort((a, b) => a["order"].compareTo(b["order"]));
+
+    return fields
+        .map((e) => StockInputFieldModel.fromJson(e).toJson())
+        .toList();
   }
 
   @override
-  Future<Map> getProductDescription(
-      {required String category, required String sku}) async {
+  Map<String, dynamic> getProductDescription(
+      {required String category, required String sku}) {
     return _objectBox
         .getProducts()
-        .where((element) =>
-            element.category == category.toLowerCase() && element.sku == sku)
-        .map((e) => e.toJson())
-        .toList()[0];
+        .firstWhere(
+            (element) => element.sku?.toUpperCase() == sku.toUpperCase())
+        .toJson();
+  }
+
+  @override
+  String getWarehouseLocationId({required String containerId}) {
+    return _objectBox
+            .getContainerIds()
+            .firstWhere(
+                (element) => element.containerId == containerId.toUpperCase())
+            .warehouseLocationId ??
+        "";
   }
 
   @override
@@ -86,27 +117,31 @@ class StockRepositoryImplementation implements StockRepository {
     });
 
     for (var element in fields) {
-      if (element.field == "warehouse location") {
-        String container =
-            fields.firstWhere((e) => e.field == "container id").textValue;
+      element["text_value"] =
+          CaseHelper.convert(element["value_case"], element["text_value"]);
+
+      if (element["field"] == "warehouse location id") {
+        String container = fields
+            .firstWhere((e) => e["field"] == "container id")["text_value"];
         if (container != "" &&
             containers[container] != null &&
             containers[container]["warehouse_location_id"] != "") {
-          data[element.field] = containers[container]["warehouse_location_id"];
+          data[element["field"]] =
+              containers[container]["warehouse_location_id"];
         } else if (container != "") {
-          data[element.field] = element.textValue;
+          data[element["field"]] = element["text_value"];
           containers[container] = {
             "status": "added",
-            "warehouse_location_id": element.textValue,
+            "warehouse_location_id": element["text_value"],
           };
-          if (element.textValue != "") {
-            warehouseLocations[element.textValue] = null;
+          if (element["text_value"] != "") {
+            warehouseLocations[element["text_value"]] = null;
           }
         } else {
           return;
         }
       } else {
-        data[element.field] = element.textValue;
+        data[element["field"]] = element["text_value"];
       }
     }
 
@@ -211,7 +246,7 @@ class StockRepositoryImplementation implements StockRepository {
       "group_id": const Uuid().v1(),
       "items": [data["item id"]],
       "container_id": data["container id"],
-      "warehouse_location_id": data["warehouse location"],
+      "warehouse_location_id": data["warehouse location id"],
       "move_type": "initial",
       "state": "completed",
     };

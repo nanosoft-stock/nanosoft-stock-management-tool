@@ -7,7 +7,7 @@ class ImportFromExcelUseCase extends UseCase {
   final VisualizeStockRepository _visualizeStockRepository;
 
   @override
-  Future call({params}) {
-    return _visualizeStockRepository.importFromExcel();
+  Future call({params}) async {
+    return await _visualizeStockRepository.importFromExcel();
   }
 }

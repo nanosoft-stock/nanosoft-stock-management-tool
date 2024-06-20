@@ -10,9 +10,9 @@ import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:uuid/uuid.dart';
 
@@ -72,10 +72,11 @@ class VisualizeStockRepositoryImplementation
   @override
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange}) async {
-    _objectBox.getInputFieldStream().listen((event) {
+    _objectBox.getInputFieldStream().listen((snapshot) {
       onChange(visualizeStock);
     });
-    _objectBox.getStockStream().listen((event) {
+
+    _objectBox.getStockStream().listen((snapshot) {
       visualizeStock["stocks"] =
           getFilteredStocks(filters: visualizeStock["filters"]);
       onChange(visualizeStock);
@@ -440,6 +441,10 @@ class VisualizeStockRepositoryImplementation
 
     debugPrint("Add Stock Location History successful");
 
+    await _addNewFieldItems(stocks: newStocks..addAll(existingStocks));
+
+    debugPrint("Add New Field Items successful");
+
     debugPrint("Import successful");
   }
 
@@ -505,6 +510,60 @@ class VisualizeStockRepositoryImplementation
                   }
                 },
         );
+  }
+
+  Future<void> _addNewFieldItems({required List stocks}) async {
+    List uniqueCategories =
+        stocks.toSet().map((e) => (e["category"] ?? "").trim()).toList();
+
+    uniqueCategories.removeWhere((e) => e == "");
+
+    List modifiedFields = [];
+
+    for (var category in uniqueCategories) {
+      List fields = _objectBox
+          .getInputFields()
+          .where((e) =>
+              e.category?.toLowerCase() == category.toLowerCase() &&
+              e.inSku == true &&
+              e.items != null &&
+              !["category", "sku"].contains(e.field))
+          .map((e) => e.toJson())
+          .toList();
+
+      for (var field in fields) {
+        List<String> values = stocks
+            .toSet()
+            .where((e) => e["category"] == category)
+            .map((e) => e[field["field"]])
+            .toList()
+            .cast<String>();
+
+        values.removeWhere((e) => e == "");
+
+        if (values.any((e) => !field["items"].contains(e))) {
+          String docRef = field["uid"];
+          List items = ((field["items"] as List<String>).toSet()
+                ..addAll(values))
+              .toList()
+              .cast<String>()
+            ..sort((a, b) => a.compareTo(b));
+
+          modifiedFields.add({
+            "doc_ref": docRef,
+            "items": items,
+            ...(field
+              ..remove("items")
+              ..remove("uid")),
+          });
+        }
+      }
+    }
+
+    if (modifiedFields.isNotEmpty) {
+      await sl.get<Firestore>().batchWrite(
+          path: "category_fields", data: modifiedFields, isToBeUpdated: true);
+    }
   }
 
   @override

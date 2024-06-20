@@ -1,13 +1,61 @@
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/add_new_product_helper.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_product/data/models/product_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 class ProductRepositoryImplementation implements ProductRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
+
+  @override
+  void listenToCloudDataChange(
+      {required List fields, required Function(List) onChange}) {
+    _objectBox.getInputFieldStream().listen((snapshot) async {
+      String category =
+          fields.firstWhere((ele) => ele["field"] == "category")["text_value"];
+
+      if (_objectBox
+          .getCategories()
+          .any((e) => e.category?.toLowerCase() == category.toLowerCase())) {
+        List newFields = _objectBox
+            .getInputFields()
+            .where((e) =>
+                !e.isBackground! &&
+                e.category?.toLowerCase() == category.toLowerCase() &&
+                !["category", "sku"].contains(e.field))
+            .map((e) => ProductInputFieldModel.fromJson({
+                  ...e.toJson(),
+                  "text_value": fields.firstWhere(
+                      (ele) => ele["field"] == e.field,
+                      orElse: () => <String, dynamic>{})["text_value"],
+                }).toJson())
+            .toList();
+
+        newFields.sort((a, b) => a["order"].compareTo(b["order"]));
+        fields.removeWhere((e) => !["category", "sku"].contains(e.field));
+        fields.addAll(newFields);
+
+        onChange(fields);
+      }
+    });
+
+    _objectBox.getCategoryStream().listen((snapshot) {
+      if (snapshot.isNotEmpty) {
+        Map categoryMap =
+            fields.firstWhere((ele) => ele["field"] == "category");
+        categoryMap["items"] = _objectBox
+            .getCategories()
+            .map((e) => e.category!)
+            .toList()
+          ..sort((a, b) => a.compareTo(b));
+      }
+
+      onChange(fields);
+    });
+  }
 
   @override
   List<Map<String, dynamic>> getInitialInputFields() {
@@ -73,5 +121,47 @@ class ProductRepositoryImplementation implements ProductRepository {
 
     await sl.get<Firestore>().createDocument(
         path: "skus", data: AddNewProductHelper.toJson(data: data));
+
+    await _addNewFieldItems(data: data);
+  }
+
+  Future<void> _addNewFieldItems({required Map data}) async {
+    List fields = _objectBox
+        .getInputFields()
+        .where((e) =>
+            e.category == data["category"] &&
+            e.inSku == true &&
+            e.items != null &&
+            !["category", "sku"].contains(e.field))
+        .map((e) => e.toJson())
+        .toList();
+
+    for (var field in fields) {
+      String value = data[field["field"]];
+
+      if (value != "" && !field["items"].contains(value)) {
+        List items = (field["items"].toSet()..add(data[field["field"]]))
+            .toList()
+          ..sort((a, b) => a.toString().compareTo(b.toString()));
+
+        await sl.get<Firestore>().modifyDocument(
+              path: "category_fields",
+              uid: field["uid"],
+              updateMask: ["items"],
+              data: !kIsLinux
+                  ? {
+                      "items": items,
+                    }
+                  : {
+                      "items": {
+                        "arrayValue": {
+                          "values":
+                              items.map((e) => {"stringValue": e}).toList(),
+                        }
+                      }
+                    },
+            );
+      }
+    }
   }
 }

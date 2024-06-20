@@ -21,13 +21,14 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/r
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/search_value_changed_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 
-part 'visualize_stock_event.dart';part 'visualize_stock_state.dart';
+part 'visualize_stock_event.dart';
+part 'visualize_stock_state.dart';
 
 class VisualizeStockBloc
     extends Bloc<VisualizeStockEvent, VisualizeStockState> {
+  final InitialVisualizeStockUseCase? _initialVisualizeStockUseCase;
   final ListenToCloudDataChangeVisualizeStockUseCase?
       _listenToCloudDataChangeVisualizeStockUseCase;
-  final InitialVisualizeStockUseCase? _initialVisualizeStockUseCase;
   final ImportFromExcelUseCase? _importFromExcelUseCase;
   final ExportToExcelUseCase? _exportToExcelUseCase;
   final AddVisualizeStockLayerUseCase? _addVisualizeStockLayerUseCase;
@@ -50,8 +51,8 @@ class VisualizeStockBloc
       _checkboxToggledVisualizeStockUseCase;
 
   VisualizeStockBloc(
-    this._listenToCloudDataChangeVisualizeStockUseCase,
     this._initialVisualizeStockUseCase,
+    this._listenToCloudDataChangeVisualizeStockUseCase,
     this._importFromExcelUseCase,
     this._exportToExcelUseCase,
     this._addVisualizeStockLayerUseCase,
@@ -90,14 +91,15 @@ class VisualizeStockBloc
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<VisualizeStockState> emit) async {
     await Future.delayed(const Duration(seconds: 2));
+
     Map<String, dynamic> visualizeStock =
         await _initialVisualizeStockUseCase!();
+
     await _listenToCloudDataChangeVisualizeStockUseCase!(params: {
       "visualize_stock": visualizeStock,
-      "on_change": (Map visualizeStock) {
-        add(LoadedEvent(visualizeStock: visualizeStock));
-      }
+      "on_change": event.onChange,
     });
+
     emit(LoadedState(visualizeStock: visualizeStock));
   }
 

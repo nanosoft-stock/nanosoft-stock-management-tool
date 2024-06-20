@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class FirestoreDefault {
   final firestore = FirebaseFirestore.instance;
@@ -83,10 +84,12 @@ class FirestoreDefault {
         try {
           if (!isToBeUpdated) {
             var docRef = firestore.collection(path).doc();
-            docRefData[e["item id"]] = {
-              "container_id": e["container id"],
-              "doc_ref": docRef.id,
-            };
+            if (path == "stock_data") {
+              docRefData[e["item id"]] = {
+                "container_id": e["container id"],
+                "doc_ref": docRef.id,
+              };
+            }
 
             batch.set(docRef, e.cast<String, dynamic>());
           } else {
@@ -94,6 +97,7 @@ class FirestoreDefault {
                 (e..remove("doc_ref")).cast<String, dynamic>());
           }
         } catch (e) {
+          debugPrint(e.toString());
           return {};
         }
       }

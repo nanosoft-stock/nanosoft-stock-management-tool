@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_completed_moves_overlay.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_field_filter.dart';
@@ -13,7 +14,6 @@ import 'package:stock_management_tool/features/locate_stock/presentation/widgets
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_table_filter.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_add_new_input_row.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_input_row.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class LocateStockView extends StatelessWidget {
   LocateStockView({super.key});
@@ -53,7 +53,13 @@ class LocateStockView extends StatelessWidget {
   Widget _blocBuilder(BuildContext context, LocateStockState state) {
     switch (state.runtimeType) {
       case const (LoadingState):
-        _locateStockBloc.add(const CloudDataChangeEvent());
+        _locateStockBloc.add(CloudDataChangeEvent(
+          onChange: (locatedStock) {
+            _locateStockBloc.add(LoadedEvent(
+                locatedStock: locatedStock.cast<String, dynamic>()));
+          },
+        ));
+
         return _buildLoadingStateWidget();
 
       case const (ErrorState):

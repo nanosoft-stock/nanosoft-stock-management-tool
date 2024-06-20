@@ -111,8 +111,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     this._getAllCompletedStateItemsUseCase,
     this._expandCompletedMovesItemUseCase,
   ) : super(LoadingState()) {
-    on<LoadedEvent>(loadedEvent);
     on<CloudDataChangeEvent>(cloudDataChangeEvent);
+    on<LoadedEvent>(loadedEvent);
     on<AddNewInputRowEvent>(addNewInputRowEvent);
     on<RemoveInputRowEvent>(removeInputRowEvent);
     on<AddOverlayLayerEvent>(addOverlayLayerEvent);
@@ -147,15 +147,13 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<LocateStockState> emit) async {
-    Map<String, dynamic> locatedStock =
-        event.locatedStock ?? await _initialLocateStockUseCase!();
+    Map<String, dynamic> locatedStock = await _initialLocateStockUseCase!();
 
     await _locateStockCloudDataChangeUseCase!(params: {
       "located_stock": locatedStock,
-      "on_change": (Map locatedStock) {
-        add(LoadedEvent(locatedStock: locatedStock.cast<String, dynamic>()));
-      },
+      "on_change": event.onChange,
     });
+
     emit(LoadedState(locatedStock: locatedStock));
   }
 

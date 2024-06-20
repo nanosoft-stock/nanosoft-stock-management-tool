@@ -3,7 +3,7 @@ import 'package:stock_management_tool/core/constants/enums.dart';
 abstract class LocateStockRepository {
   void listenToCloudDataChange({
     required Map locatedStock,
-    required void Function(Map) onChange,
+    required Function(Map) onChange,
   });
 
   Map<String, dynamic> getAllIds();

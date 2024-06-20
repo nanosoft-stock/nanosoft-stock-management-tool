@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/datatype_converter_helper.dart';
 
 class AddNewItemLocationHistoryHelper {
@@ -11,9 +12,9 @@ class AddNewItemLocationHistoryHelper {
       "date",
       "group_id",
       "items",
-      "move_type",
       "container_id",
       "warehouse_location_id",
+      "move_type",
       "state",
       "user",
     ];
@@ -24,7 +25,7 @@ class AddNewItemLocationHistoryHelper {
           convertedData[field] =
               Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (field == "user") {
-          convertedData[field] = userName;
+          convertedData[field] = CaseHelper.convert("title", userName);
         } else {
           convertedData[field] = data[field] ?? "";
         }
@@ -48,8 +49,9 @@ class AddNewItemLocationHistoryHelper {
           };
         } else {
           convertedData[field] = {
-            DatatypeConverterHelper.convert(datatype: "string"):
-                field != "user" ? data[field] ?? "" : userName,
+            DatatypeConverterHelper.convert(datatype: "string"): field != "user"
+                ? data[field] ?? ""
+                : CaseHelper.convert("title", userName),
           };
         }
       }

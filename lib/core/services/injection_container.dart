@@ -9,6 +9,7 @@ import 'package:stock_management_tool/features/add_new_product/data/repositories
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_product/domain/usecases/listen_to_cloud_data_change_add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/value_changed_add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/repositories/stock_repository_implementation.dart';
@@ -16,6 +17,7 @@ import 'package:stock_management_tool/features/add_new_stock/domain/repositories
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/checkbox_toggled_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_stock/domain/usecases/listen_to_cloud_data_change_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/value_changed_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
@@ -114,25 +116,29 @@ Future<void> initializeDependencies() async {
       () => StockRepositoryImplementation());
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
       () => GetStockInitialInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewStockUseCase>(
+      () => ListenToCloudDataChangeAddNewStockUseCase(sl()));
   sl.registerLazySingleton<ValueChangedAddNewStockUseCase>(
       () => ValueChangedAddNewStockUseCase(sl()));
   sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
       () => CheckboxToggledAddNewStockUseCase());
   sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
   sl.registerFactory<AddNewStockBloc>(
-      () => AddNewStockBloc(sl(), sl(), sl(), sl()));
+      () => AddNewStockBloc(sl(), sl(), sl(), sl(), sl()));
 
   // Add New Product
   sl.registerLazySingleton<ProductRepository>(
       () => ProductRepositoryImplementation());
   sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
       () => GetProductInitialInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewProductUseCase>(
+      () => ListenToCloudDataChangeAddNewProductUseCase(sl()));
   sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
       () => ValueChangedAddNewProductUseCase(sl()));
   sl.registerLazySingleton<AddNewProductUseCase>(
       () => AddNewProductUseCase(sl()));
   sl.registerFactory<AddNewProductBloc>(
-      () => AddNewProductBloc(sl(), sl(), sl()));
+      () => AddNewProductBloc(sl(), sl(), sl(), sl()));
 
   // Visualize Stock
   sl.registerLazySingleton<VisualizeStockRepository>(

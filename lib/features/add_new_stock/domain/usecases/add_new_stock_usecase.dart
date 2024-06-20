@@ -19,7 +19,8 @@ class AddNewStockUseCase extends UseCase {
         }
       }
     } else {
-      fields = _stockRepository.getInitialInputFields();
+      fields.removeWhere((e) => e["field"] != "category");
+      fields[0]["text_value"] = "";
     }
 
     return fields;

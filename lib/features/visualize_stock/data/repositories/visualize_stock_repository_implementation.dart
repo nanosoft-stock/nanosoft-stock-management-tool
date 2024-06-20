@@ -12,7 +12,7 @@ import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:uuid/uuid.dart';
 

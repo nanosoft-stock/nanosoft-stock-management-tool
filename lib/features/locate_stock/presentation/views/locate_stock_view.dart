@@ -13,7 +13,7 @@ import 'package:stock_management_tool/features/locate_stock/presentation/widgets
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_table_filter.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_add_new_input_row.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/locate_stock_input_row.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class LocateStockView extends StatelessWidget {
   LocateStockView({super.key});
@@ -287,7 +287,6 @@ class LocateStockView extends StatelessWidget {
                     .contains("multiple_search_selection_overlay") &&
                 rowIndex != null)
               CustomMultipleSearchSelectionOverlay(
-                key: UniqueKey(),
                 allIds: locatedStock["all_ids"],
                 rowData: locatedStock["rows"][rowIndex],
                 hideOverlay: () {
@@ -428,7 +427,6 @@ class LocateStockView extends StatelessWidget {
               ),
             if (locatedStock["layers"].contains("preview_move_overlay"))
               CustomPreviewMoveOverlay(
-                key: UniqueKey(),
                 selectedItems: locatedStock["selected_items"],
                 hideOverlay: () {
                   _locateStockBloc.add(HideOverlayLayerEvent(

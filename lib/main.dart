@@ -14,7 +14,7 @@ import 'package:stock_management_tool/features/auth/presentation/views/authentic
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/views/home_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 Future<void> main() async {

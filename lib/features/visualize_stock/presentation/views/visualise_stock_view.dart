@@ -10,7 +10,7 @@ import 'package:stock_management_tool/features/visualize_stock/presentation/widg
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class VisualiseStockView extends StatelessWidget {

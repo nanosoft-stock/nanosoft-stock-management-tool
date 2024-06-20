@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field.dart';
+import 'package:stock_management_tool/core/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
-import 'package:stock_management_tool/features/add_new_product/presentation/widgets/custom_autocomplete_text_input_field.dart';
-import 'package:stock_management_tool/features/add_new_product/presentation/widgets/custom_text_input_field.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField(

@@ -5,7 +5,7 @@ import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/models/stock_input_field_model.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:uuid/uuid.dart';
 

@@ -35,7 +35,7 @@ class PrintIdBloc extends Bloc<PrintIdEvent, PrintIdState> {
       PrintIdSelectedEvent event, Emitter<PrintIdState> emit) async {
     emit(LoadedState(
         printIdData: await _printIdSelectedUseCase!(params: {
-      "printable_id": event.printableId,
+      "print_id": event.printId,
       "print_id_data": event.printIdData,
     })));
   }

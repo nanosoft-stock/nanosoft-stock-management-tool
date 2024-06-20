@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
-import 'package:stock_management_tool/core/components/custom_dropdown_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/widgets/custom_overlay_effect.dart';
@@ -118,11 +118,13 @@ class CustomPreviewMoveOverlay extends StatelessWidget {
                                 padding: const EdgeInsets.all(10.0),
                                 child: SizedBox(
                                   width: 330.0,
-                                  child: CustomDropdownInputField(
+                                  child: CustomAutocompleteTextInputField(
                                     text: "Container Id",
-                                    controller: TextEditingController(
-                                        text: selectedItems["container_text"]),
-                                    items: selectedItems["container_ids"],
+                                    initialValue:
+                                        selectedItems["container_text"],
+                                    items: selectedItems["container_ids"]
+                                        .cast<String>(),
+                                    validator: (_) => "",
                                     onSelected: (value) {
                                       onContainerIdEntered(value);
                                     },
@@ -133,13 +135,14 @@ class CustomPreviewMoveOverlay extends StatelessWidget {
                                 padding: const EdgeInsets.all(10.0),
                                 child: SizedBox(
                                   width: 330.0,
-                                  child: CustomDropdownInputField(
+                                  child: CustomAutocompleteTextInputField(
                                     text: "Warehouse Location Id",
-                                    controller: TextEditingController(
-                                        text: selectedItems[
-                                            "warehouse_location_text"]),
+                                    initialValue: selectedItems[
+                                        "warehouse_location_text"],
                                     items:
-                                        selectedItems["warehouse_location_ids"],
+                                        selectedItems["warehouse_location_ids"]
+                                            .cast<String>(),
+                                    validator: (_) => "",
                                     onSelected: (value) {
                                       onWarehouseLocationIdEntered(value);
                                     },

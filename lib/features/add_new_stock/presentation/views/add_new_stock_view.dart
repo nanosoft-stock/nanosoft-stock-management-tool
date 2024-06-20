@@ -6,7 +6,7 @@ import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_input_field.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class AddNewStockView extends StatelessWidget {
   AddNewStockView({super.key});

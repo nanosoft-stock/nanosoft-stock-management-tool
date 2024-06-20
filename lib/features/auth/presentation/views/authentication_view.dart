@@ -6,7 +6,7 @@ import 'package:stock_management_tool/features/auth/presentation/bloc/auth_bloc.
 import 'package:stock_management_tool/features/auth/presentation/views/login_view.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/sign_up_view.dart';
 import 'package:stock_management_tool/features/auth/presentation/widgets/custom_segmented_button.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class AuthenticationView extends StatelessWidget {
   AuthenticationView({super.key});

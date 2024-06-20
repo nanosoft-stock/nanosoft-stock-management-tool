@@ -5,10 +5,10 @@ class PrintIdSelectedUseCase extends UseCase {
 
   @override
   Future call({params}) async {
-    String printableId = params["printable_id"];
+    String printId = params["print_id"];
     Map<String, dynamic> printIdData = params["print_id_data"];
 
-    printIdData["printable_id"] = printableId;
+    printIdData["print_id"] = printId;
 
     return printIdData;
   }

@@ -13,9 +13,9 @@ class LoadedEvent extends PrintIdEvent {}
 
 class PrintIdSelectedEvent extends PrintIdEvent {
   const PrintIdSelectedEvent(
-      {required this.printableId, required this.printIdData});
+      {required this.printId, required this.printIdData});
 
-  final String? printableId;
+  final String? printId;
   final Map<String, dynamic>? printIdData;
 }
 

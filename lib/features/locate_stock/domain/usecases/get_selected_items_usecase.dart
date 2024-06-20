@@ -17,7 +17,7 @@ class GetSelectedItemsUseCase extends UseCase {
     data["warehouse_location_ids"] =
         locatedStock["all_ids"]["Warehouse Location Id"];
     data["container_text"] = "";
-    data["warehouse_text"] = "";
+    data["warehouse_location_text"] = "";
 
     locatedStock["selected_items"] = data;
 

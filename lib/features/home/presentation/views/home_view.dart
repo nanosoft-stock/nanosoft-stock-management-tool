@@ -6,7 +6,7 @@ import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/models/nav_item_and_view_model.dart';
 import 'package:stock_management_tool/features/home/presentation/widgets/custom_side_menu.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});

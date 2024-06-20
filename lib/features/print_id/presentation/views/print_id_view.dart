@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
-import 'package:stock_management_tool/core/components/custom_dropdown_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/features/print_id/presentation/bloc/print_id_bloc.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class PrintIdView extends StatelessWidget {
   PrintIdView({super.key});
@@ -81,16 +81,14 @@ class PrintIdView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: CustomDropdownInputField(
+                        child: CustomAutocompleteTextInputField(
                           text: "Print Id",
-                          controller: TextEditingController(
-                              text: printIdData["printable_id"]),
+                          initialValue: printIdData["print_id"],
                           items: printIdData["printable_ids"],
-                          requestFocusOnTap: false,
+                          validator: (_) => "",
                           onSelected: (value) {
                             _printIdBloc.add(PrintIdSelectedEvent(
-                                printableId: value,
-                                printIdData: printIdData));
+                                printId: value, printIdData: printIdData));
                           },
                         ),
                       ),
@@ -98,8 +96,8 @@ class PrintIdView extends StatelessWidget {
                         padding: const EdgeInsets.all(10.0),
                         child: CustomTextInputField(
                           text: "Count",
-                          controller: TextEditingController(
-                              text: printIdData["print_count"]),
+                          initialValue: printIdData["print_count"],
+                          validator: (_) => "",
                           onSelected: (value) {
                             _printIdBloc.add(PrintCountChangedEvent(
                                 printCount: value, printIdData: printIdData));
@@ -112,8 +110,8 @@ class PrintIdView extends StatelessWidget {
                           width: 322.5,
                           child: CustomElevatedButton(
                             onPressed: () {
-                              _printIdBloc.add(PrintPressedEvent(
-                                  printIdData: printIdData));
+                              _printIdBloc.add(
+                                  PrintPressedEvent(printIdData: printIdData));
                             },
                             text: "Print",
                           ),

@@ -6,8 +6,8 @@ import 'package:stock_management_tool/core/data/local_database/models/item_id_ob
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
-import 'package:stock_management_tool/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/objectbox.g.dart';
 import 'package:uuid/uuid.dart';
@@ -112,7 +112,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     _objectBox.getItemIdStream(triggerImmediately: false).listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Item Id"] =
-            snapshot.map((e) => e.itemId).toList();
+            snapshot.map((e) => e.itemId!).toList();
         onChange(locatedStock);
       }
     });
@@ -122,7 +122,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         .listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Container Id"] =
-            snapshot.map((e) => e.containerId).toList();
+            snapshot.map((e) => e.containerId!).toList();
         onChange(locatedStock);
       }
     });
@@ -132,7 +132,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
         .listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Warehouse Location Id"] =
-            snapshot.map((e) => e.warehouseLocationId).toList();
+            snapshot.map((e) => e.warehouseLocationId!).toList();
         onChange(locatedStock);
       }
     });
@@ -170,16 +170,16 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   Map<String, dynamic> getAllIds() {
     Map<String, dynamic> data = {};
 
-    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId).toList()
+    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId!).toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
     data["Container Id"] = _objectBox
         .getContainerIds()
-        .map((e) => e.containerId)
+        .map((e) => e.containerId!)
         .toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
     data["Warehouse Location Id"] = _objectBox
         .getWarehouseLocationIds()
-        .map((e) => e.warehouseLocationId)
+        .map((e) => e.warehouseLocationId!)
         .toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
 
@@ -217,7 +217,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Map<String, dynamic> getInitialFilters() {
-    List fields = _objectBox.getInputFields().map((e) => e.field).toList();
+    List fields = _objectBox.getInputFields().map((e) => e.field!).toList();
 
     List newFields = [...fieldsOrder];
     newFields.removeWhere((e) => !fields.contains(e));

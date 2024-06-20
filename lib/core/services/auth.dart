@@ -1,7 +1,7 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/services/auth_default.dart';
 import 'package:stock_management_tool/core/services/auth_rest_api.dart';
-import 'package:stock_management_tool/injection_container.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class Auth {
   Future<void> signInUser({

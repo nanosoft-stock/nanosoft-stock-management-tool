@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
-import 'package:stock_management_tool/core/components/custom_dropdown_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
@@ -21,7 +21,7 @@ class LocateStockInputRow extends StatelessWidget {
     required this.onAllCheckBoxToggled,
   });
 
-  final List searchableIds = const [
+  final List<String> searchableIds = const [
     "Item Id",
     "Container Id",
     "Warehouse Location Id",
@@ -69,12 +69,11 @@ class LocateStockInputRow extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: CustomDropdownInputField(
-                      text: "Search By",
-                      controller:
-                          TextEditingController(text: rowData["search_by"]),
+                    child: CustomAutocompleteTextInputField(
+                      text: "Search BY",
+                      initialValue: rowData["search_by"],
                       items: searchableIds,
-                      requestFocusOnTap: false,
+                      validator: (_) => "",
                       onSelected: (value) {
                         if (searchableIds.contains(value)) {
                           onSearchBySelected(value);

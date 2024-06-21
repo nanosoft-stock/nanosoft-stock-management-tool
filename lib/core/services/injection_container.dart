@@ -5,6 +5,15 @@ import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/firestore_default.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
+import 'package:stock_management_tool/features/add_new_category/data/repositories/add_new_category_repository_implementation.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_field_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/details_typed_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/field_name_typed_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/initial_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/view_field_details_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/presentation/bloc/add_new_category_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/data/repositories/product_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/add_new_product_usecase.dart';
@@ -98,18 +107,37 @@ Future<void> initializeDependencies() async {
   // ObjectBox
   sl.registerLazySingleton<ObjectBox>(() => ObjectBox());
 
-  // Auth
-  sl.registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImplementation());
-  sl.registerLazySingleton<SignInUserUseCase>(() => SignInUserUseCase(sl()));
-  sl.registerLazySingleton<SignUpUserUseCase>(() => SignUpUserUseCase(sl()));
-  sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl()));
+  // Add New Category
+  sl.registerLazySingleton<AddNewCategoryRepository>(
+      () => AddNewCategoryRepositoryImplementation());
+  sl.registerLazySingleton<InitialAddNewCategoryUseCase>(
+      () => InitialAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewCategoryUseCase>(
+      () => ListenToCloudDataChangeAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<ViewFieldDetailsAddNewCategoryUseCase>(
+      () => ViewFieldDetailsAddNewCategoryUseCase());
+  sl.registerLazySingleton<AddNewFieldAddNewCategoryUseCase>(
+      () => AddNewFieldAddNewCategoryUseCase());
+  sl.registerLazySingleton<FieldNameTypedAddNewCategoryUseCase>(
+      () => FieldNameTypedAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<DetailsTypedAddNewCategoryUseCase>(
+      () => DetailsTypedAddNewCategoryUseCase());
+  sl.registerFactory<AddNewCategoryBloc>(
+      () => AddNewCategoryBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
-  //Home
-  sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImplementation());
-  sl.registerLazySingleton<SignOutUserUseCase>(() => SignOutUserUseCase(sl()));
-  sl.registerFactory<HomeBloc>(() => HomeBloc(sl()));
+  // Add New Product
+  sl.registerLazySingleton<ProductRepository>(
+      () => ProductRepositoryImplementation());
+  sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
+      () => GetProductInitialInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewProductUseCase>(
+      () => ListenToCloudDataChangeAddNewProductUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
+      () => ValueChangedAddNewProductUseCase(sl()));
+  sl.registerLazySingleton<AddNewProductUseCase>(
+      () => AddNewProductUseCase(sl()));
+  sl.registerFactory<AddNewProductBloc>(
+      () => AddNewProductBloc(sl(), sl(), sl(), sl()));
 
   // Add New Stock
   sl.registerLazySingleton<StockRepository>(
@@ -126,73 +154,18 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<AddNewStockBloc>(
       () => AddNewStockBloc(sl(), sl(), sl(), sl(), sl()));
 
-  // Add New Product
-  sl.registerLazySingleton<ProductRepository>(
-      () => ProductRepositoryImplementation());
-  sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
-      () => GetProductInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<ListenToCloudDataChangeAddNewProductUseCase>(
-      () => ListenToCloudDataChangeAddNewProductUseCase(sl()));
-  sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
-      () => ValueChangedAddNewProductUseCase(sl()));
-  sl.registerLazySingleton<AddNewProductUseCase>(
-      () => AddNewProductUseCase(sl()));
-  sl.registerFactory<AddNewProductBloc>(
-      () => AddNewProductBloc(sl(), sl(), sl(), sl()));
+  // Auth
+  sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImplementation());
+  sl.registerLazySingleton<SignInUserUseCase>(() => SignInUserUseCase(sl()));
+  sl.registerLazySingleton<SignUpUserUseCase>(() => SignUpUserUseCase(sl()));
+  sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl()));
 
-  // Visualize Stock
-  sl.registerLazySingleton<VisualizeStockRepository>(
-      () => VisualizeStockRepositoryImplementation());
-  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
-      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<InitialVisualizeStockUseCase>(
-      () => InitialVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<SortColumnVisualizeStockUseCase>(
-      () => SortColumnVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<ImportFromExcelUseCase>(
-      () => ImportFromExcelUseCase(sl()));
-  sl.registerLazySingleton<ExportToExcelUseCase>(
-      () => ExportToExcelUseCase(sl()));
-  sl.registerLazySingleton<AddVisualizeStockLayerUseCase>(
-      () => AddVisualizeStockLayerUseCase());
-  sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
-      () => HideVisualizeStockLayerUseCase());
-  sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
-      () => ResetAllFiltersVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<RearrangeColumnsUseCase>(
-      () => RearrangeColumnsUseCase());
-  sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
-      () => ChangeColumnVisibilityUseCase());
-  sl.registerLazySingleton<FilterColumnVisualizeStockUseCase>(
-      () => FilterColumnVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<ClearColumnFilterVisualizeStockUseCase>(
-      () => ClearColumnFilterVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
-      () => FilterBySelectedVisualizeStockUseCase());
-  sl.registerLazySingleton<FilterValueChangedVisualizeStockUseCase>(
-      () => FilterValueChangedVisualizeStockUseCase());
-  sl.registerLazySingleton<SearchValueChangedVisualizeStockUseCase>(
-      () => SearchValueChangedVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
-      () => CheckboxToggledVisualizeStockUseCase());
-  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-      ));
+  //Home
+  sl.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImplementation());
+  sl.registerLazySingleton<SignOutUserUseCase>(() => SignOutUserUseCase(sl()));
+  sl.registerFactory<HomeBloc>(() => HomeBloc(sl()));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(
@@ -305,6 +278,60 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<PrintPressedUseCase>(
       () => PrintPressedUseCase(sl()));
   sl.registerFactory<PrintIdBloc>(() => PrintIdBloc(sl(), sl(), sl(), sl()));
+
+  // Visualize Stock
+  sl.registerLazySingleton<VisualizeStockRepository>(
+      () => VisualizeStockRepositoryImplementation());
+  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
+      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<InitialVisualizeStockUseCase>(
+      () => InitialVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<SortColumnVisualizeStockUseCase>(
+      () => SortColumnVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<ImportFromExcelUseCase>(
+      () => ImportFromExcelUseCase(sl()));
+  sl.registerLazySingleton<ExportToExcelUseCase>(
+      () => ExportToExcelUseCase(sl()));
+  sl.registerLazySingleton<AddVisualizeStockLayerUseCase>(
+      () => AddVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
+      () => HideVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
+      () => ResetAllFiltersVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<RearrangeColumnsUseCase>(
+      () => RearrangeColumnsUseCase());
+  sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
+      () => ChangeColumnVisibilityUseCase());
+  sl.registerLazySingleton<FilterColumnVisualizeStockUseCase>(
+      () => FilterColumnVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<ClearColumnFilterVisualizeStockUseCase>(
+      () => ClearColumnFilterVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
+      () => FilterBySelectedVisualizeStockUseCase());
+  sl.registerLazySingleton<FilterValueChangedVisualizeStockUseCase>(
+      () => FilterValueChangedVisualizeStockUseCase());
+  sl.registerLazySingleton<SearchValueChangedVisualizeStockUseCase>(
+      () => SearchValueChangedVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
+      () => CheckboxToggledVisualizeStockUseCase());
+  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+      ));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

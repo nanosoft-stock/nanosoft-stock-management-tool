@@ -13,8 +13,6 @@ class CloudDataChangeEvent extends VisualizeStockEvent {
   final Function(Map)? onChange;
 }
 
-class LoadingEvent extends VisualizeStockEvent {}
-
 class LoadedEvent extends VisualizeStockEvent {
   const LoadedEvent({required this.visualizeStock});
 

@@ -5,10 +5,10 @@ import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewProductHelper {
-  static Map toJson({required Map data}) {
+  static Map<String, dynamic> toJson({required Map data}) {
     final objectbox = sl.get<ObjectBox>();
 
-    Map convertedData = {};
+    Map<String, dynamic> convertedData = {};
     String category = data["category"];
 
     List fields = objectbox

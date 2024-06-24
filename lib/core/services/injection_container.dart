@@ -7,11 +7,15 @@ import 'package:stock_management_tool/core/services/firestore_default.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/features/add_new_category/data/repositories/add_new_category_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_category_pressed_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_field_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/category_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/details_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/field_name_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/initial_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/rearrange_fields_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/remove_field_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/view_field_details_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/presentation/bloc/add_new_category_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/data/repositories/product_repository_implementation.dart';
@@ -116,14 +120,22 @@ Future<void> initializeDependencies() async {
       () => ListenToCloudDataChangeAddNewCategoryUseCase(sl()));
   sl.registerLazySingleton<ViewFieldDetailsAddNewCategoryUseCase>(
       () => ViewFieldDetailsAddNewCategoryUseCase());
+  sl.registerLazySingleton<CategoryTypedAddNewCategoryUseCase>(
+      () => CategoryTypedAddNewCategoryUseCase());
   sl.registerLazySingleton<AddNewFieldAddNewCategoryUseCase>(
       () => AddNewFieldAddNewCategoryUseCase());
+  sl.registerLazySingleton<RearrangeFieldsAddNewCategoryUseCase>(
+      () => RearrangeFieldsAddNewCategoryUseCase());
+  sl.registerLazySingleton<RemoveFieldAddNewCategoryUseCase>(
+      () => RemoveFieldAddNewCategoryUseCase());
+  sl.registerLazySingleton<AddNewCategoryPressedUseCase>(
+      () => AddNewCategoryPressedUseCase(sl()));
   sl.registerLazySingleton<FieldNameTypedAddNewCategoryUseCase>(
       () => FieldNameTypedAddNewCategoryUseCase(sl()));
   sl.registerLazySingleton<DetailsTypedAddNewCategoryUseCase>(
       () => DetailsTypedAddNewCategoryUseCase());
-  sl.registerFactory<AddNewCategoryBloc>(
-      () => AddNewCategoryBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory<AddNewCategoryBloc>(() => AddNewCategoryBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Add New Product
   sl.registerLazySingleton<ProductRepository>(

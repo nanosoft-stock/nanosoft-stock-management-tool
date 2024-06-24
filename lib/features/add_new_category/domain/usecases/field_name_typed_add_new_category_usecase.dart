@@ -16,34 +16,37 @@ class FieldNameTypedAddNewCategoryUseCase extends UseCase {
 
     String displayField = addNewCategoryData["display_field"];
 
-    addNewCategoryData["field_details"][value] =
-        addNewCategoryData["field_details"][displayField];
-    addNewCategoryData["field_details"][value][title] = value;
+    if (displayField != value) {
+      addNewCategoryData["field_details"][value] =
+          addNewCategoryData["field_details"][displayField];
+      addNewCategoryData["field_details"][value][title] = value;
 
-    addNewCategoryData.remove(displayField);
+      addNewCategoryData["field_details"].remove(displayField);
 
-    addNewCategoryData["rearrange_fields"] =
-        addNewCategoryData["rearrange_fields"]
-            .map((e) => e == displayField ? value : e)
-            .toList();
+      addNewCategoryData["rearrange_fields"] =
+          addNewCategoryData["rearrange_fields"]
+              .map((e) => e == displayField ? value : e)
+              .toList();
 
-    addNewCategoryData["display_field"] = value;
+      addNewCategoryData["display_field"] = value;
 
-    Map autoFillData = _addNewCategoryRepository.getFieldAutoFillData(value);
+      Map autoFillData = _addNewCategoryRepository.getFieldAutoFillData(value);
 
-    if (autoFillData.isNotEmpty) {
-      addNewCategoryData["field_details"][value].addAll({
-        "datatype": (autoFillData["datatype"] ?? "").toString().toTitleCase(),
-        "in_sku": (autoFillData["in_sku"] ?? "") == true ? "True" : "False",
-        "is_background":
-            (autoFillData["is_background"] ?? "") == true ? "True" : "False",
-        "is_lockable":
-            (autoFillData["is_lockable"] ?? "") == true ? "True" : "False",
-        "name_case": CaseHelper.convert(autoFillData["name_case"] ?? "lower",
-            autoFillData["name_case"] ?? ""),
-        "value_case": CaseHelper.convert(autoFillData["value_case"] ?? "lower",
-            autoFillData["value_case"] ?? ""),
-      });
+      if (autoFillData.isNotEmpty) {
+        addNewCategoryData["field_details"][value].addAll({
+          "datatype": (autoFillData["datatype"] ?? "").toString().toTitleCase(),
+          "in_sku": (autoFillData["in_sku"] ?? "") == true ? "True" : "False",
+          "is_background":
+              (autoFillData["is_background"] ?? "") == true ? "True" : "False",
+          "is_lockable":
+              (autoFillData["is_lockable"] ?? "") == true ? "True" : "False",
+          "name_case": CaseHelper.convert(autoFillData["name_case"] ?? "lower",
+              autoFillData["name_case"] ?? ""),
+          "value_case": CaseHelper.convert(
+              autoFillData["value_case"] ?? "lower",
+              autoFillData["value_case"] ?? ""),
+        });
+      }
     }
 
     return addNewCategoryData;

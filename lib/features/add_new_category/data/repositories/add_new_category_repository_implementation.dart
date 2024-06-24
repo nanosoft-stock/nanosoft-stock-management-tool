@@ -1,6 +1,9 @@
+import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
+import 'package:stock_management_tool/core/helper/add_new_field_helper.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
 import 'package:stock_management_tool/objectbox.dart';
@@ -13,7 +16,23 @@ class AddNewCategoryRepositoryImplementation
   @override
   void listenToCloudDataChange(
       {required Map addNewCategoryData,
-      required Function(Map) onChange}) async {}
+      required Function(Map) onChange}) async {
+    _objectBox.getCategoryStream().listen((snapshot) {
+      if (snapshot.isNotEmpty) {
+        addNewCategoryData["categories"] =
+            snapshot.map((e) => e.category!).toList();
+        onChange(addNewCategoryData);
+      }
+    });
+  }
+
+  @override
+  List<String> getAllCategories() {
+    return _objectBox
+        .getCategories()
+        .map((e) => e.category!.toLowerCase())
+        .toList();
+  }
 
   @override
   Map<String, dynamic> getOptions() {
@@ -101,10 +120,6 @@ class AddNewCategoryRepositoryImplementation
             fieldModel?.valueCase ?? "lower", fieldModel?.valueCase ?? ""),
         "can_edit": false,
         "can_remove": false,
-        "can_rearrange":
-            ["sku", "container id", "warehouse location id"].contains(field)
-                ? true
-                : false,
       };
     }
 
@@ -127,7 +142,95 @@ class AddNewCategoryRepositoryImplementation
   }
 
   @override
-  Future<void> addNewCategory() async {
-    return;
+  Future<void> addNewCategory(Map<String, dynamic> addNewCategoryData) async {
+    List allFields = [
+      "date",
+      "category",
+      "item id",
+      ...addNewCategoryData["rearrange_fields"],
+    ];
+
+    List<Map<String, dynamic>> allFieldDetails = [];
+
+    for (int i = 0; i < allFields.length; i++) {
+      Map field = addNewCategoryData["field_details"][allFields[i]];
+
+      allFieldDetails.add(AddNewFieldHelper.toJson(data: {
+        "field": field["field"],
+        "category": addNewCategoryData["category_text"],
+        "datatype": field["datatype"],
+        "in_sku": field["in_sku"].toLowerCase() == "true",
+        "is_background": field["is_background"].toLowerCase() == "true",
+        "is_lockable": field["is_lockable"].toLowerCase() == "true",
+        "name_case": field["name_case"].toLowerCase(),
+        "value_case": field["value_case"].toLowerCase(),
+        "order": i + 1,
+      }));
+    }
+
+    await sl.get<Firestore>().batchWrite(
+        path: "category_fields", data: allFieldDetails, isToBeUpdated: false);
+
+    await _addNewCategory(
+      category: addNewCategoryData["category_text"],
+      uid: categoryIdUid,
+      updateField: "category",
+    );
+  }
+
+  Future<void> _addNewCategory({
+    required String category,
+    required String uid,
+    required String updateField,
+  }) async {
+    Map data = {};
+
+    List categories =
+        _objectBox.getCategories().map((e) => e.category!).toSet().toList();
+
+    categories.add(category);
+
+    categories.sort((a, b) => a.compareTo(b));
+
+    categories.forEach((e) {
+      data[e] = null;
+    });
+
+    await sl.get<Firestore>().modifyDocument(
+          path: "unique_values",
+          uid: uid,
+          updateMask: [updateField],
+          data: !kIsLinux
+              ? {
+                  updateField: data,
+                }
+              : {
+                  updateField: {
+                    "mapValue": {
+                      "fields": {
+                        data.map(
+                          (k, v) => MapEntry(
+                            k,
+                            v != null
+                                ? {
+                                    "mapValue": {
+                                      "fields": v.map(
+                                        (k1, v1) => MapEntry(
+                                          k1,
+                                          {
+                                            "stringValue": v1,
+                                          },
+                                        ),
+                                      ),
+                                    },
+                                  }
+                                : null,
+                          ),
+                        )
+                      }
+                    }
+                  }
+                },
+        );
   }
 }

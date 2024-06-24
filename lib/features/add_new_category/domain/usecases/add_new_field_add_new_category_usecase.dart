@@ -20,7 +20,6 @@ class AddNewFieldAddNewCategoryUseCase extends UseCase {
         "value_case": "",
         "can_edit": true,
         "can_remove": true,
-        "can_rearrange": true
       };
     }
 

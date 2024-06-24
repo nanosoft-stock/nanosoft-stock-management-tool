@@ -3,11 +3,15 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_category_pressed_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_field_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/category_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/details_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/field_name_typed_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/initial_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/rearrange_fields_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/remove_field_add_new_category_usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/view_field_details_add_new_category_usecase.dart';
 
 part 'add_new_category_event.dart';
@@ -20,7 +24,12 @@ class AddNewCategoryBloc
       _listenToCloudDataChangeAddNewCategoryUseCase;
   final ViewFieldDetailsAddNewCategoryUseCase?
       _viewFieldDetailsAddNewCategoryUseCase;
+  final CategoryTypedAddNewCategoryUseCase? _categoryTypedAddNewCategoryUseCase;
   final AddNewFieldAddNewCategoryUseCase? _addNewFieldAddNewCategoryUseCase;
+  final RearrangeFieldsAddNewCategoryUseCase?
+      _rearrangeFieldsAddNewCategoryUseCase;
+  final AddNewCategoryPressedUseCase? _addNewCategoryPressedUseCase;
+  final RemoveFieldAddNewCategoryUseCase? _removeFieldAddNewCategoryUseCase;
   final FieldNameTypedAddNewCategoryUseCase?
       _fieldNameTypedAddNewCategoryUseCase;
   final DetailsTypedAddNewCategoryUseCase? _detailsTypedAddNewCategoryUseCase;
@@ -28,8 +37,12 @@ class AddNewCategoryBloc
   AddNewCategoryBloc(
     this._initialAddNewCategoryUseCase,
     this._listenToCloudDataChangeAddNewCategoryUseCase,
+    this._categoryTypedAddNewCategoryUseCase,
     this._viewFieldDetailsAddNewCategoryUseCase,
     this._addNewFieldAddNewCategoryUseCase,
+    this._rearrangeFieldsAddNewCategoryUseCase,
+    this._addNewCategoryPressedUseCase,
+    this._removeFieldAddNewCategoryUseCase,
     this._fieldNameTypedAddNewCategoryUseCase,
     this._detailsTypedAddNewCategoryUseCase,
   ) : super(LoadingState()) {
@@ -64,7 +77,12 @@ class AddNewCategoryBloc
   }
 
   FutureOr<void> categoryTypedEvent(
-      CategoryTypedEvent event, Emitter<AddNewCategoryState> emit) async {}
+      CategoryTypedEvent event, Emitter<AddNewCategoryState> emit) async {
+    await _categoryTypedAddNewCategoryUseCase!(params: {
+      "category": event.category,
+      "add_new_category_data": event.addNewCategoryData,
+    });
+  }
 
   FutureOr<void> viewFieldDetailsEvent(
       ViewFieldDetailsEvent event, Emitter<AddNewCategoryState> emit) async {
@@ -85,13 +103,30 @@ class AddNewCategoryBloc
   }
 
   FutureOr<void> rearrangeFieldsEvent(
-      RearrangeFieldsEvent event, Emitter<AddNewCategoryState> emit) async {}
+      RearrangeFieldsEvent event, Emitter<AddNewCategoryState> emit) async {
+    emit(LoadedState(
+        addNewCategoryData:
+            await _rearrangeFieldsAddNewCategoryUseCase!(params: {
+      "fields": event.fields,
+      "add_new_category_data": event.addNewCategoryData,
+    })));
+  }
 
   FutureOr<void> addNewCategoryPressedEvent(AddNewCategoryPressedEvent event,
-      Emitter<AddNewCategoryState> emit) async {}
+      Emitter<AddNewCategoryState> emit) async {
+    emit(LoadedState(
+        addNewCategoryData: await _addNewCategoryPressedUseCase!(params: {
+      "add_new_category_data": event.addNewCategoryData,
+    })));
+  }
 
   FutureOr<void> removeFieldEvent(
-      RemoveFieldEvent event, Emitter<AddNewCategoryState> emit) async {}
+      RemoveFieldEvent event, Emitter<AddNewCategoryState> emit) async {
+    emit(LoadedState(
+        addNewCategoryData: await _removeFieldAddNewCategoryUseCase!(params: {
+      "add_new_category_data": event.addNewCategoryData,
+    })));
+  }
 
   FutureOr<void> fieldNameTypedEvent(
       FieldNameTypedEvent event, Emitter<AddNewCategoryState> emit) async {

@@ -5,8 +5,8 @@ import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/datatype_converter_helper.dart';
 
 class AddNewItemLocationHistoryHelper {
-  static Map toJson({required Map data}) {
-    Map convertedData = {};
+  static Map<String, dynamic> toJson({required Map data}) {
+    Map<String, dynamic> convertedData = {};
 
     List fields = [
       "date",

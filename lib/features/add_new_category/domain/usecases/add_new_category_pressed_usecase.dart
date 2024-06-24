@@ -1,14 +1,16 @@
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
 
-class InitialAddNewCategoryUseCase extends UseCase {
-  InitialAddNewCategoryUseCase(this._addNewCategoryRepository);
+class AddNewCategoryPressedUseCase extends UseCase {
+  AddNewCategoryPressedUseCase(this._addNewCategoryRepository);
 
   final AddNewCategoryRepository _addNewCategoryRepository;
 
   @override
   Future call({params}) async {
-    Map<String, dynamic> addNewCategoryData = {};
+    Map<String, dynamic> addNewCategoryData = params["add_new_category_data"];
+
+    await _addNewCategoryRepository.addNewCategory(addNewCategoryData);
 
     addNewCategoryData["category_text"] = "";
     addNewCategoryData["categories"] =

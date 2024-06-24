@@ -4,6 +4,7 @@ import 'package:stock_management_tool/core/constants/constants.dart';
 class CustomTextInputFieldWithToolTip extends StatelessWidget {
   const CustomTextInputFieldWithToolTip({
     super.key,
+    this.fieldFormKey,
     required this.text,
     required this.isEnabled,
     required this.message,
@@ -13,6 +14,7 @@ class CustomTextInputFieldWithToolTip extends StatelessWidget {
     required this.onSubmitted,
   });
 
+  final GlobalKey<FormFieldState<dynamic>>? fieldFormKey;
   final String text;
   final bool isEnabled;
   final String message;
@@ -62,6 +64,7 @@ class CustomTextInputFieldWithToolTip extends StatelessWidget {
                 boxShadow: kBoxShadowList,
               ),
               child: TextFormField(
+                key: fieldFormKey,
                 enabled: isEnabled,
                 controller: TextEditingController(text: initialValue),
                 textInputAction: TextInputAction.next,

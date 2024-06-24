@@ -414,7 +414,6 @@ class StockRepositoryImplementation implements StockRepository {
         .where((e) =>
             e.category == data["category"] &&
             e.inSku == true &&
-            e.items != null &&
             !["category", "sku"].contains(e.field))
         .map((e) => e.toJson())
         .toList();
@@ -424,26 +423,38 @@ class StockRepositoryImplementation implements StockRepository {
     for (var field in fields) {
       String value = data[field["field"]];
 
-      if (value != "" && !field["items"].contains(value)) {
-        String docRef = field["uid"];
-        List items = (field["items"].toSet()..add(data[field["field"]]))
-            .toList()
-            .cast<String>()
-          ..sort((a, b) => a.compareTo(b));
+      if (value != "") {
+        if (field["items"] != null && !field["items"].contains(value)) {
+          String docRef = field["uid"];
+          List items = (field["items"].toSet()..add(data[field["field"]]))
+              .toList()
+              .cast<String>()
+            ..sort((a, b) => a.compareTo(b));
 
-        modifiedFields.add({
-          "doc_ref": docRef,
-          "items": items,
-          ...(field
-            ..remove("items")
-            ..remove("uid")),
-        });
+          modifiedFields.add({
+            "doc_ref": docRef,
+            "items": items,
+            ...(field
+              ..remove("items")
+              ..remove("uid")),
+          });
+        } else if (field["items"] == null) {
+          String docRef = field["uid"];
+          List items = [data[field["field"]]];
+          modifiedFields.add({
+            "doc_ref": docRef,
+            "items": items,
+            ...(field
+              ..remove("items")
+              ..remove("uid")),
+          });
+        }
       }
     }
 
     if (modifiedFields.isNotEmpty) {
       await sl.get<Firestore>().batchWrite(
-          path: "category_fields", data: modifiedFields, isToBeUpdated: true);
+          path: "category_fields", data: modifiedFields, op: "modify");
     }
   }
 }

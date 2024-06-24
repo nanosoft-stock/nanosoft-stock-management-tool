@@ -3,8 +3,9 @@ import 'package:stock_management_tool/core/components/custom_autocomplete_text_i
 import 'package:stock_management_tool/core/components/custom_text_input_field_with_tool_tip.dart';
 
 class CustomFieldDetails extends StatelessWidget {
-  CustomFieldDetails({
+  const CustomFieldDetails({
     super.key,
+    required this.fieldFormKey,
     required this.detailKey,
     required this.displayField,
     required this.text,
@@ -16,6 +17,7 @@ class CustomFieldDetails extends StatelessWidget {
     required this.onSubmitted,
   });
 
+  final GlobalKey<FormFieldState<dynamic>>? fieldFormKey;
   final String detailKey;
   final String displayField;
   final String text;
@@ -25,50 +27,43 @@ class CustomFieldDetails extends StatelessWidget {
   final String? Function(String?) validator;
   final Function(String) onSelected;
   final Function(String) onSubmitted;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(7.5),
-        child: detailKey != "field"
-            ? CustomAutocompleteTextInputFieldWithToolTip(
-                text: text,
-                isEnabled: fieldDetails[displayField]["can_edit"],
-                message: message,
-                initialValue: fieldDetails[displayField][detailKey],
-                items: options[detailKey] ?? [],
-                validator: validator,
-                onSelected: onSelected,
-              )
-            : CustomTextInputFieldWithToolTip(
-                text: text,
-                isEnabled: fieldDetails[displayField]["can_edit"],
-                message: message,
-                initialValue: fieldDetails[displayField][detailKey],
-                validator: (value) {
-                  int len = fieldDetails.values
-                      .where((e) =>
-                          e["field"].toLowerCase() == value!.toLowerCase())
-                      .length;
-                  if (value == "") {
-                    return "Field name can't be empty";
-                  } else if (len > 1) {
-                    return "Field name already exists";
-                  }
+    return Padding(
+      padding: const EdgeInsets.all(7.5),
+      child: detailKey != "field"
+          ? CustomAutocompleteTextInputFieldWithToolTip(
+              text: text,
+              isEnabled: fieldDetails[displayField]["can_edit"],
+              message: message,
+              initialValue: fieldDetails[displayField][detailKey],
+              items: options[detailKey] ?? [],
+              validator: validator,
+              onSelected: onSelected,
+            )
+          : CustomTextInputFieldWithToolTip(
+              fieldFormKey: fieldFormKey,
+              text: text,
+              isEnabled: fieldDetails[displayField]["can_edit"],
+              message: message,
+              initialValue: fieldDetails[displayField][detailKey],
+              validator: (value) {
+                int len = fieldDetails.values
+                    .where(
+                        (e) => e["field"].toLowerCase() == value!.toLowerCase())
+                    .length;
+                if (value == "") {
+                  return "Field name can't be empty";
+                } else if (len > 1) {
+                  return "Field name already exists";
+                }
 
-                  return null;
-                },
-                onChanged: onSelected,
-                onSubmitted: (value) {
-                  if (_formKey.currentState!.validate()) {
-                    onSubmitted(value);
-                  }
-                },
-              ),
-      ),
+                return null;
+              },
+              onChanged: onSelected,
+              onSubmitted: onSubmitted,
+            ),
     );
   }
 }

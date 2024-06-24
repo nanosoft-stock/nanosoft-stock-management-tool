@@ -77,6 +77,19 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/swit
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/warehouse_location_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
+import 'package:stock_management_tool/features/modify_category/data/repositories/modify_category_repository_implementation.dart';
+import 'package:stock_management_tool/features/modify_category/domain/repositories/modify_category_repository.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/add_new_field_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/category_selected_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/details_typed_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/field_name_typed_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/initial_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/modify_category_pressed_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/rearrange_fields_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/remove_field_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/view_field_details_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/presentation/bloc/modify_category_bloc.dart';
 import 'package:stock_management_tool/features/print_id/data/repositories/print_id_repository_implementation.dart';
 import 'package:stock_management_tool/features/print_id/domain/repositories/print_id_repository.dart';
 import 'package:stock_management_tool/features/print_id/domain/usecases/initial_usecase.dart';
@@ -118,10 +131,10 @@ Future<void> initializeDependencies() async {
       () => InitialAddNewCategoryUseCase(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeAddNewCategoryUseCase>(
       () => ListenToCloudDataChangeAddNewCategoryUseCase(sl()));
-  sl.registerLazySingleton<ViewFieldDetailsAddNewCategoryUseCase>(
-      () => ViewFieldDetailsAddNewCategoryUseCase());
   sl.registerLazySingleton<CategoryTypedAddNewCategoryUseCase>(
       () => CategoryTypedAddNewCategoryUseCase());
+  sl.registerLazySingleton<ViewFieldDetailsAddNewCategoryUseCase>(
+      () => ViewFieldDetailsAddNewCategoryUseCase());
   sl.registerLazySingleton<AddNewFieldAddNewCategoryUseCase>(
       () => AddNewFieldAddNewCategoryUseCase());
   sl.registerLazySingleton<RearrangeFieldsAddNewCategoryUseCase>(
@@ -277,6 +290,32 @@ Future<void> initializeDependencies() async {
         sl(),
         sl(),
       ));
+
+  // Modify Category
+  sl.registerLazySingleton<ModifyCategoryRepository>(
+      () => ModifyCategoryRepositoryImplementation());
+  sl.registerLazySingleton<InitialModifyCategoryUseCase>(
+      () => InitialModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeModifyCategoryUseCase>(
+      () => ListenToCloudDataChangeModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<CategorySelectedModifyCategoryUseCase>(
+      () => CategorySelectedModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<ViewFieldDetailsModifyCategoryUseCase>(
+      () => ViewFieldDetailsModifyCategoryUseCase());
+  sl.registerLazySingleton<AddNewFieldModifyCategoryUseCase>(
+      () => AddNewFieldModifyCategoryUseCase());
+  sl.registerLazySingleton<RearrangeFieldsModifyCategoryUseCase>(
+      () => RearrangeFieldsModifyCategoryUseCase());
+  sl.registerLazySingleton<ModifyCategoryPressedUseCase>(
+      () => ModifyCategoryPressedUseCase(sl()));
+  sl.registerLazySingleton<RemoveFieldModifyCategoryUseCase>(
+      () => RemoveFieldModifyCategoryUseCase());
+  sl.registerLazySingleton<FieldNameTypedModifyCategoryUseCase>(
+      () => FieldNameTypedModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<DetailsTypedModifyCategoryUseCase>(
+      () => DetailsTypedModifyCategoryUseCase());
+  sl.registerFactory<ModifyCategoryBloc>(() => ModifyCategoryBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   // Print Id
   sl.registerLazySingleton<PrintIdRepository>(

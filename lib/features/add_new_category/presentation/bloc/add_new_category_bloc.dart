@@ -22,9 +22,9 @@ class AddNewCategoryBloc
   final InitialAddNewCategoryUseCase? _initialAddNewCategoryUseCase;
   final ListenToCloudDataChangeAddNewCategoryUseCase?
       _listenToCloudDataChangeAddNewCategoryUseCase;
+  final CategoryTypedAddNewCategoryUseCase? _categoryTypedAddNewCategoryUseCase;
   final ViewFieldDetailsAddNewCategoryUseCase?
       _viewFieldDetailsAddNewCategoryUseCase;
-  final CategoryTypedAddNewCategoryUseCase? _categoryTypedAddNewCategoryUseCase;
   final AddNewFieldAddNewCategoryUseCase? _addNewFieldAddNewCategoryUseCase;
   final RearrangeFieldsAddNewCategoryUseCase?
       _rearrangeFieldsAddNewCategoryUseCase;

@@ -96,13 +96,11 @@ class Firestore {
   }
 
   Future<Map<String, dynamic>> batchWrite(
-      {required String path,
-      required List data,
-      required bool isToBeUpdated}) async {
+      {required String path, required List data, required String op}) async {
     if (!kIsLinux) {
       return await sl
           .get<FirestoreDefault>()
-          .batchWrite(path: path, data: data, isToBeUpdated: isToBeUpdated);
+          .batchWrite(path: path, data: data, op: op);
     } else {
       return {};
     }

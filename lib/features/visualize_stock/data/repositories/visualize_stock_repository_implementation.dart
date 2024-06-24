@@ -383,8 +383,9 @@ class VisualizeStockRepositoryImplementation
     debugPrint("Data read successful");
 
     if (newStocks.isNotEmpty) {
-      Map<String, dynamic> docRefs = await sl.get<Firestore>().batchWrite(
-          path: "stock_data", data: newStocks, isToBeUpdated: false);
+      Map<String, dynamic> docRefs = await sl
+          .get<Firestore>()
+          .batchWrite(path: "stock_data", data: newStocks, op: "add");
       if (docRefs.isNotEmpty) {
         docRefs.forEach((k, v) {
           items[k] = v;
@@ -396,8 +397,9 @@ class VisualizeStockRepositoryImplementation
     debugPrint("Batch write successful");
 
     if (existingStocks.isNotEmpty) {
-      await sl.get<Firestore>().batchWrite(
-          path: "stock_data", data: existingStocks, isToBeUpdated: true);
+      await sl
+          .get<Firestore>()
+          .batchWrite(path: "stock_data", data: existingStocks, op: "modify");
     }
 
     debugPrint("Batch modify successful");
@@ -436,8 +438,9 @@ class VisualizeStockRepositoryImplementation
       }));
     }
 
-    await sl.get<Firestore>().batchWrite(
-        path: "stock_location_history", data: locations, isToBeUpdated: false);
+    await sl
+        .get<Firestore>()
+        .batchWrite(path: "stock_location_history", data: locations, op: "add");
 
     debugPrint("Add Stock Location History successful");
 
@@ -526,7 +529,6 @@ class VisualizeStockRepositoryImplementation
           .where((e) =>
               e.category?.toLowerCase() == category.toLowerCase() &&
               e.inSku == true &&
-              e.items != null &&
               !["category", "sku"].contains(e.field))
           .map((e) => e.toJson())
           .toList();
@@ -541,7 +543,8 @@ class VisualizeStockRepositoryImplementation
 
         values.removeWhere((e) => e == "");
 
-        if (values.any((e) => !field["items"].contains(e))) {
+        if (field["items"] != null &&
+            values.any((e) => !field["items"].contains(e))) {
           String docRef = field["uid"];
           List items = ((field["items"] as List<String>).toSet()
                 ..addAll(values))
@@ -556,13 +559,24 @@ class VisualizeStockRepositoryImplementation
               ..remove("items")
               ..remove("uid")),
           });
+        } else if (field["items"] == null) {
+          String docRef = field["uid"];
+          List items = values..sort((a, b) => a.compareTo(b));
+
+          modifiedFields.add({
+            "doc_ref": docRef,
+            "items": items,
+            ...(field
+              ..remove("items")
+              ..remove("uid")),
+          });
         }
       }
     }
 
     if (modifiedFields.isNotEmpty) {
       await sl.get<Firestore>().batchWrite(
-          path: "category_fields", data: modifiedFields, isToBeUpdated: true);
+          path: "category_fields", data: modifiedFields, op: "modify");
     }
   }
 

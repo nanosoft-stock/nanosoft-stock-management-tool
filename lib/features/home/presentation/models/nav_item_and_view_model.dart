@@ -68,7 +68,7 @@ class NavItemAndViewModel {
         title: 'Modify Category',
         icon: Icons.edit_note_outlined,
       ),
-      view: const ModifyCategoryView(),
+      view: ModifyCategoryView(),
     ),
     "Print Id": NavItemAndView(
       navItem: NavItemModel(

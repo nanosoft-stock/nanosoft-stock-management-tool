@@ -68,9 +68,7 @@ class FirestoreDefault {
   }
 
   Future<Map<String, dynamic>> batchWrite(
-      {required String path,
-      required List data,
-      required bool isToBeUpdated}) async {
+      {required String path, required List data, required String op}) async {
     int chunkSize = 500;
 
     Map<String, dynamic> docRefData = {};
@@ -82,7 +80,7 @@ class FirestoreDefault {
 
       for (var e in chunkData) {
         try {
-          if (!isToBeUpdated) {
+          if (op == "add") {
             var docRef = firestore.collection(path).doc();
             if (path == "stock_data") {
               docRefData[e["item id"]] = {
@@ -92,9 +90,11 @@ class FirestoreDefault {
             }
 
             batch.set(docRef, e.cast<String, dynamic>());
-          } else {
+          } else if (op == "modify") {
             batch.update(firestore.collection(path).doc(e["doc_ref"]),
                 (e..remove("doc_ref")).cast<String, dynamic>());
+          } else if (op == "delete") {
+            batch.delete(firestore.collection(path).doc(e["doc_ref"]));
           }
         } catch (e) {
           debugPrint(e.toString());

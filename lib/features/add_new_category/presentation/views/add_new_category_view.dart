@@ -15,6 +15,7 @@ class AddNewCategoryView extends StatelessWidget {
 
   final AddNewCategoryBloc _addNewCategoryBloc = sl.get<AddNewCategoryBloc>();
   final _formKey = GlobalKey<FormState>();
+  final _fieldFormKey = GlobalKey<FormFieldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -114,22 +115,22 @@ class AddNewCategoryView extends StatelessWidget {
     return constraints.maxWidth > 770 + 104
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 352.5,
-                  child: CustomContainer(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: FocusScope(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                              child: Form(
-                                key: _formKey,
+            child: Form(
+              key: _formKey,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 352.5,
+                    child: CustomContainer(
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: FocusScope(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
                                 child: CustomTextInputField(
                                   text: "Category",
                                   initialValue:
@@ -152,30 +153,161 @@ class AddNewCategoryView extends StatelessWidget {
                                   },
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                physics: const BouncingScrollPhysics(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    for (var field in [
-                                      "date",
-                                      "category",
-                                      "item id"
-                                    ])
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  physics: const BouncingScrollPhysics(),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (var field in [
+                                        "date",
+                                        "category",
+                                        "item id"
+                                      ])
+                                        Padding(
+                                          key: Key(field),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 2.5, vertical: 5.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: displayField == field
+                                                  ? kButtonBackgroundColor
+                                                  : kTertiaryBackgroundColor,
+                                              borderRadius: kBorderRadius,
+                                              boxShadow: kBoxShadowList,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0,
+                                                      vertical: 7.5),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        _addNewCategoryBloc.add(
+                                                            ViewFieldDetailsEvent(
+                                                                field: field,
+                                                                addNewCategoryData:
+                                                                    addNewCategoryData));
+                                                      },
+                                                      child: Text(
+                                                        CaseHelper.convert(
+                                                            addNewCategoryData[
+                                                                        "field_details"]
+                                                                    [field]
+                                                                ["name_case"],
+                                                            field),
+                                                        style: kLabelTextStyle,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      StatefulBuilder(
+                                        builder: (BuildContext context,
+                                            void Function(void Function())
+                                                setState) {
+                                          return ReorderableListView(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            proxyDecorator: (Widget child,
+                                                int index,
+                                                Animation<double> animation) {
+                                              return child;
+                                            },
+                                            onReorder: (oldIndex, newIndex) {
+                                              setState(() {
+                                                if (oldIndex < newIndex) {
+                                                  newIndex -= 1;
+                                                }
+                                                final item = localFieldFilters
+                                                    .removeAt(oldIndex);
+                                                localFieldFilters.insert(
+                                                    newIndex, item);
+                                              });
+                                              _addNewCategoryBloc
+                                                  .add(RearrangeFieldsEvent(
+                                                fields: localFieldFilters,
+                                                addNewCategoryData:
+                                                    addNewCategoryData,
+                                              ));
+                                            },
+                                            children: localFieldFilters
+                                                .map(
+                                                  (field) => Padding(
+                                                    key: Key(field),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 2.5,
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: displayField ==
+                                                                field
+                                                            ? kButtonBackgroundColor
+                                                            : kTertiaryBackgroundColor,
+                                                        borderRadius:
+                                                            kBorderRadius,
+                                                        boxShadow:
+                                                            kBoxShadowList,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 7.5),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  _addNewCategoryBloc.add(ViewFieldDetailsEvent(
+                                                                      field:
+                                                                          field,
+                                                                      addNewCategoryData:
+                                                                          addNewCategoryData));
+                                                                },
+                                                                child: Text(
+                                                                  CaseHelper.convert(
+                                                                      addNewCategoryData["field_details"]
+                                                                              [
+                                                                              field]
+                                                                          [
+                                                                          "name_case"],
+                                                                      field),
+                                                                  style:
+                                                                      kLabelTextStyle,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          );
+                                        },
+                                      ),
                                       Padding(
-                                        key: Key(field),
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 0.0, vertical: 5.0),
+                                            horizontal: 2.5, vertical: 5.0),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: displayField == field
-                                                ? kButtonBackgroundColor
-                                                : kTertiaryBackgroundColor,
+                                            color: kTertiaryBackgroundColor,
                                             borderRadius: kBorderRadius,
                                             boxShadow: kBoxShadowList,
                                           ),
@@ -184,265 +316,45 @@ class AddNewCategoryView extends StatelessWidget {
                                                 horizontal: 10.0,
                                                 vertical: 7.5),
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Expanded(
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      _addNewCategoryBloc.add(
-                                                          ViewFieldDetailsEvent(
-                                                              field: field,
-                                                              addNewCategoryData:
-                                                                  addNewCategoryData));
-                                                    },
-                                                    child: Text(
-                                                      CaseHelper.convert(
-                                                          addNewCategoryData[
-                                                                  "field_details"]
-                                                              [
-                                                              field]["name_case"],
-                                                          field),
-                                                      style: kLabelTextStyle,
-                                                    ),
-                                                  ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _addNewCategoryBloc.add(
+                                                        AddNewFieldEvent(
+                                                            addNewCategoryData:
+                                                                addNewCategoryData));
+                                                  },
+                                                  child: const Icon(Icons.add),
                                                 ),
                                               ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                    StatefulBuilder(
-                                      builder: (BuildContext context,
-                                          void Function(void Function())
-                                              setState) {
-                                        return ReorderableListView(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          proxyDecorator: (Widget child,
-                                              int index,
-                                              Animation<double> animation) {
-                                            return child;
-                                          },
-                                          onReorder: (oldIndex, newIndex) {
-                                            setState(() {
-                                              if (oldIndex < newIndex) {
-                                                newIndex -= 1;
-                                              }
-                                              final item = localFieldFilters
-                                                  .removeAt(oldIndex);
-                                              localFieldFilters.insert(
-                                                  newIndex, item);
-                                            });
-                                            _addNewCategoryBloc
-                                                .add(RearrangeFieldsEvent(
-                                              fields: localFieldFilters,
-                                              addNewCategoryData:
-                                                  addNewCategoryData,
-                                            ));
-                                          },
-                                          children: localFieldFilters
-                                              .map(
-                                                (field) => Padding(
-                                                  key: Key(field),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 0.0,
-                                                      vertical: 5.0),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: displayField ==
-                                                              field
-                                                          ? kButtonBackgroundColor
-                                                          : kTertiaryBackgroundColor,
-                                                      borderRadius:
-                                                          kBorderRadius,
-                                                      boxShadow: kBoxShadowList,
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10.0,
-                                                          vertical: 7.5),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () {
-                                                                _addNewCategoryBloc.add(
-                                                                    ViewFieldDetailsEvent(
-                                                                        field:
-                                                                            field,
-                                                                        addNewCategoryData:
-                                                                            addNewCategoryData));
-                                                              },
-                                                              child: Text(
-                                                                CaseHelper.convert(
-                                                                    addNewCategoryData["field_details"]
-                                                                            [
-                                                                            field]
-                                                                        [
-                                                                        "name_case"],
-                                                                    field),
-                                                                style:
-                                                                    kLabelTextStyle,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                        );
-                                      },
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 0.0, vertical: 5.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: kTertiaryBackgroundColor,
-                                          borderRadius: kBorderRadius,
-                                          boxShadow: kBoxShadowList,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0, vertical: 7.5),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  _addNewCategoryBloc.add(
-                                                      AddNewFieldEvent(
-                                                          addNewCategoryData:
-                                                              addNewCategoryData));
-                                                },
-                                                child: const Icon(Icons.add),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                              child: SizedBox(
-                                width: 322.5,
-                                child: CustomElevatedButton(
-                                  text: "Add New Category",
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      _addNewCategoryBloc
-                                          .add(AddNewCategoryPressedEvent(
-                                        addNewCategoryData: addNewCategoryData,
-                                      ));
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 50.0,
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 367.5,
-                      child: CustomContainer(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(7.5),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Field Details",
-                                      style: kLabelTextStyle,
-                                    ),
-                                    if (addNewCategoryData["field_details"]
-                                            [displayField]["can_remove"] ==
-                                        true)
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: kBorderRadius,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          _addNewCategoryBloc
-                                              .add(RemoveFieldEvent(
-                                            addNewCategoryData:
-                                                addNewCategoryData,
-                                          ));
-                                        },
-                                        child: Text(
-                                          "Remove",
-                                          style: kLabelTextStyle,
-                                        ),
-                                      ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               const Divider(),
-                              FocusScope(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    for (var data in addNewCategoryData[
-                                            "field_data_fields"]
-                                        .entries)
-                                      CustomFieldDetails(
-                                        detailKey: data.key,
-                                        displayField: displayField,
-                                        text: data.value,
-                                        message: addNewCategoryData["tool_tips"]
-                                            [data.key],
-                                        options: addNewCategoryData["options"],
-                                        fieldDetails:
-                                            addNewCategoryData["field_details"],
-                                        validator: (_) => null,
-                                        onSelected: (value) {
-                                          _addNewCategoryBloc
-                                              .add(DetailsTypedEvent(
-                                            title: data.key,
-                                            value: value,
-                                            addNewCategoryData:
-                                                addNewCategoryData,
-                                          ));
-                                        },
-                                        onSubmitted: (value) {
-                                          _addNewCategoryBloc
-                                              .add(FieldNameTypedEvent(
-                                            title: data.key,
-                                            value: value,
-                                            addNewCategoryData:
-                                                addNewCategoryData,
-                                          ));
-                                        },
-                                      ),
-                                  ],
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
+                                child: SizedBox(
+                                  width: 322.5,
+                                  child: CustomElevatedButton(
+                                    text: "Add New Category",
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        _addNewCategoryBloc
+                                            .add(AddNewCategoryPressedEvent(
+                                          addNewCategoryData:
+                                              addNewCategoryData,
+                                        ));
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -451,8 +363,114 @@ class AddNewCategoryView extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 50.0,
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 367.5,
+                        child: CustomContainer(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(7.5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Field Details",
+                                        style: kLabelTextStyle,
+                                      ),
+                                      if (addNewCategoryData["field_details"]
+                                              [displayField]["can_remove"] ==
+                                          true)
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: kBorderRadius,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            _addNewCategoryBloc
+                                                .add(RemoveFieldEvent(
+                                              addNewCategoryData:
+                                                  addNewCategoryData,
+                                            ));
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: kLabelTextStyle,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(),
+                                FocusScope(
+                                  child: SingleChildScrollView(
+                                    physics: const ClampingScrollPhysics(),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        for (var data in addNewCategoryData[
+                                                "field_data_fields"]
+                                            .entries)
+                                          CustomFieldDetails(
+                                            fieldFormKey: data.key == "field"
+                                                ? _fieldFormKey
+                                                : null,
+                                            detailKey: data.key,
+                                            displayField: displayField,
+                                            text: data.value,
+                                            message:
+                                                addNewCategoryData["tool_tips"]
+                                                    [data.key],
+                                            options:
+                                                addNewCategoryData["options"],
+                                            fieldDetails: addNewCategoryData[
+                                                "field_details"],
+                                            validator: (_) => null,
+                                            onSelected: (value) {
+                                              _addNewCategoryBloc
+                                                  .add(DetailsTypedEvent(
+                                                title: data.key,
+                                                value: value,
+                                                addNewCategoryData:
+                                                    addNewCategoryData,
+                                              ));
+                                            },
+                                            onSubmitted: (value) {
+                                              if (_fieldFormKey.currentState!
+                                                  .validate()) {
+                                                _addNewCategoryBloc
+                                                    .add(FieldNameTypedEvent(
+                                                  title: data.key,
+                                                  value: value,
+                                                  addNewCategoryData:
+                                                      addNewCategoryData,
+                                                ));
+                                              }
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         : SizedBox(

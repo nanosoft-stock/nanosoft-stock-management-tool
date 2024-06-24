@@ -1,37 +1,33 @@
-import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_field_helper.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
-import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
+import 'package:stock_management_tool/features/modify_category/domain/repositories/modify_category_repository.dart';
 import 'package:stock_management_tool/objectbox.dart';
 import 'package:stock_management_tool/objectbox.g.dart';
 
-class AddNewCategoryRepositoryImplementation
-    implements AddNewCategoryRepository {
+class ModifyCategoryRepositoryImplementation
+    implements ModifyCategoryRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
   @override
   void listenToCloudDataChange(
-      {required Map addNewCategoryData,
+      {required Map modifyCategoryData,
       required Function(Map) onChange}) async {
     _objectBox.getCategoryStream().listen((snapshot) {
       if (snapshot.isNotEmpty) {
-        addNewCategoryData["categories"] =
+        modifyCategoryData["categories"] =
             snapshot.map((e) => e.category!).toList();
-        onChange(addNewCategoryData);
+        onChange(modifyCategoryData);
       }
     });
   }
 
   @override
   List<String> getAllCategories() {
-    return _objectBox
-        .getCategories()
-        .map((e) => e.category!.toLowerCase())
-        .toList();
+    return _objectBox.getCategories().map((e) => e.category!).toList();
   }
 
   @override
@@ -78,18 +74,23 @@ class AddNewCategoryRepositoryImplementation
   }
 
   @override
-  List<String> getInitialRearrangeAbleFields() {
-    return [
-      "sku",
-      "container id",
-      "warehouse location id",
-      "user",
-    ];
+  List<String> getRearrangeAbleFields(String category) {
+    return (_objectBox.getInputFields()
+          ..sort((a, b) => a.order!.compareTo(b.order!)))
+        .where((e) => e.category == category)
+        .where((e) => !["date", "category", "item id"].contains(e.field))
+        .map((e) => e.field!)
+        .toList();
   }
 
   @override
-  Map<String, dynamic> getInitialFieldDetails() {
-    List initialFields = [
+  Map<String, dynamic> getFieldDetails(String category) {
+    List fields = _objectBox
+        .getInputFields()
+        .where((e) => e.category == category)
+        .toList();
+
+    List irReplaceableFields = [
       "date",
       "category",
       "item id",
@@ -101,27 +102,19 @@ class AddNewCategoryRepositoryImplementation
 
     Map<String, dynamic> details = {};
 
-    for (var field in initialFields) {
-      Query query = _objectBox.inputFieldsBox!
-          .query(InputFieldsObjectBoxModel_.field.equals(field))
-          .build();
-      InputFieldsObjectBoxModel? fieldModel = query.findFirst();
-      query.close();
-
-      details[field] = {
-        "field": field,
-        "datatype": (fieldModel?.datatype ?? "").toTitleCase(),
-        "in_sku": (fieldModel?.inSku ?? "") == true ? "True" : "False",
-        "is_background":
-            (fieldModel?.isBackground ?? "") == true ? "True" : "False",
-        "is_lockable":
-            (fieldModel?.isLockable ?? "") == true ? "True" : "False",
+    for (var field in fields) {
+      details[field.field] = {
+        "field": field.field,
+        "datatype": (field?.datatype ?? "").toString().toTitleCase(),
+        "in_sku": (field?.inSku ?? "") == true ? "True" : "False",
+        "is_background": (field?.isBackground ?? "") == true ? "True" : "False",
+        "is_lockable": (field?.isLockable ?? "") == true ? "True" : "False",
         "name_case": CaseHelper.convert(
-            fieldModel?.nameCase ?? "lower", fieldModel?.nameCase ?? ""),
+            field?.nameCase ?? "lower", field?.nameCase ?? ""),
         "value_case": CaseHelper.convert(
-            fieldModel?.valueCase ?? "lower", fieldModel?.valueCase ?? ""),
-        "can_edit": false,
-        "can_remove": false,
+            field?.valueCase ?? "lower", field?.valueCase ?? ""),
+        "can_edit": !irReplaceableFields.contains(field.field) ? true : false,
+        "can_remove": !irReplaceableFields.contains(field.field) ? true : false,
       };
     }
 
@@ -144,96 +137,50 @@ class AddNewCategoryRepositoryImplementation
   }
 
   @override
-  Future<void> addNewCategory(Map<String, dynamic> addNewCategoryData) async {
+  Future<void> modifyCategory(Map<String, dynamic> modifyCategoryData) async {
     List allFields = [
       "date",
       "category",
       "item id",
-      ...addNewCategoryData["rearrange_fields"],
+      ...modifyCategoryData["rearrange_fields"],
     ];
+
+    List<Map<String, dynamic>> storedFields = _objectBox
+        .getInputFields()
+        .where((e) =>
+            e.category!.toLowerCase() ==
+            modifyCategoryData["category_text"].toLowerCase())
+        .map((e) => e.toJson())
+        .toList();
 
     List<Map<String, dynamic>> allFieldDetails = [];
 
     for (int i = 0; i < allFields.length; i++) {
-      Map field = addNewCategoryData["field_details"][allFields[i]];
+      Map field = modifyCategoryData["field_details"][allFields[i]];
 
       allFieldDetails.add(AddNewFieldHelper.toJson(data: {
-        "field": field["field"].toLowerCase(),
-        "category": addNewCategoryData["category_text"],
+        "field": field["field"],
+        "category": modifyCategoryData["category_text"],
         "datatype": field["datatype"].toLowerCase(),
         "in_sku": field["in_sku"].toLowerCase() == "true",
         "is_background": field["is_background"].toLowerCase() == "true",
         "is_lockable": field["is_lockable"].toLowerCase() == "true",
+        "items": storedFields.firstWhere((e) => e["field"] == field["field"],
+            orElse: () => {})["items"],
         "name_case": field["name_case"].toLowerCase(),
         "value_case": field["value_case"].toLowerCase(),
         "order": i + 1,
       }));
     }
 
+    List docRefsToRemove =
+        storedFields.map((e) => {"doc_ref": e["uid"]}).toList();
+
+    await sl.get<Firestore>().batchWrite(
+        path: "category_fields", data: docRefsToRemove, op: "delete");
+
     await sl
         .get<Firestore>()
         .batchWrite(path: "category_fields", data: allFieldDetails, op: "add");
-
-    await _addNewCategory(
-      category: addNewCategoryData["category_text"],
-      uid: categoryIdUid,
-      updateField: "category",
-    );
-  }
-
-  Future<void> _addNewCategory({
-    required String category,
-    required String uid,
-    required String updateField,
-  }) async {
-    Map data = {};
-
-    List categories =
-        _objectBox.getCategories().map((e) => e.category!).toSet().toList();
-
-    categories.add(category);
-
-    categories.sort((a, b) => a.compareTo(b));
-
-    for (var e in categories) {
-      data[e] = null;
-    }
-
-    await sl.get<Firestore>().modifyDocument(
-          path: "unique_values",
-          uid: uid,
-          updateMask: [updateField],
-          data: !kIsLinux
-              ? {
-                  updateField: data,
-                }
-              : {
-                  updateField: {
-                    "mapValue": {
-                      "fields": {
-                        data.map(
-                          (k, v) => MapEntry(
-                            k,
-                            v != null
-                                ? {
-                                    "mapValue": {
-                                      "fields": v.map(
-                                        (k1, v1) => MapEntry(
-                                          k1,
-                                          {
-                                            "stringValue": v1,
-                                          },
-                                        ),
-                                      ),
-                                    },
-                                  }
-                                : null,
-                          ),
-                        )
-                      }
-                    }
-                  }
-                },
-        );
   }
 }

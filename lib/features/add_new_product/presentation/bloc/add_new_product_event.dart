@@ -7,7 +7,17 @@ abstract class AddNewProductEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadedEvent extends AddNewProductEvent {}
+class CloudDataChangeEvent extends AddNewProductEvent {
+  const CloudDataChangeEvent({required this.onChange});
+
+  final Function(List)? onChange;
+}
+
+class LoadedEvent extends AddNewProductEvent {
+  const LoadedEvent({required this.fields});
+
+  final List? fields;
+}
 
 class ValueTypedEvent extends AddNewProductEvent {
   const ValueTypedEvent({

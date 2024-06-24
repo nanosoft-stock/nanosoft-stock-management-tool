@@ -7,14 +7,14 @@ abstract class LocateStockEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadedEvent extends LocateStockEvent {
-  const LoadedEvent({this.locatedStock});
+class CloudDataChangeEvent extends LocateStockEvent {
+  const CloudDataChangeEvent({required this.onChange});
 
-  final Map<String, dynamic>? locatedStock;
+  final Function(Map)? onChange;
 }
 
-class CloudDataChangeEvent extends LocateStockEvent {
-  const CloudDataChangeEvent({this.locatedStock});
+class LoadedEvent extends LocateStockEvent {
+  const LoadedEvent({this.locatedStock});
 
   final Map<String, dynamic>? locatedStock;
 }

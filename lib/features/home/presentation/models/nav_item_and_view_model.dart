@@ -32,7 +32,7 @@ class NavItemAndViewModel {
         title: 'Add New Category',
         icon: Icons.add_box_outlined,
       ),
-      view: const AddNewCategoryView(),
+      view: AddNewCategoryView(),
     ),
     "Visualise Stock": NavItemAndView(
       navItem: NavItemModel(
@@ -68,7 +68,7 @@ class NavItemAndViewModel {
         title: 'Modify Category',
         icon: Icons.edit_note_outlined,
       ),
-      view: const ModifyCategoryView(),
+      view: ModifyCategoryView(),
     ),
     "Print Id": NavItemAndView(
       navItem: NavItemModel(

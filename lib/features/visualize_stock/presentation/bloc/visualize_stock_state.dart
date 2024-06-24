@@ -5,7 +5,7 @@ abstract class VisualizeStockState extends Equatable {
     this.visualizeStock,
   });
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 
   @override
   List<Object> get props => [

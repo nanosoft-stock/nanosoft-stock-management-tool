@@ -1,6 +1,6 @@
 class DatatypeConverterHelper {
   static String convert({required String datatype}) {
-    switch (datatype) {
+    switch (datatype.toLowerCase()) {
       case "array":
         {
           return "arrayValue";

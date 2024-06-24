@@ -121,13 +121,10 @@ class CustomAutocompleteTextInputField extends StatelessWidget {
                     validator: validator,
                     onChanged: (value) {
                       controller.text = value;
+                      onSelected(value);
                     },
                     onFieldSubmitted: (value) {
-                      if (value.trim() == "" ||
-                          items
-                              .where((e) =>
-                                  e.toLowerCase().contains(value.toLowerCase()))
-                              .isEmpty) {
+                      if (value.trim() == "") {
                         onSelected(value);
                       } else {
                         onFieldSubmitted();

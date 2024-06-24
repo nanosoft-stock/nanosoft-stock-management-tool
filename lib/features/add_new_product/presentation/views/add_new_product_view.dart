@@ -4,9 +4,9 @@ import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/widgets/custom_input_field.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class AddNewProductView extends StatelessWidget {
   AddNewProductView({super.key});
@@ -65,7 +65,12 @@ class AddNewProductView extends StatelessWidget {
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
-        _addNewProductBloc.add(LoadedEvent());
+        _addNewProductBloc.add(CloudDataChangeEvent(
+          onChange: (fields) {
+            _addNewProductBloc.add(LoadedEvent(fields: fields));
+          },
+        ));
+
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
@@ -100,21 +105,19 @@ class AddNewProductView extends StatelessWidget {
     return constraints.maxWidth > 475
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-            child: FocusScope(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: constraints.maxWidth - 104,
-                        child: _buildInputFieldsContainer(fields),
-                      ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: constraints.maxWidth - 104,
+                      child: _buildInputFieldsContainer(fields),
                     ),
-                    const SizedBox(height: 20.0),
-                    _buildAddNewProductButtonContainer(fields),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildAddNewProductButtonContainer(fields),
+                ],
               ),
             ),
           )

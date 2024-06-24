@@ -5,10 +5,24 @@ import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/firestore_default.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
+import 'package:stock_management_tool/features/add_new_category/data/repositories/add_new_category_repository_implementation.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_category_pressed_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_field_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/category_typed_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/details_typed_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/field_name_typed_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/initial_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/rearrange_fields_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/remove_field_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/domain/usecases/view_field_details_add_new_category_usecase.dart';
+import 'package:stock_management_tool/features/add_new_category/presentation/bloc/add_new_category_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/data/repositories/product_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/repositories/product_repository.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/get_product_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_product/domain/usecases/listen_to_cloud_data_change_add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/domain/usecases/value_changed_add_new_product_usecase.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/data/repositories/stock_repository_implementation.dart';
@@ -16,6 +30,7 @@ import 'package:stock_management_tool/features/add_new_stock/domain/repositories
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/checkbox_toggled_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/get_stock_initial_input_fields_usecase.dart';
+import 'package:stock_management_tool/features/add_new_stock/domain/usecases/listen_to_cloud_data_change_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/usecases/value_changed_add_new_stock_usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/data/repositories/auth_repository_implementation.dart';
@@ -62,6 +77,19 @@ import 'package:stock_management_tool/features/locate_stock/domain/usecases/swit
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/switch_table_view_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/usecases/warehouse_location_id_entered_usecase.dart';
 import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
+import 'package:stock_management_tool/features/modify_category/data/repositories/modify_category_repository_implementation.dart';
+import 'package:stock_management_tool/features/modify_category/domain/repositories/modify_category_repository.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/add_new_field_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/category_selected_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/details_typed_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/field_name_typed_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/initial_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/listen_to_cloud_data_change_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/modify_category_pressed_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/rearrange_fields_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/remove_field_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/domain/usecases/view_field_details_modify_category_usecase.dart';
+import 'package:stock_management_tool/features/modify_category/presentation/bloc/modify_category_bloc.dart';
 import 'package:stock_management_tool/features/print_id/data/repositories/print_id_repository_implementation.dart';
 import 'package:stock_management_tool/features/print_id/domain/repositories/print_id_repository.dart';
 import 'package:stock_management_tool/features/print_id/domain/usecases/initial_usecase.dart';
@@ -96,6 +124,61 @@ Future<void> initializeDependencies() async {
   // ObjectBox
   sl.registerLazySingleton<ObjectBox>(() => ObjectBox());
 
+  // Add New Category
+  sl.registerLazySingleton<AddNewCategoryRepository>(
+      () => AddNewCategoryRepositoryImplementation());
+  sl.registerLazySingleton<InitialAddNewCategoryUseCase>(
+      () => InitialAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewCategoryUseCase>(
+      () => ListenToCloudDataChangeAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<CategoryTypedAddNewCategoryUseCase>(
+      () => CategoryTypedAddNewCategoryUseCase());
+  sl.registerLazySingleton<ViewFieldDetailsAddNewCategoryUseCase>(
+      () => ViewFieldDetailsAddNewCategoryUseCase());
+  sl.registerLazySingleton<AddNewFieldAddNewCategoryUseCase>(
+      () => AddNewFieldAddNewCategoryUseCase());
+  sl.registerLazySingleton<RearrangeFieldsAddNewCategoryUseCase>(
+      () => RearrangeFieldsAddNewCategoryUseCase());
+  sl.registerLazySingleton<RemoveFieldAddNewCategoryUseCase>(
+      () => RemoveFieldAddNewCategoryUseCase());
+  sl.registerLazySingleton<AddNewCategoryPressedUseCase>(
+      () => AddNewCategoryPressedUseCase(sl()));
+  sl.registerLazySingleton<FieldNameTypedAddNewCategoryUseCase>(
+      () => FieldNameTypedAddNewCategoryUseCase(sl()));
+  sl.registerLazySingleton<DetailsTypedAddNewCategoryUseCase>(
+      () => DetailsTypedAddNewCategoryUseCase());
+  sl.registerFactory<AddNewCategoryBloc>(() => AddNewCategoryBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+
+  // Add New Product
+  sl.registerLazySingleton<ProductRepository>(
+      () => ProductRepositoryImplementation());
+  sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
+      () => GetProductInitialInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewProductUseCase>(
+      () => ListenToCloudDataChangeAddNewProductUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
+      () => ValueChangedAddNewProductUseCase(sl()));
+  sl.registerLazySingleton<AddNewProductUseCase>(
+      () => AddNewProductUseCase(sl()));
+  sl.registerFactory<AddNewProductBloc>(
+      () => AddNewProductBloc(sl(), sl(), sl(), sl()));
+
+  // Add New Stock
+  sl.registerLazySingleton<StockRepository>(
+      () => StockRepositoryImplementation());
+  sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
+      () => GetStockInitialInputFieldsUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeAddNewStockUseCase>(
+      () => ListenToCloudDataChangeAddNewStockUseCase(sl()));
+  sl.registerLazySingleton<ValueChangedAddNewStockUseCase>(
+      () => ValueChangedAddNewStockUseCase(sl()));
+  sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
+      () => CheckboxToggledAddNewStockUseCase());
+  sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
+  sl.registerFactory<AddNewStockBloc>(
+      () => AddNewStockBloc(sl(), sl(), sl(), sl(), sl()));
+
   // Auth
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImplementation());
@@ -108,85 +191,6 @@ Future<void> initializeDependencies() async {
       () => HomeRepositoryImplementation());
   sl.registerLazySingleton<SignOutUserUseCase>(() => SignOutUserUseCase(sl()));
   sl.registerFactory<HomeBloc>(() => HomeBloc(sl()));
-
-  // Add New Stock
-  sl.registerLazySingleton<StockRepository>(
-      () => StockRepositoryImplementation());
-  sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
-      () => GetStockInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<ValueChangedAddNewStockUseCase>(
-      () => ValueChangedAddNewStockUseCase(sl()));
-  sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
-      () => CheckboxToggledAddNewStockUseCase());
-  sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
-  sl.registerFactory<AddNewStockBloc>(
-      () => AddNewStockBloc(sl(), sl(), sl(), sl()));
-
-  // Add New Product
-  sl.registerLazySingleton<ProductRepository>(
-      () => ProductRepositoryImplementation());
-  sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
-      () => GetProductInitialInputFieldsUseCase(sl()));
-  sl.registerLazySingleton<ValueChangedAddNewProductUseCase>(
-      () => ValueChangedAddNewProductUseCase(sl()));
-  sl.registerLazySingleton<AddNewProductUseCase>(
-      () => AddNewProductUseCase(sl()));
-  sl.registerFactory<AddNewProductBloc>(
-      () => AddNewProductBloc(sl(), sl(), sl()));
-
-  // Visualize Stock
-  sl.registerLazySingleton<VisualizeStockRepository>(
-      () => VisualizeStockRepositoryImplementation());
-  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
-      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<InitialVisualizeStockUseCase>(
-      () => InitialVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<SortColumnVisualizeStockUseCase>(
-      () => SortColumnVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<ImportFromExcelUseCase>(
-      () => ImportFromExcelUseCase(sl()));
-  sl.registerLazySingleton<ExportToExcelUseCase>(
-      () => ExportToExcelUseCase(sl()));
-  sl.registerLazySingleton<AddVisualizeStockLayerUseCase>(
-      () => AddVisualizeStockLayerUseCase());
-  sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
-      () => HideVisualizeStockLayerUseCase());
-  sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
-      () => ResetAllFiltersVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<RearrangeColumnsUseCase>(
-      () => RearrangeColumnsUseCase());
-  sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
-      () => ChangeColumnVisibilityUseCase());
-  sl.registerLazySingleton<FilterColumnVisualizeStockUseCase>(
-      () => FilterColumnVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<ClearColumnFilterVisualizeStockUseCase>(
-      () => ClearColumnFilterVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
-      () => FilterBySelectedVisualizeStockUseCase());
-  sl.registerLazySingleton<FilterValueChangedVisualizeStockUseCase>(
-      () => FilterValueChangedVisualizeStockUseCase());
-  sl.registerLazySingleton<SearchValueChangedVisualizeStockUseCase>(
-      () => SearchValueChangedVisualizeStockUseCase(sl()));
-  sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
-      () => CheckboxToggledVisualizeStockUseCase());
-  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-        sl(),
-      ));
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(
@@ -287,6 +291,32 @@ Future<void> initializeDependencies() async {
         sl(),
       ));
 
+  // Modify Category
+  sl.registerLazySingleton<ModifyCategoryRepository>(
+      () => ModifyCategoryRepositoryImplementation());
+  sl.registerLazySingleton<InitialModifyCategoryUseCase>(
+      () => InitialModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<ListenToCloudDataChangeModifyCategoryUseCase>(
+      () => ListenToCloudDataChangeModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<CategorySelectedModifyCategoryUseCase>(
+      () => CategorySelectedModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<ViewFieldDetailsModifyCategoryUseCase>(
+      () => ViewFieldDetailsModifyCategoryUseCase());
+  sl.registerLazySingleton<AddNewFieldModifyCategoryUseCase>(
+      () => AddNewFieldModifyCategoryUseCase());
+  sl.registerLazySingleton<RearrangeFieldsModifyCategoryUseCase>(
+      () => RearrangeFieldsModifyCategoryUseCase());
+  sl.registerLazySingleton<ModifyCategoryPressedUseCase>(
+      () => ModifyCategoryPressedUseCase(sl()));
+  sl.registerLazySingleton<RemoveFieldModifyCategoryUseCase>(
+      () => RemoveFieldModifyCategoryUseCase());
+  sl.registerLazySingleton<FieldNameTypedModifyCategoryUseCase>(
+      () => FieldNameTypedModifyCategoryUseCase(sl()));
+  sl.registerLazySingleton<DetailsTypedModifyCategoryUseCase>(
+      () => DetailsTypedModifyCategoryUseCase());
+  sl.registerFactory<ModifyCategoryBloc>(() => ModifyCategoryBloc(
+      sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+
   // Print Id
   sl.registerLazySingleton<PrintIdRepository>(
       () => PrintIdRepositoryImplementation());
@@ -299,6 +329,60 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<PrintPressedUseCase>(
       () => PrintPressedUseCase(sl()));
   sl.registerFactory<PrintIdBloc>(() => PrintIdBloc(sl(), sl(), sl(), sl()));
+
+  // Visualize Stock
+  sl.registerLazySingleton<VisualizeStockRepository>(
+      () => VisualizeStockRepositoryImplementation());
+  sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
+      () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<InitialVisualizeStockUseCase>(
+      () => InitialVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<SortColumnVisualizeStockUseCase>(
+      () => SortColumnVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<ImportFromExcelUseCase>(
+      () => ImportFromExcelUseCase(sl()));
+  sl.registerLazySingleton<ExportToExcelUseCase>(
+      () => ExportToExcelUseCase(sl()));
+  sl.registerLazySingleton<AddVisualizeStockLayerUseCase>(
+      () => AddVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<HideVisualizeStockLayerUseCase>(
+      () => HideVisualizeStockLayerUseCase());
+  sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
+      () => ResetAllFiltersVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<RearrangeColumnsUseCase>(
+      () => RearrangeColumnsUseCase());
+  sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
+      () => ChangeColumnVisibilityUseCase());
+  sl.registerLazySingleton<FilterColumnVisualizeStockUseCase>(
+      () => FilterColumnVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<ClearColumnFilterVisualizeStockUseCase>(
+      () => ClearColumnFilterVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<FilterBySelectedVisualizeStockUseCase>(
+      () => FilterBySelectedVisualizeStockUseCase());
+  sl.registerLazySingleton<FilterValueChangedVisualizeStockUseCase>(
+      () => FilterValueChangedVisualizeStockUseCase());
+  sl.registerLazySingleton<SearchValueChangedVisualizeStockUseCase>(
+      () => SearchValueChangedVisualizeStockUseCase(sl()));
+  sl.registerLazySingleton<CheckboxToggledVisualizeStockUseCase>(
+      () => CheckboxToggledVisualizeStockUseCase());
+  sl.registerFactory<VisualizeStockBloc>(() => VisualizeStockBloc(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+      ));
 
   // Services
   sl.registerLazySingleton<Auth>(() => Auth());

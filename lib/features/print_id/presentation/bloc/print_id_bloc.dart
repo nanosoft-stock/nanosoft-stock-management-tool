@@ -17,9 +17,12 @@ class PrintIdBloc extends Bloc<PrintIdEvent, PrintIdState> {
   final PrintCountEnteredUseCase? _printCountEnteredUseCase;
   final PrintPressedUseCase? _printPressedUseCase;
 
-  PrintIdBloc(this._initialPrintIdUseCase, this._printIdSelectedUseCase,
-      this._printCountEnteredUseCase, this._printPressedUseCase)
-      : super(LoadingState()) {
+  PrintIdBloc(
+    this._initialPrintIdUseCase,
+    this._printIdSelectedUseCase,
+    this._printCountEnteredUseCase,
+    this._printPressedUseCase,
+  ) : super(LoadingState()) {
     on<LoadedEvent>(loadedEvent);
     on<PrintIdSelectedEvent>(printIdSelectedEvent);
     on<PrintCountChangedEvent>(printCountChangedEvent);
@@ -33,20 +36,18 @@ class PrintIdBloc extends Bloc<PrintIdEvent, PrintIdState> {
 
   FutureOr<void> printIdSelectedEvent(
       PrintIdSelectedEvent event, Emitter<PrintIdState> emit) async {
-    emit(LoadedState(
-        printIdData: await _printIdSelectedUseCase!(params: {
+    await _printIdSelectedUseCase!(params: {
       "print_id": event.printId,
       "print_id_data": event.printIdData,
-    })));
+    });
   }
 
   FutureOr<void> printCountChangedEvent(
       PrintCountChangedEvent event, Emitter<PrintIdState> emit) async {
-    emit(LoadedState(
-        printIdData: await _printCountEnteredUseCase!(params: {
+    await _printCountEnteredUseCase!(params: {
       "print_count": event.printCount,
       "print_id_data": event.printIdData,
-    })));
+    });
   }
 
   FutureOr<void> printPressedEvent(

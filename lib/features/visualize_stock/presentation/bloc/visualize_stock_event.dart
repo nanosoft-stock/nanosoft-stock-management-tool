@@ -7,32 +7,34 @@ abstract class VisualizeStockEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CloudDataChangeEvent extends VisualizeStockEvent {}
+class CloudDataChangeEvent extends VisualizeStockEvent {
+  const CloudDataChangeEvent({required this.onChange});
 
-class LoadingEvent extends VisualizeStockEvent {}
+  final Function(Map)? onChange;
+}
 
 class LoadedEvent extends VisualizeStockEvent {
   const LoadedEvent({required this.visualizeStock});
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ImportButtonClickedEvent extends VisualizeStockEvent {
   const ImportButtonClickedEvent({required this.visualizeStock});
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ExportButtonClickedEvent extends VisualizeStockEvent {
   const ExportButtonClickedEvent({required this.visualizeStock});
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ShowTableFilterLayerEvent extends VisualizeStockEvent {
   const ShowTableFilterLayerEvent({required this.visualizeStock});
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ShowColumnFilterLayerEvent extends VisualizeStockEvent {
@@ -40,7 +42,7 @@ class ShowColumnFilterLayerEvent extends VisualizeStockEvent {
       {required this.field, required this.visualizeStock});
 
   final String? field;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ShowTableColumnFilterLayerEvent extends VisualizeStockEvent {
@@ -48,14 +50,14 @@ class ShowTableColumnFilterLayerEvent extends VisualizeStockEvent {
       {required this.field, required this.visualizeStock});
 
   final String? field;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class HideLayerEvent extends VisualizeStockEvent {
   const HideLayerEvent({required this.layer, required this.visualizeStock});
 
   final String? layer;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class RearrangeColumnsEvent extends VisualizeStockEvent {
@@ -63,13 +65,13 @@ class RearrangeColumnsEvent extends VisualizeStockEvent {
       {required this.fields, required this.visualizeStock});
 
   final List? fields;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ResetAllFiltersEvent extends VisualizeStockEvent {
   const ResetAllFiltersEvent({required this.visualizeStock});
 
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
@@ -80,7 +82,7 @@ class ColumnVisibilityChangedEvent extends VisualizeStockEvent {
 
   final String? field;
   final bool? visibility;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class FilterColumnEvent extends VisualizeStockEvent {
@@ -90,7 +92,7 @@ class FilterColumnEvent extends VisualizeStockEvent {
   });
 
   final String? field;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class ClearColumnFilterEvent extends VisualizeStockEvent {
@@ -100,7 +102,7 @@ class ClearColumnFilterEvent extends VisualizeStockEvent {
   });
 
   final String? field;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class SortColumnEvent extends VisualizeStockEvent {
@@ -112,7 +114,7 @@ class SortColumnEvent extends VisualizeStockEvent {
 
   final String field;
   final Sort sort;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class FilterBySelectedEvent extends VisualizeStockEvent {
@@ -124,7 +126,7 @@ class FilterBySelectedEvent extends VisualizeStockEvent {
 
   final String? field;
   final String? filterBy;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class FilterValueChangedEvent extends VisualizeStockEvent {
@@ -136,7 +138,7 @@ class FilterValueChangedEvent extends VisualizeStockEvent {
 
   final String? field;
   final String? filterValue;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class SearchValueChangedEvent extends VisualizeStockEvent {
@@ -148,7 +150,7 @@ class SearchValueChangedEvent extends VisualizeStockEvent {
 
   final String? field;
   final String? searchValue;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }
 
 class CheckBoxToggledEvent extends VisualizeStockEvent {
@@ -162,5 +164,5 @@ class CheckBoxToggledEvent extends VisualizeStockEvent {
   final String? field;
   final String title;
   final bool? value;
-  final Map? visualizeStock;
+  final Map<String, dynamic>? visualizeStock;
 }

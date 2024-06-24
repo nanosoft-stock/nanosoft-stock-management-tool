@@ -108,8 +108,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   void listenToCloudDataChange(
-      {required Map locatedStock, required void Function(Map) onChange}) {
-    _objectBox.getItemIdStream(triggerImmediately: false).listen((snapshot) {
+      {required Map locatedStock, required Function(Map) onChange}) {
+    _objectBox.getItemIdStream().listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Item Id"] =
             snapshot.map((e) => e.itemId!).toList();
@@ -117,9 +117,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       }
     });
 
-    _objectBox
-        .getContainerIdStream(triggerImmediately: false)
-        .listen((snapshot) {
+    _objectBox.getContainerIdStream().listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Container Id"] =
             snapshot.map((e) => e.containerId!).toList();
@@ -127,9 +125,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       }
     });
 
-    _objectBox
-        .getWarehouseLocationIdStream(triggerImmediately: false)
-        .listen((snapshot) {
+    _objectBox.getWarehouseLocationIdStream().listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["all_ids"]["Warehouse Location Id"] =
             snapshot.map((e) => e.warehouseLocationId!).toList();
@@ -137,7 +133,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       }
     });
 
-    _objectBox.getStockStream(triggerImmediately: false).listen((snapshot) {
+    _objectBox.getStockStream().listen((snapshot) {
       locatedStock["rows"].forEach((element) {
         if (element["chosen_ids"] != null && element["chosen_ids"].isNotEmpty) {
           Map details = getChosenIdsDetails(
@@ -154,9 +150,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       onChange(locatedStock);
     });
 
-    _objectBox
-        .getStockLocationHistoryStream(triggerImmediately: false)
-        .listen((snapshot) {
+    _objectBox.getStockLocationHistoryStream().listen((snapshot) {
       if (snapshot.isNotEmpty) {
         locatedStock["pending_state_items"] = getAllPendingStateItems(
             locatedStock["pending_state_items"] ?? <String, dynamic>{});

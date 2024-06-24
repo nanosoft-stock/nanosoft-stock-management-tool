@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/datatype_converter_helper.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewStockHelper {
-  static Map toJson({required Map data}) {
+  static Map<String, dynamic> toJson({required Map data}) {
     final objectbox = sl.get<ObjectBox>();
 
-    Map convertedData = {};
+    Map<String, dynamic> convertedData = {};
     String category = data["category"];
 
     List fields = objectbox
@@ -25,11 +26,12 @@ class AddNewStockHelper {
           convertedData[e["field"]] =
               Timestamp.now(); // FieldValue.serverTimestamp();
         } else if (e["field"] == "user") {
-          convertedData[e["field"]] = userName;
-        } else if (e["field"] == "archived") {
-          convertedData[e["field"]] = false;
+          convertedData[e["field"]] =
+              CaseHelper.convert(e["value_case"], userName).trim();
         } else {
-          convertedData[e["field"]] = data[e["field"]] ?? "";
+          convertedData[e["field"]] =
+              CaseHelper.convert(e["value_case"], data[e["field"]] ?? "")
+                  .trim();
         }
       }
     } else {
@@ -41,16 +43,14 @@ class AddNewStockHelper {
           };
         } else if (e["field"] == "user") {
           convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]): userName,
-          };
-        } else if (e["field"] == "archived") {
-          convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]): false,
+            DatatypeConverterHelper.convert(datatype: e["datatype"]):
+                CaseHelper.convert(e["value_case"], userName).trim(),
           };
         } else {
           convertedData[e["field"]] = {
             DatatypeConverterHelper.convert(datatype: e["datatype"]):
-                data[e["field"]] ?? "",
+                CaseHelper.convert(e["value_case"], data[e["field"]] ?? "")
+                    .trim(),
           };
         }
       }

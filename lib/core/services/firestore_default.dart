@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class FirestoreDefault {
   final firestore = FirebaseFirestore.instance;
@@ -67,9 +68,7 @@ class FirestoreDefault {
   }
 
   Future<Map<String, dynamic>> batchWrite(
-      {required String path,
-      required List data,
-      required bool isToBeUpdated}) async {
+      {required String path, required List data, required String op}) async {
     int chunkSize = 500;
 
     Map<String, dynamic> docRefData = {};
@@ -81,19 +80,24 @@ class FirestoreDefault {
 
       for (var e in chunkData) {
         try {
-          if (!isToBeUpdated) {
+          if (op == "add") {
             var docRef = firestore.collection(path).doc();
-            docRefData[e["item id"]] = {
-              "container_id": e["container id"],
-              "doc_ref": docRef.id,
-            };
+            if (path == "stock_data") {
+              docRefData[e["item id"]] = {
+                "container_id": e["container id"],
+                "doc_ref": docRef.id,
+              };
+            }
 
             batch.set(docRef, e.cast<String, dynamic>());
-          } else {
+          } else if (op == "modify") {
             batch.update(firestore.collection(path).doc(e["doc_ref"]),
                 (e..remove("doc_ref")).cast<String, dynamic>());
+          } else if (op == "delete") {
+            batch.delete(firestore.collection(path).doc(e["doc_ref"]));
           }
         } catch (e) {
+          debugPrint(e.toString());
           return {};
         }
       }

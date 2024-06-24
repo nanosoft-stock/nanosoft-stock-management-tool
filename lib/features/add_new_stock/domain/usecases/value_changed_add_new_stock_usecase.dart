@@ -1,4 +1,3 @@
-import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/usecase/usecase.dart';
 import 'package:stock_management_tool/features/add_new_stock/domain/repositories/stock_repository.dart';
 
@@ -20,31 +19,18 @@ class ValueChangedAddNewStockUseCase extends UseCase {
 
     if (field == "category") {
       if (fieldMap["items"].contains(value)) {
-        fields = _stockRepository.getCategoryBasedInputFields(category: value);
+        List<Map<String, dynamic>> newFields =
+            _stockRepository.getCategoryBasedInputFields(category: value);
+        fields.addAll(newFields);
+        fields[0]["text_value"] = value;
       } else {
-        fields = _stockRepository.getInitialInputFields();
+        fields.removeWhere((e) => e["field"] != "category");
         fields[0]["text_value"] = value;
       }
     } else if (field == "sku") {
       if (fieldMap["items"].contains(value)) {
-        Map productDesc = _stockRepository.getProductDescription(
-            category: fields[0]["text_value"], sku: value);
-
-        List f = productDesc["fields"];
-        List v = productDesc["values"];
-
-        List affectedFields = fields
-            .where((element) =>
-                element["in_sku"] &&
-                !["category", "sku"].contains(element["field"]))
-            .toList();
-
-        for (var element in affectedFields) {
-          String val = v[f.indexWhere((e) => e == element["field"])];
-          fields.firstWhere(
-                  (e) => e["field"] == element["field"])["text_value"] =
-              CaseHelper.convert(element["value_case"], val);
-        }
+        fields = _stockRepository.getProductDescription(
+            category: fields[0]["text_value"], sku: value, fields: fields);
       }
     } else if (field == "container id") {
       if (fieldMap["items"].contains(value)) {

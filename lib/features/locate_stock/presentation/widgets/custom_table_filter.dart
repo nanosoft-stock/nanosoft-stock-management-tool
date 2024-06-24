@@ -81,7 +81,7 @@ class CustomTableFilter extends StatelessWidget {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 6.0),
+                              horizontal: 10.0, vertical: 7.5),
                           child: Row(
                             children: [
                               Expanded(

@@ -4,9 +4,9 @@ import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_input_field.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class AddNewStockView extends StatelessWidget {
   AddNewStockView({super.key});
@@ -66,7 +66,12 @@ class AddNewStockView extends StatelessWidget {
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (LoadingState):
-        _addNewStockBloc.add(LoadedEvent());
+        _addNewStockBloc.add(CloudDataChangeEvent(
+          onChange: (fields) {
+            _addNewStockBloc.add(LoadedEvent(fields: fields));
+          },
+        ));
+
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
@@ -101,21 +106,19 @@ class AddNewStockView extends StatelessWidget {
     return constraints.maxWidth > 525
         ? Padding(
             padding: EdgeInsets.fromLTRB(52 + pad, 80, 52 + pad, 40),
-            child: FocusScope(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: constraints.maxWidth - 104,
-                        child: _buildInputFieldsContainer(fields),
-                      ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: constraints.maxWidth - 104,
+                      child: _buildInputFieldsContainer(fields),
                     ),
-                    const SizedBox(height: 20.0),
-                    _buildAddNewStockButtonContainer(fields),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildAddNewStockButtonContainer(fields),
+                ],
               ),
             ),
           )

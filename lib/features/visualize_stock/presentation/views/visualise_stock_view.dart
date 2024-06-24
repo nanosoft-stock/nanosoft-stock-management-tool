@@ -4,13 +4,13 @@ import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_column_filter.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_filter_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class VisualiseStockView extends StatelessWidget {
@@ -42,14 +42,20 @@ class VisualiseStockView extends StatelessWidget {
   Widget _blocBuilder(BuildContext context, VisualizeStockState state) {
     switch (state.runtimeType) {
       case const (LoadingState):
-        _visualizeStockBloc.add(CloudDataChangeEvent());
+        _visualizeStockBloc.add(CloudDataChangeEvent(
+          onChange: (visualizeStock) {
+            _visualizeStockBloc.add(LoadedEvent(
+                visualizeStock: visualizeStock.cast<String, dynamic>()));
+          },
+        ));
+
         return _buildLoadingStateWidget();
 
       case const (ErrorState):
         return _buildErrorStateWidget();
 
       case const (LoadedState):
-        Map visualizeStock = state.visualizeStock!;
+        Map<String, dynamic> visualizeStock = state.visualizeStock!;
         return _buildLoadedStateWidget(visualizeStock);
 
       default:
@@ -72,7 +78,7 @@ class VisualiseStockView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedStateWidget(Map visualizeStock) {
+  Widget _buildLoadedStateWidget(Map<String, dynamic> visualizeStock) {
     List fields = visualizeStock["show_fields"];
     List stocks = visualizeStock["stocks"];
     Map filters = visualizeStock["filters"];

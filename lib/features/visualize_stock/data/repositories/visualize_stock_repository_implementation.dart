@@ -9,6 +9,7 @@ import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
+import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
@@ -600,7 +601,7 @@ class VisualizeStockRepositoryImplementation
         for (var field in fields) {
           var cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(field.toTitleCase());
+          cell.value = TextCellValue(field.toString().toTitleCase());
           column++;
         }
       } else {

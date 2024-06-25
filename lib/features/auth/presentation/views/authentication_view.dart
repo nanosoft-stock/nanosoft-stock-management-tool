@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/login_view.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/sign_up_view.dart';
 import 'package:stock_management_tool/features/auth/presentation/widgets/custom_segmented_button.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class AuthenticationView extends StatelessWidget {
   AuthenticationView({super.key});
@@ -71,6 +71,7 @@ class AuthenticationView extends StatelessWidget {
                 child: CustomSegmentedButton(
                   isLogin: isLogin,
                   onSelectionChanged: (value) {
+                    print(value.first);
                     if (value.first) {
                       _authBloc.add(LoginSelectedEvent());
                     } else {

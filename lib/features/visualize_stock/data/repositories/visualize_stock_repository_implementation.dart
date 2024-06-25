@@ -20,35 +20,34 @@ class VisualizeStockRepositoryImplementation
     implements VisualizeStockRepository {
   final ObjectBox _objectBox = sl.get<ObjectBox>();
 
-  List fieldsOrder = [
-    "date",
-    "category",
-    "warehouse location id",
-    "container id",
-    "item id",
-    "serial number",
-    "sku",
-    "make",
-    "model",
-    "processor",
-    "ram",
-    "storage",
-    "screen resolution",
-    "os",
-    "screen size",
-    "usb c",
-    "hdmi",
-    "display port",
-    "vga",
-    "ethernet",
-    "usb a",
-    "type",
-    "supplier info",
-    "dispatch info",
-    "comments",
-    "staff",
-    "archived",
-  ];
+  // List fieldsOrder = [
+  //   "date",
+  //   "category",
+  //   "warehouse location id",
+  //   "container id",
+  //   "item id",
+  //   "serial number",
+  //   "sku",
+  //   "make",
+  //   "model",
+  //   "processor",
+  //   "ram",
+  //   "storage",
+  //   "screen resolution",
+  //   "os",
+  //   "screen size",
+  //   "usb c",
+  //   "hdmi",
+  //   "display port",
+  //   "vga",
+  //   "ethernet",
+  //   "usb a",
+  //   "type",
+  //   "supplier info",
+  //   "dispatch info",
+  //   "comments",
+  //   "user",
+  // ];
 
   List<String> stringFilterBy = [
     "Equals",
@@ -85,12 +84,17 @@ class VisualizeStockRepositoryImplementation
 
   @override
   List<String> getAllFields() {
-    List fields = _objectBox.getInputFields().map((e) => e.field).toList();
+    List fields = (_objectBox.getInputFields()
+          ..sort((a, b) => a.order!.compareTo(b.order!)))
+        .map((e) => e.field)
+        .toSet()
+        .toList();
 
-    List newFields = [...fieldsOrder];
-    newFields.removeWhere((e) => !fields.contains(e));
+    // List newFields = [...fieldsOrder];
+    // newFields.removeWhere((e) => !fields.contains(e));
 
-    return newFields.cast<String>();
+    // return newFields.cast<String>();
+    return fields.cast<String>();
   }
 
   @override

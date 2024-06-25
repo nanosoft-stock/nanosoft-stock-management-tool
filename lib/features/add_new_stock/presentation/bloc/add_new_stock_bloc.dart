@@ -83,8 +83,8 @@ class AddNewStockBloc extends Bloc<AddNewStockEvent, AddNewStockState> {
   FutureOr<void> addNewStockButtonClickedEvent(
       AddNewStockButtonClickedEvent event,
       Emitter<AddNewStockState> emit) async {
+    emit(NewStockAddedActionState());
     emit(LoadedState(
         await _addNewStockUseCase!(params: {"fields": event.fields!})));
-    emit(NewStockAddedActionState());
   }
 }

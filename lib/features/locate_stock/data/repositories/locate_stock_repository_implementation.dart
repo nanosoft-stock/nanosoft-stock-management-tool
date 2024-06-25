@@ -57,35 +57,34 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   //   ]
   // };
 
-  List fieldsOrder = [
-    "date",
-    "category",
-    "warehouse location",
-    "container id",
-    "item id",
-    "serial number",
-    "sku",
-    "make",
-    "model",
-    "processor",
-    "ram",
-    "storage",
-    "screen resolution",
-    "os",
-    "screen size",
-    "usb c",
-    "hdmi",
-    "display port",
-    "vga",
-    "ethernet",
-    "usb a",
-    "type",
-    "supplier info",
-    "dispatch info",
-    "comments",
-    "staff",
-    "archived",
-  ];
+  // List fieldsOrder = [
+  //   "date",
+  //   "category",
+  //   "warehouse location",
+  //   "container id",
+  //   "item id",
+  //   "serial number",
+  //   "sku",
+  //   "make",
+  //   "model",
+  //   "processor",
+  //   "ram",
+  //   "storage",
+  //   "screen resolution",
+  //   "os",
+  //   "screen size",
+  //   "usb c",
+  //   "hdmi",
+  //   "display port",
+  //   "vga",
+  //   "ethernet",
+  //   "usb a",
+  //   "type",
+  //   "supplier info",
+  //   "dispatch info",
+  //   "comments",
+  //   "user",
+  // ];
 
   List<String> stringFilterBy = [
     "Equals",
@@ -211,11 +210,15 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Map<String, dynamic> getInitialFilters() {
-    List fields = _objectBox.getInputFields().map((e) => e.field!).toList();
+    List fields = (_objectBox.getInputFields()
+          ..sort((a, b) => a.order!.compareTo(b.order!)))
+        .map((e) => e.field)
+        .toSet()
+        .toList();
 
-    List newFields = [...fieldsOrder];
-    newFields.removeWhere((e) => !fields.contains(e));
-    fields = newFields;
+    // List newFields = [...fieldsOrder];
+    // newFields.removeWhere((e) => !fields.contains(e));
+    // fields = newFields;
 
     List stocks = getAllStocks();
 

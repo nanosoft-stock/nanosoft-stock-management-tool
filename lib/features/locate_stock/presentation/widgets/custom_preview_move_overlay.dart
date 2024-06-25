@@ -158,7 +158,7 @@ class CustomPreviewMoveOverlay extends StatelessWidget {
                                     onPressed: () {
                                       onMoveItemsTap();
                                     },
-                                    text: "Move Items",
+                                    text: "Move",
                                   ),
                                 ),
                               ),

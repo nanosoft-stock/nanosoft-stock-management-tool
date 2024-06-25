@@ -13,7 +13,8 @@ class SignUpView extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> signUpUser({required BuildContext context}) async {
-    bloc.add(LoginButtonClickedEvent(
+    bloc.add(SignUpButtonClickedEvent(
+      username: usernameController.text.toLowerCase().trim(),
       email: emailController.text.toLowerCase().trim(),
       password: passwordController.text.trim(),
     ));

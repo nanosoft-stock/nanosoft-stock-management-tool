@@ -360,27 +360,29 @@ class VisualizeStockRepositoryImplementation
         String? i = rowData["item id"];
         String? c = rowData["container id"];
 
-        if (!items.containsKey(i)) {
-          if (containers[c] != null) {
+        if (items.containsKey(i)) {
+          if (items[i]["status"] != "added") {
+            if (containers[c] != null) {
+              rowData["warehouse location id"] =
+                  containers[c]["warehouse_location_id"] ?? "";
+            } else {
+              containers[c] = {"warehouse_location_id": "", "status": "added"};
+              rowData["warehouse location id"] = "";
+            }
+
+            newStocks.add(AddNewStockHelper.toJson(data: rowData));
+            uniqueContainers.add(c);
+          } else {
+            rowData["container id"] = items[i]["container_id"];
+            c = rowData["container id"];
             rowData["warehouse location id"] =
                 containers[c]["warehouse_location_id"] ?? "";
-          } else {
-            containers[c] = {"warehouse_location_id": "", "status": "added"};
-            rowData["warehouse location id"] = "";
+
+            existingStocks.add({
+              "doc_ref": items[i]["doc_ref"],
+              ...AddNewStockHelper.toJson(data: rowData),
+            });
           }
-
-          newStocks.add(AddNewStockHelper.toJson(data: rowData));
-          uniqueContainers.add(c);
-        } else {
-          rowData["container id"] = items[i]["container_id"];
-          c = rowData["container id"];
-          rowData["warehouse location id"] =
-              containers[c]["warehouse_location_id"] ?? "";
-
-          existingStocks.add({
-            "doc_ref": items[i]["doc_ref"],
-            ...AddNewStockHelper.toJson(data: rowData),
-          });
         }
       }
     }

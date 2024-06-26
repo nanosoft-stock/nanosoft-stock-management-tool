@@ -378,7 +378,6 @@ class ModifyCategoryView extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(7.5),
@@ -415,47 +414,53 @@ class ModifyCategoryView extends StatelessWidget {
                                   ),
                                 ),
                                 const Divider(),
-                                FocusScope(
-                                  child: SingleChildScrollView(
-                                    physics: const ClampingScrollPhysics(),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        for (var data in modifyCategoryData[
-                                                "field_data_fields"]
-                                            .entries)
-                                          CustomFieldDetails(
-                                            detailKey: data.key,
-                                            displayField: displayField,
-                                            text: data.value,
-                                            message:
-                                                modifyCategoryData["tool_tips"]
-                                                    [data.key],
-                                            options:
-                                                modifyCategoryData["options"],
-                                            fieldDetails: modifyCategoryData[
-                                                "field_details"],
-                                            validator: (_) => null,
-                                            onSelected: (value) {
-                                              _modifyCategoryBloc
-                                                  .add(DetailsTypedEvent(
-                                                title: data.key,
-                                                value: value,
-                                                modifyCategoryData:
-                                                    modifyCategoryData,
-                                              ));
-                                            },
-                                            onSubmitted: (value) {
-                                              _modifyCategoryBloc
-                                                  .add(FieldNameTypedEvent(
-                                                title: data.key,
-                                                value: value,
-                                                modifyCategoryData:
-                                                    modifyCategoryData,
-                                              ));
-                                            },
-                                          ),
-                                      ],
+                                Expanded(
+                                  child: FocusScope(
+                                    child: ListView.builder(
+                                      itemCount: modifyCategoryData[
+                                              "field_data_fields"]
+                                          .length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        MapEntry<String, dynamic> data =
+                                            modifyCategoryData[
+                                                    "field_data_fields"]
+                                                .entries
+                                                .elementAt(index);
+
+                                        return CustomFieldDetails(
+                                          detailKey: data.key,
+                                          displayField: displayField,
+                                          text: data.value,
+                                          message:
+                                              modifyCategoryData["tool_tips"]
+                                                  [data.key],
+                                          options:
+                                              modifyCategoryData["options"],
+                                          fieldDetails: modifyCategoryData[
+                                              "field_details"],
+                                          validator: (_) => null,
+                                          onSelected: (value) {
+                                            _modifyCategoryBloc
+                                                .add(DetailsTypedEvent(
+                                              title: data.key,
+                                              value: value,
+                                              modifyCategoryData:
+                                                  modifyCategoryData,
+                                            ));
+                                          },
+                                          onSubmitted: (value) {
+                                            _modifyCategoryBloc
+                                                .add(FieldNameTypedEvent(
+                                              title: data.key,
+                                              value: value,
+                                              modifyCategoryData:
+                                                  modifyCategoryData,
+                                            ));
+                                          },
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
@@ -469,9 +474,9 @@ class ModifyCategoryView extends StatelessWidget {
               ],
             ),
           )
-        : SizedBox(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
+        : const SizedBox(
+            width: double.infinity,
+            height: double.infinity,
           );
   }
 }

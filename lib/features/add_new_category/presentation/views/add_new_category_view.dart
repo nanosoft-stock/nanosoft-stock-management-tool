@@ -375,7 +375,7 @@ class AddNewCategoryView extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
+                              // mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(7.5),
@@ -412,53 +412,59 @@ class AddNewCategoryView extends StatelessWidget {
                                   ),
                                 ),
                                 const Divider(),
-                                FocusScope(
-                                  child: SingleChildScrollView(
-                                    physics: const ClampingScrollPhysics(),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        for (var data in addNewCategoryData[
-                                                "field_data_fields"]
-                                            .entries)
-                                          CustomFieldDetails(
-                                            fieldFormKey: data.key == "field"
-                                                ? _fieldFormKey
-                                                : null,
-                                            detailKey: data.key,
-                                            displayField: displayField,
-                                            text: data.value,
-                                            message:
-                                                addNewCategoryData["tool_tips"]
-                                                    [data.key],
-                                            options:
-                                                addNewCategoryData["options"],
-                                            fieldDetails: addNewCategoryData[
-                                                "field_details"],
-                                            validator: (_) => null,
-                                            onSelected: (value) {
+                                Expanded(
+                                  child: FocusScope(
+                                    child: ListView.builder(
+                                      itemCount: addNewCategoryData[
+                                              "field_data_fields"]
+                                          .length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        MapEntry<String, dynamic> data =
+                                            addNewCategoryData[
+                                                    "field_data_fields"]
+                                                .entries
+                                                .elementAt(index);
+
+                                        return CustomFieldDetails(
+                                          fieldFormKey: data.key == "field"
+                                              ? _fieldFormKey
+                                              : null,
+                                          detailKey: data.key,
+                                          displayField: displayField,
+                                          text: data.value,
+                                          message:
+                                              addNewCategoryData["tool_tips"]
+                                                  [data.key],
+                                          options:
+                                              addNewCategoryData["options"],
+                                          fieldDetails: addNewCategoryData[
+                                              "field_details"],
+                                          validator: (_) => null,
+                                          onSelected: (value) {
+                                            _addNewCategoryBloc
+                                                .add(DetailsTypedEvent(
+                                              title: data.key,
+                                              value: value,
+                                              addNewCategoryData:
+                                                  addNewCategoryData,
+                                            ));
+                                          },
+                                          onSubmitted: (value) {
+                                            if (_fieldFormKey.currentState!
+                                                .validate()) {
                                               _addNewCategoryBloc
-                                                  .add(DetailsTypedEvent(
+                                                  .add(FieldNameTypedEvent(
                                                 title: data.key,
                                                 value: value,
                                                 addNewCategoryData:
                                                     addNewCategoryData,
                                               ));
-                                            },
-                                            onSubmitted: (value) {
-                                              if (_fieldFormKey.currentState!
-                                                  .validate()) {
-                                                _addNewCategoryBloc
-                                                    .add(FieldNameTypedEvent(
-                                                  title: data.key,
-                                                  value: value,
-                                                  addNewCategoryData:
-                                                      addNewCategoryData,
-                                                ));
-                                              }
-                                            },
-                                          ),
-                                      ],
+                                            }
+                                          },
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),

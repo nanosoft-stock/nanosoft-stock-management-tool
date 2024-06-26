@@ -163,7 +163,7 @@ class CustomColumnFilter extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
                         children: [
-                          const Icon(Icons.swap_vert_outlined),
+                          const Icon(Icons.swap_vert_rounded),
                           const SizedBox(
                             width: 5,
                           ),

@@ -608,7 +608,7 @@ class VisualizeStockRepositoryImplementation
         for (var field in fields) {
           var cell = sheetObject.cell(
               CellIndex.indexByColumnRow(columnIndex: column, rowIndex: row));
-          cell.value = TextCellValue(stocks[row - 1][field].toString());
+          cell.value = TextCellValue((stocks[row - 1][field] ?? "").toString());
           column++;
         }
       }

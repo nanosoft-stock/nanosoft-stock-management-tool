@@ -4,8 +4,8 @@ import 'package:stock_management_tool/core/components/custom_autocomplete_text_i
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
 import 'package:stock_management_tool/core/components/custom_text_input_field.dart';
-import 'package:stock_management_tool/features/print_id/presentation/bloc/print_id_bloc.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
+import 'package:stock_management_tool/features/print_id/presentation/bloc/print_id_bloc.dart';
 
 class PrintIdView extends StatelessWidget {
   PrintIdView({super.key});
@@ -71,58 +71,70 @@ class PrintIdView extends StatelessWidget {
       builder: (BuildContext context, BoxConstraints constraints) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(52, 57, 52, 40),
-          child: Column(
-            children: [
-              CustomContainer(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: CustomAutocompleteTextInputField(
-                          text: "Print Id",
-                          initialValue: printIdData["print_id"],
-                          items: printIdData["printable_ids"],
-                          validator: (_) => "",
-                          onSelected: (value) {
-                            _printIdBloc.add(PrintIdSelectedEvent(
-                                printId: value, printIdData: printIdData));
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: CustomTextInputField(
-                          text: "Count",
-                          initialValue: printIdData["print_count"],
-                          validator: (_) => "",
-                          onSelected: (value) {
-                            _printIdBloc.add(PrintCountChangedEvent(
-                                printCount: value, printIdData: printIdData));
-                          },
-                        ),
-                      ),
-                      Padding(
+          child: constraints.maxWidth > 467.0
+              ? Column(
+                  children: [
+                    CustomContainer(
+                      child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: SizedBox(
-                          width: 322.5,
-                          child: CustomElevatedButton(
-                            onPressed: () {
-                              _printIdBloc.add(
-                                  PrintPressedEvent(printIdData: printIdData));
-                            },
-                            text: "Print",
+                          width: double.infinity,
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            runAlignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomAutocompleteTextInputField(
+                                  text: "Print Id",
+                                  initialValue: printIdData["print_id"],
+                                  items: printIdData["printable_ids"],
+                                  validator: (_) => "",
+                                  onSelected: (value) {
+                                    _printIdBloc.add(PrintIdSelectedEvent(
+                                        printId: value,
+                                        printIdData: printIdData));
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomTextInputField(
+                                  text: "Count",
+                                  initialValue: printIdData["print_count"],
+                                  validator: (_) => "",
+                                  onSelected: (value) {
+                                    _printIdBloc.add(PrintCountChangedEvent(
+                                        printCount: value,
+                                        printIdData: printIdData));
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: 322.5,
+                                  child: CustomElevatedButton(
+                                    onPressed: () {
+                                      _printIdBloc.add(PrintPressedEvent(
+                                          printIdData: printIdData));
+                                    },
+                                    text: "Print",
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                )
+              : const SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
                 ),
-              ),
-            ],
-          ),
         );
       },
     );

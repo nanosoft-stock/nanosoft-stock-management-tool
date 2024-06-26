@@ -121,9 +121,9 @@ class AddNewProductView extends StatelessWidget {
               ),
             ),
           )
-        : SizedBox(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
+        : const SizedBox(
+            width: double.infinity,
+            height: double.infinity,
           );
   }
 

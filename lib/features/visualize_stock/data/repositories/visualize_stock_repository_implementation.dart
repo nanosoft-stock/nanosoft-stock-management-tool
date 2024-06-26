@@ -173,7 +173,7 @@ class VisualizeStockRepositoryImplementation
   @override
   Map<String, dynamic> getUniqueValues(
       {required String field, required List stocks}) {
-    List uniqueValues = stocks.map((e) => e[field]).toSet().toList()
+    List uniqueValues = stocks.map((e) => e[field] ?? "").toSet().toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
 
     Map details = {};

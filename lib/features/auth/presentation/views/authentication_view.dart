@@ -71,7 +71,6 @@ class AuthenticationView extends StatelessWidget {
                 child: CustomSegmentedButton(
                   isLogin: isLogin,
                   onSelectionChanged: (value) {
-                    print(value.first);
                     if (value.first) {
                       _authBloc.add(LoginSelectedEvent());
                     } else {
@@ -79,7 +78,6 @@ class AuthenticationView extends StatelessWidget {
                     }
                   },
                 ),
-                // child: _buildSegmentedButton(isLogin),
               ),
             ),
             isLogin ? LoginView(bloc: _authBloc) : SignUpView(bloc: _authBloc),

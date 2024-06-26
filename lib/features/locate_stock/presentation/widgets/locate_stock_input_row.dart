@@ -12,6 +12,7 @@ class LocateStockInputRow extends StatelessWidget {
     super.key,
     required this.rowData,
     required this.showRemoveButton,
+    // required this.constraints,
     required this.removeOnTap,
     required this.onSearchBySelected,
     required this.onChooseIds,
@@ -30,6 +31,8 @@ class LocateStockInputRow extends StatelessWidget {
 
   final Map rowData;
   final bool showRemoveButton;
+
+  // final BoxConstraints constraints;
   final Function() removeOnTap;
   final Function(String) onSearchBySelected;
   final Function() onChooseIds;
@@ -48,9 +51,10 @@ class LocateStockInputRow extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -70,7 +74,7 @@ class LocateStockInputRow extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: CustomAutocompleteTextInputField(
-                      text: "Search BY",
+                      text: "Search By",
                       initialValue: rowData["search_by"],
                       items: searchableIds,
                       validator: (_) => "",

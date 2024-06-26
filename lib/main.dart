@@ -8,13 +8,13 @@ import 'package:stock_management_tool/core/services/auth_default.dart';
 import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firebase_options.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
+import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/views/home_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/objectbox.dart';
 
 Future<void> main() async {
@@ -31,9 +31,6 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    if (sl.get<AuthDefault>().currentUser != null) {
-      userName = sl.get<AuthDefault>().currentUser!.displayName!;
-    }
   }
 
   await sl.get<ObjectBox>().create();
@@ -72,6 +69,9 @@ class StockManagementToolApp extends StatelessWidget {
                     stream: sl.get<AuthDefault>().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
+                        userName =
+                            sl.get<AuthDefault>().currentUser!.displayName!;
+
                         return HomeView();
                       } else {
                         return AuthenticationView();

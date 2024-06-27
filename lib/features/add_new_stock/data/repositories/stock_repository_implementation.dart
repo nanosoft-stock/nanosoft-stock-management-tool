@@ -427,10 +427,10 @@ class StockRepositoryImplementation implements StockRepository {
       if (value != "") {
         if (field["items"] != null && !field["items"].contains(value)) {
           String docRef = field["uid"];
-          List items = (field["items"].toSet()..add(data[field["field"]]))
+          List items = ((field["items"].toSet()..add(data[field["field"]]))
               .toList()
-              .cast<String>()
-            ..sort((a, b) => a.compareTo(b));
+              .cast<String>())
+            ..sort((a, b) => a.toString().compareTo(b.toString()));
 
           modifiedFields.add({
             "doc_ref": docRef,

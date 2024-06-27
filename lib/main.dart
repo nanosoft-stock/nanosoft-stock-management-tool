@@ -70,17 +70,26 @@ class StockManagementToolApp extends StatelessWidget {
                     stream: sl.get<AuthDefault>().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        sl
-                            .get<Firestore>()
-                            .getDocuments(path: "users")
-                            .then((users) {
-                          userName = users.firstWhere(
-                                  (e) =>
-                                      e["email"].toString().toLowerCase() ==
-                                      (snapshot.data?.email ?? "")
-                                          .toLowerCase(),
-                                  orElse: () => {})["username"] ??
-                              (snapshot.data!.displayName ?? "");
+                        Future.delayed(const Duration(seconds: 1)).then((_) {
+                          sl
+                              .get<Firestore>()
+                              .getDocuments(path: "users")
+                              .then((users) {
+                            var userData = users.firstWhere(
+                                (e) =>
+                                    e["email"].toString().toLowerCase() ==
+                                    (snapshot.data?.email ?? "").toLowerCase(),
+                                orElse: () => {});
+
+                            userEmail = userData["email"] ?? "";
+                            userName = userData["username"] ?? "";
+
+                            // var objectbox = sl.get<ObjectBox>();
+                            //
+                            // objectbox.removeAllUserData();
+                            // objectbox.addUserData(
+                            //     UserDataObjectboxModel.fromJson(userData));
+                          });
                         });
 
                         return HomeView();

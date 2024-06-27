@@ -21,6 +21,7 @@ import 'core/data/local_database/models/item_id_objectbox_model.dart';
 import 'core/data/local_database/models/product_objectbox_model.dart';
 import 'core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'core/data/local_database/models/stock_objectbox_model.dart';
+import 'core/data/local_database/models/user_data_objectbox_model.dart';
 import 'core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
@@ -347,6 +348,40 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(15, 2156010538624232148),
+      name: 'UserDataObjectboxModel',
+      lastPropertyId: const obx_int.IdUid(6, 8186982379134860609),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 6821363642827713786),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1146374620296918347),
+            name: 'uid',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 3212838343002303085),
+            name: 'email',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 4601610642547454814),
+            name: 'username',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 8186982379134860609),
+            name: 'visualizeStockTableColumns',
+            type: 30,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -385,7 +420,7 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(14, 1053905160877366072),
+      lastEntityId: const obx_int.IdUid(15, 2156010538624232148),
       lastIndexId: const obx_int.IdUid(0, 0),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
@@ -532,7 +567,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         8101044747573957541,
         3097616630526892076,
         5449841582608409634,
-        6104919663265641752
+        6104919663265641752,
+        2703780546452552941
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -1024,6 +1060,61 @@ obx_int.ModelDefinition getObjectBoxModel() {
               values: valuesParam);
 
           return object;
+        }),
+    UserDataObjectboxModel: obx_int.EntityDefinition<UserDataObjectboxModel>(
+        model: _entities[8],
+        toOneRelations: (UserDataObjectboxModel object) => [],
+        toManyRelations: (UserDataObjectboxModel object) => {},
+        getId: (UserDataObjectboxModel object) => object.id,
+        setId: (UserDataObjectboxModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (UserDataObjectboxModel object, fb.Builder fbb) {
+          final uidOffset =
+              object.uid == null ? null : fbb.writeString(object.uid!);
+          final emailOffset =
+              object.email == null ? null : fbb.writeString(object.email!);
+          final usernameOffset = object.username == null
+              ? null
+              : fbb.writeString(object.username!);
+          final visualizeStockTableColumnsOffset =
+              object.visualizeStockTableColumns == null
+                  ? null
+                  : fbb.writeList(object.visualizeStockTableColumns!
+                      .map(fbb.writeString)
+                      .toList(growable: false));
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, uidOffset);
+          fbb.addOffset(2, emailOffset);
+          fbb.addOffset(3, usernameOffset);
+          fbb.addOffset(5, visualizeStockTableColumnsOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final emailParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 8);
+          final usernameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final visualizeStockTableColumnsParam = const fb.ListReader<String>(
+                  fb.StringReader(asciiOptimization: true),
+                  lazy: false)
+              .vTableGetNullable(buffer, rootOffset, 14);
+          final object = UserDataObjectboxModel(
+              id: idParam,
+              uid: uidParam,
+              email: emailParam,
+              username: usernameParam,
+              visualizeStockTableColumns: visualizeStockTableColumnsParam);
+
+          return object;
         })
   };
 
@@ -1264,4 +1355,28 @@ class ProductObjectBoxModel_ {
   /// See [ProductObjectBoxModel.values].
   static final values = obx.QueryStringVectorProperty<ProductObjectBoxModel>(
       _entities[7].properties[5]);
+}
+
+/// [UserDataObjectboxModel] entity fields to define ObjectBox queries.
+class UserDataObjectboxModel_ {
+  /// See [UserDataObjectboxModel.id].
+  static final id = obx.QueryIntegerProperty<UserDataObjectboxModel>(
+      _entities[8].properties[0]);
+
+  /// See [UserDataObjectboxModel.uid].
+  static final uid = obx.QueryStringProperty<UserDataObjectboxModel>(
+      _entities[8].properties[1]);
+
+  /// See [UserDataObjectboxModel.email].
+  static final email = obx.QueryStringProperty<UserDataObjectboxModel>(
+      _entities[8].properties[2]);
+
+  /// See [UserDataObjectboxModel.username].
+  static final username = obx.QueryStringProperty<UserDataObjectboxModel>(
+      _entities[8].properties[3]);
+
+  /// See [UserDataObjectboxModel.visualizeStockTableColumns].
+  static final visualizeStockTableColumns =
+      obx.QueryStringVectorProperty<UserDataObjectboxModel>(
+          _entities[8].properties[4]);
 }

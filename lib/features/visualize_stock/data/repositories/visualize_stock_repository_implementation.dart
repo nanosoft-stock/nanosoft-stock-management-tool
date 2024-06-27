@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
+import 'package:stock_management_tool/core/data/local_database/models/user_data_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
@@ -72,9 +73,50 @@ class VisualizeStockRepositoryImplementation
   @override
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange}) async {
-    _objectBox.getInputFieldStream().listen((snapshot) {
+    sl
+        .get<Firestore>()
+        .listenToDocumentChanges(path: "users")
+        .listen((snapshot) {
+      for (var element in snapshot.docChanges) {
+        Map<String, dynamic> data = element.doc.data() as Map<String, dynamic>;
+        if (data["email"] == userEmail) {
+          if (element.type.name == "added" || element.type.name == "modified") {
+            userName = data["username"];
+
+            _objectBox.removeAllUserData();
+            _objectBox.addUserData(UserDataObjectboxModel.fromJson(
+                {"uid": element.doc.id, ...data}));
+          }
+        }
+      }
+    });
+
+    _objectBox.getUserDataStream().listen((snapshot) {
+      if (snapshot.isNotEmpty) {
+        List? fields = _objectBox
+            .getUserData()
+            .map((e) => e.toJson())
+            .firstWhere((e) => e["email"] == userEmail,
+                orElse: () => {})["visualize_stock_table_columns"];
+
+        if (fields != null) {
+          (visualizeStock["filters"] as Map).forEach((k, v) {
+            if (fields.contains(k)) {
+              v["show_column"] = true;
+            } else {
+              v["show_column"] = false;
+            }
+          });
+
+          visualizeStock["show_fields"] = fields;
+        }
+      }
       onChange(visualizeStock);
     });
+
+    // _objectBox.getInputFieldStream().listen((snapshot) {
+    //   onChange(visualizeStock);
+    // });
 
     _objectBox.getStockStream().listen((snapshot) {
       visualizeStock["stocks"] =
@@ -84,17 +126,32 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
+  Future<void> updateUserColumns({required List fields}) async {
+    Map userData = _objectBox.getUserData()[0].toJson();
+    userData["visualize_stock_table_columns"] = fields;
+
+    return await sl.get<Firestore>().modifyDocument(
+        path: "users", uid: userData["uid"], data: userData..remove("uid"));
+  }
+
+  @override
   List<String> getAllFields() {
+    List? showFields = _objectBox
+        .getUserData()
+        .map((e) => e.toJson())
+        .firstWhere((e) => e["email"] == userEmail,
+            orElse: () => {})["visualize_stock_table_columns"];
+
     List fields = (_objectBox.getInputFields()
           ..sort((a, b) => a.order!.compareTo(b.order!)))
-        .map((e) => e.field)
+        .map((e) => e.field!)
         .toSet()
         .toList();
 
-    // List newFields = [...fieldsOrder];
-    // newFields.removeWhere((e) => !fields.contains(e));
+    if (showFields != null) {
+      fields = (showFields.toSet()..addAll(fields)).toList();
+    }
 
-    // return newFields.cast<String>();
     return fields.cast<String>();
   }
 
@@ -147,12 +204,19 @@ class VisualizeStockRepositoryImplementation
   @override
   Map<String, dynamic> getInitialFilters(
       {required List fields, required List stocks}) {
+    List showFields = _objectBox
+            .getUserData()
+            .map((e) => e.toJson())
+            .firstWhere((e) => e["email"] == userEmail,
+                orElse: () => {})["visualize_stock_table_columns"] ??
+        fields;
+
     Map<String, dynamic> filters = {};
 
     for (var field in fields) {
       filters[field] = {
         "field": field,
-        "show_column": true,
+        "show_column": showFields.contains(field),
         "sort": field != "date" ? Sort.none : Sort.desc,
         "filter_by": "",
         "filter_value": "",

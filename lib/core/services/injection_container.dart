@@ -350,9 +350,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<ResetAllFiltersVisualizeStockUseCase>(
       () => ResetAllFiltersVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<RearrangeColumnsUseCase>(
-      () => RearrangeColumnsUseCase());
+      () => RearrangeColumnsUseCase(sl()));
   sl.registerLazySingleton<ChangeColumnVisibilityUseCase>(
-      () => ChangeColumnVisibilityUseCase());
+      () => ChangeColumnVisibilityUseCase(sl()));
   sl.registerLazySingleton<FilterColumnVisualizeStockUseCase>(
       () => FilterColumnVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<ClearColumnFilterVisualizeStockUseCase>(

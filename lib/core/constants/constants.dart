@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 bool kIsLinux = false;
+String userEmail = "";
 String userName = "";
 String categoryIdUid = "";
 String itemIdUid = "";

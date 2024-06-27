@@ -324,9 +324,43 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "15:2156010538624232148",
+      "lastPropertyId": "6:8186982379134860609",
+      "name": "UserDataObjectboxModel",
+      "properties": [
+        {
+          "id": "1:6821363642827713786",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1146374620296918347",
+          "name": "uid",
+          "type": 9
+        },
+        {
+          "id": "3:3212838343002303085",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "4:4601610642547454814",
+          "name": "username",
+          "type": 9
+        },
+        {
+          "id": "6:8186982379134860609",
+          "name": "visualizeStockTableColumns",
+          "type": 30
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "14:1053905160877366072",
+  "lastEntityId": "15:2156010538624232148",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -475,7 +509,8 @@
     8101044747573957541,
     3097616630526892076,
     5449841582608409634,
-    6104919663265641752
+    6104919663265641752,
+    2703780546452552941
   ],
   "retiredRelationUids": [],
   "version": 1

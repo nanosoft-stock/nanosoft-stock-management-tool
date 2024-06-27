@@ -7,6 +7,7 @@ import 'package:stock_management_tool/core/data/local_database/models/item_id_ob
 import 'package:stock_management_tool/core/data/local_database/models/product_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_location_history_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
+import 'package:stock_management_tool/core/data/local_database/models/user_data_objectbox_model.dart';
 import 'package:stock_management_tool/core/data/local_database/models/warehouse_location_id_objectbox_model.dart';
 
 import 'objectbox.g.dart';
@@ -16,6 +17,7 @@ class ObjectBox {
 
   late Store store;
 
+  Box<UserDataObjectboxModel>? userDataModelBox;
   Box<CategoryObjectBoxModel>? categoryModelBox;
   Box<InputFieldsObjectBoxModel>? inputFieldsBox;
   Box<ProductObjectBoxModel>? productModelBox;
@@ -28,6 +30,7 @@ class ObjectBox {
   Future<void> create() async {
     store = await openStore();
 
+    userDataModelBox = Box<UserDataObjectboxModel>(store);
     categoryModelBox = Box<CategoryObjectBoxModel>(store);
     inputFieldsBox = Box<InputFieldsObjectBoxModel>(store);
     productModelBox = Box<ProductObjectBoxModel>(store);
@@ -37,6 +40,27 @@ class ObjectBox {
     warehouseLocationIdBox = Box<WarehouseLocationIdObjectBoxModel>(store);
     stockLocationHistoryModelBox =
         Box<StockLocationHistoryObjectBoxModel>(store);
+  }
+
+  // UserData
+  void addUserData(UserDataObjectboxModel userData) {
+    userDataModelBox!.put(userData);
+  }
+
+  List<UserDataObjectboxModel> getUserData() {
+    return userDataModelBox!.getAll();
+  }
+
+  Stream<List<UserDataObjectboxModel>> getUserDataStream(
+      {bool triggerImmediately = false}) {
+    final builder = userDataModelBox!.query();
+    return builder
+        .watch(triggerImmediately: triggerImmediately)
+        .map((event) => event.find());
+  }
+
+  void removeAllUserData() async {
+    userDataModelBox!.removeAll();
   }
 
   // Categories

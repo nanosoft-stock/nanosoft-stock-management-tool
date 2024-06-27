@@ -4,6 +4,8 @@ abstract class VisualizeStockRepository {
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange});
 
+  Future<void> updateUserColumns({required List fields});
+
   List<String> getAllFields();
 
   List<Map<String, dynamic>> getAllStocks();

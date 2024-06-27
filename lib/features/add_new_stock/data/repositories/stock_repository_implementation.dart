@@ -413,6 +413,7 @@ class StockRepositoryImplementation implements StockRepository {
         .getInputFields()
         .where((e) =>
             e.category == data["category"] &&
+            e.isBackground == false &&
             e.inSku == true &&
             !["category", "sku"].contains(e.field))
         .map((e) => e.toJson())
@@ -421,7 +422,7 @@ class StockRepositoryImplementation implements StockRepository {
     List modifiedFields = [];
 
     for (var field in fields) {
-      String value = data[field["field"]];
+      String value = data[field["field"]] ?? "";
 
       if (value != "") {
         if (field["items"] != null && !field["items"].contains(value)) {

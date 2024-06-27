@@ -544,7 +544,7 @@ class VisualizeStockRepositoryImplementation
         List<String> values = stocks
             .toSet()
             .where((e) => e["category"] == category)
-            .map((e) => e[field["field"]])
+            .map((e) => e[field["field"]] ?? "")
             .toList()
             .cast<String>();
 

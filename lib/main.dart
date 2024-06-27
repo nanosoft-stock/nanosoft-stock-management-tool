@@ -7,6 +7,7 @@ import 'package:stock_management_tool/core/data/local_database/fetch_data_for_ob
 import 'package:stock_management_tool/core/services/auth_default.dart';
 import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firebase_options.dart';
+import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
@@ -69,8 +70,18 @@ class StockManagementToolApp extends StatelessWidget {
                     stream: sl.get<AuthDefault>().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        userName =
-                            sl.get<AuthDefault>().currentUser!.displayName!;
+                        sl
+                            .get<Firestore>()
+                            .getDocuments(path: "users")
+                            .then((users) {
+                          userName = users.firstWhere(
+                                  (e) =>
+                                      e["email"].toString().toLowerCase() ==
+                                      (snapshot.data?.email ?? "")
+                                          .toLowerCase(),
+                                  orElse: () => {})["username"] ??
+                              (snapshot.data!.displayName ?? "");
+                        });
 
                         return HomeView();
                       } else {

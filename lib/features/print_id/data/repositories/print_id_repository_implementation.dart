@@ -2,149 +2,75 @@ import 'package:barcode/barcode.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/local_database/local_database.dart';
-import 'package:stock_management_tool/core/services/firestore.dart';
+import 'package:stock_management_tool/core/services/network_services.dart';
 import 'package:stock_management_tool/features/print_id/domain/repositories/print_id_repository.dart';
-import 'package:stock_management_tool/core/services/injection_container.dart';
 
 class PrintIdRepositoryImplementation implements PrintIdRepository {
-  PrintIdRepositoryImplementation(this._localDB);
+  PrintIdRepositoryImplementation(this._localDB, this._networkServices);
 
   final LocalDatabase _localDB;
+  final NetworkServices _networkServices;
 
   @override
-  Future<List<String>> getIds(String printableId, String countString) async {
+  Future<List<String>> getItemIds(String countString) async {
     int? count = int.tryParse(countString);
 
-    if (count != null && countString != "0") {
-      if (printableId == "Item Id") {
-        Map items = {};
-        _localDB.items.forEach((e) {
-          items[e.itemId] = e.toMap()..remove("item_id");
-        });
+    if (count != null && count != 0) {
+      String lastIdStr = (_localDB.items.toList()
+            ..sort((a, b) => b.itemId!.compareTo(a.itemId!)))
+          .first
+          .itemId!;
 
-        List itemIds = items.entries
-            .where((e) => e.value["status"] != "chosen")
-            .map((e) => e.key)
-            .toList()
-          ..sort((a, b) => a.compareTo(b));
+      int lastId = int.tryParse(lastIdStr) ?? 0;
 
-        int lastId = int.tryParse(itemIds.last) ?? 0;
-
-        List<String> newItemIds = [];
-        for (int i = 0; i < count; i++) {
-          do {
-            lastId += 1;
-          } while (items[lastId.toString().padLeft(8, "0")] != null);
-
-          newItemIds.add(lastId.toString().padLeft(8, "0"));
-          items[lastId.toString().padLeft(8, "0")] = {"status": "chosen"};
-        }
-
-        await _addNewLocation(
-            locations: items, uid: itemIdUid, updateField: "item_id");
-
-        return newItemIds;
-      } else if (printableId == "Container Id") {
-        Map containers = {};
-        _localDB.containers.forEach((e) {
-          containers[e.containerId] = e.toMap()..remove("container_id");
-        });
-
-        List containerIds = containers.entries
-            .where((e) => e.value["status"] != "chosen")
-            .map((e) => e.key)
-            .toList()
-          ..sort((a, b) => a.compareTo(b));
-
-        int lastId = int.tryParse(containerIds.last) ?? 0;
-
-        List<String> newContainerIds = [];
-        for (int i = 0; i < count; i++) {
-          do {
-            lastId += 1;
-          } while (
-              containers["ST${lastId.toString().padLeft(7, "0")}"] != null);
-
-          newContainerIds.add("ST${lastId.toString().padLeft(7, "0")}");
-          containers["ST${lastId.toString().padLeft(7, "0")}"] = {
-            "status": "chosen"
-          };
-        }
-
-        await _addNewLocation(
-            locations: containers,
-            uid: containerIdUid,
-            updateField: "container_id");
-
-        return newContainerIds;
+      List<String> newIds = [];
+      for (int i = 1; i <= count; i++) {
+        newIds.add((lastId + i).toString().padLeft(8, "0"));
       }
+
+      await _networkServices.postBatch("items", {
+        "data":
+            newIds.map((ele) => {"item_id": ele, "status": "chosen"}).toList()
+      });
+
+      return newIds;
     }
 
     return [];
   }
 
-  Future<void> _addNewLocation({
-    required Map locations,
-    required String uid,
-    required String updateField,
-  }) async {
-    Map data = {};
+  @override
+  Future<List<String>> getContainerIds(String countString) async {
+    int? count = int.tryParse(countString);
 
-    List tempLocations = locations.keys.toSet().toList();
+    if (count != null && count != 0) {
+      String lastIdStr = (_localDB.containers.toList()
+            ..sort((a, b) => b.containerId!.compareTo(a.containerId!)))
+          .first
+          .containerId!;
 
-    for (String e in tempLocations) {
-      if (updateField == "container_id") {
-        data[e] = {
-          "status": locations[e]["status"] ?? "",
-          "warehouse_location_id": locations[e]["warehouse_location_id"] ?? "",
-        };
-      } else if (updateField == "item_id") {
-        data[e] = {
-          "container_id": locations[e]["container_id"] ?? "",
-          "doc_ref": locations[e]["doc_ref"] ?? "",
-          "status": locations[e]["status"] ?? "",
-        };
+      int lastId = int.tryParse(lastIdStr.substring(2)) ?? 0;
+
+      List<String> newIds = [];
+      for (int i = 1; i <= count; i++) {
+        newIds.add("ST${(lastId + i).toString().padLeft(7, "0")}");
       }
+
+      await _networkServices.postBatch("containers", {
+        "data": newIds
+            .map((ele) => {
+                  "container_id": ele,
+                  "warehouse_location_id": "PSEUDO",
+                  "status": "chosen"
+                })
+            .toList()
+      });
+
+      return newIds;
     }
 
-    await sl.get<Firestore>().modifyDocument(
-          path: "unique_values",
-          uid: uid,
-          updateMask: [updateField],
-          data: !kIsLinux
-              ? {
-                  updateField: data,
-                }
-              : {
-                  updateField: {
-                    "mapValue": {
-                      "fields": {
-                        data.map(
-                          (k, v) => MapEntry(
-                            k,
-                            v != null
-                                ? {
-                                    "mapValue": {
-                                      "fields": v.map(
-                                        (k1, v1) => MapEntry(
-                                          k1,
-                                          {
-                                            "stringValue": v1,
-                                          },
-                                        ),
-                                      ),
-                                    },
-                                  }
-                                : null,
-                          ),
-                        )
-                      }
-                    }
-                  }
-                },
-        );
+    return [];
   }
 
   @override
@@ -180,26 +106,16 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
       onLayout: (PdfPageFormat format) async => doc.save(),
     );
 
-    Map<String, dynamic> items = {};
-    _localDB.items.forEach((e) {
-      items[e.itemId!] = e.toMap();
-    });
-
     if (isPrinted) {
-      for (var e in newIds) {
-        items[e]["status"] = "printed";
-      }
+      await _networkServices.patchBatch("items", {
+        "data":
+            newIds.map((ele) => {"item_id": ele, "status": "printed"}).toList()
+      });
     } else {
-      for (var e in newIds) {
-        items.remove(e);
-      }
+      await _networkServices.deleteBatch("items", {
+        "data": newIds.map((ele) => {"item_id": ele}).toList()
+      });
     }
-
-    await _addNewLocation(
-      locations: items,
-      uid: itemIdUid,
-      updateField: "item_id",
-    );
   }
 
   @override
@@ -235,25 +151,16 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
       onLayout: (PdfPageFormat format) async => doc.save(),
     );
 
-    Map<String, dynamic> containers = {};
-    _localDB.containers.forEach((e) {
-      containers[e.containerId!] = e.toMap();
-    });
-
     if (isPrinted) {
-      for (var e in newIds) {
-        containers[e]["status"] = "printed";
-      }
+      await _networkServices.patchBatch("containers", {
+        "data": newIds
+            .map((ele) => {"container_id": ele, "status": "printed"})
+            .toList()
+      });
     } else {
-      for (var e in newIds) {
-        containers.remove(e);
-      }
+      await _networkServices.deleteBatch("containers", {
+        "data": newIds.map((ele) => {"container_id": ele}).toList()
+      });
     }
-
-    await _addNewLocation(
-      locations: containers,
-      uid: containerIdUid,
-      updateField: "container_id",
-    );
   }
 }

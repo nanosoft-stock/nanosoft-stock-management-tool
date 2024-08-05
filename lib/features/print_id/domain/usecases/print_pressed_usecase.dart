@@ -10,10 +10,15 @@ class PrintPressedUseCase extends UseCase {
   Future call({params}) async {
     Map<String, dynamic> printIdData = params["print_id_data"];
 
-    printIdData["new_ids"] = await _printIdRepository.getIds(
-      printIdData["print_id"],
-      printIdData["print_count"],
-    );
+    if (printIdData["print_id"] == "Item Id") {
+      printIdData["new_ids"] = await _printIdRepository.getItemIds(
+        printIdData["print_count"],
+      );
+    } else if (printIdData["print_id"] == "Container Id") {
+      printIdData["new_ids"] = await _printIdRepository.getContainerIds(
+        printIdData["print_count"],
+      );
+    }
 
     if (printIdData["print_id"] == "Item Id") {
       await _printIdRepository.printItemIds(

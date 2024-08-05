@@ -335,7 +335,7 @@ Future<void> initializeDependencies() async {
 
   // Print Id
   sl.registerLazySingleton<PrintIdRepository>(
-      () => PrintIdRepositoryImplementation(sl()));
+      () => PrintIdRepositoryImplementation(sl(), sl()));
   sl.registerLazySingleton<InitialPrintIdUseCase>(
       () => InitialPrintIdUseCase());
   sl.registerLazySingleton<PrintIdSelectedUseCase>(

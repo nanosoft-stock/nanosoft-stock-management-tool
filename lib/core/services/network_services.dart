@@ -48,6 +48,84 @@ class NetworkServices {
     return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
+  Future<DataState> postBatch(String path, Map<String, dynamic> data) async {
+    try {
+      Response response =
+          await _dio.post("$currentURL/$path/batch", data: data);
+
+      if (response.statusCode == 201) {
+        var jsonData = response.data;
+
+        return DataSuccess(jsonData);
+      }
+    } catch (error) {
+      const DataFailed(ServerError(message: "Server Error"));
+    }
+    return const DataFailed(UnknownError(message: "Unknown Error"));
+  }
+
+  Future<DataState> patch(String path, Map<String, dynamic> data) async {
+    try {
+      Response response = await _dio.patch("$currentURL/$path", data: data);
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+
+        return DataSuccess(jsonData);
+      }
+    } catch (error) {
+      const DataFailed(ServerError(message: "Server Error"));
+    }
+    return const DataFailed(UnknownError(message: "Unknown Error"));
+  }
+
+  Future<DataState> patchBatch(String path, Map<String, dynamic> data) async {
+    try {
+      Response response =
+          await _dio.patch("$currentURL/$path/batch", data: data);
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+
+        return DataSuccess(jsonData);
+      }
+    } catch (error) {
+      const DataFailed(ServerError(message: "Server Error"));
+    }
+    return const DataFailed(UnknownError(message: "Unknown Error"));
+  }
+
+  Future<DataState> delete(String path, Map<String, dynamic> data) async {
+    try {
+      Response response = await _dio.delete("$currentURL/$path", data: data);
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+
+        return DataSuccess(jsonData);
+      }
+    } catch (error) {
+      const DataFailed(ServerError(message: "Server Error"));
+    }
+    return const DataFailed(UnknownError(message: "Unknown Error"));
+  }
+
+  Future<DataState> deleteBatch(String path, Map<String, dynamic> data) async {
+    try {
+      Response response =
+          await _dio.delete("$currentURL/$path/batch", data: data);
+
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+
+        return DataSuccess(jsonData);
+      }
+    } catch (error) {
+      const DataFailed(ServerError(message: "Server Error"));
+    }
+    return const DataFailed(UnknownError(message: "Unknown Error"));
+  }
+
   Future<DataState> query(String path, Map<String, dynamic> data) async {
     try {
       Response response =

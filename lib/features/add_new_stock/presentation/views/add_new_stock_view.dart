@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/core/components/custom_error_snack_bar.dart';
+import 'package:stock_management_tool/core/components/custom_success_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
@@ -28,8 +29,9 @@ class AddNewStockView extends StatelessWidget {
           bloc: _addNewStockBloc,
           listenWhen: (prev, next) => next is AddNewStockActionState,
           buildWhen: (prev, next) => next is! AddNewStockActionState,
-          listener: (context, state) {
-            _blocListener(context, state, constraints, pad);
+          listener: (BuildContext context, AddNewStockState state) {
+            _blocListener(
+                context, state as AddNewStockActionState, constraints, pad);
           },
           builder: (BuildContext context, AddNewStockState state) {
             return _blocBuilder(context, state, constraints, pad);
@@ -39,13 +41,13 @@ class AddNewStockView extends StatelessWidget {
     );
   }
 
-  void _blocListener(BuildContext context, AddNewStockState state,
+  void _blocListener(BuildContext context, AddNewStockActionState state,
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
-      case const (NewStockAddedActionState):
-        SnackBar snackBar = CustomSnackBar(
+      case const (SuccessActionState):
+        SnackBar snackBar = CustomSuccessSnackBar(
           content: Text(
-            "New stock added successfully",
+            state.message,
             style: kLabelTextStyle,
           ),
           margin: EdgeInsets.only(
@@ -53,6 +55,23 @@ class AddNewStockView extends StatelessWidget {
               bottom: constraints.maxHeight - 60,
               right: 52 + pad),
         ).build();
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        break;
+
+      case const (ErrorActionState):
+        SnackBar snackBar = CustomErrorSnackBar(
+          content: Text(
+            state.message,
+            style: kLabelTextStyle,
+          ),
+          margin: EdgeInsets.only(
+              left: 302 + pad,
+              bottom: constraints.maxHeight - 60,
+              right: 52 + pad),
+        ).build();
+
+        print((state as ErrorActionState).stackTrace);
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         break;
@@ -67,18 +86,16 @@ class AddNewStockView extends StatelessWidget {
     switch (state.runtimeType) {
       case const (LoadingState):
         _addNewStockBloc.add(CloudDataChangeEvent(
-          onChange: (fields) {
-            _addNewStockBloc.add(LoadedEvent(fields: fields));
+          onChange: () {
+            _addNewStockBloc.add(const LoadedEvent());
           },
         ));
 
         return _buildLoadingStateWidget();
 
-      case const (ErrorState):
-        return _buildErrorStateWidget();
-
       case const (LoadedState):
         List fields = state.fields!;
+
         return _buildLoadedStateWidget(fields, constraints, pad);
 
       default:
@@ -92,12 +109,6 @@ class AddNewStockView extends StatelessWidget {
         width: 100,
         child: LinearProgressIndicator(),
       ),
-    );
-  }
-
-  Widget _buildErrorStateWidget() {
-    return const Center(
-      child: Text('Error'),
     );
   }
 
@@ -147,16 +158,16 @@ class AddNewStockView extends StatelessWidget {
                   onSelected: (field, value) {
                     if (["category", "sku", "container id"]
                         .contains(fields[index]["field"])) {
-                      _addNewStockBloc.add(ValueSelectedEvent(
-                          field: field, value: value, fields: fields));
+                      _addNewStockBloc
+                          .add(ValueSelectedEvent(field: field, value: value));
                     } else {
-                      _addNewStockBloc.add(ValueTypedEvent(
-                          field: field, value: value, fields: fields));
+                      _addNewStockBloc
+                          .add(ValueTypedEvent(field: field, value: value));
                     }
                   },
                   onChecked: (field, value) {
-                    _addNewStockBloc.add(CheckBoxTapEvent(
-                        field: field, value: value, fields: fields));
+                    _addNewStockBloc
+                        .add(CheckBoxTapEvent(field: field, value: value));
                   },
                 ),
             ],
@@ -179,8 +190,7 @@ class AddNewStockView extends StatelessWidget {
             text: "Add New Stock",
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
-                _addNewStockBloc
-                    .add(AddNewStockButtonClickedEvent(fields: fields));
+                _addNewStockBloc.add(const AddNewStockButtonClickedEvent());
               }
             },
           ),

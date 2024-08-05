@@ -20,7 +20,7 @@ class ValueChangedAddNewStockUseCase extends UseCase {
     if (field == "category") {
       if (fieldMap["items"].contains(value)) {
         List<Map<String, dynamic>> newFields =
-            _stockRepository.getCategoryBasedInputFields(category: value);
+            await _stockRepository.getCategoryBasedInputFields(category: value);
         fields.addAll(newFields);
         fields[0]["text_value"] = value;
       } else {

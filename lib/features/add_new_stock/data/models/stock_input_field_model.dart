@@ -11,25 +11,25 @@ class StockInputFieldModel extends StockInputFieldEntity {
     required super.items,
     required super.nameCase,
     required super.valueCase,
-    required super.order,
+    required super.displayOrder,
     required super.isDisabled,
     required super.textValue,
   });
 
-  factory StockInputFieldModel.fromJson(Map<String, dynamic> json) {
+  factory StockInputFieldModel.fromMap(Map<String, dynamic> map) {
     return StockInputFieldModel(
-      field: json["field"],
-      category: json["category"],
-      datatype: json["datatype"],
-      inSku: json["in_sku"],
-      isBackground: json["is_background"],
-      isLockable: json["is_lockable"],
-      items: json["items"],
-      nameCase: json["name_case"],
-      valueCase: json["value_case"],
-      order: json["order"],
-      isDisabled: json["is_disabled"] ?? false,
-      textValue: json["text_value"] ?? "",
+      field: map["field"],
+      category: map["category"],
+      datatype: map["datatype"],
+      inSku: map["in_sku"],
+      isBackground: map["is_background"],
+      isLockable: map["is_lockable"],
+      items: map["items"] ?? [],
+      nameCase: map["name_case"],
+      valueCase: map["value_case"],
+      displayOrder: map["display_order"],
+      isDisabled: map["is_disabled"] ?? false,
+      textValue: map["text_value"] ?? "",
     );
   }
 
@@ -43,7 +43,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
     List<String>? items,
     String? nameCase,
     String? valueCase,
-    int? order,
+    int? displayOrder,
     bool? isDisabled,
     String? textValue,
   }) {
@@ -57,13 +57,13 @@ class StockInputFieldModel extends StockInputFieldEntity {
       items: items ?? this.items,
       nameCase: nameCase ?? this.nameCase,
       valueCase: valueCase ?? this.valueCase,
-      order: order ?? this.order,
+      displayOrder: displayOrder ?? this.displayOrder,
       isDisabled: isDisabled ?? this.isDisabled,
       textValue: textValue ?? this.textValue,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       "field": field,
       "category": category,
@@ -74,7 +74,7 @@ class StockInputFieldModel extends StockInputFieldEntity {
       "items": items,
       "name_case": nameCase,
       "value_case": valueCase,
-      "order": order,
+      "display_order": displayOrder,
       "is_disabled": isDisabled,
       "text_value": textValue,
     };

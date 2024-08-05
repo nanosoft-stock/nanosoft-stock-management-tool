@@ -1,18 +1,17 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/datatype_converter_helper.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
-import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewProductHelper {
   static Map<String, dynamic> toJson({required Map data}) {
-    final objectbox = sl.get<ObjectBox>();
+    final LocalDatabase localDB = sl.get<LocalDatabase>();
 
     Map<String, dynamic> convertedData = {};
     String category = data["category"];
 
-    List fields = objectbox
-        .getInputFields()
+    List fields = localDB.categoryFields
         .where((element) =>
             element.category!.toLowerCase() == category.toLowerCase())
         .where((ele) => ele.inSku == true)

@@ -1,37 +1,33 @@
 import 'package:stock_management_tool/core/constants/constants.dart';
-import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_field_helper.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/local_database/models/category_field_hive_model.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
-import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/objectbox.g.dart';
 
 class AddNewCategoryRepositoryImplementation
     implements AddNewCategoryRepository {
-  final ObjectBox _objectBox = sl.get<ObjectBox>();
+  AddNewCategoryRepositoryImplementation(this._localDB);
+
+  final LocalDatabase _localDB;
 
   @override
   void listenToCloudDataChange(
       {required Map addNewCategoryData,
       required Function(Map) onChange}) async {
-    _objectBox.getCategoryStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        addNewCategoryData["categories"] =
-            snapshot.map((e) => e.category!).toList();
-        onChange(addNewCategoryData);
-      }
+    _localDB.categoryStream().listen((snapshot) {
+      addNewCategoryData["categories"] =
+          _localDB.categories.map((e) => e.category!.toLowerCase()).toList();
+      onChange(addNewCategoryData);
     });
   }
 
   @override
   List<String> getAllCategories() {
-    return _objectBox
-        .getCategories()
-        .map((e) => e.category!.toLowerCase())
-        .toList();
+    return _localDB.categories.map((e) => e.category!.toLowerCase()).toList();
   }
 
   @override
@@ -102,11 +98,15 @@ class AddNewCategoryRepositoryImplementation
     Map<String, dynamic> details = {};
 
     for (var field in initialFields) {
-      Query query = _objectBox.inputFieldsBox!
-          .query(InputFieldsObjectBoxModel_.field.equals(field))
-          .build();
-      InputFieldsObjectBoxModel? fieldModel = query.findFirst();
-      query.close();
+      List fields = _localDB.categoryFields
+          .where(
+              (element) => element.field!.toLowerCase() == field.toLowerCase())
+          .toList();
+
+      CategoryFieldHiveModel? fieldModel;
+      if (fields.isNotEmpty) {
+        fieldModel = fields.first;
+      }
 
       details[field] = {
         "field": field,
@@ -130,14 +130,12 @@ class AddNewCategoryRepositoryImplementation
 
   @override
   Map<String, dynamic> getFieldAutoFillData(String field) {
-    Query query = _objectBox.inputFieldsBox!
-        .query(InputFieldsObjectBoxModel_.field.equals(field.toLowerCase()))
-        .build();
-    InputFieldsObjectBoxModel? fieldModel = query.findFirst();
-    query.close();
+    List fields = _localDB.categoryFields
+        .where((element) => element.field!.toLowerCase() == field.toLowerCase())
+        .toList();
 
-    if (fieldModel != null) {
-      return fieldModel.toJson();
+    if (fields.isNotEmpty) {
+      return fields.first.toMap();
     }
 
     return {};
@@ -189,7 +187,7 @@ class AddNewCategoryRepositoryImplementation
     Map data = {};
 
     List categories =
-        _objectBox.getCategories().map((e) => e.category!).toSet().toList();
+        _localDB.categoryFields.map((e) => e.category!).toSet().toList();
 
     categories.add(category);
 

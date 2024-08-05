@@ -1,33 +1,31 @@
-import 'package:stock_management_tool/core/data/local_database/models/input_fields_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_field_helper.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/modify_category/domain/repositories/modify_category_repository.dart';
-import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/objectbox.g.dart';
 
 class ModifyCategoryRepositoryImplementation
     implements ModifyCategoryRepository {
-  final ObjectBox _objectBox = sl.get<ObjectBox>();
+  ModifyCategoryRepositoryImplementation(this._localDB);
+
+  final LocalDatabase _localDB;
 
   @override
   void listenToCloudDataChange(
       {required Map modifyCategoryData,
       required Function(Map) onChange}) async {
-    _objectBox.getCategoryStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        modifyCategoryData["categories"] =
-            snapshot.map((e) => e.category!).toList();
-        onChange(modifyCategoryData);
-      }
+    _localDB.categoryStream().listen((snapshot) {
+      modifyCategoryData["categories"] =
+          _localDB.categories.map((e) => e.category!).toList();
+      onChange(modifyCategoryData);
     });
   }
 
   @override
   List<String> getAllCategories() {
-    return _objectBox.getCategories().map((e) => e.category!).toList();
+    return _localDB.categories.map((e) => e.category!).toList();
   }
 
   @override
@@ -75,8 +73,8 @@ class ModifyCategoryRepositoryImplementation
 
   @override
   List<String> getRearrangeAbleFields(String category) {
-    return (_objectBox.getInputFields()
-          ..sort((a, b) => a.order!.compareTo(b.order!)))
+    return (_localDB.categoryFields.toList()
+          ..sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!)))
         .where((e) => e.category == category)
         .where((e) => !["date", "category", "item id"].contains(e.field))
         .map((e) => e.field!)
@@ -85,10 +83,8 @@ class ModifyCategoryRepositoryImplementation
 
   @override
   Map<String, dynamic> getFieldDetails(String category) {
-    List fields = _objectBox
-        .getInputFields()
-        .where((e) => e.category == category)
-        .toList();
+    List fields =
+        _localDB.categoryFields.where((e) => e.category == category).toList();
 
     List irReplaceableFields = [
       "date",
@@ -123,14 +119,12 @@ class ModifyCategoryRepositoryImplementation
 
   @override
   Map<String, dynamic> getFieldAutoFillData(String field) {
-    Query query = _objectBox.inputFieldsBox!
-        .query(InputFieldsObjectBoxModel_.field.equals(field.toLowerCase()))
-        .build();
-    InputFieldsObjectBoxModel? fieldModel = query.findFirst();
-    query.close();
+    List fields = _localDB.categoryFields
+        .where((element) => element.field!.toLowerCase() == field.toLowerCase())
+        .toList();
 
-    if (fieldModel != null) {
-      return fieldModel.toJson();
+    if (fields.isNotEmpty) {
+      return fields.first.toMap();
     }
 
     return {};
@@ -145,12 +139,11 @@ class ModifyCategoryRepositoryImplementation
       ...modifyCategoryData["rearrange_fields"],
     ];
 
-    List<Map<String, dynamic>> storedFields = _objectBox
-        .getInputFields()
+    List<Map<String, dynamic>> storedFields = _localDB.categoryFields
         .where((e) =>
             e.category!.toLowerCase() ==
             modifyCategoryData["category_text"].toLowerCase())
-        .map((e) => e.toJson())
+        .map((e) => e.toMap())
         .toList();
 
     List<Map<String, dynamic>> allFieldDetails = [];

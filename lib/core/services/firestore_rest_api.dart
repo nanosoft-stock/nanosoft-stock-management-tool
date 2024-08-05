@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:stock_management_tool/core/resources/application_error.dart';
 import 'package:stock_management_tool/core/resources/data_state.dart';
 import 'package:stock_management_tool/core/services/firebase_options.dart';
 
@@ -31,10 +32,12 @@ class FirestoreRestApi {
 
         return DataSuccess(data);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> getDocuments({
@@ -71,10 +74,12 @@ class FirestoreRestApi {
 
         return DataSuccess(data);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> filterQuery(
@@ -129,10 +134,12 @@ class FirestoreRestApi {
 
         return DataSuccess(data);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> modifyDocument(
@@ -165,10 +172,12 @@ class FirestoreRestApi {
 
         return DataSuccess(data);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> deleteDocument(
@@ -182,9 +191,11 @@ class FirestoreRestApi {
       if (response.statusCode == 200) {
         return const DataSuccess(true);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 }

@@ -1,10 +1,12 @@
+import 'package:stock_management_tool/core/resources/application_error.dart';
+
 abstract class DataState<T> {
   final T? data;
-  final Exception? exception;
+  final ApplicationError? error;
 
   const DataState({
     this.data,
-    this.exception,
+    this.error,
   });
 }
 
@@ -13,5 +15,5 @@ class DataSuccess<T> extends DataState<T> {
 }
 
 class DataFailed<T> extends DataState<T> {
-  const DataFailed(Exception exception) : super(exception: exception);
+  const DataFailed(ApplicationError error) : super(error: error);
 }

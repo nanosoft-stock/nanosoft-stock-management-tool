@@ -1,10 +1,10 @@
 abstract class StockRepository {
   void listenToCloudDataChange(
-      {required List fields, required Function(List) onChange});
+      {required List fields, required Function() onChange});
 
   List<Map<String, dynamic>> getInitialInputFields();
 
-  List<Map<String, dynamic>> getCategoryBasedInputFields(
+  Future<List<Map<String, dynamic>>> getCategoryBasedInputFields(
       {required String category});
 
   List<Map<String, dynamic>> getProductDescription(

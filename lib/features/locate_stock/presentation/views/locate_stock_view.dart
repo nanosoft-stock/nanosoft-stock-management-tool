@@ -55,8 +55,7 @@ class LocateStockView extends StatelessWidget {
       case const (LoadingState):
         _locateStockBloc.add(CloudDataChangeEvent(
           onChange: (locatedStock) {
-            _locateStockBloc.add(LoadedEvent(
-                locatedStock: locatedStock.cast<String, dynamic>()));
+            _locateStockBloc.add(const LoadedEvent());
           },
         ));
 
@@ -131,9 +130,7 @@ class LocateStockView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _locateStockBloc.add(
-                                                PendingMovesButtonPressedEvent(
-                                                    locatedStock:
-                                                        locatedStock));
+                                                const PendingMovesButtonPressedEvent());
                                           },
                                           child: Text(
                                             "Pending Moves",
@@ -152,9 +149,7 @@ class LocateStockView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _locateStockBloc.add(
-                                                CompletedMovesButtonPressedEvent(
-                                                    locatedStock:
-                                                        locatedStock));
+                                                const CompletedMovesButtonPressedEvent());
                                           },
                                           child: Text(
                                             "Completed Moves",
@@ -186,67 +181,58 @@ class LocateStockView extends StatelessWidget {
                                                 [index],
                                             showRemoveButton: rowCount != 1,
                                             removeOnTap: () {
-                                              _locateStockBloc.add(
-                                                  RemoveInputRowEvent(
-                                                      index: index,
-                                                      locatedStock:
-                                                          locatedStock));
+                                              _locateStockBloc
+                                                  .add(RemoveInputRowEvent(
+                                                index: index,
+                                              ));
                                             },
                                             onSearchBySelected: (value) {
-                                              _locateStockBloc.add(
-                                                  SearchByFieldFilledEvent(
-                                                      index: index,
-                                                      searchBy: value,
-                                                      locatedStock:
-                                                          locatedStock));
+                                              _locateStockBloc
+                                                  .add(SearchByFieldFilledEvent(
+                                                index: index,
+                                                searchBy: value,
+                                              ));
                                             },
                                             onChooseIds: () {
                                               _locateStockBloc.add(
                                                   ChooseIdsButtonPressedEvent(
-                                                      index: index,
-                                                      locatedStock:
-                                                          locatedStock));
+                                                index: index,
+                                              ));
                                             },
                                             onShowTableToggled: (value) {
-                                              _locateStockBloc.add(
-                                                  SwitchTableViewEvent(
-                                                      index: index,
-                                                      showTable: value,
-                                                      locatedStock:
-                                                          locatedStock));
+                                              _locateStockBloc
+                                                  .add(SwitchTableViewEvent(
+                                                index: index,
+                                                showTable: value,
+                                              ));
                                             },
                                             onShowDetailsToggled: (value) {
-                                              _locateStockBloc.add(
-                                                  SwitchStockViewModeEvent(
-                                                      index: index,
-                                                      mode: value,
-                                                      locatedStock:
-                                                          locatedStock));
+                                              _locateStockBloc
+                                                  .add(SwitchStockViewModeEvent(
+                                                index: index,
+                                                mode: value,
+                                              ));
                                             },
                                             onCheckBoxToggled: (id, state) {
-                                              _locateStockBloc.add(
-                                                  IdCheckBoxToggledEvent(
-                                                      index: index,
-                                                      id: id,
-                                                      state: state,
-                                                      locatedStock:
-                                                          locatedStock));
+                                              _locateStockBloc
+                                                  .add(IdCheckBoxToggledEvent(
+                                                index: index,
+                                                id: id,
+                                                state: state,
+                                              ));
                                             },
                                             onAllCheckBoxToggled: (state) {
                                               _locateStockBloc.add(
                                                   SelectAllCheckBoxToggledEvent(
-                                                      index: index,
-                                                      state: state,
-                                                      locatedStock:
-                                                          locatedStock));
+                                                index: index,
+                                                state: state,
+                                              ));
                                             },
                                           )
                                         : LocateStockAddNewInputRow(
                                             onTap: () {
                                               _locateStockBloc.add(
-                                                  AddNewInputRowEvent(
-                                                      locatedStock:
-                                                          locatedStock));
+                                                  const AddNewInputRowEvent());
                                             },
                                           ),
                                   );
@@ -261,28 +247,25 @@ class LocateStockView extends StatelessWidget {
                     CustomPendingMovesOverlay(
                       pendingStateItems: locatedStock["pending_state_items"],
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "pending_moves_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "pending_moves_overlay",
+                        ));
                       },
                       onExpand: (index, i, value) {
                         _locateStockBloc.add(ExpandPendingMovesItemEvent(
                           index: index,
                           i: i,
                           isExpanded: value,
-                          locatedStock: locatedStock,
                         ));
                       },
                       onCompleted: (value) {
                         _locateStockBloc.add(CompleteMoveButtonPressedEvent(
                           index: value,
-                          locatedStock: locatedStock,
                         ));
                       },
                       onRemove: (value) {
                         _locateStockBloc.add(CancelMoveButtonPressedEvent(
                           index: value,
-                          locatedStock: locatedStock,
                         ));
                       },
                     ),
@@ -292,16 +275,15 @@ class LocateStockView extends StatelessWidget {
                       completedStateItems:
                           locatedStock["completed_state_items"],
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "completed_moves_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "completed_moves_overlay",
+                        ));
                       },
                       onExpand: (index, i, value) {
                         _locateStockBloc.add(ExpandCompletedMovesItemEvent(
                           index: index,
                           i: i,
                           isExpanded: value,
-                          locatedStock: locatedStock,
                         ));
                       },
                     ),
@@ -312,21 +294,21 @@ class LocateStockView extends StatelessWidget {
                       allIds: locatedStock["all_ids"],
                       rowData: locatedStock["rows"][rowIndex],
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "multiple_search_selection_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "multiple_search_selection_overlay",
+                        ));
                       },
                       onIdEntered: (text) {
                         _locateStockBloc.add(IdEnteredEvent(
-                            index: rowIndex,
-                            chosenId: text,
-                            locatedStock: locatedStock));
+                          index: rowIndex,
+                          chosenId: text,
+                        ));
                       },
                       onDone: (value) {
                         _locateStockBloc.add(IdsChosenEvent(
-                            index: rowIndex,
-                            chosenIds: value,
-                            locatedStock: locatedStock));
+                          index: rowIndex,
+                          chosenIds: value,
+                        ));
                       },
                     ),
                   if (locatedStock["layers"]
@@ -335,28 +317,29 @@ class LocateStockView extends StatelessWidget {
                     CustomFilterOverlayEffect(
                       width: filterWidth,
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "parent_filter_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "parent_filter_overlay",
+                        ));
                       },
                       child: CustomTableFilter(
                         fieldFilters: locatedStock["rows"][rowIndex]["filters"]
                             .keys
                             .toList(),
                         closeOnTap: () {
-                          _locateStockBloc.add(HideOverlayLayerEvent(
-                              layer: "parent_filter_overlay",
-                              locatedStock: locatedStock));
+                          _locateStockBloc.add(const HideOverlayLayerEvent(
+                            layer: "parent_filter_overlay",
+                          ));
                         },
                         resetAllFiltersOnPressed: () {
                           _locateStockBloc.add(ResetAllFiltersEvent(
-                              index: rowIndex, locatedStock: locatedStock));
+                            index: rowIndex,
+                          ));
                         },
                         fieldFilterOnPressed: (field) {
                           _locateStockBloc.add(FieldFilterSelectedEvent(
-                              index: rowIndex,
-                              field: field,
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: field,
+                          ));
                         },
                       ),
                     ),
@@ -366,65 +349,66 @@ class LocateStockView extends StatelessWidget {
                     CustomFilterOverlayEffect(
                       width: filterWidth,
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "parent_filter_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "parent_filter_overlay",
+                        ));
                       },
                       child: CustomFieldFilter(
                         fieldFilter: locatedStock["rows"][rowIndex]["filters"]
                             [locatedStock["rows"][rowIndex]["filter_field"]],
                         backOnTap: () {
-                          _locateStockBloc.add(HideOverlayLayerEvent(
-                              layer: "field_filter_overlay",
-                              locatedStock: locatedStock));
+                          _locateStockBloc.add(const HideOverlayLayerEvent(
+                            layer: "field_filter_overlay",
+                          ));
                           _locateStockBloc.add(AddOverlayLayerEvent(
-                              layer: "parent_filter_overlay",
-                              index: rowIndex,
-                              locatedStock: locatedStock));
+                            layer: "parent_filter_overlay",
+                            index: rowIndex,
+                          ));
                         },
                         filterOnPressed: () {
                           _locateStockBloc.add(FilterFieldEvent(
-                              index: rowIndex, locatedStock: locatedStock));
+                            index: rowIndex,
+                          ));
                         },
                         clearOnPressed: () {
                           _locateStockBloc.add(ClearFieldFilterEvent(
-                              index: rowIndex,
-                              field: locatedStock["rows"][rowIndex]
-                                  ["filter_field"],
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: locatedStock["rows"][rowIndex]
+                                ["filter_field"],
+                          ));
                         },
                         filterBySelected: (filterBy) {
                           _locateStockBloc.add(FilterBySelectedEvent(
-                              index: rowIndex,
-                              field: locatedStock["rows"][rowIndex]
-                                  ["filter_field"],
-                              filterBy: filterBy,
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: locatedStock["rows"][rowIndex]
+                                ["filter_field"],
+                            filterBy: filterBy,
+                          ));
                         },
                         filterValueChanged: (value) {
                           _locateStockBloc.add(FilterByValueChangedEvent(
-                              index: rowIndex,
-                              field: locatedStock["rows"][rowIndex]
-                                  ["filter_field"],
-                              value: value,
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: locatedStock["rows"][rowIndex]
+                                ["filter_field"],
+                            value: value,
+                          ));
                         },
                         searchValueChanged: (value) {
                           _locateStockBloc.add(SearchValueChangedEvent(
-                              index: rowIndex,
-                              field: locatedStock["rows"][rowIndex]
-                                  ["filter_field"],
-                              value: value,
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: locatedStock["rows"][rowIndex]
+                                ["filter_field"],
+                            value: value,
+                          ));
                         },
                         checkboxToggled: (title, value) {
                           _locateStockBloc.add(FilterCheckBoxToggledEvent(
-                              index: rowIndex,
-                              field: locatedStock["rows"][rowIndex]
-                                  ["filter_field"],
-                              title: title,
-                              value: value,
-                              locatedStock: locatedStock));
+                            index: rowIndex,
+                            field: locatedStock["rows"][rowIndex]
+                                ["filter_field"],
+                            title: title,
+                            value: value,
+                          ));
                         },
                       ),
                     ),
@@ -440,9 +424,8 @@ class LocateStockView extends StatelessWidget {
                             padding: const EdgeInsets.all(15.0),
                             child: CustomElevatedButton(
                               onPressed: () {
-                                _locateStockBloc.add(
-                                    PreviewMoveButtonPressedEvent(
-                                        locatedStock: locatedStock));
+                                _locateStockBloc
+                                    .add(const PreviewMoveButtonPressedEvent());
                               },
                               child: Text(
                                 "Preview Move",
@@ -459,26 +442,23 @@ class LocateStockView extends StatelessWidget {
                     CustomPreviewMoveOverlay(
                       selectedItems: locatedStock["selected_items"],
                       hideOverlay: () {
-                        _locateStockBloc.add(HideOverlayLayerEvent(
-                            layer: "preview_move_overlay",
-                            locatedStock: locatedStock));
+                        _locateStockBloc.add(const HideOverlayLayerEvent(
+                          layer: "preview_move_overlay",
+                        ));
                       },
                       onContainerIdEntered: (text) {
                         _locateStockBloc.add(ContainerIdEnteredEvent(
                           text: text,
-                          locatedStock: locatedStock,
                         ));
                       },
                       onWarehouseLocationIdEntered: (text) {
                         _locateStockBloc.add(WarehouseLocationIdEnteredEvent(
                           text: text,
-                          locatedStock: locatedStock,
                         ));
                       },
                       onMoveItemsTap: () {
-                        _locateStockBloc.add(MoveItemsButtonPressedEvent(
-                          locatedStock: locatedStock,
-                        ));
+                        _locateStockBloc
+                            .add(const MoveItemsButtonPressedEvent());
                       },
                     ),
                 ],

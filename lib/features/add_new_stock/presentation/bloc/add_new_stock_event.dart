@@ -10,55 +10,43 @@ abstract class AddNewStockEvent extends Equatable {
 class CloudDataChangeEvent extends AddNewStockEvent {
   const CloudDataChangeEvent({required this.onChange});
 
-  final Function(List)? onChange;
+  final Function() onChange;
 }
 
 class LoadedEvent extends AddNewStockEvent {
-  const LoadedEvent({required this.fields});
-
-  final List? fields;
+  const LoadedEvent();
 }
 
 class ValueTypedEvent extends AddNewStockEvent {
   const ValueTypedEvent({
     required this.field,
     required this.value,
-    required this.fields,
   });
 
   final String field;
   final String value;
-  final List? fields;
 }
 
 class ValueSelectedEvent extends AddNewStockEvent {
   const ValueSelectedEvent({
     required this.field,
     required this.value,
-    required this.fields,
   });
 
   final String field;
   final String value;
-  final List? fields;
 }
 
 class CheckBoxTapEvent extends AddNewStockEvent {
   const CheckBoxTapEvent({
     required this.field,
     required this.value,
-    required this.fields,
   });
 
   final String field;
   final bool value;
-  final List? fields;
 }
 
 class AddNewStockButtonClickedEvent extends AddNewStockEvent {
-  const AddNewStockButtonClickedEvent({
-    required this.fields,
-  });
-
-  final List? fields;
+  const AddNewStockButtonClickedEvent();
 }

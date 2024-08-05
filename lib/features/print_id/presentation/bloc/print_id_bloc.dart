@@ -12,10 +12,12 @@ part 'print_id_event.dart';
 part 'print_id_state.dart';
 
 class PrintIdBloc extends Bloc<PrintIdEvent, PrintIdState> {
-  final InitialPrintIdUseCase? _initialPrintIdUseCase;
-  final PrintIdSelectedUseCase? _printIdSelectedUseCase;
-  final PrintCountEnteredUseCase? _printCountEnteredUseCase;
-  final PrintPressedUseCase? _printPressedUseCase;
+  final InitialPrintIdUseCase _initialPrintIdUseCase;
+  final PrintIdSelectedUseCase _printIdSelectedUseCase;
+  final PrintCountEnteredUseCase _printCountEnteredUseCase;
+  final PrintPressedUseCase _printPressedUseCase;
+
+  late Map<String, dynamic> printIdData;
 
   PrintIdBloc(
     this._initialPrintIdUseCase,
@@ -31,30 +33,31 @@ class PrintIdBloc extends Bloc<PrintIdEvent, PrintIdState> {
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<PrintIdState> emit) async {
-    emit(LoadedState(printIdData: await _initialPrintIdUseCase!()));
+    printIdData = await _initialPrintIdUseCase();
+    emit(LoadedState(printIdData: printIdData));
   }
 
   FutureOr<void> printIdSelectedEvent(
       PrintIdSelectedEvent event, Emitter<PrintIdState> emit) async {
-    await _printIdSelectedUseCase!(params: {
+    await _printIdSelectedUseCase(params: {
       "print_id": event.printId,
-      "print_id_data": event.printIdData,
+      "print_id_data": printIdData,
     });
   }
 
   FutureOr<void> printCountChangedEvent(
       PrintCountChangedEvent event, Emitter<PrintIdState> emit) async {
-    await _printCountEnteredUseCase!(params: {
+    await _printCountEnteredUseCase(params: {
       "print_count": event.printCount,
-      "print_id_data": event.printIdData,
+      "print_id_data": printIdData,
     });
   }
 
   FutureOr<void> printPressedEvent(
       PrintPressedEvent event, Emitter<PrintIdState> emit) async {
     emit(LoadedState(
-        printIdData: await _printPressedUseCase!(params: {
-      "print_id_data": event.printIdData,
+        printIdData: await _printPressedUseCase(params: {
+      "print_id_data": printIdData,
     })));
   }
 }

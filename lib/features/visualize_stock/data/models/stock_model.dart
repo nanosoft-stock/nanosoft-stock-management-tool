@@ -2,78 +2,92 @@ import 'package:stock_management_tool/features/visualize_stock/domain/entities/s
 
 class StockModel extends StockEntity {
   const StockModel({
-    required super.uid,
-    required super.date,
-    required super.category,
-    required super.itemId,
-    required super.containerId,
-    required super.warehouseLocationId,
-    required super.fields,
-    required super.values,
+    super.date,
+    super.category,
+    super.sku,
+    super.serialNumber,
+    super.itemId,
+    super.containerId,
+    super.warehouseLocationId,
+    super.supplierInfo,
+    super.comments,
+    super.username,
+    super.specifications,
   });
 
-  factory StockModel.fromJson(Map<String, dynamic> json) {
+  factory StockModel.fromMap(Map<String, dynamic> json) {
     return StockModel(
-      uid: json["uid"],
-      date: json["date"],
-      category: json["category"] ?? "",
-      itemId: json["item id"] ?? "",
-      containerId: json["container id"] ?? "",
-      warehouseLocationId: json["warehouse location id"] ?? "",
-      fields: json["fields"] ?? [],
-      values: json["values"] ?? [],
+      date: json['date'],
+      category: json['category'] ?? "",
+      sku: json['sku'] ?? "",
+      serialNumber: json['serial_number'] ?? "",
+      itemId: json['item_id'] ?? "",
+      containerId: json['container_id'] ?? "",
+      warehouseLocationId: json['warehouse_location_id'] ?? "",
+      supplierInfo: json['supplier_info'] ?? "",
+      comments: json['comments'] ?? "",
+      username: json['user'] ?? "",
+      specifications: json['specifications'] ?? {},
     );
   }
 
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    for (int i = 0; i < fields.length; i++) {
-      json[fields[i]] = values[i];
-    }
-
+  Map<String, dynamic> toMap() {
     return {
-      "uid": uid,
       "date": date,
       "category": category,
-      "item id": itemId,
-      "container id": containerId,
-      "warehouse location id": warehouseLocationId,
-      ...json,
+      "sku": sku,
+      "serial_number": serialNumber,
+      "item_id": itemId,
+      "container_id": containerId,
+      "warehouse_location_id": warehouseLocationId,
+      "supplier_info": supplierInfo,
+      "comments": comments,
+      "user": username,
+      ...specifications ?? {},
     };
   }
 
-  Map<String, dynamic> toPartialJson() {
+  Map<String, dynamic> toPartialMap() {
     return {
-      "uid": uid,
       "date": date,
       "category": category,
-      "item id": itemId,
-      "container id": containerId,
-      "warehouse location id": warehouseLocationId,
-      "fields": fields,
-      "values": values,
+      "sku": sku,
+      "serial_number": serialNumber,
+      "item_id": itemId,
+      "container_id": containerId,
+      "warehouse_location_id": warehouseLocationId,
+      "supplier_info": supplierInfo,
+      "comments": comments,
+      "user": username,
+      "specifications": specifications,
     };
   }
 
   StockModel copyWith({
-    String? uid,
     DateTime? date,
     String? category,
+    String? sku,
+    String? serialNumber,
     String? itemId,
     String? containerId,
     String? warehouseLocationId,
-    List<String>? fields,
-    List<String>? values,
+    String? supplierInfo,
+    String? comments,
+    String? username,
+    Map<String, dynamic>? specifications,
   }) {
     return StockModel(
-      uid: uid ?? this.uid,
       date: date ?? this.date,
       category: category ?? this.category,
+      sku: sku ?? this.sku,
+      serialNumber: serialNumber ?? this.serialNumber,
       itemId: itemId ?? this.itemId,
       containerId: containerId ?? this.containerId,
       warehouseLocationId: warehouseLocationId ?? this.warehouseLocationId,
-      fields: fields ?? this.fields,
-      values: values ?? this.values,
+      supplierInfo: supplierInfo ?? this.supplierInfo,
+      comments: comments ?? this.comments,
+      username: username ?? this.username,
+      specifications: specifications ?? this.specifications,
     );
   }
 }

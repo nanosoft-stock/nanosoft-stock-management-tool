@@ -93,8 +93,8 @@ class PrintIdView extends StatelessWidget {
                                   validator: (_) => "",
                                   onSelected: (value) {
                                     _printIdBloc.add(PrintIdSelectedEvent(
-                                        printId: value,
-                                        printIdData: printIdData));
+                                      printId: value,
+                                    ));
                                   },
                                 ),
                               ),
@@ -106,8 +106,8 @@ class PrintIdView extends StatelessWidget {
                                   validator: (_) => "",
                                   onSelected: (value) {
                                     _printIdBloc.add(PrintCountChangedEvent(
-                                        printCount: value,
-                                        printIdData: printIdData));
+                                      printCount: value,
+                                    ));
                                   },
                                 ),
                               ),
@@ -117,8 +117,8 @@ class PrintIdView extends StatelessWidget {
                                   width: 322.5,
                                   child: CustomElevatedButton(
                                     onPressed: () {
-                                      _printIdBloc.add(PrintPressedEvent(
-                                          printIdData: printIdData));
+                                      _printIdBloc
+                                          .add(const PrintPressedEvent());
                                     },
                                     text: "Print",
                                   ),

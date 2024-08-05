@@ -1,58 +1,34 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
-import 'package:stock_management_tool/core/helper/datatype_converter_helper.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
-import 'package:stock_management_tool/objectbox.dart';
 
 class AddNewStockHelper {
-  static Map<String, dynamic> toJson({required Map data}) {
-    final objectbox = sl.get<ObjectBox>();
+  static Map<String, dynamic> toMap({required Map data}) {
+    final LocalDatabase localDB = sl.get<LocalDatabase>();
 
     Map<String, dynamic> convertedData = {};
     String category = data["category"];
 
-    List fields = objectbox
-        .getInputFields()
+    List fields = localDB.categoryFields
         .where((element) =>
-            element.category!.toLowerCase() == category.toLowerCase())
-        .map((e) => e.toJson())
+            element.category!.toLowerCase() == category.toLowerCase() &&
+            element.field != "date")
+        .map((e) => e.toMap())
         .toList();
 
-    if (!kIsLinux) {
-      for (var e in fields) {
-        if (e["field"] == "date") {
-          convertedData[e["field"]] =
-              Timestamp.now(); // FieldValue.serverTimestamp();
-        } else if (e["field"] == "user") {
-          convertedData[e["field"]] =
-              CaseHelper.convert(e["value_case"], userName).trim();
-        } else {
-          convertedData[e["field"]] =
-              CaseHelper.convert(e["value_case"], data[e["field"]] ?? "")
-                  .trim();
-        }
-      }
-    } else {
-      for (var e in fields) {
-        if (e["field"] == "date") {
-          convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]):
-                "${DateFormat('yyyy-MM-ddTHH:mm:ss.SSSSSSS').format(DateTime.now())}Z",
-          };
-        } else if (e["field"] == "user") {
-          convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]):
-                CaseHelper.convert(e["value_case"], userName).trim(),
-          };
-        } else {
-          convertedData[e["field"]] = {
-            DatatypeConverterHelper.convert(datatype: e["datatype"]):
-                CaseHelper.convert(e["value_case"], data[e["field"]] ?? "")
-                    .trim(),
-          };
-        }
+    for (var field in fields) {
+      String fieldName =
+          field["field"].toString().toLowerCase().replaceAll(" ", "_");
+
+      if (fieldName == "sku") {
+        convertedData["sku_uuid"] = null;
+      } else if (fieldName == "user") {
+        convertedData["user_uuid"] = CaseHelper.convert(
+            field["value_case"], localDB.user.userUUID ?? "");
+      } else {
+        convertedData[fieldName] =
+            CaseHelper.convert(field["value_case"], data[field["field"]] ?? "")
+                .trim();
       }
     }
 

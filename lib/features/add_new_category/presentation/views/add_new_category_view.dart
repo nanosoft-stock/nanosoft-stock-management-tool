@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/core/components/custom_success_snack_bar.dart';
 import 'package:stock_management_tool/core/components/custom_text_input_field.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
@@ -46,7 +46,7 @@ class AddNewCategoryView extends StatelessWidget {
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (AddNewCategoryActionState):
-        SnackBar snackBar = CustomSnackBar(
+        SnackBar snackBar = CustomSuccessSnackBar(
           content: Text(
             "New Category added successfully",
             style: kLabelTextStyle,
@@ -71,9 +71,7 @@ class AddNewCategoryView extends StatelessWidget {
       case const (LoadingState):
         _addNewCategoryBloc.add(CloudDataChangeEvent(
           onChange: (addNewCategoryData) {
-            _addNewCategoryBloc.add(LoadedEvent(
-                addNewCategoryData:
-                    addNewCategoryData.cast<String, dynamic>()));
+            _addNewCategoryBloc.add(LoadedEvent());
           },
         ));
 
@@ -148,7 +146,6 @@ class AddNewCategoryView extends StatelessWidget {
                                   onSelected: (value) {
                                     _addNewCategoryBloc.add(CategoryTypedEvent(
                                       category: value,
-                                      addNewCategoryData: addNewCategoryData,
                                     ));
                                   },
                                 ),
@@ -191,9 +188,8 @@ class AddNewCategoryView extends StatelessWidget {
                                                       onTap: () {
                                                         _addNewCategoryBloc.add(
                                                             ViewFieldDetailsEvent(
-                                                                field: field,
-                                                                addNewCategoryData:
-                                                                    addNewCategoryData));
+                                                          field: field,
+                                                        ));
                                                       },
                                                       child: Text(
                                                         CaseHelper.convert(
@@ -237,8 +233,6 @@ class AddNewCategoryView extends StatelessWidget {
                                               _addNewCategoryBloc
                                                   .add(RearrangeFieldsEvent(
                                                 fields: localFieldFilters,
-                                                addNewCategoryData:
-                                                    addNewCategoryData,
                                               ));
                                             },
                                             children: localFieldFilters
@@ -273,11 +267,12 @@ class AddNewCategoryView extends StatelessWidget {
                                                               child:
                                                                   GestureDetector(
                                                                 onTap: () {
-                                                                  _addNewCategoryBloc.add(ViewFieldDetailsEvent(
-                                                                      field:
-                                                                          field,
-                                                                      addNewCategoryData:
-                                                                          addNewCategoryData));
+                                                                  _addNewCategoryBloc
+                                                                      .add(
+                                                                          ViewFieldDetailsEvent(
+                                                                    field:
+                                                                        field,
+                                                                  ));
                                                                 },
                                                                 child: Text(
                                                                   CaseHelper.convert(
@@ -322,9 +317,7 @@ class AddNewCategoryView extends StatelessWidget {
                                                 GestureDetector(
                                                   onTap: () {
                                                     _addNewCategoryBloc.add(
-                                                        AddNewFieldEvent(
-                                                            addNewCategoryData:
-                                                                addNewCategoryData));
+                                                        AddNewFieldEvent());
                                                   },
                                                   child: const Icon(Icons.add),
                                                 ),
@@ -348,10 +341,7 @@ class AddNewCategoryView extends StatelessWidget {
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         _addNewCategoryBloc
-                                            .add(AddNewCategoryPressedEvent(
-                                          addNewCategoryData:
-                                              addNewCategoryData,
-                                        ));
+                                            .add(AddNewCategoryPressedEvent());
                                       }
                                     },
                                   ),
@@ -398,10 +388,7 @@ class AddNewCategoryView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _addNewCategoryBloc
-                                                .add(RemoveFieldEvent(
-                                              addNewCategoryData:
-                                                  addNewCategoryData,
-                                            ));
+                                                .add(RemoveFieldEvent());
                                           },
                                           child: Text(
                                             "Remove",
@@ -447,8 +434,6 @@ class AddNewCategoryView extends StatelessWidget {
                                                 .add(DetailsTypedEvent(
                                               title: data.key,
                                               value: value,
-                                              addNewCategoryData:
-                                                  addNewCategoryData,
                                             ));
                                           },
                                           onSubmitted: (value) {
@@ -458,8 +443,6 @@ class AddNewCategoryView extends StatelessWidget {
                                                   .add(FieldNameTypedEvent(
                                                 title: data.key,
                                                 value: value,
-                                                addNewCategoryData:
-                                                    addNewCategoryData,
                                               ));
                                             }
                                           },

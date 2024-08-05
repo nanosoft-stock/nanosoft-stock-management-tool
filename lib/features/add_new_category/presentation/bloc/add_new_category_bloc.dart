@@ -34,6 +34,8 @@ class AddNewCategoryBloc
       _fieldNameTypedAddNewCategoryUseCase;
   final DetailsTypedAddNewCategoryUseCase? _detailsTypedAddNewCategoryUseCase;
 
+  late Map<String, dynamic> addNewCategoryData;
+
   AddNewCategoryBloc(
     this._initialAddNewCategoryUseCase,
     this._listenToCloudDataChangeAddNewCategoryUseCase,
@@ -60,8 +62,7 @@ class AddNewCategoryBloc
 
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<AddNewCategoryState> emit) async {
-    Map<String, dynamic> addNewCategoryData =
-        await _initialAddNewCategoryUseCase!();
+    addNewCategoryData = await _initialAddNewCategoryUseCase!();
 
     await _listenToCloudDataChangeAddNewCategoryUseCase!(params: {
       "add_new_category_data": addNewCategoryData,
@@ -73,14 +74,14 @@ class AddNewCategoryBloc
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<AddNewCategoryState> emit) async {
-    emit(LoadedState(addNewCategoryData: event.addNewCategoryData));
+    emit(LoadedState(addNewCategoryData: addNewCategoryData));
   }
 
   FutureOr<void> categoryTypedEvent(
       CategoryTypedEvent event, Emitter<AddNewCategoryState> emit) async {
     await _categoryTypedAddNewCategoryUseCase!(params: {
       "category": event.category,
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     });
   }
 
@@ -90,7 +91,7 @@ class AddNewCategoryBloc
         addNewCategoryData:
             await _viewFieldDetailsAddNewCategoryUseCase!(params: {
       "field": event.field,
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -98,7 +99,7 @@ class AddNewCategoryBloc
       AddNewFieldEvent event, Emitter<AddNewCategoryState> emit) async {
     emit(LoadedState(
         addNewCategoryData: await _addNewFieldAddNewCategoryUseCase!(params: {
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -108,7 +109,7 @@ class AddNewCategoryBloc
         addNewCategoryData:
             await _rearrangeFieldsAddNewCategoryUseCase!(params: {
       "fields": event.fields,
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -116,7 +117,7 @@ class AddNewCategoryBloc
       Emitter<AddNewCategoryState> emit) async {
     emit(LoadedState(
         addNewCategoryData: await _addNewCategoryPressedUseCase!(params: {
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -124,7 +125,7 @@ class AddNewCategoryBloc
       RemoveFieldEvent event, Emitter<AddNewCategoryState> emit) async {
     emit(LoadedState(
         addNewCategoryData: await _removeFieldAddNewCategoryUseCase!(params: {
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -135,7 +136,7 @@ class AddNewCategoryBloc
             await _fieldNameTypedAddNewCategoryUseCase!(params: {
       "title": event.title,
       "value": event.value,
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     })));
   }
 
@@ -144,7 +145,7 @@ class AddNewCategoryBloc
     await _detailsTypedAddNewCategoryUseCase!(params: {
       "title": event.title,
       "value": event.value,
-      "add_new_category_data": event.addNewCategoryData,
+      "add_new_category_data": addNewCategoryData,
     });
   }
 }

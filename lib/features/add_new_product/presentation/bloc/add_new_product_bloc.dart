@@ -17,6 +17,8 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
   final ValueChangedAddNewProductUseCase? _valueChangedAddNewProductUseCase;
   final AddNewProductUseCase? _addNewProductUseCase;
 
+  late List<Map<String, dynamic>> fields;
+
   AddNewProductBloc(
     this._productInitialInputFieldsUseCase,
     this._listenToCloudDataChangeAddNewProductUseCase,
@@ -32,8 +34,7 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
 
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<AddNewProductState> emit) async {
-    List<Map<String, dynamic>> fields =
-        await _productInitialInputFieldsUseCase!();
+    fields = await _productInitialInputFieldsUseCase!();
 
     await _listenToCloudDataChangeAddNewProductUseCase!(params: {
       "fields": fields,
@@ -45,7 +46,7 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<AddNewProductState> emit) async {
-    emit(LoadedState(event.fields!));
+    emit(LoadedState(fields));
   }
 
   FutureOr<void> valueTypedEvent(
@@ -53,7 +54,7 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     await _valueChangedAddNewProductUseCase!(params: {
       "field": event.field,
       "value": event.value,
-      "fields": event.fields,
+      "fields": fields,
     });
   }
 
@@ -62,15 +63,14 @@ class AddNewProductBloc extends Bloc<AddNewProductEvent, AddNewProductState> {
     emit(LoadedState(await _valueChangedAddNewProductUseCase!(params: {
       "field": event.field,
       "value": event.value,
-      "fields": event.fields,
+      "fields": fields,
     })));
   }
 
   FutureOr<void> addNewProductButtonClickedEvent(
       AddNewProductButtonClickedEvent event,
       Emitter<AddNewProductState> emit) async {
-    emit(LoadedState(
-        await _addNewProductUseCase!(params: {"fields": event.fields!})));
+    emit(LoadedState(await _addNewProductUseCase!(params: {"fields": fields})));
     emit(NewProductAddedActionState());
   }
 }

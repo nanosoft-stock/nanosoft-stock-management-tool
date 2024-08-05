@@ -2,21 +2,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
-import 'package:stock_management_tool/core/data/local_database/fetch_data_for_objectbox.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
+import 'package:stock_management_tool/core/local_database/repositories/local_database_repository.dart';
 import 'package:stock_management_tool/core/services/auth_default.dart';
 import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firebase_options.dart';
-import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
+import 'package:stock_management_tool/core/services/network_services.dart';
+import 'package:stock_management_tool/core/services/socket_io_services.dart';
+import 'package:stock_management_tool/features/add_new_category/presentation/bloc/add_new_category_bloc.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
 import 'package:stock_management_tool/features/add_new_stock/presentation/bloc/add_new_stock_bloc.dart';
 import 'package:stock_management_tool/features/auth/presentation/views/authentication_view.dart';
 import 'package:stock_management_tool/features/home/presentation/bloc/home_bloc.dart';
 import 'package:stock_management_tool/features/home/presentation/views/home_view.dart';
+import 'package:stock_management_tool/features/locate_stock/presentation/bloc/locate_stock_bloc.dart';
+import 'package:stock_management_tool/features/modify_category/presentation/bloc/modify_category_bloc.dart';
+import 'package:stock_management_tool/features/print_id/presentation/bloc/print_id_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/objectbox.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +40,13 @@ Future<void> main() async {
     );
   }
 
-  await sl.get<ObjectBox>().create();
-  await FetchDataForObjectbox(sl.get<ObjectBox>())
-      .fetchData(deletePrevious: true);
+  await Hive.initFlutter();
+  sl.get<NetworkServices>().setToLocalEnv();
+  sl.get<SocketIoServices>().setToLocalEnv();
+  await sl.get<SocketIoServices>().init();
+  await sl.get<LocalDatabase>().init();
+  await sl.get<LocalDatabaseRepository>().fetchData();
+  await sl.get<LocalDatabaseRepository>().listenToCloudDatabaseChange();
 
   runApp(const StockManagementToolApp());
 }
@@ -44,21 +54,42 @@ Future<void> main() async {
 class StockManagementToolApp extends StatelessWidget {
   const StockManagementToolApp({super.key});
 
+  void fetchUserData(String? email) {
+    sl.get<LocalDatabaseRepository>().fetchUser(email ?? "").then(
+      (value) {
+        userName =
+            sl.get<LocalDatabase>().userModelBox!.values.first.username ?? "";
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<VisualizeStockBloc>(
-          create: (context) => sl.get<VisualizeStockBloc>(),
-        ),
-        BlocProvider<AddNewProductBloc>(
-          create: (context) => sl.get<AddNewProductBloc>(),
+        BlocProvider<HomeBloc>(
+          create: (context) => sl.get<HomeBloc>(),
         ),
         BlocProvider<AddNewStockBloc>(
           create: (context) => sl.get<AddNewStockBloc>(),
         ),
-        BlocProvider<HomeBloc>(
-          create: (context) => sl.get<HomeBloc>(),
+        BlocProvider<AddNewProductBloc>(
+          create: (context) => sl.get<AddNewProductBloc>(),
+        ),
+        BlocProvider<AddNewCategoryBloc>(
+          create: (context) => sl.get<AddNewCategoryBloc>(),
+        ),
+        BlocProvider<VisualizeStockBloc>(
+          create: (context) => sl.get<VisualizeStockBloc>(),
+        ),
+        BlocProvider<LocateStockBloc>(
+          create: (context) => sl.get<LocateStockBloc>(),
+        ),
+        BlocProvider<ModifyCategoryBloc>(
+          create: (context) => sl.get<ModifyCategoryBloc>(),
+        ),
+        BlocProvider<PrintIdBloc>(
+          create: (context) => sl.get<PrintIdBloc>(),
         ),
       ],
       child: MaterialApp(
@@ -70,18 +101,7 @@ class StockManagementToolApp extends StatelessWidget {
                     stream: sl.get<AuthDefault>().authStateChanges,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        sl
-                            .get<Firestore>()
-                            .getDocuments(path: "users")
-                            .then((users) {
-                          userName = users.firstWhere(
-                                  (e) =>
-                                      e["email"].toString().toLowerCase() ==
-                                      (snapshot.data?.email ?? "")
-                                          .toLowerCase(),
-                                  orElse: () => {})["username"] ??
-                              (snapshot.data!.displayName ?? "");
-                        });
+                        fetchUserData(snapshot.data!.email);
 
                         return HomeView();
                       } else {

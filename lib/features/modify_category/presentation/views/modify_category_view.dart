@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/core/components/custom_success_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
@@ -44,7 +44,7 @@ class ModifyCategoryView extends StatelessWidget {
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (ModifyCategoryActionState):
-        SnackBar snackBar = CustomSnackBar(
+        SnackBar snackBar = CustomSuccessSnackBar(
           content: Text(
             "New Category added successfully",
             style: kLabelTextStyle,
@@ -69,9 +69,7 @@ class ModifyCategoryView extends StatelessWidget {
       case const (LoadingState):
         _modifyCategoryBloc.add(CloudDataChangeEvent(
           onChange: (modifyCategoryData) {
-            _modifyCategoryBloc.add(LoadedEvent(
-                modifyCategoryData:
-                    modifyCategoryData.cast<String, dynamic>()));
+            _modifyCategoryBloc.add(const LoadedEvent());
           },
         ));
 
@@ -139,7 +137,6 @@ class ModifyCategoryView extends StatelessWidget {
                                 onSelected: (value) {
                                   _modifyCategoryBloc.add(CategorySelectedEvent(
                                     category: value,
-                                    modifyCategoryData: modifyCategoryData,
                                   ));
                                 },
                               ),
@@ -184,9 +181,8 @@ class ModifyCategoryView extends StatelessWidget {
                                                       onTap: () {
                                                         _modifyCategoryBloc.add(
                                                             ViewFieldDetailsEvent(
-                                                                field: field,
-                                                                modifyCategoryData:
-                                                                    modifyCategoryData));
+                                                          field: field,
+                                                        ));
                                                       },
                                                       child: Text(
                                                         CaseHelper.convert(
@@ -233,8 +229,6 @@ class ModifyCategoryView extends StatelessWidget {
                                               _modifyCategoryBloc
                                                   .add(RearrangeFieldsEvent(
                                                 fields: localFieldFilters,
-                                                modifyCategoryData:
-                                                    modifyCategoryData,
                                               ));
                                             },
                                             children: localFieldFilters
@@ -269,11 +263,12 @@ class ModifyCategoryView extends StatelessWidget {
                                                               child:
                                                                   GestureDetector(
                                                                 onTap: () {
-                                                                  _modifyCategoryBloc.add(ViewFieldDetailsEvent(
-                                                                      field:
-                                                                          field,
-                                                                      modifyCategoryData:
-                                                                          modifyCategoryData));
+                                                                  _modifyCategoryBloc
+                                                                      .add(
+                                                                          ViewFieldDetailsEvent(
+                                                                    field:
+                                                                        field,
+                                                                  ));
                                                                 },
                                                                 child: Text(
                                                                   CaseHelper.convert(
@@ -320,9 +315,7 @@ class ModifyCategoryView extends StatelessWidget {
                                                 GestureDetector(
                                                   onTap: () {
                                                     _modifyCategoryBloc.add(
-                                                        AddNewFieldEvent(
-                                                            modifyCategoryData:
-                                                                modifyCategoryData));
+                                                        const AddNewFieldEvent());
                                                   },
                                                   child: const Icon(Icons.add),
                                                 ),
@@ -348,10 +341,8 @@ class ModifyCategoryView extends StatelessWidget {
                                   child: CustomElevatedButton(
                                     text: "Modify Category",
                                     onPressed: () {
-                                      _modifyCategoryBloc
-                                          .add(ModifyCategoryPressedEvent(
-                                        modifyCategoryData: modifyCategoryData,
-                                      ));
+                                      _modifyCategoryBloc.add(
+                                          const ModifyCategoryPressedEvent());
                                     },
                                   ),
                                 ),
@@ -400,10 +391,7 @@ class ModifyCategoryView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _modifyCategoryBloc
-                                                .add(RemoveFieldEvent(
-                                              modifyCategoryData:
-                                                  modifyCategoryData,
-                                            ));
+                                                .add(const RemoveFieldEvent());
                                           },
                                           child: Text(
                                             "Remove",
@@ -446,8 +434,6 @@ class ModifyCategoryView extends StatelessWidget {
                                                 .add(DetailsTypedEvent(
                                               title: data.key,
                                               value: value,
-                                              modifyCategoryData:
-                                                  modifyCategoryData,
                                             ));
                                           },
                                           onSubmitted: (value) {
@@ -455,8 +441,6 @@ class ModifyCategoryView extends StatelessWidget {
                                                 .add(FieldNameTypedEvent(
                                               title: data.key,
                                               value: value,
-                                              modifyCategoryData:
-                                                  modifyCategoryData,
                                             ));
                                           },
                                         );

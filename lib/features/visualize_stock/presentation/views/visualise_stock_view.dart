@@ -44,8 +44,7 @@ class VisualiseStockView extends StatelessWidget {
       case const (LoadingState):
         _visualizeStockBloc.add(CloudDataChangeEvent(
           onChange: (visualizeStock) {
-            _visualizeStockBloc.add(LoadedEvent(
-                visualizeStock: visualizeStock.cast<String, dynamic>()));
+            _visualizeStockBloc.add(const LoadedEvent());
           },
         ));
 
@@ -118,9 +117,7 @@ class VisualiseStockView extends StatelessWidget {
                                       ),
                                       onPressed: () {
                                         _visualizeStockBloc.add(
-                                            ShowTableFilterLayerEvent(
-                                                visualizeStock:
-                                                    visualizeStock));
+                                            const ShowTableFilterLayerEvent());
                                       },
                                       child: Text(
                                         "Filter",
@@ -139,9 +136,7 @@ class VisualiseStockView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _visualizeStockBloc.add(
-                                                ImportButtonClickedEvent(
-                                                    visualizeStock:
-                                                        visualizeStock));
+                                                const ImportButtonClickedEvent());
                                           },
                                           child: Text(
                                             "Import Excel",
@@ -160,9 +155,7 @@ class VisualiseStockView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             _visualizeStockBloc.add(
-                                                ExportButtonClickedEvent(
-                                                    visualizeStock:
-                                                        visualizeStock));
+                                                const ExportButtonClickedEvent());
                                           },
                                           child: Text(
                                             "Export Table",
@@ -286,8 +279,6 @@ class VisualiseStockView extends StatelessWidget {
                                                               SortColumnEvent(
                                                             field: field,
                                                             sort: sort,
-                                                            visualizeStock:
-                                                                visualizeStock,
                                                           ));
                                                         },
                                                       ),
@@ -296,9 +287,8 @@ class VisualiseStockView extends StatelessWidget {
                                                         onPressed: () {
                                                           _visualizeStockBloc.add(
                                                               ShowColumnFilterLayerEvent(
-                                                                  field: field,
-                                                                  visualizeStock:
-                                                                      visualizeStock));
+                                                            field: field,
+                                                          ));
                                                         },
                                                       ),
                                                     ],
@@ -308,12 +298,14 @@ class VisualiseStockView extends StatelessWidget {
                                             ),
                                           );
                                         } else {
-                                          String text =
-                                              (stocks[vicinity.row - 1][fields[
-                                                          vicinity.column -
-                                                              1]] ??
-                                                      "")
-                                                  .toString();
+                                          String text = (stocks[
+                                                      vicinity.row - 1][fields[
+                                                          vicinity.column - 1]
+                                                      .toString()
+                                                      .toLowerCase()
+                                                      .replaceAll(" ", "_")] ??
+                                                  "")
+                                              .toString();
 
                                           return TableViewCell(
                                             child: text != ""
@@ -358,14 +350,14 @@ class VisualiseStockView extends StatelessWidget {
                       width: filterWidth,
                       hideOverlay: () {
                         if (visualizeStock["layers"].contains("field_filter")) {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "field_filter",
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "field_filter",
+                          ));
                         } else if (visualizeStock["layers"]
                             .contains("parent_field_filter")) {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "parent_field_filter",
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "parent_field_filter",
+                          ));
                         }
                       },
                       child: CustomColumnFilter(
@@ -374,59 +366,55 @@ class VisualiseStockView extends StatelessWidget {
                         fieldFilter: visualizeStock["filters"]
                             [visualizeStock["filter_menu_field"]],
                         closeOnTap: () {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "field_filter",
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "field_filter",
+                          ));
                         },
                         backOnTap: () {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "parent_field_filter",
-                              visualizeStock: visualizeStock));
-                          _visualizeStockBloc.add(ShowTableFilterLayerEvent(
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "parent_field_filter",
+                          ));
+                          _visualizeStockBloc
+                              .add(const ShowTableFilterLayerEvent());
                         },
                         filterOnPressed: () {
                           _visualizeStockBloc.add(FilterColumnEvent(
-                              field: visualizeStock["filter_menu_field"],
-                              visualizeStock: visualizeStock));
+                            field: visualizeStock["filter_menu_field"],
+                          ));
                         },
                         clearOnPressed: () {
                           _visualizeStockBloc.add(ClearColumnFilterEvent(
-                              field: visualizeStock["filter_menu_field"],
-                              visualizeStock: visualizeStock));
+                            field: visualizeStock["filter_menu_field"],
+                          ));
                         },
                         changeVisibilityOnTap: (visibility) {
                           _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
-                              field: visualizeStock["filter_menu_field"],
-                              visibility: visibility,
-                              visualizeStock: visualizeStock));
+                            field: visualizeStock["filter_menu_field"],
+                            visibility: visibility,
+                          ));
                         },
                         sortOnPressed: (sort) {
                           _visualizeStockBloc.add(SortColumnEvent(
                             field: visualizeStock["filter_menu_field"],
                             sort: sort,
-                            visualizeStock: visualizeStock,
                           ));
                         },
                         filterBySelected: (filterBy) {
                           _visualizeStockBloc.add(FilterBySelectedEvent(
                             field: visualizeStock["filter_menu_field"],
                             filterBy: filterBy,
-                            visualizeStock: visualizeStock,
                           ));
                         },
                         filterValueChanged: (filterValue) {
                           _visualizeStockBloc.add(FilterValueChangedEvent(
                             field: visualizeStock["filter_menu_field"],
                             filterValue: filterValue,
-                            visualizeStock: visualizeStock,
                           ));
                         },
                         searchValueChanged: (searchValue) {
                           _visualizeStockBloc.add(SearchValueChangedEvent(
                             field: visualizeStock["filter_menu_field"],
                             searchValue: searchValue,
-                            visualizeStock: visualizeStock,
                           ));
                         },
                         checkboxToggled: (title, value) {
@@ -434,7 +422,6 @@ class VisualiseStockView extends StatelessWidget {
                             field: visualizeStock["filter_menu_field"],
                             title: title,
                             value: value,
-                            visualizeStock: visualizeStock,
                           ));
                         },
                       ),
@@ -443,40 +430,39 @@ class VisualiseStockView extends StatelessWidget {
                     CustomOverlayEffect(
                       width: filterWidth,
                       hideOverlay: () {
-                        _visualizeStockBloc.add(HideLayerEvent(
-                            layer: "parent_filter",
-                            visualizeStock: visualizeStock));
+                        _visualizeStockBloc.add(const HideLayerEvent(
+                          layer: "parent_filter",
+                        ));
                       },
                       child: CustomTableFilter(
                         fields: visualizeStock["fields"],
                         closeOnTap: () {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "parent_filter",
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "parent_filter",
+                          ));
                         },
                         resetAllFiltersOnPressed: () {
-                          _visualizeStockBloc.add(ResetAllFiltersEvent(
-                              visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const ResetAllFiltersEvent());
                         },
                         fieldFilterOnPressed: (field) {
-                          _visualizeStockBloc.add(HideLayerEvent(
-                              layer: "parent_filter",
-                              visualizeStock: visualizeStock));
-                          _visualizeStockBloc.add(
-                              ShowTableColumnFilterLayerEvent(
-                                  field: field,
-                                  visualizeStock: visualizeStock));
+                          _visualizeStockBloc.add(const HideLayerEvent(
+                            layer: "parent_filter",
+                          ));
+                          _visualizeStockBloc
+                              .add(ShowTableColumnFilterLayerEvent(
+                            field: field,
+                          ));
                         },
                         onReorder: (fieldFilters) {
                           _visualizeStockBloc.add(RearrangeColumnsEvent(
-                              fields: fieldFilters,
-                              visualizeStock: visualizeStock));
+                            fields: fieldFilters,
+                          ));
                         },
                         changeVisibilityOnTap: (field, visibility) {
                           _visualizeStockBloc.add(ColumnVisibilityChangedEvent(
-                              visibility: visibility,
-                              field: field,
-                              visualizeStock: visualizeStock));
+                            visibility: visibility,
+                            field: field,
+                          ));
                         },
                       ),
                     ),

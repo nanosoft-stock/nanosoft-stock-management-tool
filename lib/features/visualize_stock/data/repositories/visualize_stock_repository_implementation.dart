@@ -10,45 +10,18 @@ import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/visualize_stock/data/models/stock_model.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/repositories/visualize_stock_repository.dart';
-import 'package:stock_management_tool/objectbox.dart';
 import 'package:uuid/uuid.dart';
 
 class VisualizeStockRepositoryImplementation
     implements VisualizeStockRepository {
-  final ObjectBox _objectBox = sl.get<ObjectBox>();
+  VisualizeStockRepositoryImplementation(this._localDB);
 
-  // List fieldsOrder = [
-  //   "date",
-  //   "category",
-  //   "warehouse location id",
-  //   "container id",
-  //   "item id",
-  //   "serial number",
-  //   "sku",
-  //   "make",
-  //   "model",
-  //   "processor",
-  //   "ram",
-  //   "storage",
-  //   "screen resolution",
-  //   "os",
-  //   "screen size",
-  //   "usb c",
-  //   "hdmi",
-  //   "display port",
-  //   "vga",
-  //   "ethernet",
-  //   "usb a",
-  //   "type",
-  //   "supplier info",
-  //   "dispatch info",
-  //   "comments",
-  //   "user",
-  // ];
+  final LocalDatabase _localDB;
 
   List<String> stringFilterBy = [
     "Equals",
@@ -72,11 +45,10 @@ class VisualizeStockRepositoryImplementation
   @override
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange}) async {
-    _objectBox.getInputFieldStream().listen((snapshot) {
+    _localDB.categoryFieldStream().listen((snapshot) {
       onChange(visualizeStock);
     });
-
-    _objectBox.getStockStream().listen((snapshot) {
+    _localDB.stockStream().listen((snapshot) {
       visualizeStock["stocks"] =
           getFilteredStocks(filters: visualizeStock["filters"]);
       onChange(visualizeStock);
@@ -85,9 +57,9 @@ class VisualizeStockRepositoryImplementation
 
   @override
   List<String> getAllFields() {
-    List fields = (_objectBox.getInputFields()
-          ..sort((a, b) => a.order!.compareTo(b.order!)))
-        .map((e) => e.field)
+    List fields = (_localDB.categoryFields.toList()
+          ..sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!)))
+        .map((e) => e.field!)
         .toSet()
         .toList();
 
@@ -100,12 +72,11 @@ class VisualizeStockRepositoryImplementation
 
   @override
   List<Map<String, dynamic>> getAllStocks() {
-    List stocks = _objectBox.getStocks();
-
-    stocks.sort((a, b) => b.date.compareTo(a.date));
+    List stocks = _localDB.stocks.toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
 
     stocks = stocks
-        .map((e) => StockModel.fromJson(e.toPartialJson()).toJson())
+        .map((e) => StockModel.fromMap(e.toPartialMap()).toMap())
         .toList();
 
     for (var e in stocks) {
@@ -296,18 +267,18 @@ class VisualizeStockRepositoryImplementation
     Excel excel = Excel.decodeBytes(bytes);
 
     Map warehouseLocations = {};
-    _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
+    _localDB.warehouseLocations.forEach((e) {
       warehouseLocations[e.warehouseLocationId] = null;
     });
 
     Map containers = {};
-    _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId] = e.toJson()..remove("container_id");
+    _localDB.containers.forEach((e) {
+      containers[e.containerId] = e.toMap()..remove("container_id");
     });
 
     Map items = {};
-    _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = e.toJson()..remove("item_id");
+    _localDB.items.forEach((e) {
+      items[e.itemId] = e.toMap()..remove("item_id");
     });
 
     List header = [];
@@ -370,7 +341,7 @@ class VisualizeStockRepositoryImplementation
               rowData["warehouse location id"] = "";
             }
 
-            newStocks.add(AddNewStockHelper.toJson(data: rowData));
+            newStocks.add(AddNewStockHelper.toMap(data: rowData));
             uniqueContainers.add(c);
           } else {
             rowData["container id"] = items[i]["container_id"];
@@ -380,7 +351,7 @@ class VisualizeStockRepositoryImplementation
 
             existingStocks.add({
               "doc_ref": items[i]["doc_ref"],
-              ...AddNewStockHelper.toJson(data: rowData),
+              ...AddNewStockHelper.toMap(data: rowData),
             });
           }
         }
@@ -531,8 +502,7 @@ class VisualizeStockRepositoryImplementation
     List modifiedFields = [];
 
     for (var category in uniqueCategories) {
-      List fields = _objectBox
-          .getInputFields()
+      List fields = _localDB.categoryFields
           .where((e) =>
               e.category?.toLowerCase() == category.toLowerCase() &&
               e.inSku == true &&

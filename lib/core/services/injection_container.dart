@@ -1,10 +1,14 @@
 import 'package:get_it/get_it.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
+import 'package:stock_management_tool/core/local_database/repositories/local_database_repository.dart';
 import 'package:stock_management_tool/core/services/auth.dart';
 import 'package:stock_management_tool/core/services/auth_default.dart';
 import 'package:stock_management_tool/core/services/auth_rest_api.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/firestore_default.dart';
 import 'package:stock_management_tool/core/services/firestore_rest_api.dart';
+import 'package:stock_management_tool/core/services/network_services.dart';
+import 'package:stock_management_tool/core/services/socket_io_services.dart';
 import 'package:stock_management_tool/features/add_new_category/data/repositories/add_new_category_repository_implementation.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/repositories/add_new_category_repository.dart';
 import 'package:stock_management_tool/features/add_new_category/domain/usecases/add_new_category_pressed_usecase.dart';
@@ -116,17 +120,28 @@ import 'package:stock_management_tool/features/visualize_stock/domain/usecases/r
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/search_value_changed_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/domain/usecases/sort_column_visualize_stock_usecase.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
-import 'package:stock_management_tool/objectbox.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
-  // ObjectBox
-  sl.registerLazySingleton<ObjectBox>(() => ObjectBox());
+  // Services
+  sl.registerLazySingleton<Auth>(() => Auth());
+  sl.registerLazySingleton<AuthDefault>(() => AuthDefault());
+  sl.registerLazySingleton<AuthRestApi>(() => AuthRestApi());
+  sl.registerLazySingleton<Firestore>(() => Firestore());
+  sl.registerLazySingleton<FirestoreDefault>(() => FirestoreDefault());
+  sl.registerLazySingleton<FirestoreRestApi>(() => FirestoreRestApi());
+  sl.registerLazySingleton<NetworkServices>(() => NetworkServices());
+  sl.registerLazySingleton<SocketIoServices>(() => SocketIoServices());
+
+  // Local Database
+  sl.registerLazySingleton<LocalDatabase>(() => LocalDatabase());
+  sl.registerLazySingleton<LocalDatabaseRepository>(
+      () => LocalDatabaseRepository(sl(), sl(), sl()));
 
   // Add New Category
   sl.registerLazySingleton<AddNewCategoryRepository>(
-      () => AddNewCategoryRepositoryImplementation());
+      () => AddNewCategoryRepositoryImplementation(sl()));
   sl.registerLazySingleton<InitialAddNewCategoryUseCase>(
       () => InitialAddNewCategoryUseCase(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeAddNewCategoryUseCase>(
@@ -152,7 +167,7 @@ Future<void> initializeDependencies() async {
 
   // Add New Product
   sl.registerLazySingleton<ProductRepository>(
-      () => ProductRepositoryImplementation());
+      () => ProductRepositoryImplementation(sl()));
   sl.registerLazySingleton<GetProductInitialInputFieldsUseCase>(
       () => GetProductInitialInputFieldsUseCase(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeAddNewProductUseCase>(
@@ -166,7 +181,7 @@ Future<void> initializeDependencies() async {
 
   // Add New Stock
   sl.registerLazySingleton<StockRepository>(
-      () => StockRepositoryImplementation());
+      () => StockRepositoryImplementation(sl(), sl()));
   sl.registerLazySingleton<GetStockInitialInputFieldsUseCase>(
       () => GetStockInitialInputFieldsUseCase(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeAddNewStockUseCase>(
@@ -175,7 +190,8 @@ Future<void> initializeDependencies() async {
       () => ValueChangedAddNewStockUseCase(sl()));
   sl.registerLazySingleton<CheckboxToggledAddNewStockUseCase>(
       () => CheckboxToggledAddNewStockUseCase());
-  sl.registerLazySingleton<AddNewStockUseCase>(() => AddNewStockUseCase(sl()));
+  sl.registerLazySingleton<AddNewStockUseCase>(
+      () => AddNewStockUseCase(sl(), sl()));
   sl.registerFactory<AddNewStockBloc>(
       () => AddNewStockBloc(sl(), sl(), sl(), sl(), sl()));
 
@@ -194,7 +210,7 @@ Future<void> initializeDependencies() async {
 
   // Locate Stock
   sl.registerLazySingleton<LocateStockRepository>(
-      () => LocateStockRepositoryImplementation());
+      () => LocateStockRepositoryImplementation(sl()));
   sl.registerLazySingleton<InitialLocateStockUseCase>(
       () => InitialLocateStockUseCase(sl()));
   sl.registerLazySingleton<LocateStockCloudDataChangeUseCase>(
@@ -293,7 +309,7 @@ Future<void> initializeDependencies() async {
 
   // Modify Category
   sl.registerLazySingleton<ModifyCategoryRepository>(
-      () => ModifyCategoryRepositoryImplementation());
+      () => ModifyCategoryRepositoryImplementation(sl()));
   sl.registerLazySingleton<InitialModifyCategoryUseCase>(
       () => InitialModifyCategoryUseCase(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeModifyCategoryUseCase>(
@@ -319,7 +335,7 @@ Future<void> initializeDependencies() async {
 
   // Print Id
   sl.registerLazySingleton<PrintIdRepository>(
-      () => PrintIdRepositoryImplementation());
+      () => PrintIdRepositoryImplementation(sl()));
   sl.registerLazySingleton<InitialPrintIdUseCase>(
       () => InitialPrintIdUseCase());
   sl.registerLazySingleton<PrintIdSelectedUseCase>(
@@ -332,7 +348,7 @@ Future<void> initializeDependencies() async {
 
   // Visualize Stock
   sl.registerLazySingleton<VisualizeStockRepository>(
-      () => VisualizeStockRepositoryImplementation());
+      () => VisualizeStockRepositoryImplementation(sl()));
   sl.registerLazySingleton<ListenToCloudDataChangeVisualizeStockUseCase>(
       () => ListenToCloudDataChangeVisualizeStockUseCase(sl()));
   sl.registerLazySingleton<InitialVisualizeStockUseCase>(
@@ -383,12 +399,4 @@ Future<void> initializeDependencies() async {
         sl(),
         sl(),
       ));
-
-  // Services
-  sl.registerLazySingleton<Auth>(() => Auth());
-  sl.registerLazySingleton<AuthDefault>(() => AuthDefault());
-  sl.registerLazySingleton<AuthRestApi>(() => AuthRestApi());
-  sl.registerLazySingleton<Firestore>(() => Firestore());
-  sl.registerLazySingleton<FirestoreDefault>(() => FirestoreDefault());
-  sl.registerLazySingleton<FirestoreRestApi>(() => FirestoreRestApi());
 }

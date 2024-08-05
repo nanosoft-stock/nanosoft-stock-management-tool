@@ -11,16 +11,24 @@ abstract class AddNewStockState extends Equatable {
       ];
 }
 
-abstract class AddNewStockActionState extends AddNewStockState {}
+abstract class AddNewStockActionState extends AddNewStockState {
+  const AddNewStockActionState({required this.message});
+
+  final String message;
+}
 
 class LoadingState extends AddNewStockState {}
 
 class LoadedState extends AddNewStockState {
-  const LoadedState(List fields) : super(fields: fields);
+  const LoadedState({required super.fields});
 }
 
-class ReduceDuplicationActionState extends AddNewStockActionState {}
+class SuccessActionState extends AddNewStockActionState {
+  const SuccessActionState({required super.message});
+}
 
-class NewStockAddedActionState extends AddNewStockActionState {}
+class ErrorActionState extends AddNewStockActionState {
+  const ErrorActionState({required super.message, this.stackTrace});
 
-class ErrorState extends AddNewStockState {}
+  final StackTrace? stackTrace;
+}

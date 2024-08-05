@@ -77,6 +77,8 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
   final GetAllCompletedStateItemsUseCase? _getAllCompletedStateItemsUseCase;
   final ExpandCompletedMovesItemUseCase? _expandCompletedMovesItemUseCase;
 
+  late Map<String, dynamic> locatedStock;
+
   LocateStockBloc(
     this._initialLocateStockUseCase,
     this._locateStockCloudDataChangeUseCase,
@@ -147,7 +149,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<LocateStockState> emit) async {
-    Map<String, dynamic> locatedStock = await _initialLocateStockUseCase!();
+    locatedStock = await _initialLocateStockUseCase!();
 
     await _locateStockCloudDataChangeUseCase!(params: {
       "located_stock": locatedStock,
@@ -159,16 +161,14 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<LocateStockState> emit) async {
-    emit(LoadedState(
-      locatedStock: event.locatedStock!.cast<String, dynamic>(),
-    ));
+    emit(LoadedState(locatedStock: locatedStock));
   }
 
   FutureOr<void> addNewInputRowEvent(
       AddNewInputRowEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _addNewInputRowUseCase!(params: {
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -177,7 +177,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _removeInputRowUseCase!(params: {
       "index": event.index,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -187,7 +187,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         index: event.index,
         locatedStock: await _addOverlayLayerUseCase!(params: {
           "layer": event.layer,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -196,7 +196,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _hideOverlayLayerUseCase!(params: {
       "layer": event.layer,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -207,7 +207,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _searchByFieldFilledUseCase!(params: {
           "index": event.index,
           "search_by": event.searchBy,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -217,7 +217,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         index: event.index,
         locatedStock: await _chooseIdsUseCase!(params: {
           "index": event.index,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -228,7 +228,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _idEnteredUseCase!(params: {
           "index": event.index,
           "chosen_id": event.chosenId,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -238,7 +238,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _idsChosenUseCase!(params: {
       "index": event.index,
       "chosen_ids": event.chosenIds,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -248,7 +248,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         index: event.index,
         locatedStock: await _resetAllFiltersLocateStockUseCase!(params: {
           "index": event.index,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -259,7 +259,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _fieldFilterSelectedUseCase!(params: {
           "index": event.index,
           "field": event.field,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -269,7 +269,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         index: event.index,
         locatedStock: await _filterFieldLocateStockUseCase!(params: {
           "index": event.index,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -280,7 +280,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _clearFieldFilterLocateStockUseCase!(params: {
           "index": event.index,
           "field": event.field,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -292,7 +292,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
           "index": event.index,
           "field": event.field,
           "filter_by": event.filterBy,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -304,7 +304,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
           "index": event.index,
           "field": event.field,
           "value": event.value,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -316,7 +316,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
           "index": event.index,
           "field": event.field,
           "value": event.value,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -329,7 +329,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
           "field": event.field,
           "title": event.title,
           "value": event.value,
-          "located_stock": event.locatedStock,
+          "located_stock": locatedStock,
         })));
   }
 
@@ -339,7 +339,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _switchTableViewUseCase!(params: {
       "index": event.index,
       "show_table": event.showTable,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 
@@ -349,7 +349,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _switchStockViewModeUseCase!(params: {
       "index": event.index,
       "mode": event.mode,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 
@@ -360,7 +360,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       "index": event.index,
       "id": event.id,
       "state": event.state,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -370,7 +370,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
         locatedStock: await _selectAllCheckBoxToggledUseCase!(params: {
       "index": event.index,
       "state": event.state,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -378,7 +378,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _getSelectedItemsUseCase!(params: {
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -387,7 +387,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _containerIDEnteredUseCase!(params: {
       "text": event.text,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -397,23 +397,25 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _warehouseLocationIDEnteredUseCase!(params: {
       "text": event.text,
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
   FutureOr<void> moveItemsButtonPressed(
       MoveItemsButtonPressedEvent event, Emitter<LocateStockState> emit) async {
     emit(LoadedState(
-      locatedStock: await _moveItemsButtonPressedUseCase!(
-          params: {"located_stock": event.locatedStock}),
+      locatedStock: await _moveItemsButtonPressedUseCase!(params: {
+        "located_stock": locatedStock,
+      }),
     ));
   }
 
   FutureOr<void> pendingMovesButtonPressed(PendingMovesButtonPressedEvent event,
       Emitter<LocateStockState> emit) async {
     emit(LoadedState(
-      locatedStock: await _getAllPendingStateItemsUseCase!(
-          params: {"located_stock": event.locatedStock}),
+      locatedStock: await _getAllPendingStateItemsUseCase!(params: {
+        "located_stock": locatedStock,
+      }),
     ));
   }
 
@@ -424,7 +426,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       "index": event.index,
       "i": event.i,
       "is_expanded": event.isExpanded,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 
@@ -433,7 +435,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _completePendingMoveUseCase!(params: {
       "index": event.index,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 
@@ -442,7 +444,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
     emit(LoadedState(
         locatedStock: await _cancelPendingMoveUseCase!(params: {
       "index": event.index,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 
@@ -451,7 +453,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       Emitter<LocateStockState> emit) async {
     emit(LoadedState(
         locatedStock: await _getAllCompletedStateItemsUseCase!(params: {
-      "located_stock": event.locatedStock,
+      "located_stock": locatedStock,
     })));
   }
 
@@ -462,7 +464,7 @@ class LocateStockBloc extends Bloc<LocateStockEvent, LocateStockState> {
       "index": event.index,
       "i": event.i,
       "is_expanded": event.isExpanded,
-      "located_stock": event.locatedStock
+      "located_stock": locatedStock,
     })));
   }
 }

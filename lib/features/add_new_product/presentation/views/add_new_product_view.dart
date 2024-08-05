@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/components/custom_elevated_button.dart';
-import 'package:stock_management_tool/core/components/custom_snack_bar.dart';
+import 'package:stock_management_tool/core/components/custom_success_snack_bar.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/add_new_product/presentation/bloc/add_new_product_bloc.dart';
@@ -42,7 +42,7 @@ class AddNewProductView extends StatelessWidget {
       BoxConstraints constraints, double pad) {
     switch (state.runtimeType) {
       case const (NewProductAddedActionState):
-        SnackBar snackBar = CustomSnackBar(
+        SnackBar snackBar = CustomSuccessSnackBar(
           content: Text(
             "New SKU added successfully",
             style: kLabelTextStyle,
@@ -67,7 +67,7 @@ class AddNewProductView extends StatelessWidget {
       case const (LoadingState):
         _addNewProductBloc.add(CloudDataChangeEvent(
           onChange: (fields) {
-            _addNewProductBloc.add(LoadedEvent(fields: fields));
+            _addNewProductBloc.add(const LoadedEvent());
           },
         ));
 
@@ -146,10 +146,14 @@ class AddNewProductView extends StatelessWidget {
                   onSelected: (field, value) {
                     if (["category"].contains(fields[index]["field"])) {
                       _addNewProductBloc.add(ValueSelectedEvent(
-                          field: field, value: value, fields: fields));
+                        field: field,
+                        value: value,
+                      ));
                     } else {
                       _addNewProductBloc.add(ValueTypedEvent(
-                          field: field, value: value, fields: fields));
+                        field: field,
+                        value: value,
+                      ));
                     }
                   },
                 ),
@@ -173,8 +177,7 @@ class AddNewProductView extends StatelessWidget {
             text: "Add New Product",
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
-                _addNewProductBloc
-                    .add(AddNewProductButtonClickedEvent(fields: fields));
+                _addNewProductBloc.add(const AddNewProductButtonClickedEvent());
               }
             },
           ),

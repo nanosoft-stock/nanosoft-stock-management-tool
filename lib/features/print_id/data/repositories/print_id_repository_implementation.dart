@@ -3,13 +3,15 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/features/print_id/domain/repositories/print_id_repository.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
-import 'package:stock_management_tool/objectbox.dart';
 
 class PrintIdRepositoryImplementation implements PrintIdRepository {
-  final ObjectBox _objectBox = sl.get<ObjectBox>();
+  PrintIdRepositoryImplementation(this._localDB);
+
+  final LocalDatabase _localDB;
 
   @override
   Future<List<String>> getIds(String printableId, String countString) async {
@@ -18,8 +20,8 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
     if (count != null && countString != "0") {
       if (printableId == "Item Id") {
         Map items = {};
-        _objectBox.itemIdBox!.getAll().forEach((e) {
-          items[e.itemId] = e.toJson()..remove("item_id");
+        _localDB.items.forEach((e) {
+          items[e.itemId] = e.toMap()..remove("item_id");
         });
 
         List itemIds = items.entries
@@ -46,8 +48,8 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
         return newItemIds;
       } else if (printableId == "Container Id") {
         Map containers = {};
-        _objectBox.containerIdBox!.getAll().forEach((e) {
-          containers[e.containerId] = e.toJson()..remove("container_id");
+        _localDB.containers.forEach((e) {
+          containers[e.containerId] = e.toMap()..remove("container_id");
         });
 
         List containerIds = containers.entries
@@ -179,8 +181,8 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
     );
 
     Map<String, dynamic> items = {};
-    _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId!] = e.toJson();
+    _localDB.items.forEach((e) {
+      items[e.itemId!] = e.toMap();
     });
 
     if (isPrinted) {
@@ -234,8 +236,8 @@ class PrintIdRepositoryImplementation implements PrintIdRepository {
     );
 
     Map<String, dynamic> containers = {};
-    _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId!] = e.toJson();
+    _localDB.containers.forEach((e) {
+      containers[e.containerId!] = e.toMap();
     });
 
     if (isPrinted) {

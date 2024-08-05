@@ -1,19 +1,18 @@
 import 'package:intl/intl.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
-import 'package:stock_management_tool/core/data/local_database/models/container_id_objectbox_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/item_id_objectbox_model.dart';
-import 'package:stock_management_tool/core/data/local_database/models/stock_objectbox_model.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
+import 'package:stock_management_tool/core/local_database/local_database.dart';
+import 'package:stock_management_tool/core/local_database/models/stock_hive_model.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/locate_stock/domain/repositories/locate_stock_repository.dart';
-import 'package:stock_management_tool/objectbox.dart';
-import 'package:stock_management_tool/objectbox.g.dart';
 import 'package:uuid/uuid.dart';
 
 class LocateStockRepositoryImplementation implements LocateStockRepository {
-  final ObjectBox _objectBox = sl.get<ObjectBox>();
+  LocateStockRepositoryImplementation(this._localDB);
+
+  final LocalDatabase _localDB;
 
   // final Map locatedStock = {
   //   "all_ids": {
@@ -108,31 +107,24 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   @override
   void listenToCloudDataChange(
       {required Map locatedStock, required Function(Map) onChange}) {
-    _objectBox.getItemIdStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        locatedStock["all_ids"]["Item Id"] =
-            snapshot.map((e) => e.itemId!).toList();
-        onChange(locatedStock);
-      }
+    _localDB.itemStream().listen((snapshot) {
+      locatedStock["all_ids"]["Item Id"] =
+          _localDB.items.map((e) => e.itemId!).toList();
     });
 
-    _objectBox.getContainerIdStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        locatedStock["all_ids"]["Container Id"] =
-            snapshot.map((e) => e.containerId!).toList();
-        onChange(locatedStock);
-      }
+    _localDB.containerStream().listen((snapshot) {
+      locatedStock["all_ids"]["Container Id"] =
+          _localDB.containers.map((e) => e.containerId!).toList();
     });
 
-    _objectBox.getWarehouseLocationIdStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        locatedStock["all_ids"]["Warehouse Location Id"] =
-            snapshot.map((e) => e.warehouseLocationId!).toList();
-        onChange(locatedStock);
-      }
+    _localDB.warehouseLocationStream().listen((snapshot) {
+      locatedStock["all_ids"]["Warehouse Location Id"] = _localDB
+          .warehouseLocations
+          .map((e) => e.warehouseLocationId!)
+          .toList();
     });
 
-    _objectBox.getStockStream().listen((snapshot) {
+    _localDB.stockStream().listen((snapshot) {
       locatedStock["rows"].forEach((element) {
         if (element["chosen_ids"] != null && element["chosen_ids"].isNotEmpty) {
           Map details = getChosenIdsDetails(
@@ -149,29 +141,27 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       onChange(locatedStock);
     });
 
-    _objectBox.getStockLocationHistoryStream().listen((snapshot) {
-      if (snapshot.isNotEmpty) {
-        locatedStock["pending_state_items"] = getAllPendingStateItems(
-            locatedStock["pending_state_items"] ?? <String, dynamic>{});
-        locatedStock["completed_state_items"] = getAllCompletedStateItems();
-        onChange(locatedStock);
-      }
-    });
+    // _objectBox.getStockLocationHistoryStream().listen((snapshot) {
+    //   if (snapshot.isNotEmpty) {
+    //     locatedStock["pending_state_items"] = getAllPendingStateItems(
+    //         locatedStock["pending_state_items"] ?? <String, dynamic>{});
+    //     locatedStock["completed_state_items"] = getAllCompletedStateItems();
+    //     onChange(locatedStock);
+    //   }
+    // });
   }
 
   @override
   Map<String, dynamic> getAllIds() {
     Map<String, dynamic> data = {};
 
-    data["Item Id"] = _objectBox.getItemIds().map((e) => e.itemId!).toList()
+    data["Item Id"] = _localDB.items.map((e) => e.itemId!).toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
-    data["Container Id"] = _objectBox
-        .getContainerIds()
+    data["Container Id"] = _localDB.containers
         .map((e) => e.containerId!)
         .toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
-    data["Warehouse Location Id"] = _objectBox
-        .getWarehouseLocationIds()
+    data["Warehouse Location Id"] = _localDB.warehouseLocations
         .map((e) => e.warehouseLocationId!)
         .toList()
       ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
@@ -180,7 +170,7 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   }
 
   List<Map<String, dynamic>> getAllStocks() {
-    List stocks = _objectBox.getStocks().map((e) => e.toJson()).toList();
+    List stocks = _localDB.stocks.map((e) => e.toMap()).toList();
 
     stocks.sort((a, b) => b["date"].compareTo(a["date"]));
 
@@ -210,8 +200,8 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Map<String, dynamic> getInitialFilters() {
-    List fields = (_objectBox.getInputFields()
-          ..sort((a, b) => a.order!.compareTo(b.order!)))
+    List fields = (_localDB.categoryFields.toList()
+          ..sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!)))
         .map((e) => e.field)
         .toSet()
         .toList();
@@ -350,28 +340,28 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
     Map<String, dynamic> details = {};
     details["items"] = [];
 
-    for (String id in chosenIds) {
+    for (String _ in chosenIds) {
       List stocks = [];
 
-      if (searchBy == "Item Id") {
-        Query query = _objectBox.stockModelBox!
-            .query(StockObjectBoxModel_.itemId.equals(id))
-            .build();
-        stocks = query.find() as List<StockObjectBoxModel>;
-        query.close();
-      } else if (searchBy == "Container Id") {
-        Query query = _objectBox.stockModelBox!
-            .query(StockObjectBoxModel_.containerId.equals(id))
-            .build();
-        stocks = query.find() as List<StockObjectBoxModel>;
-        query.close();
-      } else if (searchBy == "Warehouse Location Id") {
-        Query query = _objectBox.stockModelBox!
-            .query(StockObjectBoxModel_.warehouseLocationId.equals(id))
-            .build();
-        stocks = query.find() as List<StockObjectBoxModel>;
-        query.close();
-      }
+      // if (searchBy == "Item Id") {
+      //   Query query = _objectBox.stockModelBox!
+      //       .query(StockObjectBoxModel_.itemId.equals(id))
+      //       .build();
+      //   stocks = query.find() as List<StockObjectBoxModel>;
+      //   query.close();
+      // } else if (searchBy == "Container Id") {
+      //   Query query = _objectBox.stockModelBox!
+      //       .query(StockObjectBoxModel_.containerId.equals(id))
+      //       .build();
+      //   stocks = query.find() as List<StockObjectBoxModel>;
+      //   query.close();
+      // } else if (searchBy == "Warehouse Location Id") {
+      //   Query query = _objectBox.stockModelBox!
+      //       .query(StockObjectBoxModel_.warehouseLocationId.equals(id))
+      //       .build();
+      //   stocks = query.find() as List<StockObjectBoxModel>;
+      //   query.close();
+      // }
 
       details["items"].addAll(stocks
           .map((e) => {
@@ -504,17 +494,26 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
       {required List selectedItemIds}) {
     List<Map<String, dynamic>> details = [];
     for (var id in selectedItemIds) {
-      Query query = _objectBox.stockModelBox!
-          .query(StockObjectBoxModel_.itemId.equals(id))
-          .build();
-      StockObjectBoxModel stock = query.findFirst();
-      query.close();
+      List stocks =
+          _localDB.stocks.where((element) => element.itemId == id).toList();
+      // Query query = _objectBox.stockModelBox!
+      //     .query(StockObjectBoxModel_.itemId.equals(id))
+      //     .build();
+      // StockObjectBoxModel stock = query.findFirst();
+      // query.close();
 
-      details.add({
-        "item_id": id,
-        "container_id": stock.containerId,
-        "warehouse_location_id": stock.warehouseLocationId,
-      });
+      StockHiveModel? stock;
+
+      if (stocks.isNotEmpty) {
+        stock = stocks.first;
+      }
+      details.add(stock != null
+          ? {
+              "item_id": id,
+              "container_id": stock.containerId,
+              "warehouse_location_id": stock.warehouseLocationId,
+            }
+          : {});
     }
     return details;
   }
@@ -522,33 +521,34 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   @override
   List getContainerIds({required String warehouseLocationId}) {
     Set dataSet = {};
-    Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
-        .query(ContainerIdObjectBoxModel_.warehouseLocationId
-            .equals(warehouseLocationId))
-        .build();
+    // Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
+    //     .query(ContainerIdObjectBoxModel_.warehouseLocationId
+    //         .equals(warehouseLocationId))
+    //     .build();
 
-    List<ContainerIdObjectBoxModel>? containers = query.find();
+    // List<ContainerIdObjectBoxModel>? containers = query.find();
 
-    query.close();
+    // query.close();
 
-    for (var element in containers) {
-      dataSet.add(element.containerId);
-    }
+    // for (var element in containers) {
+    //   dataSet.add(element.containerId);
+    // }
 
     return dataSet.toList();
   }
 
   @override
   String getWarehouseLocationId({required String containerId}) {
-    Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
-        .query(ContainerIdObjectBoxModel_.containerId.equals(containerId))
-        .build();
+    // Query<ContainerIdObjectBoxModel> query = _objectBox.containerIdBox!
+    //     .query(ContainerIdObjectBoxModel_.containerId.equals(containerId))
+    //     .build();
 
-    ContainerIdObjectBoxModel? container = query.findFirst();
+    // ContainerIdObjectBoxModel? container = query.findFirst();
 
-    query.close();
+    // query.close();
 
-    return container?.warehouseLocationId ?? "";
+    // return container?.warehouseLocationId ?? "";
+    return "";
   }
 
   @override
@@ -596,131 +596,131 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
   @override
   Map<String, dynamic> getAllPendingStateItems(
       Map<String, dynamic> pendingStateItems) {
-    List histories = [];
+    // List histories = [];
 
-    Query query = _objectBox.stockLocationHistoryModelBox!
-        .query(StockLocationHistoryObjectBoxModel_.state.equals("pending"))
-        .build();
-    histories = query.find();
-    query.close();
+    // Query query = _objectBox.stockLocationHistoryModelBox!
+    //     .query(StockLocationHistoryObjectBoxModel_.state.equals("pending"))
+    //     .build();
+    // histories = query.find();
+    // query.close();
 
-    histories.sort((a, b) => b.date.compareTo(a.date));
+    // histories.sort((a, b) => b.date.compareTo(a.date));
 
-    List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
+    // List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
 
     Map data = {};
 
-    if (histories.isNotEmpty) {
-      for (var element in uniqueGroupIds) {
-        data[element] = histories
-            .where((e) => e.groupId == element)
-            .map((e) => {
-                  ...e.toJson()..remove("group_id"),
-                  "is_expanded": pendingStateItems.isNotEmpty &&
-                          pendingStateItems[element] != null
-                      ? (pendingStateItems[element].firstWhere(
-                              (ele) => ele["uid"] == e.uid,
-                              orElse: () =>
-                                  <String, dynamic>{})["is_expanded"] ??
-                          false)
-                      : false,
-                }.cast<String, dynamic>())
-            .toList()
-            .cast<Map<String, dynamic>>();
-      }
-    } else {
-      data = {};
-    }
+    // if (histories.isNotEmpty) {
+    //   for (var element in uniqueGroupIds) {
+    //     data[element] = histories
+    //         .where((e) => e.groupId == element)
+    //         .map((e) => {
+    //               ...e.toJson()..remove("group_id"),
+    //               "is_expanded": pendingStateItems.isNotEmpty &&
+    //                       pendingStateItems[element] != null
+    //                   ? (pendingStateItems[element].firstWhere(
+    //                           (ele) => ele["uid"] == e.uid,
+    //                           orElse: () =>
+    //                               <String, dynamic>{})["is_expanded"] ??
+    //                       false)
+    //                   : false,
+    //             }.cast<String, dynamic>())
+    //         .toList()
+    //         .cast<Map<String, dynamic>>();
+    //   }
+    // } else {
+    //   data = {};
+    // }
 
     return data.cast<String, dynamic>();
   }
 
   @override
   Future<void> changeMoveStateToComplete({required List pendingItems}) async {
-    Map warehouseLocations = {};
-    _objectBox.warehouseLocationIdBox!.getAll().forEach((e) {
-      warehouseLocations[e.warehouseLocationId] = null;
-    });
+    // Map warehouseLocations = {};
+    // _hive.warehouseLocationModelBox!.values.forEach((e) {
+    //   warehouseLocations[e.warehouseLocationId] = null;
+    // });
 
-    Map containers = {};
-    _objectBox.containerIdBox!.getAll().forEach((e) {
-      containers[e.containerId] = e.toJson()..remove("container_id");
-    });
+    // Map containers = {};
+    // _hive.containerModelBox!.values.forEach((e) {
+    //   containers[e.containerId] = e.toMap()..remove("container_id");
+    // });
 
-    Map items = {};
-    _objectBox.itemIdBox!.getAll().forEach((e) {
-      items[e.itemId] = e.toJson()..remove("item_id");
-    });
+    // Map items = {};
+    // _hive.itemModelBox!.values.forEach((e) {
+    //   items[e.itemId] = e.toMap()..remove("item_id");
+    // });
 
-    for (var e in pendingItems) {
-      await sl.get<Firestore>().modifyDocument(
-            path: "stock_location_history",
-            uid: e["uid"],
-            updateMask: ["state"],
-            data: !kIsLinux
-                ? {
-                    "state": "completed",
-                  }
-                : {
-                    "state": {
-                      "stringValue": "completed",
-                    },
-                  },
-          );
-    }
+    // for (var e in pendingItems) {
+    //   await sl.get<Firestore>().modifyDocument(
+    //         path: "stock_location_history",
+    //         uid: e["uid"],
+    //         updateMask: ["state"],
+    //         data: !kIsLinux
+    //             ? {
+    //                 "state": "completed",
+    //               }
+    //             : {
+    //                 "state": {
+    //                   "stringValue": "completed",
+    //                 },
+    //               },
+    //       );
+    // }
 
-    for (var element in pendingItems) {
-      for (var e in element["items"]) {
-        Query query = _objectBox.itemIdBox!
-            .query(ItemIdObjectBoxModel_.itemId.equals(e))
-            .build();
+    // for (var element in pendingItems) {
+    //   for (var e in element["items"]) {
+    //     Query query = _objectBox.itemIdBox!
+    //         .query(ItemIdObjectBoxModel_.itemId.equals(e))
+    //         .build();
 
-        ItemIdObjectBoxModel item = query.findFirst();
+    //     ItemIdObjectBoxModel item = query.findFirst();
 
-        query.close();
-        await sl.get<Firestore>().modifyDocument(
-            path: "stock_data",
-            uid: item.docRef!,
-            data: !kIsLinux
-                ? {
-                    "container id": element["container_id"],
-                    "warehouse location id": element["warehouse_location_id"],
-                  }
-                : {
-                    "container id": {
-                      "stringValue": element["container_id"],
-                    },
-                    "warehouse location id": {
-                      "stringValue": element["warehouse_location_id"],
-                    },
-                  });
+    //     query.close();
+    //     await sl.get<Firestore>().modifyDocument(
+    //         path: "stock_data",
+    //         uid: item.docRef!,
+    //         data: !kIsLinux
+    //             ? {
+    //                 "container id": element["container_id"],
+    //                 "warehouse location id": element["warehouse_location_id"],
+    //               }
+    //             : {
+    //                 "container id": {
+    //                   "stringValue": element["container_id"],
+    //                 },
+    //                 "warehouse location id": {
+    //                   "stringValue": element["warehouse_location_id"],
+    //                 },
+    //               });
 
-        items[item.itemId]["container_id"] = element["container_id"];
-      }
+    //     items[item.itemId]["container_id"] = element["container_id"];
+    //   }
 
-      containers[element["container_id"]]["warehouse_location_id"] =
-          element["warehouse_location_id"];
+    //   containers[element["container_id"]]["warehouse_location_id"] =
+    //       element["warehouse_location_id"];
 
-      warehouseLocations[element["warehouse_location_id"]] = null;
-    }
+    //   warehouseLocations[element["warehouse_location_id"]] = null;
+    // }
 
-    await _addNewLocation(
-      locations: warehouseLocations,
-      uid: warehouseLocationIdUid,
-      updateField: "warehouse_location_id",
-    );
+    // await _addNewLocation(
+    //   locations: warehouseLocations,
+    //   uid: warehouseLocationIdUid,
+    //   updateField: "warehouse_location_id",
+    // );
 
-    await _addNewLocation(
-      locations: containers,
-      uid: containerIdUid,
-      updateField: "container_id",
-    );
+    // await _addNewLocation(
+    //   locations: containers,
+    //   uid: containerIdUid,
+    //   updateField: "container_id",
+    // );
 
-    await _addNewLocation(
-      locations: items,
-      uid: itemIdUid,
-      updateField: "item_id",
-    );
+    // await _addNewLocation(
+    //   locations: items,
+    //   uid: itemIdUid,
+    //   updateField: "item_id",
+    // );
   }
 
   @override
@@ -809,458 +809,35 @@ class LocateStockRepositoryImplementation implements LocateStockRepository {
 
   @override
   Map<String, dynamic> getAllCompletedStateItems() {
-    List histories = [];
+    // List histories = [];
 
-    Query query = _objectBox.stockLocationHistoryModelBox!
-        .query(StockLocationHistoryObjectBoxModel_.state.equals("completed"))
-        .build();
-    histories = query.find();
-    query.close();
+    // Query query = _objectBox.stockLocationHistoryModelBox!
+    //     .query(StockLocationHistoryObjectBoxModel_.state.equals("completed"))
+    //     .build();
+    // histories = query.find();
+    // query.close();
 
-    histories.sort((a, b) => b.date.compareTo(a.date));
+    // histories.sort((a, b) => b.date.compareTo(a.date));
 
-    List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
+    // List uniqueGroupIds = histories.map((e) => e.groupId).toSet().toList();
 
     Map data = {};
 
-    if (histories.isNotEmpty) {
-      for (var element in uniqueGroupIds) {
-        data[element] = histories
-            .where((e) => e.groupId == element)
-            .map((e) => {
-                  ...e.toJson()..remove("group_id"),
-                  "is_expanded": false,
-                }.cast<String, dynamic>())
-            .toList()
-            .cast<Map<String, dynamic>>();
-      }
-    } else {
-      data = {};
-    }
+    // if (histories.isNotEmpty) {
+    //   for (var element in uniqueGroupIds) {
+    //     data[element] = histories
+    //         .where((e) => e.groupId == element)
+    //         .map((e) => {
+    //               ...e.toJson()..remove("group_id"),
+    //               "is_expanded": false,
+    //             }.cast<String, dynamic>())
+    //         .toList()
+    //         .cast<Map<String, dynamic>>();
+    //   }
+    // } else {
+    //   data = {};
+    // }
 
     return data.cast<String, dynamic>();
   }
 }
-
-// Future<void> _addAllLocations() async {
-//   Map loc = {};
-//   warehouseLocations.forEach((e) {
-//     loc[e] = null;
-//   });
-//
-//   await sl.get<Firestore>().modifyDocument(
-//       path: "unique_values",
-//       uid: warehouseLocationIdUid,
-//       data: {"warehouse_location_id": loc});
-// }
-//
-// List warehouseLocations = [
-//   "A01R01L1A",
-//   "A01R01L1B",
-//   "A01R01L2A",
-//   "A01R01L2B",
-//   "A01R01L3A",
-//   "A01R01L3B",
-//   "A01R01L4A",
-//   "A01R01L4B",
-//   "A01R02L1A",
-//   "A01R02L1B",
-//   "A01R02L2B",
-//   "A01R02L3A",
-//   "A01R02L3B",
-//   "A01R02L4A",
-//   "A01R02L4B",
-//   "A01R03L1A",
-//   "A01R03L1B",
-//   "A01R03L2B",
-//   "A01R03L3A",
-//   "A01R03L3B",
-//   "A01R03L4A",
-//   "A01R03L4B",
-//   "A01R04L1A",
-//   "A01R04L1B",
-//   "A01R04L2B",
-//   "A01R04L3A",
-//   "A01R04L3B",
-//   "A01R04L4A",
-//   "A01R04L4B",
-//   "A01R05L1A",
-//   "A01R05L1B",
-//   "A01R05L2B",
-//   "A01R05L3A",
-//   "A01R05L3B",
-//   "A01R05L4A",
-//   "A01R05L4B",
-//   "A01R06L1A",
-//   "A01R06L1B",
-//   "A01R06L2B",
-//   "A01R06L3A",
-//   "A01R06L3B",
-//   "A01R06L4A",
-//   "A01R06L4B",
-//   "A01R07L1A",
-//   "A01R07L1B",
-//   "A01R07L2B",
-//   "A01R07L3A",
-//   "A01R07L3B",
-//   "A01R07L4A",
-//   "A01R07L4B",
-//   "A01R08L1A",
-//   "A01R08L1B",
-//   "A01R08L2B",
-//   "A01R08L3A",
-//   "A01R08L3B",
-//   "A01R08L4A",
-//   "A01R08L4B",
-//   "A01R09L1A",
-//   "A01R09L1B",
-//   "A01R09L2B",
-//   "A01R09L3A",
-//   "A01R09L3B",
-//   "A01R09L4A",
-//   "A01R09L4B",
-//   "A01R10L1A",
-//   "A01R10L1B",
-//   "A01R10L2B",
-//   "A01R10L3A",
-//   "A01R10L3B",
-//   "A01R10L4A",
-//   "A01R10L4B",
-//   "A01R11L1A",
-//   "A01R11L1B",
-//   "A01R11L2B",
-//   "A01R11L3A",
-//   "A01R11L3B",
-//   "A01R11L4A",
-//   "A01R11L4B",
-//   "A02R01L1A",
-//   "A02R01L1B",
-//   "A02R01L2A",
-//   "A02R01L2B",
-//   "A02R01L3A",
-//   "A02R01L3B",
-//   "A02R01L4A",
-//   "A02R01L4B",
-//   "A02R02L1A",
-//   "A02R02L1B",
-//   "A02R02L2B",
-//   "A02R02L3A",
-//   "A02R02L3B",
-//   "A02R02L4A",
-//   "A02R02L4B",
-//   "A02R03L1A",
-//   "A02R03L1B",
-//   "A02R03L2B",
-//   "A02R03L3A",
-//   "A02R03L3B",
-//   "A02R03L4A",
-//   "A02R03L4B",
-//   "A02R04L1A",
-//   "A02R04L1B",
-//   "A02R04L2B",
-//   "A02R04L3A",
-//   "A02R04L3B",
-//   "A02R04L4A",
-//   "A02R04L4B",
-//   "A02R05L1A",
-//   "A02R05L1B",
-//   "A02R05L2B",
-//   "A02R05L3A",
-//   "A02R05L3B",
-//   "A02R05L4A",
-//   "A02R05L4B",
-//   "A02R06L1A",
-//   "A02R06L1B",
-//   "A02R06L2B",
-//   "A02R06L3A",
-//   "A02R06L3B",
-//   "A02R06L4A",
-//   "A02R06L4B",
-//   "A02R07L1A",
-//   "A02R07L1B",
-//   "A02R07L2B",
-//   "A02R07L3A",
-//   "A02R07L3B",
-//   "A02R07L4A",
-//   "A02R07L4B",
-//   "A02R08L1A",
-//   "A02R08L1B",
-//   "A02R08L2B",
-//   "A02R08L3A",
-//   "A02R08L3B",
-//   "A02R08L4A",
-//   "A02R08L4B",
-//   "A02R09L1A",
-//   "A02R09L1B",
-//   "A02R09L2B",
-//   "A02R09L3A",
-//   "A02R09L3B",
-//   "A02R09L4A",
-//   "A02R09L4B",
-//   "A02R10L1A",
-//   "A02R10L1B",
-//   "A02R10L2B",
-//   "A02R10L3A",
-//   "A02R10L3B",
-//   "A02R10L4A",
-//   "A02R10L4B",
-//   "A03R01L1B",
-//   "A03R01L2A",
-//   "A03R01L2B",
-//   "A03R01L3A",
-//   "A03R01L3B",
-//   "A03R01L4A",
-//   "A03R01L4B",
-//   "A03R02L1A",
-//   "A03R02L1B",
-//   "A03R02L2B",
-//   "A03R02L3A",
-//   "A03R02L3B",
-//   "A03R02L4A",
-//   "A03R02L4B",
-//   "A03R03L1A",
-//   "A03R03L1B",
-//   "A03R03L2B",
-//   "A03R03L3A",
-//   "A03R03L3B",
-//   "A03R03L4A",
-//   "A03R03L4B",
-//   "A03R04L1A",
-//   "A03R04L1B",
-//   "A03R04L2B",
-//   "A03R04L3A",
-//   "A03R04L3B",
-//   "A03R04L4A",
-//   "A03R04L4B",
-//   "A03R05L1A",
-//   "A03R05L1B",
-//   "A03R05L2B",
-//   "A03R05L3A",
-//   "A03R05L3B",
-//   "A03R05L4A",
-//   "A03R05L4B",
-//   "A03R06L1A",
-//   "A03R06L1B",
-//   "A03R06L2B",
-//   "A03R06L3A",
-//   "A03R06L3B",
-//   "A03R06L4A",
-//   "A03R06L4B",
-//   "A03R07L1A",
-//   "A03R07L1B",
-//   "A03R07L2B",
-//   "A03R07L3A",
-//   "A03R07L3B",
-//   "A03R07L4A",
-//   "A03R07L4B",
-//   "A03R08L1A",
-//   "A03R08L1B",
-//   "A03R08L2B",
-//   "A03R08L3A",
-//   "A03R08L3B",
-//   "A03R08L4A",
-//   "A03R08L4B",
-//   "A03R09L1A",
-//   "A03R09L1B",
-//   "A03R09L2B",
-//   "A03R09L3A",
-//   "A03R09L3B",
-//   "A03R09L4A",
-//   "A03R09L4B",
-//   "A03R10L1A",
-//   "A03R10L1B",
-//   "A03R10L2B",
-//   "A03R10L3A",
-//   "A03R10L3B",
-//   "A03R10L4A",
-//   "A03R10L4B",
-//   "DS01L1",
-//   "DS01L2",
-//   "DS01L3",
-//   "DS01L4",
-//   "DS01L5",
-//   "DS01L6",
-//   "MBENCH01",
-//   "MBENCH02",
-//   "MBENCH03",
-//   "MBENCH04",
-//   "MBENCH05",
-//   "MBENCH06",
-//   "MDESK01",
-//   "MDESK02",
-//   "MISSING",
-//   "MS01L1",
-//   "MS01L2",
-//   "MS01L3",
-//   "MS01L4",
-//   "MS01L5",
-//   "MS02L1",
-//   "MS02L2",
-//   "MS02L3",
-//   "MS02L4",
-//   "MS02L5",
-//   "MS03L1",
-//   "MS03L2",
-//   "MS03L3",
-//   "MS03L4",
-//   "MS03L5",
-//   "MS04L1",
-//   "MS04L2",
-//   "MS04L3",
-//   "MS04L4",
-//   "MS04L5",
-//   "MS05L1",
-//   "MS05L2",
-//   "MS05L3",
-//   "MS05L4",
-//   "MS05L5",
-//   "MS06L1",
-//   "MS06L2",
-//   "MS06L3",
-//   "MS06L4",
-//   "MS06L5",
-//   "MS07L1",
-//   "MS07L2",
-//   "MS07L3",
-//   "MS07L4",
-//   "MS07L5",
-//   "MS08L1",
-//   "MS08L2",
-//   "MS08L3",
-//   "MS08L4",
-//   "MS08L5",
-//   "MS09L1",
-//   "MS09L2",
-//   "MS09L3",
-//   "MS09L4",
-//   "MS09L5",
-//   "MS10L1",
-//   "MS10L2",
-//   "MS10L3",
-//   "MS10L4",
-//   "MS10L5",
-//   "MS11L1",
-//   "MS11L2",
-//   "MS11L3",
-//   "MS11L4",
-//   "MS11L5",
-//   "MS12L1",
-//   "MS12L2",
-//   "MS12L3",
-//   "MS12L4",
-//   "MS12L5",
-//   "MS13L1",
-//   "MS13L2",
-//   "MS13L3",
-//   "MS13L4",
-//   "MS13L5",
-//   "MS14L1",
-//   "MS14L2",
-//   "MS14L3",
-//   "MS14L4",
-//   "MS14L5",
-//   "OFDESK01",
-//   "OFDESK02",
-//   "OFDESK03",
-//   "OFDESK04",
-//   "OS01L1",
-//   "OS01L2",
-//   "OS01L3",
-//   "OS01L4",
-//   "OS01L5",
-//   "PACKBENCH01",
-//   "PACKBENCH02",
-//   "RCY MISC",
-//   "RCY PARTS",
-//   "RCY TFT",
-//   "RCYBATTERIES",
-//   "SC01L1",
-//   "SC01L2",
-//   "SC01L3",
-//   "SC01L4",
-//   "SC01L5",
-//   "SC02L1",
-//   "SC02L2",
-//   "SC02L3",
-//   "SC02L4",
-//   "SC02L5",
-//   "SC03L1",
-//   "SC03L2",
-//   "SC03L3",
-//   "SC03L4",
-//   "SC03L5",
-//   "SC04L1",
-//   "SC04L2",
-//   "SC04L3",
-//   "SC04L4",
-//   "SC04L5",
-//   "SC05L1",
-//   "SC05L2",
-//   "SC05L3",
-//   "SC05L4",
-//   "SC05L5",
-//   "SC06L1",
-//   "SC06L2",
-//   "SC06L3",
-//   "SC06L4",
-//   "SC06L5",
-//   "SF01L1",
-//   "SF01L2",
-//   "SF01L3",
-//   "SF01L4",
-//   "SF01L5",
-//   "SHUTTER 1",
-//   "SHUTTER 2",
-//   "TBENCH01",
-//   "TBENCH02",
-//   "TBENCH03",
-//   "TBENCH04",
-//   "TBENCH05",
-//   "TBENCH06",
-//   "TBENCH07",
-//   "TBENCH08",
-//   "TDESK01",
-//   "TDESK02",
-//   "TECHBAY01",
-//   "TECHBAY02",
-//   "TECHBAY03",
-//   "TECHBAY04",
-//   "TECHBAY05",
-//   "TECHBAY06",
-//   "TS01L1",
-//   "TS01L2",
-//   "TS01L3",
-//   "TS01L4",
-//   "TS01L5",
-//   "TS02L1",
-//   "TS02L2",
-//   "TS02L3",
-//   "TS02L4",
-//   "TS02L5",
-//   "TS03L1",
-//   "TS03L2",
-//   "TS03L3",
-//   "TS03L4",
-//   "TS03L5",
-//   "TS04L1",
-//   "TS04L2",
-//   "TS04L3",
-//   "TS04L4",
-//   "TS04L5",
-//   "TS05L1",
-//   "TS05L2",
-//   "TS05L3",
-//   "TS05L4",
-//   "TS05L5",
-//   "TS06L1",
-//   "TS06L2",
-//   "TS06L3",
-//   "TS06L4",
-//   "TS06L5",
-//   "WH1 CHECKING",
-//   "WH1 HOLD",
-//   "WH1 STAGED",
-//   "WH2 CHECKING",
-//   "WH2 HOLD",
-//   "WH2 STAGED"
-// ];

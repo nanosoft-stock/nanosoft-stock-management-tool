@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stock_management_tool/core/components/custom_autocomplete_text_input_field_and_checkbox.dart';
-import 'package:stock_management_tool/core/components/custom_text_input_field_and_checkbox.dart';
 import 'package:stock_management_tool/core/helper/case_helper.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_autocomplete_text_input_field_and_checkbox.dart';
+import 'package:stock_management_tool/features/add_new_stock/presentation/widgets/custom_text_input_field_and_checkbox.dart';
 
 class CustomInputField extends StatelessWidget {
   const CustomInputField({
@@ -27,20 +27,6 @@ class CustomInputField extends StatelessWidget {
               isLockable: field["is_lockable"],
               alignLockable: !field["is_lockable"],
               isDisabled: field["is_disabled"],
-              validator: (value) {
-                if (field["field"] == "category") {
-                  if (value == null || value.trim() == "") {
-                    return "Category can't be empty";
-                  } else if (!field["items"].contains(value)) {
-                    return "Category not recognised";
-                  }
-                } else if (field["field"] == "item id") {
-                  if (value == null || value.trim() == "") {
-                    return "Item Id can't be empty";
-                  }
-                }
-                return null;
-              },
               onSelected: (value) {
                 onSelected(field["field"], value);
               },
@@ -54,20 +40,6 @@ class CustomInputField extends StatelessWidget {
               isLockable: field["is_lockable"],
               alignLockable: !field["is_lockable"],
               isDisabled: field["is_disabled"],
-              validator: (value) {
-                if (field["field"] == "category") {
-                  if (value == null || value.trim() == "") {
-                    return "Category can't be empty";
-                  } else if (!field["items"].contains(value)) {
-                    return "Category not recognised";
-                  }
-                } else if (field["field"] == "item id") {
-                  if (value == null || value.trim() == "") {
-                    return "Item Id can't be empty";
-                  }
-                }
-                return null;
-              },
               onSelected: (value) {
                 onSelected(field["field"], value);
               },

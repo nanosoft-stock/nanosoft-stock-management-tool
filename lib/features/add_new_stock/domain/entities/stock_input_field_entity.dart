@@ -11,7 +11,7 @@ class StockInputFieldEntity extends Equatable {
     required this.items,
     required this.nameCase,
     required this.valueCase,
-    required this.order,
+    required this.displayOrder,
     required this.isDisabled,
     required this.textValue,
   });
@@ -25,7 +25,7 @@ class StockInputFieldEntity extends Equatable {
   final List<String>? items;
   final String? nameCase;
   final String? valueCase;
-  final int? order;
+  final int? displayOrder;
   final bool? isDisabled;
   final String? textValue;
 

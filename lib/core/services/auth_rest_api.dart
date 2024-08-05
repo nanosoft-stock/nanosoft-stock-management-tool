@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
+import 'package:stock_management_tool/core/resources/application_error.dart';
 import 'package:stock_management_tool/core/resources/data_state.dart';
 import 'package:stock_management_tool/core/services/firebase_options.dart';
 
@@ -41,7 +42,7 @@ class AuthRestApi {
       return await signInUserWithEmailAndPasswordRestApi(
           email: email, password: password);
     } else {
-      return DataFailed(Exception("No Previous user"));
+      return const DataFailed(InternalError(message: "No Previous user"));
     }
   }
 
@@ -76,10 +77,12 @@ class AuthRestApi {
         changeIsUserLoggedIn(isUserLoggedIn: true);
         return DataSuccess(jsonData);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> createUserWithEmailAndPasswordRestApi({
@@ -110,10 +113,12 @@ class AuthRestApi {
         changeIsUserLoggedIn(isUserLoggedIn: true);
         return DataSuccess(jsonData);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> updateUserProfileDataRestApi(
@@ -135,10 +140,12 @@ class AuthRestApi {
         var jsonData = response.data;
         return DataSuccess(jsonData);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 
   Future<DataState> getUserData() async {
@@ -158,9 +165,11 @@ class AuthRestApi {
         userName = jsonData["users"][0]["displayName"];
         return DataSuccess(jsonData);
       }
-    } on Exception catch (error) {
-      return DataFailed(error);
+    } on Exception {
+      const DataFailed(ServerError(message: "Unknown Error"));
+    } catch (error) {
+      const DataFailed(InternalError(message: "Unknown Error"));
     }
-    return DataFailed(Exception("Unknown Exception"));
+    return const DataFailed(UnknownError(message: "Unknown Error"));
   }
 }

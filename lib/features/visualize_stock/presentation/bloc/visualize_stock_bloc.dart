@@ -50,6 +50,8 @@ class VisualizeStockBloc
   final CheckboxToggledVisualizeStockUseCase?
       _checkboxToggledVisualizeStockUseCase;
 
+  late Map<String, dynamic> visualizeStock;
+
   VisualizeStockBloc(
     this._initialVisualizeStockUseCase,
     this._listenToCloudDataChangeVisualizeStockUseCase,
@@ -92,8 +94,7 @@ class VisualizeStockBloc
       CloudDataChangeEvent event, Emitter<VisualizeStockState> emit) async {
     await Future.delayed(const Duration(seconds: 2));
 
-    Map<String, dynamic> visualizeStock =
-        await _initialVisualizeStockUseCase!();
+    visualizeStock = await _initialVisualizeStockUseCase!();
 
     await _listenToCloudDataChangeVisualizeStockUseCase!(params: {
       "visualize_stock": visualizeStock,
@@ -105,7 +106,7 @@ class VisualizeStockBloc
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<VisualizeStockState> emit) async {
-    emit(LoadedState(visualizeStock: event.visualizeStock));
+    emit(LoadedState(visualizeStock: visualizeStock));
   }
 
   FutureOr<void> importButtonClickedEvent(
@@ -116,7 +117,7 @@ class VisualizeStockBloc
   FutureOr<void> exportButtonClickedEvent(
       ExportButtonClickedEvent event, Emitter<VisualizeStockState> emit) async {
     await _exportToExcelUseCase!(params: {
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     });
   }
 
@@ -125,7 +126,7 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "layer": "parent_filter",
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -135,7 +136,7 @@ class VisualizeStockBloc
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "field": event.field,
       "layer": "field_filter",
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -146,7 +147,7 @@ class VisualizeStockBloc
         visualizeStock: await _addVisualizeStockLayerUseCase!(params: {
       "field": event.field,
       "layer": "parent_field_filter",
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -155,7 +156,7 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _hideVisualizeStockLayerUseCase!(params: {
       "layer": event.layer,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -163,7 +164,7 @@ class VisualizeStockBloc
       ResetAllFiltersEvent event, Emitter<VisualizeStockState> emit) async {
     emit(LoadedState(
         visualizeStock: await _resetAllFiltersVisualizeStockUseCase!(params: {
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -172,7 +173,7 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _rearrangeColumnsUseCase!(params: {
       "fields": event.fields,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -183,7 +184,7 @@ class VisualizeStockBloc
         visualizeStock: await _changeColumnVisibilityUseCase!(params: {
       "field": event.field,
       "visibility": event.visibility,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -192,7 +193,7 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _filterColumnVisualizeStockUseCase!(params: {
       "field": event.field,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -201,7 +202,7 @@ class VisualizeStockBloc
     emit(LoadedState(
         visualizeStock: await _clearColumnFilterVisualizeStockUseCase!(params: {
       "field": event.field,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -211,7 +212,7 @@ class VisualizeStockBloc
         visualizeStock: await _sortColumnVisualizeStockUseCase!(params: {
       "field": event.field,
       "sort": event.sort,
-      "visualize_stock": event.visualizeStock
+      "visualize_stock": visualizeStock
     })));
   }
 
@@ -221,7 +222,7 @@ class VisualizeStockBloc
         visualizeStock: await _filterBySelectedVisualizeStockUseCase!(params: {
       "field": event.field,
       "filter_by": event.filterBy,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -230,7 +231,7 @@ class VisualizeStockBloc
     await _filterValueChangedVisualizeStockUseCase!(params: {
       "field": event.field,
       "filter_value": event.filterValue,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     });
   }
 
@@ -241,7 +242,7 @@ class VisualizeStockBloc
             await _searchValueChangedVisualizeStockUseCase!(params: {
       "field": event.field,
       "search_value": event.searchValue,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 
@@ -252,7 +253,7 @@ class VisualizeStockBloc
       "field": event.field,
       "title": event.title,
       "value": event.value,
-      "visualize_stock": event.visualizeStock,
+      "visualize_stock": visualizeStock,
     })));
   }
 }

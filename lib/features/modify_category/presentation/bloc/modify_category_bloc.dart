@@ -35,6 +35,8 @@ class ModifyCategoryBloc
       _fieldNameTypedModifyCategoryUseCase;
   final DetailsTypedModifyCategoryUseCase? _detailsTypedModifyCategoryUseCase;
 
+  late Map<String, dynamic> modifyCategoryData;
+
   ModifyCategoryBloc(
     this._initialModifyCategoryUseCase,
     this._listenToCloudDataChangeModifyCategoryUseCase,
@@ -61,8 +63,7 @@ class ModifyCategoryBloc
 
   FutureOr<void> cloudDataChangeEvent(
       CloudDataChangeEvent event, Emitter<ModifyCategoryState> emit) async {
-    Map<String, dynamic> modifyCategoryData =
-        await _initialModifyCategoryUseCase!();
+    modifyCategoryData = await _initialModifyCategoryUseCase!();
 
     await _listenToCloudDataChangeModifyCategoryUseCase!(params: {
       "modify_category_data": modifyCategoryData,
@@ -74,7 +75,7 @@ class ModifyCategoryBloc
 
   FutureOr<void> loadedEvent(
       LoadedEvent event, Emitter<ModifyCategoryState> emit) async {
-    emit(LoadedState(modifyCategoryData: event.modifyCategoryData));
+    emit(LoadedState(modifyCategoryData: modifyCategoryData));
   }
 
   FutureOr<void> categorySelectedEvent(
@@ -83,7 +84,7 @@ class ModifyCategoryBloc
         modifyCategoryData:
             await _categorySelectedModifyCategoryUseCase!(params: {
       "category": event.category,
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -93,7 +94,7 @@ class ModifyCategoryBloc
         modifyCategoryData:
             await _viewFieldDetailsModifyCategoryUseCase!(params: {
       "field": event.field,
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -101,7 +102,7 @@ class ModifyCategoryBloc
       AddNewFieldEvent event, Emitter<ModifyCategoryState> emit) async {
     emit(LoadedState(
         modifyCategoryData: await _addNewFieldModifyCategoryUseCase!(params: {
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -111,7 +112,7 @@ class ModifyCategoryBloc
         modifyCategoryData:
             await _rearrangeFieldsModifyCategoryUseCase!(params: {
       "fields": event.fields,
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -119,7 +120,7 @@ class ModifyCategoryBloc
       Emitter<ModifyCategoryState> emit) async {
     emit(LoadedState(
         modifyCategoryData: await _modifyCategoryPressedUseCase!(params: {
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -127,7 +128,7 @@ class ModifyCategoryBloc
       RemoveFieldEvent event, Emitter<ModifyCategoryState> emit) async {
     emit(LoadedState(
         modifyCategoryData: await _removeFieldModifyCategoryUseCase!(params: {
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -138,7 +139,7 @@ class ModifyCategoryBloc
             await _fieldNameTypedModifyCategoryUseCase!(params: {
       "title": event.title,
       "value": event.value,
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     })));
   }
 
@@ -147,7 +148,7 @@ class ModifyCategoryBloc
     await _detailsTypedModifyCategoryUseCase!(params: {
       "title": event.title,
       "value": event.value,
-      "modify_category_data": event.modifyCategoryData,
+      "modify_category_data": modifyCategoryData,
     });
   }
 }

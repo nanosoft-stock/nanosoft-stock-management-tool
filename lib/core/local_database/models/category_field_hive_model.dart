@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 part 'category_field_hive_model.g.dart';
 
 @HiveType(typeId: 5)
-class CategoryFieldHiveModel {
-  CategoryFieldHiveModel({
+class CategoryFieldHiveModel extends Equatable {
+  const CategoryFieldHiveModel({
     this.fieldUUID,
     this.field,
     this.category,
@@ -20,37 +21,37 @@ class CategoryFieldHiveModel {
   });
 
   @HiveField(0)
-  String? fieldUUID;
+  final String? fieldUUID;
 
   @HiveField(1)
-  String? field;
+  final String? field;
 
   @HiveField(2)
-  String? category;
+  final String? category;
 
   @HiveField(3)
-  String? datatype;
+  final String? datatype;
 
   @HiveField(4)
-  bool? inSku;
+  final bool? inSku;
 
   @HiveField(5)
-  bool? isBackground;
+  final bool? isBackground;
 
   @HiveField(6)
-  bool? isLockable;
+  final bool? isLockable;
 
   @HiveField(7)
-  String? nameCase;
+  final String? nameCase;
 
   @HiveField(8)
-  String? valueCase;
+  final String? valueCase;
 
   @HiveField(9)
-  int? displayOrder;
+  final int? displayOrder;
 
   @HiveField(10)
-  List<String>? items;
+  final List<String>? items;
 
   CategoryFieldHiveModel copyWith({
     String? fieldUUID,
@@ -98,18 +99,18 @@ class CategoryFieldHiveModel {
 
   factory CategoryFieldHiveModel.fromMap(Map<String, dynamic> map) {
     return CategoryFieldHiveModel(
-        fieldUUID: (map['field_uuid'] as String?) ?? "",
-        field: (map['field'] as String?) ?? "",
-        category: (map['category'] as String?) ?? "",
-        datatype: (map['datatype'] as String?) ?? "",
-        inSku: (map['in_sku'] as bool?) ?? false,
-        isBackground: (map['is_background'] as bool?) ?? true,
-        isLockable: (map['is_lockable'] as bool?) ?? true,
-        nameCase: (map['name_case'] as String?) ?? "",
-        valueCase: (map['value_case'] as String?) ?? "",
-        displayOrder:
-            map['display_order'] != null ? map['display_order'] as int : null,
-        items: (map['items'] as List<String>?) ?? <String>[]);
+      fieldUUID: (map['field_uuid'] as String?) ?? "",
+      field: (map['field'] as String?) ?? "",
+      category: (map['category'] as String?) ?? "",
+      datatype: (map['datatype'] as String?) ?? "",
+      inSku: (map['in_sku'] as bool?) ?? false,
+      isBackground: (map['is_background'] as bool?) ?? true,
+      isLockable: (map['is_lockable'] as bool?) ?? true,
+      nameCase: (map['name_case'] as String?) ?? "",
+      valueCase: (map['value_case'] as String?) ?? "",
+      displayOrder: (map['display_order'] as int?) ?? 1000,
+      items: (map['items'] as List<String>?) ?? <String>[],
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -119,7 +120,13 @@ class CategoryFieldHiveModel {
           json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'CategoryFieldHiveModel(fieldUUID: $fieldUUID, field: $field, category: $category, datatype: $datatype, inSku: $inSku, isBackground: $isBackground, isLockable: $isLockable, nameCase: $nameCase, valueCase: $valueCase, displayOrder: $displayOrder, items: $items)';
+  String toString() =>
+      "CategoryFieldHiveModel(fieldUUID: $fieldUUID, field: $field, category: $category, datatype: $datatype, inSku: $inSku, isBackground: $isBackground, isLockable: $isLockable, nameCase: $nameCase, valueCase: $valueCase, displayOrder: $displayOrder, items: $items)";
+
+  @override
+  List<Object> get props {
+    return [
+      field!,
+    ];
   }
 }

@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 part 'user_hive_model.g.dart';
 
 @HiveType(typeId: 0)
-class UserHiveModel {
-  UserHiveModel({
+class UserHiveModel extends Equatable {
+  const UserHiveModel({
     this.userUUID,
     this.email,
     this.username,
@@ -14,19 +15,19 @@ class UserHiveModel {
   });
 
   @HiveField(0)
-  String? userUUID;
+  final String? userUUID;
 
   @HiveField(1)
-  String? email;
+  final String? email;
 
   @HiveField(2)
-  String? username;
+  final String? username;
 
   @HiveField(3)
-  List<String>? vsColumnFields;
+  final List<String>? vsColumnFields;
 
   @HiveField(4)
-  List<String>? vsVisibleFields;
+  final List<String>? vsVisibleFields;
 
   UserHiveModel copyWith({
     String? userUUID,
@@ -72,7 +73,13 @@ class UserHiveModel {
       UserHiveModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'UserHiveModel(userUUID: $userUUID, email: $email, username: $username, vsColumnFields: $vsColumnFields, vsVisibleFields: $vsVisibleFields)';
+  String toString() =>
+      "UserHiveModel(userUUID: $userUUID, email: $email, username: $username, vsColumnFields: $vsColumnFields, vsVisibleFields: $vsVisibleFields)";
+
+  @override
+  List<Object> get props {
+    return [
+      userUUID!,
+    ];
   }
 }

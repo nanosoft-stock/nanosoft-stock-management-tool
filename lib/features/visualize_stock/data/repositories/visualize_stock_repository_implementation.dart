@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:stock_management_tool/core/constants/constants.dart';
 import 'package:stock_management_tool/core/constants/enums.dart';
 import 'package:stock_management_tool/core/helper/add_new_item_location_history_helper.dart';
 import 'package:stock_management_tool/core/helper/add_new_stock_helper.dart';
+import 'package:stock_management_tool/core/helper/case_helper.dart';
 import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/local_database/local_database.dart';
 import 'package:stock_management_tool/core/services/firestore.dart';
@@ -48,6 +50,7 @@ class VisualizeStockRepositoryImplementation
     _localDB.categoryFieldStream().listen((snapshot) {
       onChange(visualizeStock);
     });
+
     _localDB.stockStream().listen((snapshot) {
       visualizeStock["stocks"] =
           getFilteredStocks(filters: visualizeStock["filters"]);
@@ -56,24 +59,22 @@ class VisualizeStockRepositoryImplementation
   }
 
   @override
-  List<String> getAllFields() {
-    List fields = (_localDB.categoryFields.toList()
-          ..sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!)))
-        .map((e) => e.field!)
+  List<Map<String, dynamic>> getAllFields() {
+    List fields = _localDB.categoryFields
+        .sorted((a, b) => a.displayOrder!.compareTo(b.displayOrder!))
         .toSet()
+        .map((e) => {
+              "name": CaseHelper.convert(e.nameCase!, e.field!),
+              "field": e.field!.replaceAll(" ", "_").toLowerCase(),
+            })
         .toList();
 
-    // List newFields = [...fieldsOrder];
-    // newFields.removeWhere((e) => !fields.contains(e));
-
-    // return newFields.cast<String>();
-    return fields.cast<String>();
+    return fields.cast<Map<String, dynamic>>();
   }
 
   @override
-  List<Map<String, dynamic>> getAllStocks() {
-    List stocks = _localDB.stocks.toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+  List<Map<String, dynamic>> getStocks() {
+    List stocks = _localDB.stocks.sorted((a, b) => b.date.compareTo(a.date));
 
     stocks = stocks
         .map((e) => StockModel.fromMap(e.toPartialMap()).toMap())
@@ -144,8 +145,10 @@ class VisualizeStockRepositoryImplementation
   @override
   Map<String, dynamic> getUniqueValues(
       {required String field, required List stocks}) {
-    List uniqueValues = stocks.map((e) => e[field] ?? "").toSet().toList()
-      ..sort((a, b) => compareWithBlank(Sort.asc, a, b));
+    List uniqueValues = stocks
+        .map((e) => e[field] ?? "")
+        .toSet()
+        .sorted((a, b) => compareWithBlank(Sort.asc, a, b));
 
     Map details = {};
     for (var e in uniqueValues) {
@@ -176,7 +179,7 @@ class VisualizeStockRepositoryImplementation
 
   @override
   List<Map<String, dynamic>> getFilteredStocks({required Map filters}) {
-    List stocks = getAllStocks();
+    List stocks = getStocks();
 
     filters.forEach((field, filter) {
       stocks = stocks.where((element) {
@@ -525,9 +528,8 @@ class VisualizeStockRepositoryImplementation
           String docRef = field["uid"];
           List items = ((field["items"] as List<String>).toSet()
                 ..addAll(values))
-              .toList()
-              .cast<String>()
-            ..sort((a, b) => a.compareTo(b));
+              .sorted((a, b) => a.compareTo(b))
+              .cast<String>();
 
           modifiedFields.add({
             "doc_ref": docRef,
@@ -538,7 +540,7 @@ class VisualizeStockRepositoryImplementation
           });
         } else if (field["items"] == null) {
           String docRef = field["uid"];
-          List items = values..sort((a, b) => a.compareTo(b));
+          List items = values.sorted((a, b) => a.compareTo(b));
 
           modifiedFields.add({
             "doc_ref": docRef,

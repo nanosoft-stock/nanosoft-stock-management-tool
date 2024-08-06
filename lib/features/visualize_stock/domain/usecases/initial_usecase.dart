@@ -13,10 +13,14 @@ class InitialVisualizeStockUseCase extends UseCase {
     visualizeStock["layers"] = {"base"};
     visualizeStock["filter_menu_field"] = null;
     visualizeStock["fields"] = _visualizeStockRepository.getAllFields();
-    visualizeStock["stocks"] = _visualizeStockRepository.getAllStocks();
-    visualizeStock["show_fields"] = [...visualizeStock["fields"]];
+    visualizeStock["stocks"] = _visualizeStockRepository.getStocks();
+
+    visualizeStock["show_fields"] =
+        visualizeStock["fields"].map((e) => e["name"]).toList();
+
     visualizeStock["filters"] = _visualizeStockRepository.getInitialFilters(
-        fields: visualizeStock["fields"], stocks: visualizeStock["stocks"]);
+        fields: visualizeStock["fields"].map((e) => e["field"]).toList(),
+        stocks: visualizeStock["stocks"]);
 
     return visualizeStock;
   }

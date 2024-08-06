@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 part 'stock_hive_model.g.dart';
 
 @HiveType(typeId: 6)
-class StockHiveModel {
-  StockHiveModel({
+class StockHiveModel extends Equatable {
+  const StockHiveModel({
     required this.date,
     this.category,
     this.sku,
@@ -20,37 +21,37 @@ class StockHiveModel {
   });
 
   @HiveField(0)
-  DateTime date;
+  final DateTime date;
 
   @HiveField(1)
-  String? category;
+  final String? category;
 
   @HiveField(2)
-  String? sku;
+  final String? sku;
 
   @HiveField(3)
-  String? serialNumber;
+  final String? serialNumber;
 
   @HiveField(4)
-  String? itemId;
+  final String? itemId;
 
   @HiveField(5)
-  String? containerId;
+  final String? containerId;
 
   @HiveField(6)
-  String? warehouseLocationId;
+  final String? warehouseLocationId;
 
   @HiveField(7)
-  String? supplierInfo;
+  final String? supplierInfo;
 
   @HiveField(8)
-  String? comments;
+  final String? comments;
 
   @HiveField(9)
-  String? username;
+  final String? username;
 
   @HiveField(10)
-  Map<String, dynamic>? specifications;
+  final Map<String, dynamic>? specifications;
 
   StockHiveModel copyWith({
     DateTime? date,
@@ -135,7 +136,13 @@ class StockHiveModel {
       StockHiveModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'StockHiveModel(date: $date, category: $category, sku: $sku, serialNumber: $serialNumber, itemId: $itemId, containerId: $containerId, warehouseLocationId: $warehouseLocationId, supplierInfo: $supplierInfo, comments: $comments, username: $username, specifications: $specifications)';
+  String toString() =>
+      "StockHiveModel(date: $date, category: $category, sku: $sku, serialNumber: $serialNumber, itemId: $itemId, containerId: $containerId, warehouseLocationId: $warehouseLocationId, supplierInfo: $supplierInfo, comments: $comments, username: $username, specifications: $specifications)";
+
+  @override
+  List<Object> get props {
+    return [
+      itemId!,
+    ];
   }
 }

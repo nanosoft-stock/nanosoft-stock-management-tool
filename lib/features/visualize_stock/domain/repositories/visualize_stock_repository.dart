@@ -4,9 +4,9 @@ abstract class VisualizeStockRepository {
   void listenToCloudDataChange(
       {required Map visualizeStock, required Function(Map) onChange});
 
-  List<String> getAllFields();
+  List<Map<String, dynamic>> getAllFields();
 
-  List<Map<String, dynamic>> getAllStocks();
+  List<Map<String, dynamic>> getStocks();
 
   List<Map<String, dynamic>> sortStocks(
       {required String field, required Sort sort, required List stocks});

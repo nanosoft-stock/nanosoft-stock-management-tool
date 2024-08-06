@@ -27,8 +27,8 @@ class CategoryFieldHiveModelAdapter
       isLockable: fields[6] as bool?,
       nameCase: fields[7] as String?,
       valueCase: fields[8] as String?,
-      items: (fields[10] as List?)?.cast<String>(),
       displayOrder: fields[9] as int?,
+      items: (fields[10] as List?)?.cast<String>(),
     );
   }
 
@@ -54,10 +54,10 @@ class CategoryFieldHiveModelAdapter
       ..write(obj.nameCase)
       ..writeByte(8)
       ..write(obj.valueCase)
-      ..writeByte(10)
-      ..write(obj.items)
       ..writeByte(9)
-      ..write(obj.displayOrder);
+      ..write(obj.displayOrder)
+      ..writeByte(10)
+      ..write(obj.items);
   }
 
   @override

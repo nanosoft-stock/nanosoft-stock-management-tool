@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 part 'warehouse_location_hive_model.g.dart';
 
 @HiveType(typeId: 2)
-class WarehouseLocationHiveModel {
-  WarehouseLocationHiveModel({
+class WarehouseLocationHiveModel extends Equatable {
+  const WarehouseLocationHiveModel({
     this.warehouseLocationId,
   });
 
   @HiveField(0)
-  String? warehouseLocationId;
+  final String? warehouseLocationId;
 
   WarehouseLocationHiveModel copyWith({
     String? warehouseLocationId,
@@ -40,5 +41,10 @@ class WarehouseLocationHiveModel {
 
   @override
   String toString() =>
-      'WarehouseLocationHiveModel(warehouseLocationId: $warehouseLocationId)';
+      "WarehouseLocationHiveModel(warehouseLocationId: $warehouseLocationId)";
+
+  @override
+  List<Object> get props => [
+        warehouseLocationId!,
+      ];
 }

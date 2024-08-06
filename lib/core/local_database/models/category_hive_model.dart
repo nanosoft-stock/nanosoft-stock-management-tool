@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 part 'category_hive_model.g.dart';
 
 @HiveType(typeId: 1)
-class CategoryHiveModel {
-  CategoryHiveModel({
+class CategoryHiveModel extends Equatable {
+  const CategoryHiveModel({
     this.category,
   });
 
   @HiveField(0)
-  String? category;
+  final String? category;
 
   CategoryHiveModel copyWith({
     String? category,
@@ -38,5 +39,10 @@ class CategoryHiveModel {
       CategoryHiveModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'CategoryHiveModel(category: $category)';
+  String toString() => "CategoryHiveModel(category: $category)";
+
+  @override
+  List<Object> get props => [
+        category!,
+      ];
 }

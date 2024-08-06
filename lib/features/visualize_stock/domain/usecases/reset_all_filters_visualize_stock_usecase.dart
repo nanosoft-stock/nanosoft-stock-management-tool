@@ -11,7 +11,7 @@ class ResetAllFiltersVisualizeStockUseCase extends UseCase {
   Future call({params}) async {
     Map<String, dynamic> visualizeStock = params["visualize_stock"];
 
-    visualizeStock["stocks"] = _visualizeStockRepository.getAllStocks();
+    visualizeStock["stocks"] = _visualizeStockRepository.getStocks();
 
     visualizeStock["filters"].forEach((k, v) {
       v["sort"] = k != "date" ? Sort.none : Sort.desc;

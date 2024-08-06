@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stock_management_tool/core/components/custom_container.dart';
 import 'package:stock_management_tool/core/constants/constants.dart';
-import 'package:stock_management_tool/core/constants/enums.dart';
-import 'package:stock_management_tool/core/helper/string_casting_extension.dart';
 import 'package:stock_management_tool/core/services/injection_container.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/bloc/visualize_stock_bloc.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_column_filter.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_filter_button.dart';
+import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_view.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_overlay_effect.dart';
-import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_sort_button.dart';
 import 'package:stock_management_tool/features/visualize_stock/presentation/widgets/custom_table_filter.dart';
-import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class VisualiseStockView extends StatelessWidget {
   VisualiseStockView({super.key});
@@ -78,7 +74,7 @@ class VisualiseStockView extends StatelessWidget {
   }
 
   Widget _buildLoadedStateWidget(Map<String, dynamic> visualizeStock) {
-    List fields = visualizeStock["show_fields"];
+    List fields = visualizeStock["fields"];
     List stocks = visualizeStock["stocks"];
     Map filters = visualizeStock["filters"];
 
@@ -170,161 +166,23 @@ class VisualiseStockView extends StatelessWidget {
                             ),
                             const SizedBox(height: 10.0),
                             Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: kTertiaryBackgroundColor,
-                                  borderRadius: kBorderRadius,
-                                  boxShadow: kBoxShadowList,
-                                  border: Border.all(width: 1),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: kBorderRadius,
-                                  child: TableView(
-                                    horizontalDetails:
-                                        const ScrollableDetails.horizontal(
-                                      physics: ClampingScrollPhysics(),
-                                    ),
-                                    verticalDetails:
-                                        const ScrollableDetails.vertical(
-                                      physics: BouncingScrollPhysics(),
-                                    ),
-                                    // cacheExtent: 2000,
-                                    delegate: TableCellBuilderDelegate(
-                                      columnCount: fields.length + 1,
-                                      rowCount: stocks.length + 1,
-                                      pinnedRowCount: 1,
-                                      pinnedColumnCount: 1,
-                                      columnBuilder: (int index) {
-                                        return TableSpan(
-                                          backgroundDecoration:
-                                              const TableSpanDecoration(
-                                            border: TableSpanBorder(
-                                              leading: BorderSide(
-                                                color: Colors.black54,
-                                              ),
-                                              trailing: BorderSide(
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ),
-                                          extent: FixedTableSpanExtent(
-                                              index != 0 ? 250 : 100),
-                                        );
-                                      },
-                                      rowBuilder: (int index) {
-                                        return const TableSpan(
-                                          backgroundDecoration:
-                                              TableSpanDecoration(
-                                            border: TableSpanBorder(
-                                              leading: BorderSide(
-                                                color: Colors.black54,
-                                              ),
-                                              trailing: BorderSide(
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ),
-                                          extent: FixedTableSpanExtent(30),
-                                        );
-                                      },
-                                      cellBuilder: (BuildContext context,
-                                          TableVicinity vicinity) {
-                                        if (vicinity.row == 0 &&
-                                            vicinity.column == 0) {
-                                          return TableViewCell(
-                                            child: Container(),
-                                          );
-                                        } else if (vicinity.column == 0) {
-                                          return TableViewCell(
-                                            child: Center(
-                                              child: Text(
-                                                vicinity.row.toString(),
-                                                style: kTableHeaderTextStyle,
-                                              ),
-                                            ),
-                                          );
-                                        } else if (vicinity.row == 0) {
-                                          String field =
-                                              fields[vicinity.column - 1]
-                                                  .toString();
-
-                                          Sort sort = filters[field]["sort"];
-
-                                          return TableViewCell(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Center(
-                                                      child: Text(
-                                                        field.toTitleCase(),
-                                                        style:
-                                                            kTableHeaderTextStyle,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      CustomSortButton(
-                                                        field: field,
-                                                        sort: sort,
-                                                        onPressed:
-                                                            (field, sort) {
-                                                          _visualizeStockBloc.add(
-                                                              SortColumnEvent(
-                                                            field: field,
-                                                            sort: sort,
-                                                          ));
-                                                        },
-                                                      ),
-                                                      CustomFilterButton(
-                                                        field: field,
-                                                        onPressed: () {
-                                                          _visualizeStockBloc.add(
-                                                              ShowColumnFilterLayerEvent(
-                                                            field: field,
-                                                          ));
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        } else {
-                                          String text = (stocks[
-                                                      vicinity.row - 1][fields[
-                                                          vicinity.column - 1]
-                                                      .toString()
-                                                      .toLowerCase()
-                                                      .replaceAll(" ", "_")] ??
-                                                  "")
-                                              .toString();
-
-                                          return TableViewCell(
-                                            child: text != ""
-                                                ? Center(
-                                                    child: SelectableText(
-                                                      text,
-                                                      style:
-                                                          kTableValueTextStyle,
-                                                    ),
-                                                  )
-                                                : const SizedBox.shrink(),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                                child: CustomTableView(
+                              fields: fields,
+                              stocks: stocks,
+                              filters: filters,
+                              sortOnPressed: (field, sort) {
+                                _visualizeStockBloc.add(SortColumnEvent(
+                                  field: field,
+                                  sort: sort,
+                                ));
+                              },
+                              filterOnPressed: (field) {
+                                _visualizeStockBloc
+                                    .add(ShowColumnFilterLayerEvent(
+                                  field: field,
+                                ));
+                              },
+                            )),
                             Padding(
                               padding: const EdgeInsets.only(
                                 top: 10.0,
